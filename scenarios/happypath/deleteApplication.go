@@ -24,7 +24,7 @@ func deleteApplication(appName, testname string) {
 		method = "DELETE"
 	)
 
-	req := utils.CreateHTTPRequest(fmt.Sprintf("%s/%s", path, appName), method)
+	req := utils.CreateHTTPRequest(fmt.Sprintf("%s/%s", path, appName), method, nil)
 	client := http.DefaultClient
 
 	resp, err := client.Do(req)

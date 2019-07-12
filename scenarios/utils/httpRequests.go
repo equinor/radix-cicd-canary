@@ -1,16 +1,24 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 )
 
 // CreateHTTPRequest setup correct header for running tests
-func CreateHTTPRequest(apiPath, method string) *http.Request {
-	endpoint := fmt.Sprintf("%s/%s", getRadixAPIURL(), apiPath)
-	req, _ := http.NewRequest(method, endpoint, nil)
+func CreateHTTPRequest(apiPath, method string, parameters interface{}) *http.Request {
+	var reader io.Reader
+	endpoint := fmt.Sprintf("%s%s", getRadixAPIURL(), apiPath)
+	if parameters != nil {
+		payload, _ := json.Marshal(parameters)
+		reader = bytes.NewReader(payload)
+	}
+	req, _ := http.NewRequest(method, endpoint, reader)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", getBearerToken()))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Impersonate-User", getImpersonateUser())
@@ -37,4 +45,14 @@ func getImpersonateGroup() string {
 
 func getRadixAPIURL() string {
 	return os.Getenv("RADIX_API_URL")
+}
+
+// GetPublicKey get public deploy key from environment variable
+func GetPublicKey() string {
+	return os.Getenv("PUBLIC_KEY")
+}
+
+// GetPrivateKeyBase64 get private deploy key from environment variable
+func GetPrivateKeyBase64() string {
+	return os.Getenv("PRIVATE_KEY_BASE64")
 }
