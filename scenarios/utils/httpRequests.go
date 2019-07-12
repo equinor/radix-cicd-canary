@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 )
@@ -18,7 +19,11 @@ func CreateHTTPRequest(endpoint, method string) *http.Request {
 }
 
 func getBearerToken() string {
-	return os.Getenv("BEARER_TOKEN")
+	token, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
+	if err != nil {
+		return os.Getenv("BEARER_TOKEN")
+	}
+	return string(token)
 }
 
 func getImpersonateUser() string {
