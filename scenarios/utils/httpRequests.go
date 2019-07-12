@@ -7,7 +7,8 @@ import (
 )
 
 // CreateHTTPRequest setup correct header for running tests
-func CreateHTTPRequest(endpoint, method string) *http.Request {
+func CreateHTTPRequest(apiPath, method string) *http.Request {
+	endpoint := fmt.Sprintf("%s/%s", getRadixAPIURL(), apiPath)
 	req, _ := http.NewRequest(method, endpoint, nil)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", getBearerToken()))
 	req.Header.Add("Content-Type", "application/json")
@@ -27,4 +28,8 @@ func getImpersonateUser() string {
 
 func getImpersonateGroup() string {
 	return os.Getenv("IMPERSONATE_GROUP")
+}
+
+func getRadixAPIURL() string {
+	return os.Getenv("RADIX_API_URL")
 }

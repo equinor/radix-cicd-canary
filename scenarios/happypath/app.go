@@ -16,6 +16,13 @@ var (
 		},
 		[]string{"testName"},
 	)
+	success = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "radix_test_success",
+			Help: "Test success",
+		},
+		[]string{"testName"},
+	)
 	testDurations = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "radix_test_duration",
@@ -58,4 +65,16 @@ func Run() {
 
 	scenarioDurations.With(prometheus.Labels{"scenario": "Happy Path"}).Add(elapsed.Seconds())
 	log.Infof("Happy path elapsed time: %v", elapsed)
+}
+
+func addTestSuccess(testname string) {
+	success.With(prometheus.Labels{"testName": testname}).Add(1)
+}
+
+func addTestError(testname string) {
+	errors.With(prometheus.Labels{"testName": testname}).Add(1)
+}
+
+func addTestDuration(testname string, durationSec float64) {
+	testDurations.With(prometheus.Labels{"testName": testname}).Add(durationSec)
 }
