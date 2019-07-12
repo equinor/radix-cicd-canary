@@ -14,7 +14,7 @@ service:
   internalPort: 5000
 
 impersonate:
-  user: xx
+  user: t_iknu@equinor.com
 
 deployKey:
   public: xx

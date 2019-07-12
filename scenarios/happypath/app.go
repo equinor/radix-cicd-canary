@@ -1,0 +1,61 @@
+package happypath
+
+import (
+	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	log "github.com/sirupsen/logrus"
+)
+
+var (
+	errors = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "radix_test_errors",
+			Help: "Test errors",
+		},
+		[]string{"testName"},
+	)
+	testDurations = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "radix_test_duration",
+			Help: "Duration of test",
+		},
+		[]string{"testName"},
+	)
+	scenarioDurations = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "radix_scenario_duration",
+			Help: "Duration of Scenario",
+		},
+		[]string{"scenario"},
+	)
+)
+
+// Run the happypath scenario
+func Run() {
+	start := time.Now()
+
+	log.Infof("List applications")
+	listApplications()
+	// log.Infof("Register application")
+	// registerApplication()
+	// log.Infof("Register application with no deploy key")
+	// registerApplicationWithNoDeployKey()
+	// log.Infof("Build application")
+	// buildApplication()
+	// log.Infof("Set secret")
+	// setSecret()
+	// log.Infof("Check alias responding")
+	// defaultAliasResponding()
+	// log.Infof("Check access to application user should not be able to access")
+	// unauthorizedAccess()
+	// log.Infof("Delete applications")
+	// deleteApplication()
+
+	end := time.Now()
+	elapsed := end.Sub(start)
+
+	scenarioDurations.With(prometheus.Labels{"scenario": "Happy Path"}).Add(elapsed.Seconds())
+	log.Infof("Happy path elapsed time: %v", elapsed)
+}
