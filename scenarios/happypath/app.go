@@ -60,7 +60,7 @@ func Run() {
 	// log.Infof("Check access to application user should not be able to access")
 	// unauthorizedAccess()
 	// log.Infof("Delete applications")
-	// deleteApplication()
+	// runTest(deleteApplications)
 
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -92,4 +92,12 @@ func addTestError(testname string) {
 
 func addTestDuration(testname string, durationSec float64) {
 	testDurations.With(prometheus.Labels{"testName": testname}).Add(durationSec)
+}
+
+func getApp1Name() string {
+	return "an_app"
+}
+
+func getApp2Name() string {
+	return "a_second_app"
 }
