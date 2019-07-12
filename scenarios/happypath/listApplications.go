@@ -7,31 +7,31 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	listAppPath     = "/api/v1/applications"
-	listAppMethod   = "GET"
-	listAppTestName = "ListApplications"
-)
-
 func listApplications() string {
+	const (
+		path     = "/api/v1/applications"
+		method   = "GET"
+		testName = "ListApplications"
+	)
+
 	log.Infof("Sending HTTP GET request...")
 
-	req := utils.CreateHTTPRequest(listAppPath, listAppMethod)
+	req := utils.CreateHTTPRequest(path, method)
 	client := http.DefaultClient
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		addTestError(listAppTestName)
+		addTestError(testName)
 		log.Errorf("HTTP GET error: %v", err)
 	} else {
 		if resp.StatusCode == 200 {
-			addTestSuccess(listAppTestName)
+			addTestSuccess(testName)
 			log.Infof("Response: %s", resp.Status)
 		} else {
-			addTestError(listAppTestName)
+			addTestError(testName)
 			log.Errorf("Error response code: %v", resp.StatusCode)
 		}
 	}
-	return listAppTestName
+	return testName
 }

@@ -8,31 +8,31 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	unauthorizedAccessPath     = "/api/v1/applications"
-	unauthorizedAccessMethod   = "GET"
-	unauthorizedAccessTestName = "UnauthorizedAccess"
-)
-
 func unauthorizedAccess() string {
+	const (
+		path     = "/api/v1/applications"
+		method   = "GET"
+		testName = "UnauthorizedAccess"
+	)
+
 	log.Infof("Sending HTTP GET request...")
 
-	req := utils.CreateHTTPRequest(fmt.Sprintf("%s/%s", listAppPath, restrictedApplicationName), unauthorizedAccessMethod)
+	req := utils.CreateHTTPRequest(fmt.Sprintf("%s/%s", path, restrictedApplicationName), method)
 	client := http.DefaultClient
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		addTestError(unauthorizedAccessTestName)
+		addTestError(testName)
 		log.Errorf("HTTP GET error: %v", err)
 	} else {
 		if resp.StatusCode == 403 {
-			addTestSuccess(unauthorizedAccessTestName)
+			addTestSuccess(testName)
 			log.Infof("Response: %s", resp.Status)
 		} else {
-			addTestError(unauthorizedAccessTestName)
+			addTestError(testName)
 			log.Errorf("Error response code: %v", resp.StatusCode)
 		}
 	}
-	return unauthorizedAccessTestName
+	return testName
 }

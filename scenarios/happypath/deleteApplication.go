@@ -8,40 +8,37 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	deleteAppPath     = "/api/v1/applications"
-	deleteAppMethod   = "DELETE"
-	deleteAppTestName = "DeleteApplication"
-)
-
 func deleteApplications() string {
-	log.Infof("Sending HTTP GET request...")
-	deleteApplication(app1Name)
-	deleteApplication(app2Name)
+	const testname = "DeleteApplication"
 
-	return deleteAppTestName
+	log.Infof("Sending HTTP GET request...")
+	deleteApplication(app1Name, testname)
+	deleteApplication(app2Name, testname)
+
+	return testname
 }
 
-func deleteApplication(appName string) {
-	req := utils.CreateHTTPRequest(deleteSpecificAppPath(appName), deleteAppMethod)
+func deleteApplication(appName, testname string) {
+	const (
+		path   = "/api/v1/applications"
+		method = "DELETE"
+	)
+
+	req := utils.CreateHTTPRequest(fmt.Sprintf("%s/%s", path, appName), method)
 	client := http.DefaultClient
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		addTestError(deleteAppTestName)
+		addTestError(testname)
 		log.Errorf("HTTP DELETE error: %v", err)
 	} else {
 		if resp.StatusCode == 200 {
-			addTestSuccess(deleteAppTestName)
+			addTestSuccess(testname)
 			log.Infof("Response: %s", resp.Status)
 		} else {
-			addTestError(deleteAppTestName)
+			addTestError(testname)
 			log.Errorf("Error response code: %v", resp.StatusCode)
 		}
 	}
-}
-
-func deleteSpecificAppPath(appName string) string {
-	return fmt.Sprintf("%s/%s", deleteAppPath, appName)
 }
