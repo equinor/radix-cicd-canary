@@ -1,0 +1,27 @@
+# Default values for radix-cicd-canary-golang
+clusterFQDN: xx
+
+imageCredentials:
+  registry: radixdev.azurecr.io
+
+image:
+  repository: radix-cicd-canary-golang
+  tag: "master-latest"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  internalPort: 5000
+
+impersonate:
+  user: xx
+
+deployKey:
+  public: xx
+  private: xx
+
+clusterType: development
+
+radixGroups:
+  user: "64b28659-4fe4-4222-8497-85dd7e43e25b"
+  playground: "4b8ec60e-714c-4a9d-8e0a-3e4cfb3c3d31"

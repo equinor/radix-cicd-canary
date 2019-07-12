@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Chart.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}"
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: "{{ .Chart.Name }}"
+        release: {{ .Release.Name }}
+    spec:
+      #serviceAccount: "{{ .Chart.Name }}"
+      #automountServiceAccountToken: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.imageCredentials.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.service.internalPort }}
+              protocol: TCP
+          env:
+            {{if eq .Values.clusterType "playground"}}
+            - name: IMPERSONATE_GROUP
+              value: "{{ .Values.radixGroups.playground }}"
+            {{else}}
+            - name: IMPERSONATE_GROUP
+              value: "{{ .Values.radixGroups.user }}"
+            {{end}}
+            - name: IMPERSONATE_USER
+              value: {{ .Values.impersonate.user }}
+          #   - name: PUBLIC_KEY
+          #     value: {{ .Values.deployKey.public }}
+          #   - name: PRIVATE_KEY_BASE64
+          #     value: {{ .Values.deployKey.private }}
+          #   - name: CLUSTER
+          #     value: {{ .Values.clusterFQDN }}

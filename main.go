@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -47,6 +49,10 @@ func runTest() {
 	req.Header.Add("Impersonate-User", getImpersonateUser())
 	req.Header.Add("Impersonate-Group", getImpersonateGroup())
 
+	log.Infof("Bearer token: %s", getBearerToken())
+	log.Infof("Impersonate-user: %s", getImpersonateUser())
+	log.Infof("Impersonate-group: %s", getImpersonateGroup())
+
 	client := http.DefaultClient
 
 	for {
@@ -68,15 +74,13 @@ func runTest() {
 			}
 		}
 
-		// defer resp.Body.Close()
-		// body, err := ioutil.ReadAll(resp.Body)
-		// if err != nil {
-		// 	errors.Add(1)
-		// 	log.Errorf("Error reading response body: %v", err)
-		// }
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Errorf("Error reading response body: %v", err)
+		}
 
-		// log.Infof("Response: %s\n", resp.Status)
-		// log.Infof(string(body))
+		log.Infof(string(body))
 
 		end := time.Now()
 		elapsed := end.Sub(start)
@@ -93,9 +97,9 @@ func getBearerToken() string {
 }
 
 func getImpersonateUser() string {
-	return "xx"
+	return os.Getenv("IMPERSONATE_USER")
 }
 
 func getImpersonateGroup() string {
-	return "xx"
+	return os.Getenv("IMPERSONATE_GROUP")
 }
