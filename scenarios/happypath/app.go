@@ -39,12 +39,14 @@ var (
 	)
 )
 
+type testFn func() (testname string)
+
 // Run the happypath scenario
 func Run() {
 	start := time.Now()
 
 	log.Infof("List applications")
-	listApplications()
+	runTest(listApplications)
 	// log.Infof("Register application")
 	// registerApplication()
 	// log.Infof("Register application with no deploy key")
@@ -65,6 +67,19 @@ func Run() {
 
 	scenarioDurations.With(prometheus.Labels{"scenario": "Happy Path"}).Add(elapsed.Seconds())
 	log.Infof("Happy path elapsed time: %v", elapsed)
+}
+
+func runTest(testToRun testFn) {
+	start := time.Now()
+
+	testName := testToRun()
+
+	end := time.Now()
+	elapsed := end.Sub(start)
+
+	addTestDuration(testName, elapsed.Seconds())
+	log.Infof("Elapsed time: %v", elapsed)
+
 }
 
 func addTestSuccess(testname string) {

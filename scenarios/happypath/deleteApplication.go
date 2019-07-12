@@ -1,0 +1,5 @@
+package happypath
+
+func deleteApplication() {
+
+}
