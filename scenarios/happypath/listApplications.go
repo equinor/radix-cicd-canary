@@ -1,7 +1,6 @@
 package happypath
 
 import (
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -35,14 +34,6 @@ func listApplications() {
 			log.Errorf("Error response code: %v", resp.StatusCode)
 		}
 	}
-
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Errorf("Error reading response body: %v", err)
-	}
-
-	log.Infof(string(body))
 
 	end := time.Now()
 	elapsed := end.Sub(start)
