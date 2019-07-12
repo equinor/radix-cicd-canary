@@ -20,8 +20,8 @@ spec:
         app: "{{ .Chart.Name }}"
         release: {{ .Release.Name }}
     spec:
-      #serviceAccount: "{{ .Chart.Name }}"
-      #automountServiceAccountToken: true
+      serviceAccount: "{{ .Chart.Name }}"
+      automountServiceAccountToken: true
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.imageCredentials.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
