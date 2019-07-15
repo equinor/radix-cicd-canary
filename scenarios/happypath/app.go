@@ -47,8 +47,8 @@ func Run() {
 
 	log.Infof("List applications")
 	runTest(listApplications)
-	// log.Infof("Register application")
-	// registerApplication()
+	log.Infof("Register application")
+	runTest(registerApplication)
 	log.Infof("Register application with no deploy key")
 	runTest(registerApplicationWithNoDeployKey)
 	// log.Infof("Build application")

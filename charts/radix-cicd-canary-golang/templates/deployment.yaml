@@ -40,9 +40,11 @@ spec:
             {{end}}
             - name: IMPERSONATE_USER
               value: {{ .Values.impersonate.user }}
-          #   - name: PUBLIC_KEY
-          #     value: {{ .Values.deployKey.public }}
-          #   - name: PRIVATE_KEY_BASE64
-          #     value: {{ .Values.deployKey.private }}
+            - name: PUBLIC_KEY
+              value: {{ .Values.deployKey.public }}
+            - name: PRIVATE_KEY_BASE64
+              value: {{ .Values.deployKey.private }}
           #   - name: CLUSTER
           #     value: {{ .Values.clusterFQDN }}
+            - name: RADIX_API_URL
+              value: {{ .Values.radixApiUrl}}

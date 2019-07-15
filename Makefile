@@ -1,8 +1,9 @@
 ENVIRONMENT ?= dev
 VERSION 	?= latest
 
-# BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+BRANCH ?= master
 VAULT_NAME ?= radix-vault-$(ENVIRONMENT)
+RADIX_API_URL ?= https://server-radix-api-prod.weekly-27.dev.radix.equinor.com
 
 CONTAINER_REPO ?= radix$(ENVIRONMENT)
 DOCKER_REGISTRY	?= $(CONTAINER_REPO).azurecr.io
@@ -30,6 +31,7 @@ deploy-via-helm:
 	    ./charts/radix-cicd-canary-golang/ \
 		--namespace radix-cicd-canary-golang \
 		--set image.tag=$(BRANCH)-$(VERSION) \
+		--set radixApiUrl=$(RADIX_API_URL) \
 		-f radix-cicd-canary-values.yaml
 
 	rm -f radix-cicd-canary-values.yaml

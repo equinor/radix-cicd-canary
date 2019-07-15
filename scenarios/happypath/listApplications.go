@@ -16,7 +16,7 @@ func listApplications() string {
 
 	log.Infof("Sending HTTP GET request...")
 
-	req := utils.CreateHTTPRequest(path, method)
+	req := utils.CreateHTTPRequest(path, method, nil)
 	client := http.DefaultClient
 
 	resp, err := client.Do(req)
