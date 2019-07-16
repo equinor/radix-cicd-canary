@@ -3,18 +3,10 @@ package happypath
 import (
 	"net/http"
 
+	models "github.com/equinor/radix-cicd-canary-golang/scenarios/happypath/models"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
 	log "github.com/sirupsen/logrus"
 )
-
-type applicationRegistration struct {
-	Name         string   `json:"name"`
-	Repository   string   `json:"repository"`
-	SharedSecret string   `json:"sharedSecret"`
-	AdGroups     []string `json:"adGroups"`
-	PublicKey    string   `json:"publicKey,omitempty"`
-	PrivateKey   string   `json:"privateKey,omitempty"`
-}
 
 func registerApplication() string {
 	const (
@@ -25,7 +17,7 @@ func registerApplication() string {
 
 	log.Infof("Sending HTTP POST request...")
 
-	parameters := applicationRegistration{
+	parameters := models.ApplicationRegistration{
 		Name:         app2Name,
 		Repository:   app2Repository,
 		SharedSecret: app2SharedSecret,
