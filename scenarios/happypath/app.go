@@ -45,17 +45,6 @@ type testFn func() (testname string)
 func Run() {
 	start := time.Now()
 
-	// DEBUG-START
-	// log.Infof("List applications swagger")
-	// runTest(listApplicationsSwagger)
-	// log.Infof("Register application swagger")
-	// runTest(registerApplicationSwagger)
-	// log.Infof("Register application with no deploy key swagger")
-	// runTest(registerApplicationWithNoDeployKeySwagger)
-	log.Infof("Delete applications swagger")
-	runTest(deleteApplicationsSwagger)
-	// DEBUG-END
-
 	// log.Infof("List applications")
 	// runTest(listApplications)
 	// log.Infof("Register application")
@@ -68,8 +57,8 @@ func Run() {
 	// setSecret()
 	// log.Infof("Check alias responding")
 	// defaultAliasResponding()
-	// log.Infof("Check access to application user should not be able to access")
-	// runTest(unauthorizedAccess)
+	log.Infof("Check access to application user should not be able to access")
+	runTest(unauthorizedAccess)
 	// log.Infof("Delete applications")
 	// runTest(deleteApplications)
 

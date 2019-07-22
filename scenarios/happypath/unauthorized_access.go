@@ -1,38 +1,62 @@
 package happypath
 
 import (
-	"fmt"
-	"net/http"
-
+	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	"github.com/go-openapi/runtime"
+	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 )
 
 func unauthorizedAccess() string {
 	const (
-		path     = "/api/v1/applications"
-		method   = "GET"
-		testName = "UnauthorizedAccess"
+		testName          = "UnauthorizedAccess"
+		basePath          = "/api/v1"
+		successStatusCode = 403
 	)
 
-	log.Infof("Sending HTTP GET request...")
+	log.Infof("Starting GetApplication...")
 
-	req := utils.CreateHTTPRequest(fmt.Sprintf("%s/%s", path, restrictedApplicationName), method, nil)
-	client := http.DefaultClient
+	radixAPIURL := utils.GetRadixAPIURL()
+	impersonateUser := utils.GetImpersonateUser()
+	impersonateGroup := utils.GetImpersonateGroup()
+	bearerToken := utils.GetBearerToken()
 
-	resp, err := client.Do(req)
+	params := apiclient.NewGetApplicationParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup).
+		WithAppName(restrictedApplicationName)
+	clientBearerToken := httptransport.BearerToken(bearerToken)
+	schemes := []string{"https"}
 
+	transport := httptransport.New(radixAPIURL, basePath, schemes)
+	client := apiclient.New(transport, strfmt.Default)
+
+	_, err := client.GetApplication(params, clientBearerToken)
 	if err != nil {
-		addTestError(testName)
-		log.Errorf("HTTP GET error: %v", err)
-	} else {
-		if resp.StatusCode == 403 {
+		if checkErrorResponse(err, successStatusCode) {
 			addTestSuccess(testName)
-			log.Infof("Response: %s", resp.Status)
+			log.Info("Test success")
 		} else {
 			addTestError(testName)
-			log.Errorf("Error response code: %v", resp.StatusCode)
+			log.Errorf("Error test %s returned not 403 status code", testName)
+		}
+	} else {
+		addTestError(testName)
+		log.Errorf("Error test %s should not return 200 status code", testName)
+	}
+
+	return testName
+}
+
+func checkErrorResponse(err error, expectedStatusCode int) bool {
+	apiError, ok := err.(*runtime.APIError)
+	if ok {
+		errorCode := apiError.Code
+		if errorCode == expectedStatusCode {
+			return true
 		}
 	}
-	return testName
+	return false
 }

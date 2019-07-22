@@ -7,10 +7,13 @@ package application
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
 )
 
 // ChangeRegistrationDetailsReader is a Reader for the ChangeRegistrationDetails structure.
@@ -69,16 +72,24 @@ func NewChangeRegistrationDetailsOK() *ChangeRegistrationDetailsOK {
 
 /*ChangeRegistrationDetailsOK handles this case with default header values.
 
-ApplicationRegistration describe an application
+Successful change registration details
 */
 type ChangeRegistrationDetailsOK struct {
+	Payload *models.ApplicationRegistration
 }
 
 func (o *ChangeRegistrationDetailsOK) Error() string {
-	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsOK ", 200)
+	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsOK  %+v", 200, o.Payload)
 }
 
 func (o *ChangeRegistrationDetailsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ApplicationRegistration)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }
