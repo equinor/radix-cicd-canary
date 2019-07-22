@@ -13,21 +13,22 @@ import (
 // CreateHTTPRequest setup correct header for running tests
 func CreateHTTPRequest(apiPath, method string, parameters interface{}) *http.Request {
 	var reader io.Reader
-	endpoint := fmt.Sprintf("%s%s", getRadixAPIURL(), apiPath)
+	endpoint := fmt.Sprintf("%s%s", GetRadixAPIURL(), apiPath)
 	if parameters != nil {
 		payload, _ := json.Marshal(parameters)
 		reader = bytes.NewReader(payload)
 	}
 	req, _ := http.NewRequest(method, endpoint, reader)
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", getBearerToken()))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", GetBearerToken()))
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Impersonate-User", getImpersonateUser())
-	req.Header.Add("Impersonate-Group", getImpersonateGroup())
+	req.Header.Add("Impersonate-User", GetImpersonateUser())
+	req.Header.Add("Impersonate-Group", GetImpersonateGroup())
 
 	return req
 }
 
-func getBearerToken() string {
+// GetBearerToken get bearer token either from token file or environment variable
+func GetBearerToken() string {
 	token, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
 	if err != nil {
 		return os.Getenv("BEARER_TOKEN")
@@ -35,15 +36,18 @@ func getBearerToken() string {
 	return string(token)
 }
 
-func getImpersonateUser() string {
+// GetImpersonateUser get impersonate user
+func GetImpersonateUser() string {
 	return os.Getenv("IMPERSONATE_USER")
 }
 
-func getImpersonateGroup() string {
+// GetImpersonateGroup get impersonate group
+func GetImpersonateGroup() string {
 	return os.Getenv("IMPERSONATE_GROUP")
 }
 
-func getRadixAPIURL() string {
+// GetRadixAPIURL get Radix API URL
+func GetRadixAPIURL() string {
 	return os.Getenv("RADIX_API_URL")
 }
 
