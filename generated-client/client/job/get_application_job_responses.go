@@ -58,10 +58,10 @@ func NewGetApplicationJobOK() *GetApplicationJobOK {
 
 /*GetApplicationJobOK handles this case with default header values.
 
-Successful operation
+Successful get job
 */
 type GetApplicationJobOK struct {
-	Payload []*models.Job
+	Payload *models.Job
 }
 
 func (o *GetApplicationJobOK) Error() string {
@@ -70,8 +70,10 @@ func (o *GetApplicationJobOK) Error() string {
 
 func (o *GetApplicationJobOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.Job)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

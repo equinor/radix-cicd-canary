@@ -3,9 +3,8 @@ package happypath
 import (
 	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
 	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
-	httptransport "github.com/go-openapi/runtime/client"
-	"github.com/go-openapi/strfmt"
+	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
+	httpUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -17,10 +16,8 @@ func registerApplicationWithNoDeployKey() string {
 
 	log.Infof("Starting RegisterApplication with no deploy key...")
 
-	radixAPIURL := utils.GetRadixAPIURL()
-	impersonateUser := utils.GetImpersonateUser()
-	impersonateGroup := utils.GetImpersonateGroup()
-	bearerToken := utils.GetBearerToken()
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
 
 	appName := app1Name
 	appRepo := app1Repository
@@ -36,11 +33,9 @@ func registerApplicationWithNoDeployKey() string {
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
 		WithApplicationRegistration(&bodyParameters)
-	clientBearerToken := httptransport.BearerToken(bearerToken)
-	schemes := []string{"https"}
 
-	transport := httptransport.New(radixAPIURL, basePath, schemes)
-	client := apiclient.New(transport, strfmt.Default)
+	clientBearerToken := httpUtils.GetClientBearerToken()
+	client := httpUtils.GetPlatformClient()
 
 	registerApplicationOK, err := client.RegisterApplication(params, clientBearerToken)
 	if err != nil {

@@ -1,7 +1,7 @@
 ENVIRONMENT ?= dev
 VERSION 	?= latest
 
-BRANCH ?= master
+BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 VAULT_NAME ?= radix-vault-$(ENVIRONMENT)
 RADIX_API_URL ?= api.dev.radix.equinor.com
 
