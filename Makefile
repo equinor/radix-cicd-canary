@@ -3,11 +3,13 @@ VERSION 	?= latest
 
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 VAULT_NAME ?= radix-vault-$(ENVIRONMENT)
-# RADIX_API_URL ?= https://server-radix-api-prod.weekly-27.dev.radix.equinor.com
-RADIX_API_URL ?= server-radix-api-prod.weekly-27.dev.radix.equinor.com
+RADIX_API_URL ?= api.dev.radix.equinor.com
 
 CONTAINER_REPO ?= radix$(ENVIRONMENT)
 DOCKER_REGISTRY	?= $(CONTAINER_REPO).azurecr.io
+
+generate-client:
+	swagger generate client -t ./generated-client -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radix-api
 
 build:
 	docker build -t radix-cicd-canary-golang .

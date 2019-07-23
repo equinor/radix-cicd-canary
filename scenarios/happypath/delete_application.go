@@ -1,44 +1,49 @@
 package happypath
 
 import (
-	"fmt"
-	"net/http"
-
+	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 )
 
 func deleteApplications() string {
-	const testname = "DeleteApplication"
+	const testName = "DeleteApplication"
 
-	log.Infof("Sending HTTP GET request...")
-	deleteApplication(app1Name, testname)
-	deleteApplication(app2Name, testname)
+	deleteApplication(app1Name, testName)
+	deleteApplication(app2Name, testName)
 
-	return testname
+	return testName
 }
 
-func deleteApplication(appName, testname string) {
-	const (
-		path   = "/api/v1/applications"
-		method = "DELETE"
-	)
+func deleteApplication(appName, testName string) {
+	const basePath = "/api/v1"
 
-	req := utils.CreateHTTPRequest(fmt.Sprintf("%s/%s", path, appName), method, nil)
-	client := http.DefaultClient
+	log.Infof("Starting DeleteApplication for application %s...", appName)
 
-	resp, err := client.Do(req)
+	radixAPIURL := utils.GetRadixAPIURL()
+	impersonateUser := utils.GetImpersonateUser()
+	impersonateGroup := utils.GetImpersonateGroup()
+	bearerToken := utils.GetBearerToken()
 
+	params := apiclient.NewDeleteApplicationParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup).
+		WithAppName(appName)
+	clientBearerToken := httptransport.BearerToken(bearerToken)
+	schemes := []string{"https"}
+
+	transport := httptransport.New(radixAPIURL, basePath, schemes)
+	client := apiclient.New(transport, strfmt.Default)
+
+	_, err := client.DeleteApplication(params, clientBearerToken)
 	if err != nil {
-		addTestError(testname)
-		log.Errorf("HTTP DELETE error: %v", err)
+		addTestError(testName)
+		log.Errorf("Error calling DeleteApplication for application %s: %v", appName, err)
 	} else {
-		if resp.StatusCode == 200 {
-			addTestSuccess(testname)
-			log.Infof("Response: %s", resp.Status)
-		} else {
-			addTestError(testname)
-			log.Errorf("Error response code: %v", resp.StatusCode)
-		}
+		addTestSuccess(testName)
+		log.Infof("Test success for application %s", appName)
 	}
+
 }

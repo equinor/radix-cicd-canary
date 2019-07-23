@@ -1,47 +1,57 @@
 package happypath
 
 import (
-	"net/http"
-
-	models "github.com/equinor/radix-cicd-canary-golang/scenarios/happypath/models"
+	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
+	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 )
 
 func registerApplication() string {
 	const (
-		path     = "/api/v1/applications"
-		method   = "POST"
 		testName = "RegisterApplication"
+		basePath = "/api/v1"
 	)
 
-	log.Infof("Sending HTTP POST request...")
+	log.Infof("Starting RegisterApplication...")
 
-	parameters := models.ApplicationRegistration{
-		Name:         app2Name,
-		Repository:   app2Repository,
-		SharedSecret: app2SharedSecret,
+	radixAPIURL := utils.GetRadixAPIURL()
+	impersonateUser := utils.GetImpersonateUser()
+	impersonateGroup := utils.GetImpersonateGroup()
+	bearerToken := utils.GetBearerToken()
+
+	appName := app2Name
+	appRepo := app2Repository
+	appSharedSecret := app2SharedSecret
+
+	bodyParameters := models.ApplicationRegistration{
+		Name:         &appName,
+		Repository:   &appRepo,
+		SharedSecret: &appSharedSecret,
 		AdGroups:     nil,
 		PublicKey:    utils.GetPublicKey(),
 		PrivateKey:   utils.GetPrivateKeyBase64(),
 	}
 
-	req := utils.CreateHTTPRequest(path, method, parameters)
-	client := http.DefaultClient
+	params := apiclient.NewRegisterApplicationParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup).
+		WithApplicationRegistration(&bodyParameters)
+	clientBearerToken := httptransport.BearerToken(bearerToken)
+	schemes := []string{"https"}
 
-	resp, err := client.Do(req)
+	transport := httptransport.New(radixAPIURL, basePath, schemes)
+	client := apiclient.New(transport, strfmt.Default)
 
+	_, err := client.RegisterApplication(params, clientBearerToken)
 	if err != nil {
 		addTestError(testName)
-		log.Errorf("HTTP POST error: %v", err)
+		log.Errorf("Error calling RegisterApplication: %v", err)
 	} else {
-		if resp.StatusCode == 200 {
-			addTestSuccess(testName)
-			log.Infof("Response: %s", resp.Status)
-		} else {
-			addTestError(testName)
-			log.Errorf("Error response code: %v", resp.StatusCode)
-		}
+		addTestSuccess(testName)
+		log.Info("Test success")
 	}
 
 	return testName
