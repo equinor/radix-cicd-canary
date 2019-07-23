@@ -15,12 +15,7 @@ const (
 )
 
 func buildApplications() string {
-	buildApplication(app1Name, testName)
 
-	return testName
-}
-
-func buildApplication(appName, testName string) {
 	test.WaitForCheckFunc(isApplicationDefined)
 
 	// Trigger build via web hook
@@ -44,6 +39,8 @@ func buildApplication(appName, testName string) {
 		}
 
 	}
+
+	return testName
 }
 
 func isApplicationDefined(args []string) (bool, interface{}) {

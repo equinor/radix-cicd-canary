@@ -58,10 +58,10 @@ func NewGetEnvironmentOK() *GetEnvironmentOK {
 
 /*GetEnvironmentOK handles this case with default header values.
 
-Successful operation
+Successful get environment
 */
 type GetEnvironmentOK struct {
-	Payload []*models.Environment
+	Payload *models.Environment
 }
 
 func (o *GetEnvironmentOK) Error() string {
@@ -70,8 +70,10 @@ func (o *GetEnvironmentOK) Error() string {
 
 func (o *GetEnvironmentOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.Environment)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

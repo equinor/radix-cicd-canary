@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	applicationAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
+	environmentAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/environment"
 	jobAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/job"
 	platformAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/crypto"
@@ -111,6 +112,11 @@ func GetApplicationClient() *applicationAPIClient.Client {
 // GetJobClient Gets the Job API client
 func GetJobClient() *jobAPIClient.Client {
 	return jobAPIClient.New(getTransport(), strfmt.Default)
+}
+
+// GetEnvironmentClient Gets the Environment API client
+func GetEnvironmentClient() *environmentAPIClient.Client {
+	return environmentAPIClient.New(getTransport(), strfmt.Default)
 }
 
 func getTransport() *httptransport.Runtime {
