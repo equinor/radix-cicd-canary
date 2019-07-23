@@ -58,10 +58,10 @@ func NewGetDeploymentOK() *GetDeploymentOK {
 
 /*GetDeploymentOK handles this case with default header values.
 
-Successful operation
+Successful get deployment
 */
 type GetDeploymentOK struct {
-	Payload []*models.Deployment
+	Payload *models.Deployment
 }
 
 func (o *GetDeploymentOK) Error() string {
@@ -70,8 +70,10 @@ func (o *GetDeploymentOK) Error() string {
 
 func (o *GetDeploymentOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
+	o.Payload = new(models.Deployment)
+
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
 

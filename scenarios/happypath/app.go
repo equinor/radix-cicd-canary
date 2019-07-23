@@ -57,8 +57,7 @@ func Run() {
 	// setSecret()
 	// log.Infof("Check alias responding")
 	// defaultAliasResponding()
-	log.Infof("Check access to application user should not be able to access")
-	runTest(unauthorizedAccess)
+	runTest(setSecret)
 	// log.Infof("Delete applications")
 	// runTest(deleteApplications)
 
