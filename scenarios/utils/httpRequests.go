@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,8 +11,8 @@ import (
 	"os"
 )
 
-// CreateHTTPRequest setup correct header for running tests
-func CreateHTTPRequest(apiPath, method string, parameters interface{}) *http.Request {
+// CreateRequestForPath setup correct header for running tests
+func CreateRequestForPath(apiPath, method string, parameters interface{}) *http.Request {
 	var reader io.Reader
 	endpoint := fmt.Sprintf("%s%s", GetRadixAPIURL(), apiPath)
 	if parameters != nil {
@@ -19,6 +20,22 @@ func CreateHTTPRequest(apiPath, method string, parameters interface{}) *http.Req
 		reader = bytes.NewReader(payload)
 	}
 	req, _ := http.NewRequest(method, endpoint, reader)
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", GetBearerToken()))
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Impersonate-User", GetImpersonateUser())
+	req.Header.Add("Impersonate-Group", GetImpersonateGroup())
+
+	return req
+}
+
+// CreateRequest setup correct header for running tests
+func CreateRequest(url, method string, parameters interface{}) *http.Request {
+	var reader io.Reader
+	if parameters != nil {
+		payload, _ := json.Marshal(parameters)
+		reader = bytes.NewReader(payload)
+	}
+	req, _ := http.NewRequest(method, url, reader)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", GetBearerToken()))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Impersonate-User", GetImpersonateUser())
@@ -51,6 +68,11 @@ func GetRadixAPIURL() string {
 	return os.Getenv("RADIX_API_URL")
 }
 
+// GetWebhookURL get Radix API URL
+func GetWebhookURL() string {
+	return os.Getenv("RADIX_GITHUB_WEBHOOK_URL")
+}
+
 // GetPublicKey get public deploy key from environment variable
 func GetPublicKey() string {
 	return os.Getenv("PUBLIC_KEY")
@@ -58,5 +80,6 @@ func GetPublicKey() string {
 
 // GetPrivateKeyBase64 get private deploy key from environment variable
 func GetPrivateKeyBase64() string {
-	return os.Getenv("PRIVATE_KEY_BASE64")
+	data, _ := base64.StdEncoding.DecodeString(os.Getenv("PRIVATE_KEY_BASE64"))
+	return string(data)
 }
