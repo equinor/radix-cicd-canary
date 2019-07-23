@@ -3,7 +3,7 @@ package happypath
 import (
 	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
 	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
@@ -17,10 +17,10 @@ func registerApplication() string {
 
 	log.Infof("Starting RegisterApplication...")
 
-	radixAPIURL := utils.GetRadixAPIURL()
-	impersonateUser := utils.GetImpersonateUser()
-	impersonateGroup := utils.GetImpersonateGroup()
-	bearerToken := utils.GetBearerToken()
+	radixAPIURL := env.GetRadixAPIURL()
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+	bearerToken := env.GetBearerToken()
 
 	appName := app2Name
 	appRepo := app2Repository
@@ -31,8 +31,8 @@ func registerApplication() string {
 		Repository:   &appRepo,
 		SharedSecret: &appSharedSecret,
 		AdGroups:     nil,
-		PublicKey:    utils.GetPublicKey(),
-		PrivateKey:   utils.GetPrivateKeyBase64(),
+		PublicKey:    env.GetPublicKey(),
+		PrivateKey:   env.GetPrivateKey(),
 	}
 
 	params := apiclient.NewRegisterApplicationParams().

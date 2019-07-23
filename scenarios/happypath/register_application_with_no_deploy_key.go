@@ -3,7 +3,7 @@ package happypath
 import (
 	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
 	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
@@ -17,10 +17,10 @@ func registerApplicationWithNoDeployKey() string {
 
 	log.Infof("Starting RegisterApplication with no deploy key...")
 
-	radixAPIURL := utils.GetRadixAPIURL()
-	impersonateUser := utils.GetImpersonateUser()
-	impersonateGroup := utils.GetImpersonateGroup()
-	bearerToken := utils.GetBearerToken()
+	radixAPIURL := env.GetRadixAPIURL()
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+	bearerToken := env.GetBearerToken()
 
 	appName := app1Name
 	appRepo := app1Repository

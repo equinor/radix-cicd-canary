@@ -2,7 +2,7 @@ package happypath
 
 import (
 	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
@@ -18,10 +18,10 @@ func unauthorizedAccess() string {
 
 	log.Infof("Starting GetApplication...")
 
-	radixAPIURL := utils.GetRadixAPIURL()
-	impersonateUser := utils.GetImpersonateUser()
-	impersonateGroup := utils.GetImpersonateGroup()
-	bearerToken := utils.GetBearerToken()
+	radixAPIURL := env.GetRadixAPIURL()
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+	bearerToken := env.GetBearerToken()
 
 	params := apiclient.NewGetApplicationParams().
 		WithImpersonateUser(&impersonateUser).
