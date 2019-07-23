@@ -7,10 +7,13 @@ package application
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
 )
 
 // GetApplicationReader is a Reader for the GetApplication structure.
@@ -55,16 +58,24 @@ func NewGetApplicationOK() *GetApplicationOK {
 
 /*GetApplicationOK handles this case with default header values.
 
-Application details of an application
+Successful get application
 */
 type GetApplicationOK struct {
+	Payload *models.Application
 }
 
 func (o *GetApplicationOK) Error() string {
-	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationOK ", 200)
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationOK  %+v", 200, o.Payload)
 }
 
 func (o *GetApplicationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.Application)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }

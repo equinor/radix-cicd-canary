@@ -1,67 +1,60 @@
 package happypath
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"net/http"
-
-	models "github.com/equinor/radix-cicd-canary-golang/scenarios/happypath/models"
+	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
+	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 )
 
 func registerApplicationWithNoDeployKey() string {
 	const (
-		path     = "/api/v1/applications"
-		method   = "POST"
 		testName = "RegisterApplicationWithNoDeployKey"
+		basePath = "/api/v1"
 	)
 
-	log.Infof("Sending HTTP POST request...")
+	log.Infof("Starting RegisterApplication with no deploy key...")
 
-	parameters := models.ApplicationRegistration{
-		Name:         app1Name,
-		Repository:   app1Repository,
-		SharedSecret: app1SharedSecret,
+	radixAPIURL := utils.GetRadixAPIURL()
+	impersonateUser := utils.GetImpersonateUser()
+	impersonateGroup := utils.GetImpersonateGroup()
+	bearerToken := utils.GetBearerToken()
+
+	appName := app1Name
+	appRepo := app1Repository
+	appSharedSecret := app1SharedSecret
+
+	bodyParameters := models.ApplicationRegistration{
+		Name:         &appName,
+		Repository:   &appRepo,
+		SharedSecret: &appSharedSecret,
 	}
 
-	req := utils.CreateHTTPRequest(path, method, parameters)
-	client := http.DefaultClient
+	params := apiclient.NewRegisterApplicationParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup).
+		WithApplicationRegistration(&bodyParameters)
+	clientBearerToken := httptransport.BearerToken(bearerToken)
+	schemes := []string{"https"}
 
-	resp, err := client.Do(req)
+	transport := httptransport.New(radixAPIURL, basePath, schemes)
+	client := apiclient.New(transport, strfmt.Default)
 
+	registerApplicationOK, err := client.RegisterApplication(params, clientBearerToken)
 	if err != nil {
 		addTestError(testName)
-		log.Errorf("HTTP POST error: %v", err)
+		log.Errorf("Error calling RegisterApplication with no deploy key: %v", err)
 	} else {
-		ok := checkResponse(resp)
-		if ok {
+		if registerApplicationOK.Payload.PublicKey != "" {
 			addTestSuccess(testName)
-			log.Infof("Response: %s", resp.Status)
+			log.Info("Test success")
 		} else {
 			addTestError(testName)
-			log.Errorf("Error response code: %v", resp.StatusCode)
+			log.Errorf("Error response: public key is empty")
 		}
 	}
 
 	return testName
-}
-
-func checkResponse(resp *http.Response) bool {
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Errorf("Error reading response body: %v", err)
-		return false
-	}
-	appRegistration := models.ApplicationRegistration{}
-	err = json.Unmarshal(body, &appRegistration)
-	if err != nil {
-		log.Errorf("Error unmarshalling response body: %v", err)
-		return false
-	}
-	if resp.StatusCode == 200 && appRegistration.PublicKey != "" {
-		return true
-	}
-	return false
 }

@@ -1,37 +1,47 @@
 package happypath
 
 import (
-	"net/http"
-
+	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils"
+	httptransport "github.com/go-openapi/runtime/client"
+	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 )
 
 func listApplications() string {
 	const (
-		path     = "/api/v1/applications"
-		method   = "GET"
 		testName = "ListApplications"
+		basePath = "/api/v1"
 	)
 
-	log.Infof("Sending HTTP GET request...")
+	log.Infof("Starting ShowApplications...")
 
-	req := utils.CreateHTTPRequest(path, method, nil)
-	client := http.DefaultClient
+	radixAPIURL := utils.GetRadixAPIURL()
+	impersonateUser := utils.GetImpersonateUser()
+	impersonateGroup := utils.GetImpersonateGroup()
+	bearerToken := utils.GetBearerToken()
 
-	resp, err := client.Do(req)
+	params := apiclient.NewShowApplicationsParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup)
+	clientBearerToken := httptransport.BearerToken(bearerToken)
+	schemes := []string{"https"}
 
+	transport := httptransport.New(radixAPIURL, basePath, schemes)
+	client := apiclient.New(transport, strfmt.Default)
+
+	showAppOk, err := client.ShowApplications(params, clientBearerToken)
 	if err != nil {
 		addTestError(testName)
-		log.Errorf("HTTP GET error: %v", err)
+		log.Errorf("Error calling ShowApplications: %v", err)
 	} else {
-		if resp.StatusCode == 200 {
-			addTestSuccess(testName)
-			log.Infof("Response: %s", resp.Status)
-		} else {
-			addTestError(testName)
-			log.Errorf("Error response code: %v", resp.StatusCode)
+		addTestSuccess(testName)
+		log.Infof("Response length: %v", len(showAppOk.Payload))
+		for i, appSummary := range showAppOk.Payload {
+			log.Infof("App %v: %s", i, appSummary.Name)
 		}
+		log.Info("Test success")
 	}
+
 	return testName
 }

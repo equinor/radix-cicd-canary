@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/equinor/radix-cicd-canary-golang/generated/models"
+	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
 )
 
 // RegisterApplicationReader is a Reader for the RegisterApplication structure.
