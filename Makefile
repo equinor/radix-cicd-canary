@@ -3,7 +3,9 @@ VERSION 	?= latest
 
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 VAULT_NAME ?= radix-vault-$(ENVIRONMENT)
-RADIX_API_URL ?= api.dev.radix.equinor.com
+CLUSTER_FQDN ?= weekly-27.dev.radix.equinor.com
+RADIX_API_PREFIX ?= server-radix-api-dev
+RADIX_WEBHOOK_PREFIX ?= webhook-radix-github-webhook-prod
 
 CONTAINER_REPO ?= radix$(ENVIRONMENT)
 DOCKER_REGISTRY	?= $(CONTAINER_REPO).azurecr.io
@@ -34,7 +36,9 @@ deploy-via-helm:
 	    ./charts/radix-cicd-canary-golang/ \
 		--namespace radix-cicd-canary-golang \
 		--set image.tag=$(BRANCH)-$(VERSION) \
-		--set radixApiUrl=$(RADIX_API_URL) \
+		--set radixApiPrefix=$(RADIX_API_PREFIX) \
+		--set radixWebhookPrefix=$(RADIX_WEBHOOK_PREFIX) \
+		--set clusterFqdn=$(CLUSTER_FQDN) \
 		-f radix-cicd-canary-values.yaml
 
 	rm -f radix-cicd-canary-values.yaml

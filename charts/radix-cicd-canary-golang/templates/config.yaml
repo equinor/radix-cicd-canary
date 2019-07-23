@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Chart.Name }}"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    app: "{{ .Chart.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  {{if eq .Values.clusterType "playground"}}
+  impersonateGroup: "{{ .Values.radixGroups.playground }}"
+  {{else}}
+  impersonateGroup: "{{ .Values.radixGroups.user }}"
+  {{end}}
+  impersonateUser: {{ .Values.impersonate.user }}
+  publicKey: {{ .Values.deployKey.public }}
+  privateKeyBase64: {{ .Values.deployKey.private }}
+  radixApiPrefix: {{ .Values.radixApiPrefix}}
+  radixWebhookPrefix: {{ .Values.radixWebhookPrefix}}
+  clusterFqdn: {{ .Values.clusterFqdn}}
+  timeoutOfTest: {{ .Values.timeoutOfTest | quote }}
+  sleepIntervalBetweenChecks: {{ .Values.sleepIntervalBetweenChecks | quote }}
+  sleepIntervalTestRuns: {{ .Values.sleepIntervalTestRuns | quote }}

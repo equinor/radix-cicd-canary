@@ -66,7 +66,7 @@ func TriggerWebhookPush(branch, commit, repository, sharedSecret string) bool {
 		},
 	}
 
-	req := CreateRequest(env.GetWebhookURL(), "POST", parameters)
+	req := CreateRequest(fmt.Sprintf("%s.%s/events/github", env.GetWebhookPrefix(), env.GetClusterFQDN()), "POST", parameters)
 	client := http.DefaultClient
 	payload, _ := json.Marshal(parameters)
 
@@ -132,7 +132,7 @@ func GetComponentClient() *componentAPIClient.Client {
 }
 
 func getTransport() *httptransport.Runtime {
-	radixAPIURL := env.GetRadixAPIURL()
+	radixAPIURL := fmt.Sprintf("%s.%s", env.GetRadixAPIPrefix(), env.GetClusterFQDN())
 	schemes := []string{"https"}
 
 	return httptransport.New(radixAPIURL, basePath, schemes)
