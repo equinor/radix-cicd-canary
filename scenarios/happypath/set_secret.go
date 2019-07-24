@@ -9,12 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	setSecretTestName = "SetSecret"
-)
-
-func setSecret() string {
-
+func setSecret() (bool, error) {
 	test.WaitForCheckFunc(isDeploymentConsistent)
 
 	impersonateUser := env.GetImpersonateUser()
@@ -37,14 +32,10 @@ func setSecret() string {
 
 	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
 	if err != nil {
-		addTestError(setSecretTestName)
 		log.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", app2Name, err)
-	} else {
-		addTestSuccess(setSecretTestName)
-		log.Infof("Test success for set secret for application %s", app2Name)
 	}
 
-	return setSecretTestName
+	return err == nil, err
 }
 
 func isDeploymentConsistent(args []string) (bool, interface{}) {

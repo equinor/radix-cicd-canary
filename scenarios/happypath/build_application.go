@@ -10,20 +10,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	testName = "BuildApplication"
-)
-
-func buildApplication() string {
-
+func buildApplication() (bool, error) {
 	test.WaitForCheckFunc(isApplicationDefined)
 
 	// Trigger build via web hook
 	ok := httpUtils.TriggerWebhookPush(app2BranchToBuildFrom, app2CommitID, app2SSHRepository, app2SharedSecret)
-	if ok {
-		addTestSuccess(testName)
-	} else {
-		addTestError(testName)
+	if !ok {
+		return false, nil
 	}
 
 	// Get job
@@ -33,14 +26,12 @@ func buildApplication() string {
 		ok, status := test.WaitForCheckFuncWithArguments(isJobDone, []string{jobName})
 
 		if ok && status.(string) == "Succeeded" {
-			addTestSuccess(testName)
-		} else {
-			addTestError(testName)
+			return true, nil
 		}
 
 	}
 
-	return testName
+	return false, nil
 }
 
 func isApplicationDefined(args []string) (bool, interface{}) {

@@ -1,4 +1,4 @@
-package happypath
+package test
 
 import (
 	"time"
@@ -39,45 +39,67 @@ var (
 	)
 )
 
-type testFn func() (testname string)
+// Fn Prototype of a test function
+type Fn func() (success bool, err error)
 
-// Run the happypath scenario
-func Run() {
-	start := time.Now()
-
-	log.Info("List applications")
-	runTest(listApplications)
-	log.Info("Register application")
-	runTest(registerApplication)
-	log.Info("Register application with no deploy key")
-	runTest(registerApplicationWithNoDeployKey)
-	log.Info("Build application")
-	runTest(buildApplication)
-	log.Info("Set secret")
-	runTest(setSecret)
-	log.Info("Check alias responding")
-	runTest(defaultAliasResponding)
-	log.Info("Delete applications")
-	runTest(deleteApplications)
-
-	end := time.Now()
-	elapsed := end.Sub(start)
-
-	scenarioDurations.With(prometheus.Labels{"scenario": "Happy Path"}).Add(elapsed.Seconds())
-	log.Infof("Happy path elapsed time: %v", elapsed)
+// Suite Holds a list of tests
+type Suite struct {
+	Name     string
+	Tests    []Spec
+	Teardown []Spec
 }
 
-func runTest(testToRun testFn) {
+// Spec Describes a single test
+type Spec struct {
+	Name        string
+	Description string
+	Test        Fn
+}
+
+// Run the suite
+func Run(suite Suite) {
 	start := time.Now()
 
-	testName := testToRun()
+	for _, test := range suite.Tests {
+		log.Info(test.Description)
+		success := runTest(test)
+		if !success {
+			log.Warnf("Test %s fail. Will escape remaining tests", test.Name)
+			break
+		}
+	}
+
+	log.Info("Running teardown tests")
+	for _, test := range suite.Teardown {
+		log.Info(test.Description)
+		runTest(test)
+	}
 
 	end := time.Now()
 	elapsed := end.Sub(start)
 
-	addTestDuration(testName, elapsed.Seconds())
-	log.Infof("Elapsed time: %v", elapsed)
+	scenarioDurations.With(prometheus.Labels{"scenario": suite.Name}).Add(elapsed.Seconds())
+	log.Infof("%s elapsed time: %v", suite.Name, elapsed)
+}
 
+func runTest(testToRun Spec) bool {
+	start := time.Now()
+
+	success, err := testToRun.Test()
+	if !success {
+		addTestError(testToRun.Name)
+		log.Errorf("Error calling %s: %v", testToRun.Name, err)
+	} else {
+		addTestSuccess(testToRun.Name)
+		log.Info("Test success")
+	}
+
+	end := time.Now()
+	elapsed := end.Sub(start)
+
+	addTestDuration(testToRun.Name, elapsed.Seconds())
+	log.Infof("Elapsed time: %v", elapsed)
+	return success
 }
 
 func addTestSuccess(testname string) {
@@ -90,12 +112,4 @@ func addTestError(testname string) {
 
 func addTestDuration(testname string, durationSec float64) {
 	testDurations.With(prometheus.Labels{"testName": testname}).Add(durationSec)
-}
-
-func getApp1Name() string {
-	return "an_app"
-}
-
-func getApp2Name() string {
-	return "a_second_app"
 }
