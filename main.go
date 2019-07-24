@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/happypath"
+	"github.com/equinor/radix-cicd-canary-golang/scenarios/test"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )
@@ -20,7 +21,7 @@ func main() {
 
 func runTest() {
 	for {
-		happypath.Run()
+		test.Run(happypath.TestSuite())
 		time.Sleep(10 * time.Second)
 	}
 }

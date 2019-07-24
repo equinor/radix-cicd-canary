@@ -5,17 +5,9 @@ import (
 	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/http"
-	log "github.com/sirupsen/logrus"
 )
 
-func registerApplicationWithNoDeployKey() string {
-	const (
-		testName = "RegisterApplicationWithNoDeployKey"
-		basePath = "/api/v1"
-	)
-
-	log.Infof("Starting RegisterApplication with no deploy key...")
-
+func registerApplicationWithNoDeployKey() (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -38,18 +30,5 @@ func registerApplicationWithNoDeployKey() string {
 	client := httpUtils.GetPlatformClient()
 
 	registerApplicationOK, err := client.RegisterApplication(params, clientBearerToken)
-	if err != nil {
-		addTestError(testName)
-		log.Errorf("Error calling RegisterApplication with no deploy key: %v", err)
-	} else {
-		if registerApplicationOK.Payload.PublicKey != "" {
-			addTestSuccess(testName)
-			log.Info("Test success")
-		} else {
-			addTestError(testName)
-			log.Errorf("Error response: public key is empty")
-		}
-	}
-
-	return testName
+	return err == nil && registerApplicationOK.Payload.PublicKey != "", err
 }

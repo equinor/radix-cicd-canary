@@ -5,17 +5,14 @@ import (
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/http"
 	"github.com/go-openapi/runtime"
-	log "github.com/sirupsen/logrus"
 )
 
-func unauthorizedAccess() string {
+func unauthorizedAccess() (bool, error) {
 	const (
 		testName          = "UnauthorizedAccess"
 		basePath          = "/api/v1"
 		successStatusCode = 403
 	)
-
-	log.Infof("Starting GetApplication...")
 
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
@@ -29,20 +26,7 @@ func unauthorizedAccess() string {
 	client := httpUtils.GetApplicationClient()
 
 	_, err := client.GetApplication(params, clientBearerToken)
-	if err != nil {
-		if checkErrorResponse(err, successStatusCode) {
-			addTestSuccess(testName)
-			log.Info("Test success")
-		} else {
-			addTestError(testName)
-			log.Errorf("Error test %s returned not 403 status code", testName)
-		}
-	} else {
-		addTestError(testName)
-		log.Errorf("Error test %s should not return 200 status code", testName)
-	}
-
-	return testName
+	return err != nil && checkErrorResponse(err, successStatusCode), err
 }
 
 func checkErrorResponse(err error, expectedStatusCode int) bool {

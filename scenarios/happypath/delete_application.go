@@ -7,20 +7,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func deleteApplications() string {
-	const testName = "DeleteApplication"
+func deleteApplications() (bool, error) {
+	success, err := deleteApplication(app1Name)
+	if !success {
+		return false, err
+	}
 
-	deleteApplication(app1Name, testName)
-	deleteApplication(app2Name, testName)
-
-	return testName
+	return deleteApplication(app2Name)
 }
 
-func deleteApplication(appName, testName string) {
-	const basePath = "/api/v1"
-
-	log.Infof("Starting DeleteApplication for application %s...", appName)
-
+func deleteApplication(appName string) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -34,11 +30,8 @@ func deleteApplication(appName, testName string) {
 
 	_, err := client.DeleteApplication(params, clientBearerToken)
 	if err != nil {
-		addTestError(testName)
 		log.Errorf("Error calling DeleteApplication for application %s: %v", appName, err)
-	} else {
-		addTestSuccess(testName)
-		log.Infof("Test success for application %s", appName)
 	}
 
+	return err == nil, err
 }

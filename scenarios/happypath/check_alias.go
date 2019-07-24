@@ -11,24 +11,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	aliasRespondingTestName             = "DefaultAliasResponding"
-	publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
-)
+const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 
-func defaultAliasResponding() string {
+func defaultAliasResponding() (bool, error) {
 	ok, _ := test.WaitForCheckFunc(isAppAliasDefined)
 	publicDomainName := getPublicDomainName()
 
 	ok, _ = test.WaitForCheckFuncWithArguments(isAliasResponding, []string{publicDomainName})
-
-	if ok {
-		addTestSuccess(aliasRespondingTestName)
-	} else {
-		addTestError(aliasRespondingTestName)
-	}
-
-	return aliasRespondingTestName
+	return ok, nil
 }
 
 func isAppAliasDefined(args []string) (bool, interface{}) {

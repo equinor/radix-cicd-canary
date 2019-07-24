@@ -5,17 +5,9 @@ import (
 	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/http"
-	log "github.com/sirupsen/logrus"
 )
 
-func registerApplication() string {
-	const (
-		testName = "RegisterApplication"
-		basePath = "/api/v1"
-	)
-
-	log.Infof("Starting RegisterApplication...")
-
+func registerApplication() (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -41,13 +33,6 @@ func registerApplication() string {
 	client := httpUtils.GetPlatformClient()
 
 	_, err := client.RegisterApplication(params, clientBearerToken)
-	if err != nil {
-		addTestError(testName)
-		log.Errorf("Error calling RegisterApplication: %v", err)
-	} else {
-		addTestSuccess(testName)
-		log.Info("Test success")
-	}
+	return err == nil, err
 
-	return testName
 }
