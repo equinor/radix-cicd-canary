@@ -25,7 +25,7 @@ func setSecret() string {
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(app2Name).
 		WithEnvName(app2EnvironmentName).
-		WithComponentName(app2ComponentName).
+		WithComponentName(app2Component2Name).
 		WithSecretName(app2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{

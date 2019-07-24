@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	testName = "BuildApplications"
+	testName = "BuildApplication"
 )
 
-func buildApplications() string {
+func buildApplication() string {
 
 	test.WaitForCheckFunc(isApplicationDefined)
 
