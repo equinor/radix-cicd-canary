@@ -18,6 +18,13 @@
                 "RADIX_API_URL": "server-radix-api-prod.weekly-29-b.dev.radix.equinor.com",
                 "PUBLIC_KEY": "",
                 "PRIVATE_KEY_BASE64": "",
+                
+                // Controls the sleep and timeouts of the tests ()
+                // TODO Refactor into the config-map
+                "TIMEOUT_OF_TEST_SEC": "1200",
+                "SLEEP_INTERVAL_BETWEEN_CHECK_SEC": "5",
+                "SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC": "10",
+
             },
             "args": []
         }

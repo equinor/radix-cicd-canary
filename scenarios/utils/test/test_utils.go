@@ -1,27 +1,29 @@
 package test
 
-import "time"
+import (
+	"time"
+
+	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
+)
 
 // CheckFn The prototype function for any check function
 type CheckFn func(args []string) (bool, interface{})
 
-const (
-	defaultTimeout                       = 1200000
-	defaultSleepIntervalBetweenCheckFunc = 5
-)
-
 // WaitForCheckFunc Call this to ensure we wait until a check is reached, or time out
 func WaitForCheckFunc(checkFunc CheckFn) (bool, interface{}) {
-	return waitForCheckFuncOrTimeout(defaultTimeout, defaultSleepIntervalBetweenCheckFunc, checkFunc, []string{})
+	return waitForCheckFuncOrTimeout(checkFunc, []string{})
 }
 
 // WaitForCheckFuncWithArguments Function to pass arguments to check function
 func WaitForCheckFuncWithArguments(checkFunc CheckFn, args []string) (bool, interface{}) {
-	return waitForCheckFuncOrTimeout(defaultTimeout, defaultSleepIntervalBetweenCheckFunc, checkFunc, args)
+	return waitForCheckFuncOrTimeout(checkFunc, args)
 }
 
-func waitForCheckFuncOrTimeout(timeout, sleepIntervalBetweenCheckFunc int, checkFunc CheckFn, args []string) (bool, interface{}) {
-	accumulatedWait := 0
+func waitForCheckFuncOrTimeout(checkFunc CheckFn, args []string) (bool, interface{}) {
+	timeout := env.TimeoutOfTest()
+	sleepIntervalBetweenCheckFunc := env.GetSleepIntervalBetweenCheckFunc()
+
+	var accumulatedWait time.Duration
 
 	for {
 		startTime := time.Now()
@@ -32,13 +34,13 @@ func waitForCheckFuncOrTimeout(timeout, sleepIntervalBetweenCheckFunc int, check
 
 		// should accumulatedWait include sleep?
 		if sleepIntervalBetweenCheckFunc > 0 {
-			time.Sleep(defaultSleepIntervalBetweenCheckFunc * time.Second)
+			time.Sleep(sleepIntervalBetweenCheckFunc)
 		}
 
 		waitPeriod := time.Now().Sub(startTime)
 
 		if timeout > 0 {
-			accumulatedWait = accumulatedWait + (int(waitPeriod.Seconds()) * 1000)
+			accumulatedWait = accumulatedWait + waitPeriod
 			if accumulatedWait > timeout {
 				return false, nil
 			}
