@@ -48,3 +48,9 @@ spec:
           #     value: {{ .Values.clusterFQDN }}
             - name: RADIX_API_URL
               value: {{ .Values.radixApiUrl}}
+            - name: TIMEOUT_OF_TEST_SEC
+              value: {{ .Values.timeoutOfTest }}
+            - name: SLEEP_INTERVAL_BETWEEN_CHECK_SEC
+              value: {{ .Values.sleepIntervalBetweenChecks }}
+            - name: SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC
+              value: {{ .Values.sleepIntervalTestRuns }}
