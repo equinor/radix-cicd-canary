@@ -6,6 +6,7 @@ import (
 
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary-golang/scenarios/test"
+	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )
@@ -20,8 +21,10 @@ func main() {
 }
 
 func runTest() {
+	sleepInterval := env.GetSleepIntervalBetweenTestRuns()
+
 	for {
 		test.Run(happypath.TestSuite())
-		time.Sleep(10 * time.Second)
+		time.Sleep(sleepInterval)
 	}
 }

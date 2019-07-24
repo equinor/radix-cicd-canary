@@ -3,7 +3,10 @@ package env
 import (
 	"encoding/base64"
 	"io/ioutil"
+	"log"
 	"os"
+	"strconv"
+	"time"
 )
 
 // GetBearerToken get bearer token either from token file or environment variable
@@ -38,6 +41,36 @@ func GetWebhookURL() string {
 // GetPublicKey get public deploy key from environment variable
 func GetPublicKey() string {
 	return os.Getenv("PUBLIC_KEY")
+}
+
+// TimeoutOfTest Get the time it should take before a test should time out
+func TimeoutOfTest() time.Duration {
+	timeout, err := strconv.Atoi(os.Getenv("TIMEOUT_OF_TEST_SEC"))
+	if err != nil {
+		log.Fatalf("Could not read %s. Err: %v", "TIMEOUT_OF_TEST_SEC", err)
+	}
+
+	return time.Duration(timeout) * time.Second
+}
+
+// GetSleepIntervalBetweenCheckFunc Gets the sleep inteval between two checks
+func GetSleepIntervalBetweenCheckFunc() time.Duration {
+	sleepInterval, err := strconv.Atoi(os.Getenv("SLEEP_INTERVAL_BETWEEN_CHECK_SEC"))
+	if err != nil {
+		log.Fatalf("Could not read %s. Err: %v", "SLEEP_INTERVAL_BETWEEN_CHECK_SEC", err)
+	}
+
+	return time.Duration(sleepInterval) * time.Second
+}
+
+// GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs
+func GetSleepIntervalBetweenTestRuns() time.Duration {
+	sleepInterval, err := strconv.Atoi(os.Getenv("SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC"))
+	if err != nil {
+		log.Fatalf("Could not read %s. Err: %v", "SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC", err)
+	}
+
+	return time.Duration(sleepInterval) * time.Second
 }
 
 // GetPrivateKey get private deploy key from environment variable
