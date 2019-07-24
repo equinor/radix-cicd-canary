@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	applicationAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
+	componentAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/component"
+	deploymentAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/deployment"
 	environmentAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/environment"
 	jobAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/job"
 	platformAPIClient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
@@ -117,6 +119,16 @@ func GetJobClient() *jobAPIClient.Client {
 // GetEnvironmentClient Gets the Environment API client
 func GetEnvironmentClient() *environmentAPIClient.Client {
 	return environmentAPIClient.New(getTransport(), strfmt.Default)
+}
+
+// GetDeploymentClient Gets the Deployment API client
+func GetDeploymentClient() *deploymentAPIClient.Client {
+	return deploymentAPIClient.New(getTransport(), strfmt.Default)
+}
+
+// GetComponentClient Gets the Component API client
+func GetComponentClient() *componentAPIClient.Client {
+	return componentAPIClient.New(getTransport(), strfmt.Default)
 }
 
 func getTransport() *httptransport.Runtime {
