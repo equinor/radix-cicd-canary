@@ -20,6 +20,9 @@ rules:
   {{else}}
   resourceNames: [{{ .Values.radixGroups.user }}]
   {{end}}
+- apiGroups: ["*"]
+  resources: ["configmaps"]
+  verbs: ["get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

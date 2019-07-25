@@ -30,27 +30,3 @@ spec:
             - name: metrics
               containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
-          env:
-            {{if eq .Values.clusterType "playground"}}
-            - name: IMPERSONATE_GROUP
-              value: "{{ .Values.radixGroups.playground }}"
-            {{else}}
-            - name: IMPERSONATE_GROUP
-              value: "{{ .Values.radixGroups.user }}"
-            {{end}}
-            - name: IMPERSONATE_USER
-              value: {{ .Values.impersonate.user }}
-            - name: PUBLIC_KEY
-              value: {{ .Values.deployKey.public }}
-            - name: PRIVATE_KEY_BASE64
-              value: {{ .Values.deployKey.private }}
-          #   - name: CLUSTER
-          #     value: {{ .Values.clusterFQDN }}
-            - name: RADIX_API_URL
-              value: {{ .Values.radixApiUrl}}
-            - name: TIMEOUT_OF_TEST_SEC
-              value: {{ .Values.timeoutOfTest }}
-            - name: SLEEP_INTERVAL_BETWEEN_CHECK_SEC
-              value: {{ .Values.sleepIntervalBetweenChecks }}
-            - name: SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC
-              value: {{ .Values.sleepIntervalTestRuns }}

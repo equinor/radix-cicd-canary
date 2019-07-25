@@ -3,10 +3,28 @@ package env
 import (
 	"encoding/base64"
 	"io/ioutil"
-	"log"
 	"os"
 	"strconv"
 	"time"
+
+	kubeUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/kubernetes"
+	log "github.com/sirupsen/logrus"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
+const (
+	namespace                        = "radix-cicd-canary-golang"
+	configMapName                    = "radix-cicd-canary-golang"
+	impersonateUserConfig            = "impersonateUser"
+	impersonateGroupConfig           = "impersonateGroup"
+	clusterFQDNConfig                = "clusterFqdn"
+	radixAPIPrefixConfig             = "radixApiPrefix"
+	radixWebhookPrefixConfig         = "radixWebhookPrefix"
+	publicKeyConfig                  = "publicKey"
+	privateKeyBase64Config           = "privateKeyBase64"
+	timeoutOfTestConfig              = "timeoutOfTest"
+	sleepIntervalBetweenChecksConfig = "sleepIntervalBetweenChecks"
+	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
 )
 
 // GetBearerToken get bearer token either from token file or environment variable
@@ -18,82 +36,84 @@ func GetBearerToken() string {
 	return string(token)
 }
 
-// GetImpersonateUser get impersonate user
+// GetImpersonateUser get impersonate user from config map
 func GetImpersonateUser() string {
-	return os.Getenv("IMPERSONATE_USER")
+	return getConfigFromMap(impersonateUserConfig)
 }
 
-// GetImpersonateGroup get impersonate group
+// GetImpersonateGroup get impersonate group from config map
 func GetImpersonateGroup() string {
-	return os.Getenv("IMPERSONATE_GROUP")
+	return getConfigFromMap(impersonateGroupConfig)
 }
 
-// GetRadixAPIURL get Radix API URL
-func GetRadixAPIURL() string {
-	return os.Getenv("RADIX_API_URL")
+// GetClusterFQDN get Radix cluster FQDN from config map
+func GetClusterFQDN() string {
+	return getConfigFromMap(clusterFQDNConfig)
 }
 
-// GetWebhookURL get Radix API URL
-func GetWebhookURL() string {
-	return os.Getenv("RADIX_GITHUB_WEBHOOK_URL")
+// GetRadixAPIPrefix get Radix API prefix from config map
+func GetRadixAPIPrefix() string {
+	return getConfigFromMap(radixAPIPrefixConfig)
 }
 
-// GetPublicKey get public deploy key from environment variable
+// GetWebhookPrefix get Radix Webhook prefix
+func GetWebhookPrefix() string {
+	return getConfigFromMap(radixWebhookPrefixConfig)
+}
+
+// GetPublicKey get public deploy key from config map
 func GetPublicKey() string {
-	return os.Getenv("PUBLIC_KEY")
+	return getConfigFromMap(publicKeyConfig)
 }
 
-// TimeoutOfTest Get the time it should take before a test should time out
+// GetPrivateKey get private deploy key from config map
+func GetPrivateKey() string {
+	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyBase64Config))
+	return string(data)
+}
+
+// TimeoutOfTest Get the time it should take before a test should time out from config map
 func TimeoutOfTest() time.Duration {
-	timeout, err := strconv.Atoi(os.Getenv("TIMEOUT_OF_TEST_SEC"))
+	timeout, err := strconv.Atoi(getConfigFromMap(timeoutOfTestConfig))
 	if err != nil {
-		log.Fatalf("Could not read %s. Err: %v", "TIMEOUT_OF_TEST_SEC", err)
+		log.Fatalf("Could not read %s. Err: %v", timeoutOfTestConfig, err)
 	}
 
 	return time.Duration(timeout) * time.Second
 }
 
-// GetSleepIntervalBetweenCheckFunc Gets the sleep inteval between two checks
+// GetSleepIntervalBetweenCheckFunc Gets the sleep inteval between two checks from config map
 func GetSleepIntervalBetweenCheckFunc() time.Duration {
-	sleepInterval, err := strconv.Atoi(os.Getenv("SLEEP_INTERVAL_BETWEEN_CHECK_SEC"))
+	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalBetweenChecksConfig))
 	if err != nil {
-		log.Fatalf("Could not read %s. Err: %v", "SLEEP_INTERVAL_BETWEEN_CHECK_SEC", err)
+		log.Fatalf("Could not read %s. Err: %v", sleepIntervalBetweenChecksConfig, err)
 	}
 
 	return time.Duration(sleepInterval) * time.Second
 }
 
-// GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs
+// GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs from config map
 func GetSleepIntervalBetweenTestRuns() time.Duration {
-	sleepInterval, err := strconv.Atoi(os.Getenv("SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC"))
+	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalTestRunsConfig))
 	if err != nil {
-		log.Fatalf("Could not read %s. Err: %v", "SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC", err)
+		log.Fatalf("Could not read %s. Err: %v", sleepIntervalTestRunsConfig, err)
 	}
 
 	return time.Duration(sleepInterval) * time.Second
-}
-
-// GetPrivateKey get private deploy key from environment variable
-func GetPrivateKey() string {
-	data, _ := base64.StdEncoding.DecodeString(os.Getenv("PRIVATE_KEY_BASE64"))
-	return string(data)
 }
 
 // SetRequiredEnvironmentVariablesForTest Sets test environment variables, that would come from
-// launcnh config, when running complete scenario
-// TODO Load this from config map in cluster when that is present
+// launch config, when running complete scenario
 func SetRequiredEnvironmentVariablesForTest() {
 	os.Setenv("BEARER_TOKEN", "")
-	os.Setenv("IMPERSONATE_USER", "t_iknu@equinor.com")
-	os.Setenv("IMPERSONATE_GROUP", "64b28659-4fe4-4222-8497-85dd7e43e25b")
-	os.Setenv("RADIX_GITHUB_WEBHOOK_URL", "webhook-radix-github-webhook-prod.weekly-29-b.dev.radix.equinor.com/events/github")
-	os.Setenv("RADIX_API_URL", "server-radix-api-prod.weekly-29-b.dev.radix.equinor.com")
-	os.Setenv("PUBLIC_KEY", "")
-	os.Setenv("PRIVATE_KEY_BASE64", "")
+}
 
-	// Controls the sleep and timeouts of the tests ()
-	// TODO Refactor into the config-map
-	os.Setenv("TIMEOUT_OF_TEST_SEC", "1200")
-	os.Setenv("SLEEP_INTERVAL_BETWEEN_CHECK_SEC", "5")
-	os.Setenv("SLEEP_INTERVAL_BETWEEN_TEST_RUNS_SEC", "10")
+func getConfigFromMap(config string) string {
+	kubeClient := kubeUtils.GetKubernetesClient()
+	configmap, err := kubeClient.CoreV1().ConfigMaps(namespace).Get(configMapName, metav1.GetOptions{})
+	if err != nil {
+		log.Fatalf("Error reading config map: %v", err)
+	}
+	configValue := configmap.Data[config]
+	return configValue
 }
