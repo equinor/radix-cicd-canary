@@ -8,11 +8,7 @@ import (
 )
 
 func unauthorizedAccess() (bool, error) {
-	const (
-		testName          = "UnauthorizedAccess"
-		basePath          = "/api/v1"
-		successStatusCode = 403
-	)
+	const successStatusCode = 403
 
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
@@ -26,7 +22,7 @@ func unauthorizedAccess() (bool, error) {
 	client := httpUtils.GetApplicationClient()
 
 	_, err := client.GetApplication(params, clientBearerToken)
-	return err != nil && checkErrorResponse(err, successStatusCode), err
+	return err != nil && checkErrorResponse(err, successStatusCode), nil
 }
 
 func checkErrorResponse(err error, expectedStatusCode int) bool {

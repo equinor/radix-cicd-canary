@@ -37,6 +37,11 @@ func TestSuite() test.Suite {
 				Description: "Check alias responding",
 				Test:        defaultAliasResponding,
 			},
+			{
+				Name:        "UnauthorizedAccess",
+				Description: "Check access to application user should not be able to access",
+				Test:        unauthorizedAccess,
+			},
 		},
 		Teardown: []test.Spec{
 			{
