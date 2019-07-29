@@ -87,10 +87,12 @@ func runTest(testToRun Spec) bool {
 
 	success, err := testToRun.Test()
 	if !success {
+		addTestNoSuccess(testToRun.Name)
 		addTestError(testToRun.Name)
 		log.Errorf("Error calling %s: %v", testToRun.Name, err)
 	} else {
 		addTestSuccess(testToRun.Name)
+		addTestNoError(testToRun.Name)
 		log.Info("Test success")
 	}
 
@@ -106,8 +108,16 @@ func addTestSuccess(testname string) {
 	success.With(prometheus.Labels{"testName": testname}).Add(1)
 }
 
+func addTestNoSuccess(testname string) {
+	success.With(prometheus.Labels{"testName": testname}).Add(0)
+}
+
 func addTestError(testname string) {
 	errors.With(prometheus.Labels{"testName": testname}).Add(1)
+}
+
+func addTestNoError(testname string) {
+	errors.With(prometheus.Labels{"testName": testname}).Add(0)
 }
 
 func addTestDuration(testname string, durationSec float64) {
