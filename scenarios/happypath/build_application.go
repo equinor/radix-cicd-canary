@@ -1,12 +1,12 @@
 package happypath
 
 import (
-	applicationclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
-	jobclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/job"
-	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
-	httpUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/http"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/test"
+	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
+	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
 )
 

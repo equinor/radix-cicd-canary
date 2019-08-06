@@ -2,27 +2,27 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    app: radix-cicd-canary-golang
-  name: radix-cicd-canary-golang
-  namespace: radix-cicd-canary-golang
+    app: radix-cicd-canary
+  name: radix-cicd-canary
+  namespace: radix-cicd-canary
 spec:
   endpoints:
   - interval: 5s
     port: metrics
   namespaceSelector:
     matchNames:
-    - radix-cicd-canary-golang
+    - radix-cicd-canary
   selector:
     matchLabels:
-      app: radix-cicd-canary-golang
+      app: radix-cicd-canary
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: radix-cicd-canary-golang
-  name: radix-cicd-canary-golang
-  namespace: radix-cicd-canary-golang
+    app: radix-cicd-canary
+  name: radix-cicd-canary
+  namespace: radix-cicd-canary
 spec:
   ports:
   - name: metrics
@@ -30,5 +30,5 @@ spec:
     protocol: TCP
     targetPort: metrics
   selector:
-    app: radix-cicd-canary-golang
+    app: radix-cicd-canary
   type: ClusterIP

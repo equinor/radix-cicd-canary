@@ -16,7 +16,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
+	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
 // NewTriggerPipelineParams creates a new TriggerPipelineParams object

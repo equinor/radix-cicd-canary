@@ -1,10 +1,10 @@
 package happypath
 
 import (
-	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
-	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
-	httpUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/http"
+	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
+	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 )
 
 func registerApplication() (bool, error) {

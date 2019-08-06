@@ -3,7 +3,7 @@ package happypath
 import (
 	"testing"
 
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/stretchr/testify/assert"
 )
 

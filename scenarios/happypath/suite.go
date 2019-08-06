@@ -1,6 +1,6 @@
 package happypath
 
-import "github.com/equinor/radix-cicd-canary-golang/scenarios/test"
+import "github.com/equinor/radix-cicd-canary/scenarios/test"
 
 // TestSuite Get the suite
 func TestSuite() test.Suite {
