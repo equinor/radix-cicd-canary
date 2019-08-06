@@ -11,12 +11,12 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
-	"github.com/equinor/radix-cicd-canary-golang/generated-client/client/component"
-	"github.com/equinor/radix-cicd-canary-golang/generated-client/client/deployment"
-	"github.com/equinor/radix-cicd-canary-golang/generated-client/client/environment"
-	"github.com/equinor/radix-cicd-canary-golang/generated-client/client/job"
-	"github.com/equinor/radix-cicd-canary-golang/generated-client/client/platform"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/component"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/deployment"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/environment"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/job"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 )
 
 // Default radix HTTP client.

@@ -14,15 +14,15 @@ generate-client:
 	swagger generate client -t ./generated-client -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radix-api
 
 build:
-	docker build -t radix-cicd-canary-golang .
+	docker build -t radix-cicd-canary .
 
 run:
-	docker run -it --rm -p 5000:5000 radix-cicd-canary-golang
+	docker run -it --rm -p 5000:5000 radix-cicd-canary
 
 build-push:
 	az acr login --name $(CONTAINER_REPO)
-	docker build -t $(DOCKER_REGISTRY)/radix-cicd-canary-golang:$(BRANCH)-$(VERSION) .
-	docker push $(DOCKER_REGISTRY)/radix-cicd-canary-golang:$(BRANCH)-$(VERSION)
+	docker build -t $(DOCKER_REGISTRY)/radix-cicd-canary:$(BRANCH)-$(VERSION) .
+	docker push $(DOCKER_REGISTRY)/radix-cicd-canary:$(BRANCH)-$(VERSION)
 
 deploy-via-helm:
 	make build-push
@@ -32,9 +32,9 @@ deploy-via-helm:
 		--name radix-cicd-canary-values \
 		--file radix-cicd-canary-values.yaml
 
-	helm upgrade --install radix-cicd-canary-golang \
-	    ./charts/radix-cicd-canary-golang/ \
-		--namespace radix-cicd-canary-golang \
+	helm upgrade --install radix-cicd-canary \
+	    ./charts/radix-cicd-canary/ \
+		--namespace radix-cicd-canary \
 		--set image.tag=$(BRANCH)-$(VERSION) \
 		--set radixApiPrefix=$(RADIX_API_PREFIX) \
 		--set radixWebhookPrefix=$(RADIX_WEBHOOK_PREFIX) \

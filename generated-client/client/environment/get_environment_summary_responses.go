@@ -13,7 +13,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	models "github.com/equinor/radix-cicd-canary-golang/generated-client/models"
+	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
 // GetEnvironmentSummaryReader is a Reader for the GetEnvironmentSummary structure.

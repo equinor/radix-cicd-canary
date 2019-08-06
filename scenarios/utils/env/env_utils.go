@@ -7,14 +7,14 @@ import (
 	"strconv"
 	"time"
 
-	kubeUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/kubernetes"
+	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 const (
-	namespace                        = "radix-cicd-canary-golang"
-	configMapName                    = "radix-cicd-canary-golang"
+	namespace                        = "radix-cicd-canary"
+	configMapName                    = "radix-cicd-canary"
 	impersonateUserConfig            = "impersonateUser"
 	impersonateGroupConfig           = "impersonateGroup"
 	clusterFQDNConfig                = "clusterFqdn"

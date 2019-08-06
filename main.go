@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/happypath"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/test"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
+	"github.com/equinor/radix-cicd-canary/scenarios/test"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )

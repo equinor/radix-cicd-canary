@@ -3,7 +3,7 @@ package test
 import (
 	"time"
 
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 )
 
 // CheckFn The prototype function for any check function

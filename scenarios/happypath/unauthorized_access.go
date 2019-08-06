@@ -1,9 +1,9 @@
 package happypath
 
 import (
-	apiclient "github.com/equinor/radix-cicd-canary-golang/generated-client/client/application"
-	"github.com/equinor/radix-cicd-canary-golang/scenarios/utils/env"
-	httpUtils "github.com/equinor/radix-cicd-canary-golang/scenarios/utils/http"
+	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/go-openapi/runtime"
 )
 

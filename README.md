@@ -1,4 +1,4 @@
-# radix-cicd-canary-golang
+# radix-cicd-canary
 
 ![pic](diagrams/radix-cicd-canary.png)
 
@@ -41,7 +41,7 @@ make build-push ENVIRONMENT=dev|prod
 And make sure that the helm chart is pushed to ACR:
 
 ```
-cd charts/radix-cicd-canary-golang
+cd charts/radix-cicd-canary
 helm package .
 az acr helm push --name radixdev <tgz file>
 az acr helm push --name radixprod <tgz file>
@@ -49,7 +49,7 @@ az acr helm push --name radixprod <tgz file>
 
 ## How-to debug
 
-The tests can be run locally for debugging purpose, but it will still run against an existing cluster. A config map named `radix-cicd-canary-golang` should be created in the cluster. The format of the config map can be found at `charts/templates/config.yaml`.
+The tests can be run locally for debugging purpose, but it will still run against an existing cluster. A config map named `radix-cicd-canary` should be created in the cluster. The format of the config map can be found at `charts/templates/config.yaml`.
 
 ### Entire application
 
