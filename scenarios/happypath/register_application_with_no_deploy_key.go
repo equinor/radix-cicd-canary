@@ -7,7 +7,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 )
 
-func registerApplicationWithNoDeployKey() (bool, error) {
+func registerApplicationWithNoDeployKey(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -26,8 +26,8 @@ func registerApplicationWithNoDeployKey() (bool, error) {
 		WithImpersonateGroup(&impersonateGroup).
 		WithApplicationRegistration(&bodyParameters)
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetPlatformClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetPlatformClient(env)
 
 	registerApplicationOK, err := client.RegisterApplication(params, clientBearerToken)
 	return err == nil && registerApplicationOK.Payload.PublicKey != "", err

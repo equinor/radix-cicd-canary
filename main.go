@@ -22,12 +22,15 @@ func main() {
 }
 
 func runSuites() {
-	sleepInterval := env.GetSleepIntervalBetweenTestRuns()
+	environmentVariables := env.NewEnv()
+	runner := test.NewRunner(environmentVariables)
+
+	sleepInterval := environmentVariables.GetSleepIntervalBetweenTestRuns()
 	happyPathSuite := happypath.TestSuite()
 	promotionSuite := promotion.TestSuite()
 
 	for {
-		test.Run(happyPathSuite, promotionSuite)
+		runner.Run(happyPathSuite, promotionSuite)
 		time.Sleep(sleepInterval)
 	}
 }

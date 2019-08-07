@@ -7,16 +7,16 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func deleteApplications() (bool, error) {
-	success, err := deleteApplication(app1Name)
+func deleteApplications(env env.Env) (bool, error) {
+	success, err := deleteApplication(env, app1Name)
 	if !success {
 		return false, err
 	}
 
-	return deleteApplication(app2Name)
+	return deleteApplication(env, app2Name)
 }
 
-func deleteApplication(appName string) (bool, error) {
+func deleteApplication(env env.Env, appName string) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -25,8 +25,8 @@ func deleteApplication(appName string) (bool, error) {
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(appName)
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetApplicationClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetApplicationClient(env)
 
 	_, err := client.DeleteApplication(params, clientBearerToken)
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 	"github.com/go-openapi/runtime"
 )
 
-func unauthorizedAccess() (bool, error) {
+func unauthorizedAccess(env env.Env) (bool, error) {
 	const successStatusCode = 403
 
 	impersonateUser := env.GetImpersonateUser()
@@ -18,8 +18,8 @@ func unauthorizedAccess() (bool, error) {
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(restrictedApplicationName)
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetApplicationClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetApplicationClient(env)
 
 	_, err := client.GetApplication(params, clientBearerToken)
 	return err != nil && checkErrorResponse(err, successStatusCode), nil

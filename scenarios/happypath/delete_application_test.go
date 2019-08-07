@@ -15,7 +15,9 @@ Its best use is when debugging a single test
 */
 func TestDeleteApplications(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := deleteApplications()
+	environmentVariables := env.NewEnv()
+
+	ok, err := deleteApplications(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

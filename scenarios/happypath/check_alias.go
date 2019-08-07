@@ -13,16 +13,16 @@ import (
 
 const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 
-func defaultAliasResponding() (bool, error) {
-	ok, _ := test.WaitForCheckFunc(isAppAliasDefined)
-	publicDomainName := getPublicDomainName()
+func defaultAliasResponding(env env.Env) (bool, error) {
+	ok, _ := test.WaitForCheckFunc(env, isAppAliasDefined)
+	publicDomainName := getPublicDomainName(env)
 
-	ok, _ = test.WaitForCheckFuncWithArguments(isAliasResponding, []string{publicDomainName})
+	ok, _ = test.WaitForCheckFuncWithArguments(env, isAliasResponding, []string{publicDomainName})
 	return ok, nil
 }
 
-func isAppAliasDefined(args []string) (bool, interface{}) {
-	appAlias := getApplicationAlias()
+func isAppAliasDefined(env env.Env, args []string) (bool, interface{}) {
+	appAlias := getApplicationAlias(env)
 	if appAlias != nil {
 		log.Info("App alias is defined. Now we can try to hit it to see if it responds")
 		return true, *appAlias
@@ -32,7 +32,7 @@ func isAppAliasDefined(args []string) (bool, interface{}) {
 	return false, nil
 }
 
-func getApplicationAlias() *string {
+func getApplicationAlias(env env.Env) *string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -40,8 +40,8 @@ func getApplicationAlias() *string {
 		WithAppName(app2Name).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetApplicationClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetApplicationClient(env)
 
 	applicationDetails, err := client.GetApplication(params, clientBearerToken)
 	if err == nil && applicationDetails.Payload != nil {
@@ -51,7 +51,7 @@ func getApplicationAlias() *string {
 	return nil
 }
 
-func getPublicDomainName() string {
+func getPublicDomainName(env env.Env) string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -60,8 +60,8 @@ func getPublicDomainName() string {
 		WithEnvName(app2EnvironmentName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetEnvironmentClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetEnvironmentClient(env)
 
 	environmentDetails, err := client.GetEnvironment(params, clientBearerToken)
 	if err == nil && environmentDetails.Payload != nil {
@@ -76,8 +76,8 @@ func getPublicDomainName() string {
 	return ""
 }
 
-func isAliasResponding(args []string) (bool, interface{}) {
-	req := httpUtils.CreateRequest(args[0], "GET", nil)
+func isAliasResponding(env env.Env, args []string) (bool, interface{}) {
+	req := httpUtils.CreateRequest(env, args[0], "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 

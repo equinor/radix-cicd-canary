@@ -15,7 +15,9 @@ Its best use is when debugging a single test
 */
 func TestPromoteDeployment(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := promoteDeployment()
+	environmentVariables := env.NewEnv()
+
+	ok, err := promoteDeployment(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

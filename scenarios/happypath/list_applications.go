@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func listApplications() (bool, error) {
+func listApplications(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -15,8 +15,8 @@ func listApplications() (bool, error) {
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetPlatformClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetPlatformClient(env)
 
 	showAppOk, err := client.ShowApplications(params, clientBearerToken)
 	if err == nil {

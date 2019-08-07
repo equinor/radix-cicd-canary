@@ -15,7 +15,9 @@ Its best use is when debugging a single test
 */
 func TestDefaultAliasResponding(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := defaultAliasResponding()
+	environmentVariables := env.NewEnv()
+
+	ok, err := defaultAliasResponding(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

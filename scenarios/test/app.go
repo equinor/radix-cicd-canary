@@ -3,6 +3,8 @@ package test
 import (
 	"time"
 
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
@@ -40,7 +42,7 @@ var (
 )
 
 // Fn Prototype of a test function
-type Fn func() (success bool, err error)
+type Fn func(env env.Env) (success bool, err error)
 
 // Suite Holds a list of tests
 type Suite struct {
@@ -57,14 +59,26 @@ type Spec struct {
 	Test        Fn
 }
 
+// Runner Instance
+type Runner struct {
+	env env.Env
+}
+
+// NewRunner Constructor
+func NewRunner(env env.Env) Runner {
+	return Runner{
+		env,
+	}
+}
+
 // Run the suite
-func Run(suites ...Suite) {
+func (runner Runner) Run(suites ...Suite) {
 	setupFailed := false
 	scenarioDuration := make(map[string]time.Duration)
 
 	// Run all suite setup
 	for _, suite := range suites {
-		setupFailed = runSuiteSetup(suite, scenarioDuration)
+		setupFailed = runSuiteSetup(runner.env, suite, scenarioDuration)
 		if setupFailed {
 			break
 		}
@@ -72,13 +86,13 @@ func Run(suites ...Suite) {
 
 	if !setupFailed {
 		for _, suite := range suites {
-			runSuiteTests(suite, scenarioDuration)
+			runSuiteTests(runner.env, suite, scenarioDuration)
 		}
 	}
 
 	// Run all suite teardown
 	for _, suite := range suites {
-		runSuiteTeardown(suite, scenarioDuration)
+		runSuiteTeardown(runner.env, suite, scenarioDuration)
 	}
 
 	for scenario, elapsed := range scenarioDuration {
@@ -87,13 +101,13 @@ func Run(suites ...Suite) {
 	}
 }
 
-func runSuiteSetup(suite Suite, scenarioDuration map[string]time.Duration) bool {
+func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) bool {
 	setupFailed := false
 	start := time.Now()
 
 	for _, setup := range suite.Setup {
 		log.Info(setup.Description)
-		success := runTest(setup)
+		success := runTest(env, setup)
 		if !success {
 			setupFailed = true
 			log.Warnf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
@@ -107,12 +121,12 @@ func runSuiteSetup(suite Suite, scenarioDuration map[string]time.Duration) bool 
 	return setupFailed
 }
 
-func runSuiteTests(suite Suite, scenarioDuration map[string]time.Duration) {
+func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
 	start := time.Now()
 
 	for _, test := range suite.Tests {
 		log.Info(test.Description)
-		success := runTest(test)
+		success := runTest(env, test)
 		if !success {
 			log.Warnf("Test %s fail. Will escape remaining tests in suite %s", test.Name, suite.Name)
 			break
@@ -124,13 +138,13 @@ func runSuiteTests(suite Suite, scenarioDuration map[string]time.Duration) {
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runSuiteTeardown(suite Suite, scenarioDuration map[string]time.Duration) {
+func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
 	start := time.Now()
 
 	log.Infof("Running teardown tests in suite %s", suite.Name)
 	for _, test := range suite.Teardown {
 		log.Info(test.Description)
-		runTest(test)
+		runTest(env, test)
 	}
 
 	end := time.Now()
@@ -138,10 +152,10 @@ func runSuiteTeardown(suite Suite, scenarioDuration map[string]time.Duration) {
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runTest(testToRun Spec) bool {
+func runTest(env env.Env, testToRun Spec) bool {
 	start := time.Now()
 
-	success, err := testToRun.Test()
+	success, err := testToRun.Test(env)
 	if !success {
 		addTestNoSuccess(testToRun.Name)
 		addTestError(testToRun.Name)

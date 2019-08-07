@@ -37,7 +37,7 @@ type Repository struct {
 }
 
 // CreateRequest setup correct header for running tests
-func CreateRequest(url, method string, parameters interface{}) *http.Request {
+func CreateRequest(env env.Env, url, method string, parameters interface{}) *http.Request {
 	var reader io.Reader
 	if parameters != nil {
 		payload, _ := json.Marshal(parameters)
@@ -57,7 +57,7 @@ func CreateRequest(url, method string, parameters interface{}) *http.Request {
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(branch, commit, repository, sharedSecret string) bool {
+func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string) bool {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -66,7 +66,7 @@ func TriggerWebhookPush(branch, commit, repository, sharedSecret string) bool {
 		},
 	}
 
-	req := CreateRequest(fmt.Sprintf("%s.%s/events/github", env.GetWebhookPrefix(), env.GetClusterFQDN()), "POST", parameters)
+	req := CreateRequest(env, fmt.Sprintf("%s.%s/events/github", env.GetWebhookPrefix(), env.GetClusterFQDN()), "POST", parameters)
 	client := http.DefaultClient
 	payload, _ := json.Marshal(parameters)
 
@@ -97,41 +97,41 @@ func CheckResponse(resp *http.Response) bool {
 }
 
 // GetClientBearerToken Gets bearer token in order to make call to API server
-func GetClientBearerToken() runtime.ClientAuthInfoWriter {
+func GetClientBearerToken(env env.Env) runtime.ClientAuthInfoWriter {
 	return httptransport.BearerToken(env.GetBearerToken())
 }
 
 // GetPlatformClient Gets the Platform API client
-func GetPlatformClient() *platformAPIClient.Client {
-	return platformAPIClient.New(getTransport(), strfmt.Default)
+func GetPlatformClient(env env.Env) *platformAPIClient.Client {
+	return platformAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetApplicationClient Gets the Application API client
-func GetApplicationClient() *applicationAPIClient.Client {
-	return applicationAPIClient.New(getTransport(), strfmt.Default)
+func GetApplicationClient(env env.Env) *applicationAPIClient.Client {
+	return applicationAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetJobClient Gets the Job API client
-func GetJobClient() *jobAPIClient.Client {
-	return jobAPIClient.New(getTransport(), strfmt.Default)
+func GetJobClient(env env.Env) *jobAPIClient.Client {
+	return jobAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetEnvironmentClient Gets the Environment API client
-func GetEnvironmentClient() *environmentAPIClient.Client {
-	return environmentAPIClient.New(getTransport(), strfmt.Default)
+func GetEnvironmentClient(env env.Env) *environmentAPIClient.Client {
+	return environmentAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetDeploymentClient Gets the Deployment API client
-func GetDeploymentClient() *deploymentAPIClient.Client {
-	return deploymentAPIClient.New(getTransport(), strfmt.Default)
+func GetDeploymentClient(env env.Env) *deploymentAPIClient.Client {
+	return deploymentAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetComponentClient Gets the Component API client
-func GetComponentClient() *componentAPIClient.Client {
-	return componentAPIClient.New(getTransport(), strfmt.Default)
+func GetComponentClient(env env.Env) *componentAPIClient.Client {
+	return componentAPIClient.New(getTransport(env), strfmt.Default)
 }
 
-func getTransport() *httptransport.Runtime {
+func getTransport(env env.Env) *httptransport.Runtime {
 	radixAPIURL := fmt.Sprintf("%s.%s", env.GetRadixAPIPrefix(), env.GetClusterFQDN())
 	schemes := []string{"https"}
 

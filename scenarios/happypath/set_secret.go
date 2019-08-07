@@ -9,8 +9,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func setSecret() (bool, error) {
-	test.WaitForCheckFunc(isDeploymentConsistent)
+func setSecret(env env.Env) (bool, error) {
+	test.WaitForCheckFunc(env, isDeploymentConsistent)
 
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
@@ -27,8 +27,8 @@ func setSecret() (bool, error) {
 				SecretValue: stringPtr(app2SecretValue),
 			})
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetEnvironmentClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetEnvironmentClient(env)
 
 	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
 	if err != nil {
@@ -38,8 +38,8 @@ func setSecret() (bool, error) {
 	return err == nil, err
 }
 
-func isDeploymentConsistent(args []string) (bool, interface{}) {
-	environmentDetails := getEnvironmentDetails()
+func isDeploymentConsistent(env env.Env, args []string) (bool, interface{}) {
+	environmentDetails := getEnvironmentDetails(env)
 	if environmentDetails != nil && environmentDetails.ActiveDeployment != nil && environmentDetails.Status != "" {
 		log.Info("Deployment is consistent. We can set the secret.")
 		return true, nil
@@ -48,7 +48,7 @@ func isDeploymentConsistent(args []string) (bool, interface{}) {
 	return false, nil
 }
 
-func getEnvironmentDetails() *models.Environment {
+func getEnvironmentDetails(env env.Env) *models.Environment {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -57,8 +57,8 @@ func getEnvironmentDetails() *models.Environment {
 		WithEnvName(app2EnvironmentName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetEnvironmentClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetEnvironmentClient(env)
 
 	environmentDetails, err := client.GetEnvironment(params, clientBearerToken)
 	if err == nil && environmentDetails.Payload != nil {

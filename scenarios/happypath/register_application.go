@@ -7,7 +7,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 )
 
-func registerApplication() (bool, error) {
+func registerApplication(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -29,8 +29,8 @@ func registerApplication() (bool, error) {
 		WithImpersonateGroup(&impersonateGroup).
 		WithApplicationRegistration(&bodyParameters)
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetPlatformClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetPlatformClient(env)
 
 	_, err := client.RegisterApplication(params, clientBearerToken)
 	return err == nil, err

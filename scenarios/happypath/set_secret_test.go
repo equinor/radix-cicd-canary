@@ -15,7 +15,9 @@ Its best use is when debugging a single test
 */
 func TestSetSecret(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := setSecret()
+	environmentVariables := env.NewEnv()
+
+	ok, err := setSecret(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

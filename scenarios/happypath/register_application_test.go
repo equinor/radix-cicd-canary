@@ -15,7 +15,9 @@ Its best use is when debugging a single test
 */
 func TestRegisterApplication(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := registerApplication()
+	environmentVariables := env.NewEnv()
+
+	ok, err := registerApplication(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

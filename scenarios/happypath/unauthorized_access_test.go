@@ -15,6 +15,8 @@ Its best use is when debugging a single test
 */
 func TestUnauthorizedAccess(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, _ := unauthorizedAccess()
+	environmentVariables := env.NewEnv()
+
+	ok, _ := unauthorizedAccess(environmentVariables)
 	assert.True(t, ok)
 }
