@@ -26,5 +26,5 @@ func listApplications() (bool, error) {
 		}
 	}
 
-	return err == nil, err
+	return err == nil && len(showAppOk.Payload) > 0, err
 }

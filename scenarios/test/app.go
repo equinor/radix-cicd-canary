@@ -45,6 +45,7 @@ type Fn func() (success bool, err error)
 // Suite Holds a list of tests
 type Suite struct {
 	Name     string
+	Setup    []Spec
 	Tests    []Spec
 	Teardown []Spec
 }
@@ -57,19 +58,76 @@ type Spec struct {
 }
 
 // Run the suite
-func Run(suite Suite) {
+func Run(suites ...Suite) {
+	setupFailed := false
+	scenarioDuration := make(map[string]time.Duration)
+
+	// Run all suite setup
+	for _, suite := range suites {
+		setupFailed = runSuiteSetup(suite, scenarioDuration)
+		if setupFailed {
+			break
+		}
+	}
+
+	if !setupFailed {
+		for _, suite := range suites {
+			runSuiteTests(suite, scenarioDuration)
+		}
+	}
+
+	// Run all suite teardown
+	for _, suite := range suites {
+		runSuiteTeardown(suite, scenarioDuration)
+	}
+
+	for scenario, elapsed := range scenarioDuration {
+		scenarioDurations.With(prometheus.Labels{"scenario": scenario}).Add(elapsed.Seconds())
+		log.Infof("%s elapsed time: %v", scenario, elapsed)
+	}
+}
+
+func runSuiteSetup(suite Suite, scenarioDuration map[string]time.Duration) bool {
+	setupFailed := false
+	start := time.Now()
+
+	for _, setup := range suite.Setup {
+		log.Info(setup.Description)
+		success := runTest(setup)
+		if !success {
+			setupFailed = true
+			log.Warnf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
+			break
+		}
+	}
+
+	end := time.Now()
+	elapsed := end.Sub(start)
+	scenarioDuration[suite.Name] = elapsed
+	return setupFailed
+}
+
+func runSuiteTests(suite Suite, scenarioDuration map[string]time.Duration) {
 	start := time.Now()
 
 	for _, test := range suite.Tests {
 		log.Info(test.Description)
 		success := runTest(test)
 		if !success {
-			log.Warnf("Test %s fail. Will escape remaining tests", test.Name)
+			log.Warnf("Test %s fail. Will escape remaining tests in suite %s", test.Name, suite.Name)
 			break
 		}
 	}
 
-	log.Info("Running teardown tests")
+	end := time.Now()
+	elapsed := end.Sub(start)
+	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
+}
+
+func runSuiteTeardown(suite Suite, scenarioDuration map[string]time.Duration) {
+	start := time.Now()
+
+	log.Infof("Running teardown tests in suite %s", suite.Name)
 	for _, test := range suite.Teardown {
 		log.Info(test.Description)
 		runTest(test)
@@ -77,9 +135,7 @@ func Run(suite Suite) {
 
 	end := time.Now()
 	elapsed := end.Sub(start)
-
-	scenarioDurations.With(prometheus.Labels{"scenario": suite.Name}).Add(elapsed.Seconds())
-	log.Infof("%s elapsed time: %v", suite.Name, elapsed)
+	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
 func runTest(testToRun Spec) bool {

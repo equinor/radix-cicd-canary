@@ -6,12 +6,7 @@ import "github.com/equinor/radix-cicd-canary/scenarios/test"
 func TestSuite() test.Suite {
 	return test.Suite{
 		Name: "Happy path",
-		Tests: []test.Spec{
-			{
-				Name:        "ListApplications",
-				Description: "List applications",
-				Test:        listApplications,
-			},
+		Setup: []test.Spec{
 			{
 				Name:        "RegisterApplication",
 				Description: "Register application",
@@ -21,6 +16,13 @@ func TestSuite() test.Suite {
 				Name:        "RegisterApplicationWithNoDeployKey",
 				Description: "Register application with no deploy key",
 				Test:        registerApplicationWithNoDeployKey,
+			},
+		},
+		Tests: []test.Spec{
+			{
+				Name:        "ListApplications",
+				Description: "List applications",
+				Test:        listApplications,
 			},
 			{
 				Name:        "BuildApplication",
