@@ -1,7 +1,6 @@
 package happypath
 
 import (
-	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -11,8 +10,6 @@ import (
 )
 
 func buildApplication(env env.Env) (bool, error) {
-	test.WaitForCheckFunc(env, isApplicationDefined)
-
 	// Trigger build via web hook
 	ok := httpUtils.TriggerWebhookPush(env, app2BranchToBuildFrom, app2CommitID, app2SSHRepository, app2SharedSecret)
 	if !ok {
@@ -31,26 +28,6 @@ func buildApplication(env env.Env) (bool, error) {
 
 	}
 
-	return false, nil
-}
-
-func isApplicationDefined(env env.Env, args []string) (bool, interface{}) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
-
-	params := applicationclient.NewGetApplicationParams().
-		WithAppName(app2Name).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
-
-	_, err := client.GetApplication(params, clientBearerToken)
-	if err == nil {
-		return true, nil
-	}
-
-	log.Info("Application is not defined")
 	return false, nil
 }
 

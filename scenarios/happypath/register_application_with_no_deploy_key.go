@@ -5,6 +5,7 @@ import (
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 )
 
 func registerApplicationWithNoDeployKey(env env.Env) (bool, error) {
@@ -30,5 +31,10 @@ func registerApplicationWithNoDeployKey(env env.Env) (bool, error) {
 	client := httpUtils.GetPlatformClient(env)
 
 	registerApplicationOK, err := client.RegisterApplication(params, clientBearerToken)
-	return err == nil && registerApplicationOK.Payload.PublicKey != "", err
+	if err != nil {
+		return false, err
+	}
+
+	test.WaitForCheckFuncWithArguments(env, isApplicationDefined, []string{app1Name})
+	return registerApplicationOK.Payload.PublicKey != "", err
 }

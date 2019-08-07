@@ -19,8 +19,6 @@ const (
 )
 
 func promoteDeployment(env env.Env) (bool, error) {
-	test.WaitForCheckFunc(env, isApplicationDefined)
-
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, envToDeployFrom)
 	if err != nil {
@@ -54,26 +52,6 @@ func promoteDeployment(env env.Env) (bool, error) {
 	return false, nil
 }
 
-func isApplicationDefined(env env.Env, args []string) (bool, interface{}) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
-
-	params := applicationclient.NewGetApplicationParams().
-		WithAppName(app2Name).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
-
-	_, err := client.GetApplication(params, clientBearerToken)
-	if err == nil {
-		return true, nil
-	}
-
-	log.Info("Application is not defined")
-	return false, nil
-}
-
 func getLastDeployment(env env.Env, environment string) (*models.DeploymentSummary, error) {
 	deployments, err := getDeployments(env, environment)
 	if err != nil || len(deployments) == 0 {
@@ -97,7 +75,7 @@ func getDeployments(env env.Env, environment string) ([]*models.DeploymentSummar
 	client := httpUtils.GetEnvironmentClient(env)
 
 	deployments, err := client.GetApplicationEnvironmentDeployments(params, clientBearerToken)
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 
