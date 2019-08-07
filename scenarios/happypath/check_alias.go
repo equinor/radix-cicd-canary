@@ -5,6 +5,7 @@ import (
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -37,7 +38,7 @@ func getApplicationAlias(env env.Env) *string {
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := applicationclient.NewGetApplicationParams().
-		WithAppName(app2Name).
+		WithAppName(config.App2Name).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
@@ -56,8 +57,8 @@ func getPublicDomainName(env env.Env) string {
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := environmentclient.NewGetEnvironmentParams().
-		WithAppName(app2Name).
-		WithEnvName(app2EnvironmentName).
+		WithAppName(config.App2Name).
+		WithEnvName(config.App2EnvironmentName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
@@ -67,7 +68,7 @@ func getPublicDomainName(env env.Env) string {
 	if err == nil && environmentDetails.Payload != nil {
 		for _, component := range environmentDetails.Payload.ActiveDeployment.Components {
 			componentName := *component.Name
-			if componentName == app2Component1Name {
+			if componentName == config.App2Component1Name {
 				return component.Variables[publicDomainNameEnvironmentVariable]
 			}
 		}

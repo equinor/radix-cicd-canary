@@ -4,6 +4,7 @@ import (
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -14,9 +15,9 @@ func registerApplication(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	appName := app2Name
-	appRepo := app2Repository
-	appSharedSecret := app2SharedSecret
+	appName := config.App2Name
+	appRepo := config.App2Repository
+	appSharedSecret := config.App2SharedSecret
 
 	bodyParameters := models.ApplicationRegistration{
 		Name:         &appName,
@@ -40,7 +41,7 @@ func registerApplication(env env.Env) (bool, error) {
 		return false, err
 	}
 
-	test.WaitForCheckFuncWithArguments(env, isApplicationDefined, []string{app2Name})
+	test.WaitForCheckFuncWithArguments(env, isApplicationDefined, []string{config.App2Name})
 	return true, nil
 }
 

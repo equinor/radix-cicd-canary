@@ -3,6 +3,7 @@ package happypath
 import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -18,13 +19,13 @@ func setSecret(env env.Env) (bool, error) {
 	params := environmentclient.NewChangeEnvironmentComponentSecretParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
-		WithAppName(app2Name).
-		WithEnvName(app2EnvironmentName).
-		WithComponentName(app2Component2Name).
-		WithSecretName(app2SecretName).
+		WithAppName(config.App2Name).
+		WithEnvName(config.App2EnvironmentName).
+		WithComponentName(config.App2Component2Name).
+		WithSecretName(config.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: stringPtr(app2SecretValue),
+				SecretValue: stringPtr(config.App2SecretValue),
 			})
 
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
@@ -32,7 +33,7 @@ func setSecret(env env.Env) (bool, error) {
 
 	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", app2Name, err)
+		log.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
 	}
 
 	return err == nil, err
@@ -53,8 +54,8 @@ func getEnvironmentDetails(env env.Env) *models.Environment {
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := environmentclient.NewGetEnvironmentParams().
-		WithAppName(app2Name).
-		WithEnvName(app2EnvironmentName).
+		WithAppName(config.App2Name).
+		WithEnvName(config.App2EnvironmentName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)

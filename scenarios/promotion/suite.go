@@ -8,9 +8,14 @@ func TestSuite() test.Suite {
 		Name: "Promote deployment",
 		Tests: []test.Spec{
 			{
-				Name:        "PromoteDeployment",
-				Description: "Promote deployment",
-				Test:        promoteDeployment,
+				Name:        "PromoteDeploymentToOtherEnvironment",
+				Description: "Promote deployment to other environment",
+				Test:        promoteDeploymentToAnotherEnvironment,
+			},
+			{
+				Name:        "PromoteDeploymentWithinEnvironment",
+				Description: "Promote deployment to same environment",
+				Test:        promoteDeploymentWithinEnvironment,
 			},
 		},
 	}

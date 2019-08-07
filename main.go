@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/equinor/radix-cicd-canary/scenarios/adgroup"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/promotion"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
@@ -28,9 +29,10 @@ func runSuites() {
 	sleepInterval := environmentVariables.GetSleepIntervalBetweenTestRuns()
 	happyPathSuite := happypath.TestSuite()
 	promotionSuite := promotion.TestSuite()
+	adgroupSuite := adgroup.TestSuite()
 
 	for {
-		runner.Run(happyPathSuite, promotionSuite)
+		runner.Run(happyPathSuite, promotionSuite, adgroupSuite)
 		time.Sleep(sleepInterval)
 	}
 }

@@ -3,6 +3,7 @@ package happypath
 import (
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -11,7 +12,7 @@ import (
 
 func buildApplication(env env.Env) (bool, error) {
 	// Trigger build via web hook
-	ok := httpUtils.TriggerWebhookPush(env, app2BranchToBuildFrom, app2CommitID, app2SSHRepository, app2SharedSecret)
+	ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
 	if !ok {
 		return false, nil
 	}
@@ -36,7 +37,7 @@ func isJobListed(env env.Env, args []string) (bool, interface{}) {
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := jobclient.NewGetApplicationJobsParams().
-		WithAppName(app2Name).
+		WithAppName(config.App2Name).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
@@ -67,7 +68,7 @@ func getJobStatus(env env.Env, jobName string) string {
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := jobclient.NewGetApplicationJobParams().
-		WithAppName(app2Name).
+		WithAppName(config.App2Name).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)

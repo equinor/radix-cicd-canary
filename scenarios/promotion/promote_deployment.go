@@ -5,6 +5,7 @@ import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -13,12 +14,11 @@ import (
 
 const (
 	pipelineName    = "promote"
-	app2Name        = "canarycicd-test2"
 	envToDeployFrom = "qa"
 	envToDeployTo   = "dev"
 )
 
-func promoteDeployment(env env.Env) (bool, error) {
+func promoteDeploymentToAnotherEnvironment(env env.Env) (bool, error) {
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, envToDeployFrom)
 	if err != nil {
@@ -67,7 +67,7 @@ func getDeployments(env env.Env, environment string) ([]*models.DeploymentSummar
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := environmentclient.NewGetApplicationEnvironmentDeploymentsParams().
-		WithAppName(app2Name).
+		WithAppName(config.App2Name).
 		WithEnvName(environment).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
@@ -89,13 +89,13 @@ func promote(env env.Env, deployment *models.DeploymentSummary, from, to string)
 	bodyParameters := models.PipelineParameters{
 		PipelineParametersPromote: models.PipelineParametersPromote{
 			DeploymentName:  deployment.Name,
-			FromEnvironment: envToDeployFrom,
-			ToEnvironment:   envToDeployTo,
+			FromEnvironment: from,
+			ToEnvironment:   to,
 		},
 	}
 
 	params := applicationclient.NewTriggerPipelineParams().
-		WithAppName(app2Name).
+		WithAppName(config.App2Name).
 		WithPipelineName(pipelineName).
 		WithPipelineParameters(&bodyParameters).
 		WithImpersonateUser(&impersonateUser).
@@ -137,7 +137,7 @@ func getJob(env env.Env, jobName string) (*models.Job, error) {
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := jobclient.NewGetApplicationJobParams().
-		WithAppName(app2Name).
+		WithAppName(config.App2Name).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
