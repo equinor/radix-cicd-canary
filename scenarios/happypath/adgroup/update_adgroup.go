@@ -1,8 +1,6 @@
 package adgroup
 
 import (
-	"time"
-
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
@@ -15,9 +13,8 @@ import (
 )
 
 const (
-	pipelineName               = "build"
-	adGroupWithNoAccess        = "12345678-9012-3456-7890-123456789012"
-	timeForTheOperatorToKickIn = 15 * time.Second
+	pipelineName        = "build"
+	adGroupWithNoAccess = "12345678-9012-3456-7890-123456789012"
 )
 
 // Update Tests that updates to ad group locks down an application
