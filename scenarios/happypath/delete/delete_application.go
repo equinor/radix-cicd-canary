@@ -1,4 +1,4 @@
-package happypath
+package delete
 
 import (
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -8,7 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func deleteApplications(env env.Env) (bool, error) {
+// Applications Tests that we are able to delete applications
+func Applications(env env.Env) (bool, error) {
 	success, err := deleteApplication(env, config.App1Name)
 	if !success {
 		return false, err

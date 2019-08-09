@@ -9,6 +9,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/go-openapi/runtime"
 	log "github.com/sirupsen/logrus"
 )
@@ -19,8 +20,9 @@ const (
 	timeForTheOperatorToKickIn = 15 * time.Second
 )
 
-func updateAdGroup(env env.Env) (bool, error) {
-	ok := hasAccess(env)
+// Update Tests that updates to ad group locks down an application
+func Update(env env.Env) (bool, error) {
+	ok, _ := test.WaitForCheckFunc(env, hasAccess)
 	if !ok {
 		return false, nil
 	}
@@ -30,12 +32,7 @@ func updateAdGroup(env env.Env) (bool, error) {
 		return false, err
 	}
 
-	// Wait for operator to pick up the patch.
-	// As far as I know there is no way to verify that operator
-	// has reconciled
-	time.Sleep(timeForTheOperatorToKickIn)
-
-	ok = hasNoAccess(env)
+	ok, _ = test.WaitForCheckFunc(env, hasNoAccess)
 	if !ok {
 		return false, nil
 	}
@@ -45,10 +42,7 @@ func updateAdGroup(env env.Env) (bool, error) {
 		return false, err
 	}
 
-	// Wait for operator to pick up the patch.
-	time.Sleep(timeForTheOperatorToKickIn)
-
-	ok = hasAccess(env)
+	ok, _ = test.WaitForCheckFunc(env, hasAccess)
 	if !ok {
 		return false, err
 	}
@@ -56,12 +50,12 @@ func updateAdGroup(env env.Env) (bool, error) {
 	return true, nil
 }
 
-func hasNoAccess(env env.Env) bool {
-	return hasProperAccess(env, false)
+func hasNoAccess(env env.Env, args []string) (bool, interface{}) {
+	return hasProperAccess(env, false), nil
 }
 
-func hasAccess(env env.Env) bool {
-	return hasProperAccess(env, true)
+func hasAccess(env env.Env, args []string) (bool, interface{}) {
+	return hasProperAccess(env, true), nil
 }
 
 func hasProperAccess(env env.Env, properAccess bool) bool {
@@ -74,7 +68,12 @@ func hasProperAccess(env env.Env, properAccess bool) bool {
 	err = setSecret(env)
 	accessToSecret := !givesAccessError(err)
 
-	return accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
+	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
+	if !hasProperAccess {
+		log.Info("Proper access hasn't been granted yet")
+	}
+
+	return hasProperAccess
 }
 
 func patchAdGroup(env env.Env, adGroup string) error {

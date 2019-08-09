@@ -1,4 +1,4 @@
-package happypath
+package adgroup
 
 import (
 	"testing"
@@ -13,11 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestDefaultAliasResponding(t *testing.T) {
+func TestUpdateAdGroup(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := defaultAliasResponding(environmentVariables)
+	ok, err := Update(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

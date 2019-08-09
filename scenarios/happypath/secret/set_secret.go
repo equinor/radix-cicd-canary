@@ -1,4 +1,4 @@
-package happypath
+package secret
 
 import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
@@ -10,7 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func setSecret(env env.Env) (bool, error) {
+// Set Test that we are able to set secret
+func Set(env env.Env) (bool, error) {
 	test.WaitForCheckFunc(env, isDeploymentConsistent)
 
 	impersonateUser := env.GetImpersonateUser()

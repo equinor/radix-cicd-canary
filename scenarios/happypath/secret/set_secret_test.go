@@ -1,4 +1,4 @@
-package promotion
+package secret
 
 import (
 	"testing"
@@ -13,20 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestPromoteDeploymentToAnotherEnvironment(t *testing.T) {
+func TestSetSecret(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := promoteDeploymentToAnotherEnvironment(environmentVariables)
-	assert.NoError(t, err)
-	assert.True(t, ok)
-}
-
-func TestPromoteDeploymentWithinEnvironment(t *testing.T) {
-	env.SetRequiredEnvironmentVariablesForTest()
-	environmentVariables := env.NewEnv()
-
-	ok, err := promoteDeploymentWithinEnvironment(environmentVariables)
+	ok, err := Set(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

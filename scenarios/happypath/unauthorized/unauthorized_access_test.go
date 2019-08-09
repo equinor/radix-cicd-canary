@@ -1,4 +1,4 @@
-package happypath
+package unauthorized
 
 import (
 	"testing"
@@ -13,11 +13,10 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestDeleteApplications(t *testing.T) {
+func TestUnauthorizedAccess(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := deleteApplications(environmentVariables)
-	assert.NoError(t, err)
+	ok, _ := Access(environmentVariables)
 	assert.True(t, ok)
 }

@@ -1,4 +1,4 @@
-package happypath
+package list
 
 import (
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
@@ -7,7 +7,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func listApplications(env env.Env) (bool, error) {
+// Applications Test that we are able to list applications
+func Applications(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 

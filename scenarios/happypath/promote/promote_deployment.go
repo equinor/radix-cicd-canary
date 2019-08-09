@@ -1,4 +1,4 @@
-package promotion
+package promote
 
 import (
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -18,7 +18,8 @@ const (
 	envToDeployTo   = "dev"
 )
 
-func promoteDeploymentToAnotherEnvironment(env env.Env) (bool, error) {
+// DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
+func DeploymentToAnotherEnvironment(env env.Env) (bool, error) {
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, envToDeployFrom)
 	if err != nil {

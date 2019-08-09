@@ -1,4 +1,4 @@
-package happypath
+package register
 
 import (
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -11,7 +11,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func registerApplication(env env.Env) (bool, error) {
+// Application Tests that we are able to register application
+// with deploy key set
+func Application(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 

@@ -1,4 +1,4 @@
-package happypath
+package alias
 
 import (
 	"net/http"
@@ -14,7 +14,8 @@ import (
 
 const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 
-func defaultAliasResponding(env env.Env) (bool, error) {
+// DefaultResponding Checks if default alias of application is responding
+func DefaultResponding(env env.Env) (bool, error) {
 	ok, _ := test.WaitForCheckFunc(env, isAppAliasDefined)
 	publicDomainName := getPublicDomainName(env)
 

@@ -1,4 +1,4 @@
-package promotion
+package promote
 
 import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -7,7 +7,8 @@ import (
 
 const environmentToPromoteWithin = "qa"
 
-func promoteDeploymentWithinEnvironment(env env.Env) (bool, error) {
+// DeploymentWithinEnvironment Checks that a deployment can be promoted within env
+func DeploymentWithinEnvironment(env env.Env) (bool, error) {
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, environmentToPromoteWithin)
 	if err != nil {

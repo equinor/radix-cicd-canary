@@ -1,4 +1,4 @@
-package happypath
+package build
 
 import (
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
@@ -10,7 +10,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func buildApplication(env env.Env) (bool, error) {
+// Application Tests that we are able to successfully build an application
+func Application(env env.Env) (bool, error) {
 	// Trigger build via web hook
 	ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
 	if !ok {

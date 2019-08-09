@@ -1,4 +1,4 @@
-package happypath
+package register
 
 import (
 	"testing"
@@ -13,11 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestRegisterApplication(t *testing.T) {
+func TestRegisterApplicationWithNoDeployKey(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := registerApplication(environmentVariables)
+	ok, err := ApplicationWithNoDeployKey(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

@@ -1,4 +1,4 @@
-package happypath
+package delete
 
 import (
 	"testing"
@@ -13,11 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestListApplications(t *testing.T) {
+func TestDeleteApplications(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := listApplications(environmentVariables)
+	ok, err := Applications(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

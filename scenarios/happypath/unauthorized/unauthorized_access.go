@@ -1,4 +1,4 @@
-package happypath
+package unauthorized
 
 import (
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -8,7 +8,9 @@ import (
 	"github.com/go-openapi/runtime"
 )
 
-func unauthorizedAccess(env env.Env) (bool, error) {
+// Access Checks that we are not able to enter any application we should not
+// have access to
+func Access(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 

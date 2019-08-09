@@ -1,4 +1,4 @@
-package happypath
+package register
 
 import (
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
@@ -9,7 +9,9 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 )
 
-func registerApplicationWithNoDeployKey(env env.Env) (bool, error) {
+// ApplicationWithNoDeployKey Tests that we are able to register application
+// with no deploy key and that deploy key is generated
+func ApplicationWithNoDeployKey(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 

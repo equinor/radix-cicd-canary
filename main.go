@@ -4,9 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/equinor/radix-cicd-canary/scenarios/adgroup"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
-	"github.com/equinor/radix-cicd-canary/scenarios/promotion"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -28,11 +26,9 @@ func runSuites() {
 
 	sleepInterval := environmentVariables.GetSleepIntervalBetweenTestRuns()
 	happyPathSuite := happypath.TestSuite()
-	promotionSuite := promotion.TestSuite()
-	adgroupSuite := adgroup.TestSuite()
 
 	for {
-		runner.Run(happyPathSuite, promotionSuite, adgroupSuite)
+		runner.Run(happyPathSuite)
 		time.Sleep(sleepInterval)
 	}
 }

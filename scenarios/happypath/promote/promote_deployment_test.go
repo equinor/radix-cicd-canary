@@ -1,4 +1,4 @@
-package happypath
+package promote
 
 import (
 	"testing"
@@ -13,11 +13,20 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestRegisterApplicationWithNoDeployKey(t *testing.T) {
+func TestPromoteDeploymentToAnotherEnvironment(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := registerApplicationWithNoDeployKey(environmentVariables)
+	ok, err := DeploymentToAnotherEnvironment(environmentVariables)
+	assert.NoError(t, err)
+	assert.True(t, ok)
+}
+
+func TestPromoteDeploymentWithinEnvironment(t *testing.T) {
+	env.SetRequiredEnvironmentVariablesForTest()
+	environmentVariables := env.NewEnv()
+
+	ok, err := DeploymentWithinEnvironment(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

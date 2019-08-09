@@ -1,4 +1,4 @@
-package happypath
+package register
 
 import (
 	"testing"
@@ -13,10 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestUnauthorizedAccess(t *testing.T) {
+func TestRegisterApplication(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, _ := unauthorizedAccess(environmentVariables)
+	ok, err := Application(environmentVariables)
+	assert.NoError(t, err)
 	assert.True(t, ok)
 }
