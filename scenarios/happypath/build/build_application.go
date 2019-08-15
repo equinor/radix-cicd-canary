@@ -22,6 +22,19 @@ func Application(env env.Env) (bool, error) {
 	ok, jobSummary := test.WaitForCheckFunc(env, isJobListed)
 	if ok {
 		jobName := (jobSummary.(*models.JobSummary)).Name
+
+		// Another build should cause second job to queue up
+		// Trigger another build via web hook
+		ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+		if !ok {
+			return false, nil
+		}
+
+		ok, _ = test.WaitForCheckFunc(env, isSecondJobQueued)
+		if !ok {
+			return false, nil
+		}
+
 		ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{jobName})
 
 		if ok && status.(string) == "Succeeded" {
@@ -47,6 +60,26 @@ func isJobListed(env env.Env, args []string) (bool, interface{}) {
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
 	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 {
 		return true, applicationJobs.Payload[0]
+	}
+
+	log.Info("Job was not listed yet")
+	return false, nil
+}
+
+func isSecondJobQueued(env env.Env, args []string) (bool, interface{}) {
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+
+	params := jobclient.NewGetApplicationJobsParams().
+		WithAppName(config.App2Name).
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup)
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetJobClient(env)
+
+	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
+	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 && applicationJobs.Payload[0].Status == "Queued" {
+		return true, nil
 	}
 
 	log.Info("Job was not listed yet")
