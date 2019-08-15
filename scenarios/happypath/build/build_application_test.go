@@ -1,4 +1,4 @@
-package happypath
+package build
 
 import (
 	"testing"
@@ -15,7 +15,9 @@ Its best use is when debugging a single test
 */
 func TestBuildApplicationCreated(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := buildApplication()
+	environmentVariables := env.NewEnv()
+
+	ok, err := Application(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

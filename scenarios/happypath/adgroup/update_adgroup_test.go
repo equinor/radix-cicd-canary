@@ -1,4 +1,4 @@
-package happypath
+package adgroup
 
 import (
 	"testing"
@@ -13,9 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestDeleteApplications(t *testing.T) {
+func TestUpdateAdGroup(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := deleteApplications()
+	environmentVariables := env.NewEnv()
+
+	ok, err := Update(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

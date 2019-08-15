@@ -7,27 +7,27 @@ import (
 )
 
 // CheckFn The prototype function for any check function
-type CheckFn func(args []string) (bool, interface{})
+type CheckFn func(env env.Env, args []string) (bool, interface{})
 
 // WaitForCheckFunc Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFunc(checkFunc CheckFn) (bool, interface{}) {
-	return waitForCheckFuncOrTimeout(checkFunc, []string{})
+func WaitForCheckFunc(env env.Env, checkFunc CheckFn) (bool, interface{}) {
+	return waitForCheckFuncOrTimeout(env, checkFunc, []string{})
 }
 
 // WaitForCheckFuncWithArguments Function to pass arguments to check function
-func WaitForCheckFuncWithArguments(checkFunc CheckFn, args []string) (bool, interface{}) {
-	return waitForCheckFuncOrTimeout(checkFunc, args)
+func WaitForCheckFuncWithArguments(env env.Env, checkFunc CheckFn, args []string) (bool, interface{}) {
+	return waitForCheckFuncOrTimeout(env, checkFunc, args)
 }
 
-func waitForCheckFuncOrTimeout(checkFunc CheckFn, args []string) (bool, interface{}) {
-	timeout := env.TimeoutOfTest()
+func waitForCheckFuncOrTimeout(env env.Env, checkFunc CheckFn, args []string) (bool, interface{}) {
+	timeout := env.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := env.GetSleepIntervalBetweenCheckFunc()
 
 	var accumulatedWait time.Duration
 
 	for {
 		startTime := time.Now()
-		success, obj := checkFunc(args)
+		success, obj := checkFunc(env, args)
 		if success {
 			return true, obj
 		}

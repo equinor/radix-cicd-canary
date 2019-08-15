@@ -1,22 +1,24 @@
-package happypath
+package delete
 
 import (
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
 
-func deleteApplications() (bool, error) {
-	success, err := deleteApplication(app1Name)
+// Applications Tests that we are able to delete applications
+func Applications(env env.Env) (bool, error) {
+	success, err := deleteApplication(env, config.App1Name)
 	if !success {
 		return false, err
 	}
 
-	return deleteApplication(app2Name)
+	return deleteApplication(env, config.App2Name)
 }
 
-func deleteApplication(appName string) (bool, error) {
+func deleteApplication(env env.Env, appName string) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -25,8 +27,8 @@ func deleteApplication(appName string) (bool, error) {
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(appName)
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetApplicationClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetApplicationClient(env)
 
 	_, err := client.DeleteApplication(params, clientBearerToken)
 	if err != nil {

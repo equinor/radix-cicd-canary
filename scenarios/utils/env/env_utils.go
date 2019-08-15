@@ -27,8 +27,94 @@ const (
 	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
 )
 
+// Env Holds all the environment variables
+type Env struct {
+	bearerToken                   string
+	impersonateUser               string
+	impersonateGroup              string
+	clusterFQDN                   string
+	radixAPIPrefix                string
+	webhookPrefix                 string
+	publicKey                     string
+	privateKey                    string
+	timeoutOfTest                 time.Duration
+	sleepIntervalBetweenCheckFunc time.Duration
+	sleepIntervalBetweenTestRuns  time.Duration
+}
+
+// NewEnv Constructor
+func NewEnv() Env {
+	return Env{
+		getBearerToken(),
+		getImpersonateUser(),
+		getImpersonateGroup(),
+		getClusterFQDN(),
+		getRadixAPIPrefix(),
+		getWebhookPrefix(),
+		getPublicKey(),
+		getPrivateKey(),
+		timeoutOfTest(),
+		getSleepIntervalBetweenCheckFunc(),
+		getSleepIntervalBetweenTestRuns(),
+	}
+}
+
 // GetBearerToken get bearer token either from token file or environment variable
-func GetBearerToken() string {
+func (env Env) GetBearerToken() string {
+	return env.bearerToken
+}
+
+// GetImpersonateUser get impersonate user from config map
+func (env Env) GetImpersonateUser() string {
+	return env.impersonateUser
+}
+
+// GetImpersonateGroup get impersonate group from config map
+func (env Env) GetImpersonateGroup() string {
+	return env.impersonateGroup
+}
+
+// GetClusterFQDN get Radix cluster FQDN from config map
+func (env Env) GetClusterFQDN() string {
+	return env.clusterFQDN
+}
+
+// GetRadixAPIPrefix get Radix API prefix from config map
+func (env Env) GetRadixAPIPrefix() string {
+	return env.radixAPIPrefix
+}
+
+// GetWebhookPrefix get Radix Webhook prefix
+func (env Env) GetWebhookPrefix() string {
+	return env.webhookPrefix
+}
+
+// GetPublicKey get public deploy key from config map
+func (env Env) GetPublicKey() string {
+	return env.publicKey
+}
+
+// GetPrivateKey get private deploy key from config map
+func (env Env) GetPrivateKey() string {
+	return env.privateKey
+}
+
+// GetTimeoutOfTest Get the time it should take before a test should time out from config map
+func (env Env) GetTimeoutOfTest() time.Duration {
+	return env.timeoutOfTest
+}
+
+// GetSleepIntervalBetweenCheckFunc Gets the sleep inteval between two checks from config map
+func (env Env) GetSleepIntervalBetweenCheckFunc() time.Duration {
+	return env.sleepIntervalBetweenCheckFunc
+}
+
+// GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs from config map
+func (env Env) GetSleepIntervalBetweenTestRuns() time.Duration {
+	return env.sleepIntervalBetweenTestRuns
+}
+
+func getBearerToken() string {
 	token, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
 	if err != nil {
 		return os.Getenv("BEARER_TOKEN")
@@ -36,44 +122,36 @@ func GetBearerToken() string {
 	return string(token)
 }
 
-// GetImpersonateUser get impersonate user from config map
-func GetImpersonateUser() string {
+func getImpersonateUser() string {
 	return getConfigFromMap(impersonateUserConfig)
 }
 
-// GetImpersonateGroup get impersonate group from config map
-func GetImpersonateGroup() string {
+func getImpersonateGroup() string {
 	return getConfigFromMap(impersonateGroupConfig)
 }
 
-// GetClusterFQDN get Radix cluster FQDN from config map
-func GetClusterFQDN() string {
+func getClusterFQDN() string {
 	return getConfigFromMap(clusterFQDNConfig)
 }
 
-// GetRadixAPIPrefix get Radix API prefix from config map
-func GetRadixAPIPrefix() string {
+func getRadixAPIPrefix() string {
 	return getConfigFromMap(radixAPIPrefixConfig)
 }
 
-// GetWebhookPrefix get Radix Webhook prefix
-func GetWebhookPrefix() string {
+func getWebhookPrefix() string {
 	return getConfigFromMap(radixWebhookPrefixConfig)
 }
 
-// GetPublicKey get public deploy key from config map
-func GetPublicKey() string {
+func getPublicKey() string {
 	return getConfigFromMap(publicKeyConfig)
 }
 
-// GetPrivateKey get private deploy key from config map
-func GetPrivateKey() string {
+func getPrivateKey() string {
 	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyBase64Config))
 	return string(data)
 }
 
-// TimeoutOfTest Get the time it should take before a test should time out from config map
-func TimeoutOfTest() time.Duration {
+func timeoutOfTest() time.Duration {
 	timeout, err := strconv.Atoi(getConfigFromMap(timeoutOfTestConfig))
 	if err != nil {
 		log.Fatalf("Could not read %s. Err: %v", timeoutOfTestConfig, err)
@@ -82,8 +160,7 @@ func TimeoutOfTest() time.Duration {
 	return time.Duration(timeout) * time.Second
 }
 
-// GetSleepIntervalBetweenCheckFunc Gets the sleep inteval between two checks from config map
-func GetSleepIntervalBetweenCheckFunc() time.Duration {
+func getSleepIntervalBetweenCheckFunc() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalBetweenChecksConfig))
 	if err != nil {
 		log.Fatalf("Could not read %s. Err: %v", sleepIntervalBetweenChecksConfig, err)
@@ -92,8 +169,7 @@ func GetSleepIntervalBetweenCheckFunc() time.Duration {
 	return time.Duration(sleepInterval) * time.Second
 }
 
-// GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs from config map
-func GetSleepIntervalBetweenTestRuns() time.Duration {
+func getSleepIntervalBetweenTestRuns() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalTestRunsConfig))
 	if err != nil {
 		log.Fatalf("Could not read %s. Err: %v", sleepIntervalTestRunsConfig, err)

@@ -1,4 +1,4 @@
-package happypath
+package list
 
 import (
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
@@ -7,7 +7,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func listApplications() (bool, error) {
+// Applications Test that we are able to list applications
+func Applications(env env.Env) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -15,8 +16,8 @@ func listApplications() (bool, error) {
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken()
-	client := httpUtils.GetPlatformClient()
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetPlatformClient(env)
 
 	showAppOk, err := client.ShowApplications(params, clientBearerToken)
 	if err == nil {
@@ -26,5 +27,5 @@ func listApplications() (bool, error) {
 		}
 	}
 
-	return err == nil, err
+	return err == nil && len(showAppOk.Payload) > 0, err
 }

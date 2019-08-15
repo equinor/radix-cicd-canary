@@ -1,4 +1,4 @@
-package happypath
+package secret
 
 import (
 	"testing"
@@ -13,9 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestListApplications(t *testing.T) {
+func TestSetSecret(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := listApplications()
+	environmentVariables := env.NewEnv()
+
+	ok, err := Set(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }

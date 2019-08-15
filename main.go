@@ -14,17 +14,21 @@ import (
 func main() {
 	log.Infof("Starting...")
 
-	go runTest()
+	go runSuites()
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":5000", nil)
 }
 
-func runTest() {
-	sleepInterval := env.GetSleepIntervalBetweenTestRuns()
+func runSuites() {
+	environmentVariables := env.NewEnv()
+	runner := test.NewRunner(environmentVariables)
+
+	sleepInterval := environmentVariables.GetSleepIntervalBetweenTestRuns()
+	happyPathSuite := happypath.TestSuite()
 
 	for {
-		test.Run(happypath.TestSuite())
+		runner.Run(happyPathSuite)
 		time.Sleep(sleepInterval)
 	}
 }

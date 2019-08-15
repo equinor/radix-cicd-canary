@@ -170,6 +170,35 @@ func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runti
 }
 
 /*
+ModifyRegistrationDetails updates specific field s of an application registration
+*/
+func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ModifyRegistrationDetailsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewModifyRegistrationDetailsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "modifyRegistrationDetails",
+		Method:             "PATCH",
+		PathPattern:        "/applications/{appName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ModifyRegistrationDetailsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*ModifyRegistrationDetailsOK), nil
+
+}
+
+/*
 TriggerPipeline runs a pipeline for a given application and branch
 */
 func (a *Client) TriggerPipeline(params *TriggerPipelineParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineOK, error) {

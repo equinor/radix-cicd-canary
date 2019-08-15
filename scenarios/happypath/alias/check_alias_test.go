@@ -1,4 +1,4 @@
-package happypath
+package alias
 
 import (
 	"testing"
@@ -13,9 +13,11 @@ Also running the test may fail, because it may time out.
 
 Its best use is when debugging a single test
 */
-func TestRegisterApplication(t *testing.T) {
+func TestDefaultAliasResponding(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
-	ok, err := registerApplication()
+	environmentVariables := env.NewEnv()
+
+	ok, err := DefaultResponding(environmentVariables)
 	assert.NoError(t, err)
 	assert.True(t, ok)
 }
