@@ -10,14 +10,17 @@ The application is implemented in [Go](https://golang.org/). It provides metrics
 
 Currently, there is one scenario (or suite) implemented called `happypath`, with several tests listed as follows.
 
-1. List applications
-2. Register application
-3. Register application with no deploy key
+1. Register application
+2. Register application with no deploy key
+3. List applications
 4. Build application
 5. Set secret
 6. Check alias responding
 7. Check access to application user should not be able to access
-8. Delete applications
+8. Promote deployment to other environment
+9. Promote deployment to same environment
+10. Checks that access can be locked down by upodating AD group
+11. Delete applications
 
 ## Deploying
 
