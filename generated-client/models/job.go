@@ -29,6 +29,9 @@ type Job struct {
 	// Components (array of ComponentSummary) created by the job
 	Components []*ComponentSummary `json:"components"`
 
+	// Created timestamp
+	Created string `json:"created,omitempty"`
+
 	// Array of deployments
 	Deployments []*DeploymentSummary `json:"deployments"`
 

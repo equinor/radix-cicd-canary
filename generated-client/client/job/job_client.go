@@ -111,6 +111,35 @@ func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo r
 
 }
 
+/*
+StopApplicationJob stops job
+*/
+func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStopApplicationJobParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stopApplicationJob",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/stop",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &StopApplicationJobReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*StopApplicationJobOK), nil
+
+}
+
 // SetTransport changes the transport on the client
 func (a *Client) SetTransport(transport runtime.ClientTransport) {
 	a.transport = transport

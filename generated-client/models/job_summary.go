@@ -28,6 +28,9 @@ type JobSummary struct {
 	// CommitID the commit ID of the branch to build
 	CommitID string `json:"commitID,omitempty"`
 
+	// Created timestamp
+	Created string `json:"created,omitempty"`
+
 	// Ended timestamp
 	Ended string `json:"ended,omitempty"`
 

@@ -54,7 +54,7 @@ func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo
 }
 
 /*
-ShowApplications lists the applications
+ShowApplications lists the applications n o t e doesn t get application summary latest job environments
 */
 func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter) (*ShowApplicationsOK, error) {
 	// TODO: Validate the params before sending

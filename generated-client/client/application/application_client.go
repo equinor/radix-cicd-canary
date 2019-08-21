@@ -170,6 +170,35 @@ func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runti
 }
 
 /*
+ListPipelines lists the supported pipelines
+*/
+func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter) (*ListPipelinesOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewListPipelinesParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "listPipelines",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/pipelines",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ListPipelinesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*ListPipelinesOK), nil
+
+}
+
+/*
 ModifyRegistrationDetails updates specific field s of an application registration
 */
 func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ModifyRegistrationDetailsOK, error) {

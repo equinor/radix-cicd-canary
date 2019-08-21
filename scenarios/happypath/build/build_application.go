@@ -30,14 +30,20 @@ func Application(env env.Env) (bool, error) {
 			return false, nil
 		}
 
-		ok, _ = test.WaitForCheckFunc(env, isSecondJobQueued)
+		ok, _ = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Queued"})
 		if !ok {
 			return false, nil
 		}
 
+		log.Info("Second job was queued")
 		ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{jobName})
 
 		if ok && status.(string) == "Succeeded" {
+			ok, _ = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
+			if !ok {
+				return false, nil
+			}
+
 			return true, nil
 		}
 
@@ -66,10 +72,11 @@ func isJobListed(env env.Env, args []string) (bool, interface{}) {
 	return false, nil
 }
 
-func isSecondJobQueued(env env.Env, args []string) (bool, interface{}) {
+func isSecondJobExpectedStatus(env env.Env, args []string) (bool, interface{}) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
+	expectedStatus := args[0]
 	params := jobclient.NewGetApplicationJobsParams().
 		WithAppName(config.App2Name).
 		WithImpersonateUser(&impersonateUser).
@@ -78,11 +85,11 @@ func isSecondJobQueued(env env.Env, args []string) (bool, interface{}) {
 	client := httpUtils.GetJobClient(env)
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
-	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 && applicationJobs.Payload[0].Status == "Queued" {
+	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 && applicationJobs.Payload[0].Status == expectedStatus {
 		return true, nil
 	}
 
-	log.Info("Job was not listed yet")
+	log.Info("Queued job was not listed yet")
 	return false, nil
 }
 
