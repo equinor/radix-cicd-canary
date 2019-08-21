@@ -46,7 +46,7 @@ func getApplicationAlias(env env.Env) *string {
 	client := httpUtils.GetApplicationClient(env)
 
 	applicationDetails, err := client.GetApplication(params, clientBearerToken)
-	if err == nil && applicationDetails.Payload != nil {
+	if err == nil && applicationDetails.Payload != nil && applicationDetails.Payload.AppAlias != nil {
 		return applicationDetails.Payload.AppAlias.URL
 	}
 
