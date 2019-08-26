@@ -1,8 +1,11 @@
 package promote
 
 import (
+	"strconv"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	log "github.com/sirupsen/logrus"
 )
 
 const environmentToPromoteWithin = "qa"
@@ -30,13 +33,29 @@ func DeploymentWithinEnvironment(env env.Env) (bool, error) {
 	// Get job
 	ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{promoteJobName})
 	if ok && status.(string) == "Succeeded" {
-		deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
-		if err != nil {
-			return false, err
+		doneCheck, ok := test.WaitForCheckFuncWithArguments(env, isNewDeploymentExist, []string{strconv.Itoa(numDeploymentsBefore)})
+		if doneCheck && ok.(bool) {
+			return true, nil
 		}
+	}
 
-		numDeploymentsAfter := len(deploymentsInEnvironment)
-		return (numDeploymentsAfter - numDeploymentsBefore) == 1, nil
+	return false, nil
+}
+
+func isNewDeploymentExist(env env.Env, args []string) (bool, interface{}) {
+	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
+	if err != nil {
+		log.Errorf("Error: %v", err)
+		return true, false
+	}
+	numDeploymentsBefore, err := strconv.Atoi(args[0])
+	if err != nil {
+		log.Errorf("Error: %v", err)
+		return true, false
+	}
+	numDeploymentsAfter := len(deploymentsInEnvironment)
+	if (numDeploymentsAfter - numDeploymentsBefore) == 1 {
+		return true, true
 	}
 
 	return false, nil
