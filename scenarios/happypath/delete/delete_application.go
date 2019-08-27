@@ -1,6 +1,8 @@
 package delete
 
 import (
+	"fmt"
+
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -10,12 +12,26 @@ import (
 
 // Applications Tests that we are able to delete applications
 func Applications(env env.Env) (bool, error) {
+	isAllSuccess := true
+	var allErrors error
+	var errorMessages string
 	success, err := deleteApplication(env, config.App1Name)
 	if !success {
-		return false, err
+		isAllSuccess = false
+		errorMessages += fmt.Sprintf("%s\n", err.Error())
 	}
 
-	return deleteApplication(env, config.App2Name)
+	success, err = deleteApplication(env, config.App2Name)
+	if !success {
+		isAllSuccess = false
+		errorMessages += fmt.Sprintf("%s\n", err.Error())
+	}
+
+	if !isAllSuccess {
+		allErrors = fmt.Errorf("Errors:\n%s", errorMessages)
+	}
+
+	return isAllSuccess, allErrors
 }
 
 func deleteApplication(env env.Env, appName string) (bool, error) {
