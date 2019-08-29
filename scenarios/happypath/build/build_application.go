@@ -23,50 +23,52 @@ func Application(env env.Env) (bool, error) {
 
 	// Get job
 	ok, jobSummary := test.WaitForCheckFunc(env, isJobListed)
-	if ok {
-		jobName := (jobSummary.(*models.JobSummary)).Name
-		log.Infof("First job name: %s", jobName)
+	if !ok {
+		return false, nil
+	}
 
-		// Another build should cause second job to queue up
-		// Trigger another build via web hook
-		time.Sleep(1 * time.Second)
-		ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	jobName := (jobSummary.(*models.JobSummary)).Name
+	log.Infof("First job name: %s", jobName)
+
+	// Another build should cause second job to queue up
+	// Trigger another build via web hook
+	time.Sleep(1 * time.Second)
+	ok = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	if !ok {
+		return false, nil
+	}
+	log.Infof("Second job was triggered")
+
+	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Queued"})
+	if !ok {
+		return false, nil
+	}
+
+	log.Info("Second job was queued")
+	ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{jobName})
+
+	if ok && status.(string) == "Succeeded" {
+		log.Info("First job was completed")
+		ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
 		if !ok {
 			return false, nil
 		}
-		log.Infof("Second job was triggered")
 
-		ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Queued"})
+		// Stop job and verify that it has been stopped
+		jobName = (jobSummary.(*models.JobSummary)).Name
+		log.Infof("Second job name: %s", jobName)
+		ok = stopJob(env, config.App2Name, jobName)
 		if !ok {
 			return false, nil
 		}
 
-		log.Info("Second job was queued")
-		ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{jobName})
-
-		if ok && status.(string) == "Succeeded" {
-			log.Info("First job was completed")
-			ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
-			if !ok {
-				return false, nil
-			}
-
-			// Stop job and verify that it has been stopped
-			jobName = (jobSummary.(*models.JobSummary)).Name
-			log.Infof("Second job name: %s", jobName)
-			ok = stopJob(env, config.App2Name, jobName)
-			if ok {
-				ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Stopped"})
-				if !ok {
-					return false, nil
-				}
-				log.Info("Second job was stopped")
-				return true, nil
-			}
-
+		ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Stopped"})
+		if !ok {
 			return false, nil
 		}
 
+		log.Info("Second job was stopped")
+		return true, nil
 	}
 
 	return false, nil
