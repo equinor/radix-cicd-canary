@@ -46,32 +46,34 @@ func Application(env env.Env) (bool, error) {
 
 	log.Info("Second job was queued")
 	ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{jobName})
-
-	if ok && status.(string) == "Succeeded" {
-		log.Info("First job was completed")
-		ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
-		if !ok {
-			return false, nil
-		}
-
-		// Stop job and verify that it has been stopped
-		jobName = (jobSummary.(*models.JobSummary)).Name
-		log.Infof("Second job name: %s", jobName)
-		ok = stopJob(env, config.App2Name, jobName)
-		if !ok {
-			return false, nil
-		}
-
-		ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Stopped"})
-		if !ok {
-			return false, nil
-		}
-
-		log.Info("Second job was stopped")
-		return true, nil
+	if !ok {
+		return false, nil
+	}
+	if status.(string) != "Succeeded" {
+		return false, nil
 	}
 
-	return false, nil
+	log.Info("First job was completed")
+	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
+	if !ok {
+		return false, nil
+	}
+
+	// Stop job and verify that it has been stopped
+	jobName = (jobSummary.(*models.JobSummary)).Name
+	log.Infof("Second job name: %s", jobName)
+	ok = stopJob(env, config.App2Name, jobName)
+	if !ok {
+		return false, nil
+	}
+
+	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Stopped"})
+	if !ok {
+		return false, nil
+	}
+
+	log.Info("Second job was stopped")
+	return true, nil
 }
 
 func stopJob(env env.Env, appName, jobName string) bool {
