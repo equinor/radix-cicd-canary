@@ -4,8 +4,8 @@ VERSION 	?= latest
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 VAULT_NAME ?= radix-vault-$(ENVIRONMENT)
 CLUSTER_FQDN ?= weekly-31.dev.radix.equinor.com
-RADIX_API_PREFIX ?= server-radix-api-prod
-RADIX_WEBHOOK_PREFIX ?= webhook-radix-github-webhook-prod
+RADIX_API_PREFIX ?= server-radix-api-qa
+RADIX_WEBHOOK_PREFIX ?= webhook-radix-github-webhook-qa
 
 CONTAINER_REPO ?= radix$(ENVIRONMENT)
 DOCKER_REGISTRY	?= $(CONTAINER_REPO).azurecr.io
