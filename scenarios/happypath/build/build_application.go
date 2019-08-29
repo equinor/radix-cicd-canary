@@ -1,6 +1,8 @@
 package build
 
 import (
+	"time"
+
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -17,20 +19,24 @@ func Application(env env.Env) (bool, error) {
 	if !ok {
 		return false, nil
 	}
+	log.Infof("First job was triggered")
 
 	// Get job
 	ok, jobSummary := test.WaitForCheckFunc(env, isJobListed)
 	if ok {
 		jobName := (jobSummary.(*models.JobSummary)).Name
+		log.Infof("First job name: %s", jobName)
 
 		// Another build should cause second job to queue up
 		// Trigger another build via web hook
+		time.Sleep(1 * time.Second)
 		ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
 		if !ok {
 			return false, nil
 		}
+		log.Infof("Second job was triggered")
 
-		ok, _ = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Queued"})
+		ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Queued"})
 		if !ok {
 			return false, nil
 		}
@@ -39,17 +45,53 @@ func Application(env env.Env) (bool, error) {
 		ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{jobName})
 
 		if ok && status.(string) == "Succeeded" {
-			ok, _ = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
+			log.Info("First job was completed")
+			ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
 			if !ok {
 				return false, nil
 			}
 
-			return true, nil
+			// Stop job and verify that it has been stopped
+			jobName = (jobSummary.(*models.JobSummary)).Name
+			log.Infof("Second job name: %s", jobName)
+			ok = stopJob(env, config.App2Name, jobName)
+			if ok {
+				ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Stopped"})
+				if !ok {
+					return false, nil
+				}
+				log.Info("Second job was stopped")
+				return true, nil
+			}
+
+			return false, nil
 		}
 
 	}
 
 	return false, nil
+}
+
+func stopJob(env env.Env, appName, jobName string) bool {
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetJobClient(env)
+
+	params := jobclient.NewStopApplicationJobParams().
+		WithAppName(appName).
+		WithJobName(jobName).
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup)
+
+	jobStopped, err := client.StopApplicationJob(params, clientBearerToken)
+	if err == nil && jobStopped != nil {
+		return true
+	}
+
+	log.Infof("Failed stopping job %s. Error: %v", jobName, err)
+	return false
 }
 
 func isJobListed(env env.Env, args []string) (bool, interface{}) {
@@ -86,17 +128,18 @@ func isSecondJobExpectedStatus(env env.Env, args []string) (bool, interface{}) {
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
 	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 && applicationJobs.Payload[0].Status == expectedStatus {
-		return true, nil
+		log.Infof("Second job was listed with status: %s", expectedStatus)
+		return true, applicationJobs.Payload[0]
 	}
 
-	log.Info("Queued job was not listed yet")
+	log.Infof("Second job was not listed yet. Expected status: %s", expectedStatus)
 	return false, nil
 }
 
 func isJobDone(env env.Env, args []string) (bool, interface{}) {
 	jobStatus := getJobStatus(env, args[0])
 	if jobStatus == "Succeeded" || jobStatus == "Failed" {
-		log.Info("Job is done")
+		log.Infof("Job is done with status: %s", jobStatus)
 		return true, jobStatus
 	}
 
