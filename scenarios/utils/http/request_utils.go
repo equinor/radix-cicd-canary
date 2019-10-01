@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	applicationAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	componentAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/component"
@@ -34,6 +35,11 @@ type WebhookPayload struct {
 // Repository For serializing payload -> Repository
 type Repository struct {
 	SSHURL string `json:"ssh_url"`
+}
+
+// GetHTTPDefaultClient returns a new simple HTTP client
+func GetHTTPDefaultClient() *http.Client {
+	return &http.Client{Timeout: time.Second * 5}
 }
 
 // CreateRequest setup correct header for running tests

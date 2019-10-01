@@ -11,20 +11,6 @@ import (
 )
 
 var (
-	errors = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Name: "radix_test_errors",
-			Help: "Test errors",
-		},
-		[]string{"testName"},
-	)
-	success = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Name: "radix_test_success",
-			Help: "Test success",
-		},
-		[]string{"testName"},
-	)
 	testDurations = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "radix_test_duration",
@@ -42,7 +28,10 @@ var (
 )
 
 // Fn Prototype of a test function
-type Fn func(env env.Env) (success bool, err error)
+type Fn func(env env.Env, suiteName string) (success bool, err error)
+
+// ResultFn Prototype of result of a test function (success or fail)
+type ResultFn func(testName string)
 
 // Suite Holds a list of tests
 type Suite struct {
@@ -57,6 +46,8 @@ type Spec struct {
 	Name        string
 	Description string
 	Test        Fn
+	SuccessFn   ResultFn
+	FailFn      ResultFn
 }
 
 // Runner Instance
@@ -102,12 +93,13 @@ func (runner Runner) Run(suites ...Suite) {
 }
 
 func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) bool {
+	suiteName := suite.Name
 	setupFailed := false
 	start := time.Now()
 
 	for _, setup := range suite.Setup {
 		log.Info(setup.Description)
-		success := runTest(env, setup)
+		success := runTest(env, setup, suiteName)
 		if !success {
 			setupFailed = true
 			log.Warnf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
@@ -122,11 +114,12 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 }
 
 func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
+	suiteName := suite.Name
 	start := time.Now()
 
 	for _, test := range suite.Tests {
 		log.Info(test.Description)
-		success := runTest(env, test)
+		success := runTest(env, test, suiteName)
 		if !success {
 			log.Warnf("Test %s fail. Will escape remaining tests in suite %s", test.Name, suite.Name)
 			break
@@ -139,12 +132,13 @@ func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 }
 
 func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
+	suiteName := suite.Name
 	start := time.Now()
 
 	log.Infof("Running teardown tests in suite %s", suite.Name)
 	for _, test := range suite.Teardown {
 		log.Info(test.Description)
-		runTest(env, test)
+		runTest(env, test, suiteName)
 	}
 
 	end := time.Now()
@@ -152,17 +146,15 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runTest(env env.Env, testToRun Spec) bool {
+func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 	start := time.Now()
 
-	success, err := testToRun.Test(env)
+	success, err := testToRun.Test(env, suiteName)
 	if !success {
-		addTestNoSuccess(testToRun.Name)
-		addTestError(testToRun.Name)
+		testToRun.FailFn(testToRun.Name)
 		log.Errorf("Error calling %s: %v", testToRun.Name, err)
 	} else {
-		addTestSuccess(testToRun.Name)
-		addTestNoError(testToRun.Name)
+		testToRun.SuccessFn(testToRun.Name)
 		log.Info("Test success")
 	}
 
@@ -172,22 +164,6 @@ func runTest(env env.Env, testToRun Spec) bool {
 	addTestDuration(testToRun.Name, elapsed.Seconds())
 	log.Infof("Elapsed time: %v", elapsed)
 	return success
-}
-
-func addTestSuccess(testname string) {
-	success.With(prometheus.Labels{"testName": testname}).Add(1)
-}
-
-func addTestNoSuccess(testname string) {
-	success.With(prometheus.Labels{"testName": testname}).Add(0)
-}
-
-func addTestError(testname string) {
-	errors.With(prometheus.Labels{"testName": testname}).Add(1)
-}
-
-func addTestNoError(testname string) {
-	errors.With(prometheus.Labels{"testName": testname}).Add(0)
 }
 
 func addTestDuration(testname string, durationSec float64) {

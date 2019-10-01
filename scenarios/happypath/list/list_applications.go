@@ -7,8 +7,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var logger *log.Entry
+
 // Applications Test that we are able to list applications
-func Applications(env env.Env) (bool, error) {
+func Applications(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -21,9 +25,9 @@ func Applications(env env.Env) (bool, error) {
 
 	showAppOk, err := client.ShowApplications(params, clientBearerToken)
 	if err == nil {
-		log.Infof("Response length: %v", len(showAppOk.Payload))
+		logger.Infof("Response length: %v", len(showAppOk.Payload))
 		for i, appSummary := range showAppOk.Payload {
-			log.Infof("App %v: %s", i, appSummary.Name)
+			logger.Infof("App %v: %s", i, appSummary.Name)
 		}
 	}
 

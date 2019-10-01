@@ -18,8 +18,12 @@ const (
 	envToDeployTo   = "dev"
 )
 
+var logger *log.Entry
+
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
-func DeploymentToAnotherEnvironment(env env.Env) (bool, error) {
+func DeploymentToAnotherEnvironment(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, envToDeployFrom)
 	if err != nil {
@@ -115,11 +119,11 @@ func promote(env env.Env, deployment *models.DeploymentSummary, from, to string)
 func isJobDone(env env.Env, args []string) (bool, interface{}) {
 	jobStatus := getJobStatus(env, args[0])
 	if jobStatus == "Succeeded" || jobStatus == "Failed" {
-		log.Info("Job is done")
+		logger.Info("Job is done")
 		return true, jobStatus
 	}
 
-	log.Info("Job is not done yet")
+	logger.Info("Job is not done yet")
 	return false, nil
 }
 
@@ -129,7 +133,7 @@ func getJobStatus(env env.Env, jobName string) string {
 		return applicationJob.Status
 	}
 
-	log.Info("Job was not listed yet")
+	logger.Info("Job was not listed yet")
 	return ""
 }
 

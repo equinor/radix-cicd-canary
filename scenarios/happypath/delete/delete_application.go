@@ -10,8 +10,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var logger *log.Entry
+
 // Applications Tests that we are able to delete applications
-func Applications(env env.Env) (bool, error) {
+func Applications(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	isAllSuccess := true
 	var allErrors error
 	var errorMessages string
@@ -48,7 +52,7 @@ func deleteApplication(env env.Env, appName string) (bool, error) {
 
 	_, err := client.DeleteApplication(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling DeleteApplication for application %s: %v", appName, err)
+		logger.Errorf("Error calling DeleteApplication for application %s: %v", appName, err)
 	}
 
 	return err == nil, err

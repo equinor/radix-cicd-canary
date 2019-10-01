@@ -11,9 +11,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var logger *log.Entry
+
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(env env.Env) (bool, error) {
+func Application(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -64,6 +68,6 @@ func isApplicationDefined(env env.Env, args []string) (bool, interface{}) {
 		return true, nil
 	}
 
-	log.Info("Application is not defined")
+	logger.Info("Application is not defined")
 	return false, nil
 }

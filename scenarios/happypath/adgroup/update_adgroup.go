@@ -17,8 +17,12 @@ const (
 	adGroupWithNoAccess = "12345678-9012-3456-7890-123456789012"
 )
 
+var logger *log.Entry
+
 // Update Tests that updates to ad group locks down an application
-func Update(env env.Env) (bool, error) {
+func Update(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	ok, _ := test.WaitForCheckFunc(env, hasAccess)
 	if !ok {
 		return false, nil
@@ -67,7 +71,7 @@ func hasProperAccess(env env.Env, properAccess bool) bool {
 
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
 	if !hasProperAccess {
-		log.Info("Proper access hasn't been granted yet")
+		logger.Info("Proper access hasn't been granted yet")
 	}
 
 	return hasProperAccess
@@ -162,7 +166,7 @@ func setSecret(env env.Env) error {
 
 	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
+		logger.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
 		return err
 	}
 

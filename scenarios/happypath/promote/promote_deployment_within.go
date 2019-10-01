@@ -11,7 +11,9 @@ import (
 const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
-func DeploymentWithinEnvironment(env env.Env) (bool, error) {
+func DeploymentWithinEnvironment(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, environmentToPromoteWithin)
 	if err != nil {
@@ -45,12 +47,12 @@ func DeploymentWithinEnvironment(env env.Env) (bool, error) {
 func isNewDeploymentExist(env env.Env, args []string) (bool, interface{}) {
 	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
 	if err != nil {
-		log.Errorf("Error: %v", err)
+		logger.Errorf("Error: %v", err)
 		return true, false
 	}
 	numDeploymentsBefore, err := strconv.Atoi(args[0])
 	if err != nil {
-		log.Errorf("Error: %v", err)
+		logger.Errorf("Error: %v", err)
 		return true, false
 	}
 	numDeploymentsAfter := len(deploymentsInEnvironment)

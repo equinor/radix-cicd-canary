@@ -1,6 +1,7 @@
 package happypath
 
 import (
+	metrics "github.com/equinor/radix-cicd-canary/metrics/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/adgroup"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/alias"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
@@ -22,11 +23,15 @@ func TestSuite() test.Suite {
 				Name:        "RegisterApplication",
 				Description: "Register application",
 				Test:        register.Application,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "RegisterApplicationWithNoDeployKey",
 				Description: "Register application with no deploy key",
 				Test:        register.ApplicationWithNoDeployKey,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 		},
 		Tests: []test.Spec{
@@ -34,41 +39,57 @@ func TestSuite() test.Suite {
 				Name:        "ListApplications",
 				Description: "List applications",
 				Test:        list.Applications,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "BuildApplication",
 				Description: "Build application",
 				Test:        build.Application,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "SetSecret",
 				Description: "Set secret",
 				Test:        secret.Set,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "DefaultAliasResponding",
 				Description: "Check alias responding",
 				Test:        alias.DefaultResponding,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "UnauthorizedAccess",
 				Description: "Check access to application user should not be able to access",
 				Test:        unauthorized.Access,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "PromoteDeploymentToOtherEnvironment",
 				Description: "Promote deployment to other environment",
 				Test:        promote.DeploymentToAnotherEnvironment,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "PromoteDeploymentWithinEnvironment",
 				Description: "Promote deployment to same environment",
 				Test:        promote.DeploymentWithinEnvironment,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 			{
 				Name:        "UpdateADGroup",
 				Description: "Checks that access can be locked down by upodating AD group",
 				Test:        adgroup.Update,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 		},
 		Teardown: []test.Spec{
@@ -76,7 +97,19 @@ func TestSuite() test.Suite {
 				Name:        "DeleteApplication",
 				Description: "Delete applications",
 				Test:        delete.Applications,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
 			},
 		},
 	}
+}
+
+func successFunction(testName string) {
+	metrics.AddTestSuccess(testName)
+	metrics.AddTestNoError(testName)
+}
+
+func failFunction(testName string) {
+	metrics.AddTestNoSuccess(testName)
+	metrics.AddTestError(testName)
 }
