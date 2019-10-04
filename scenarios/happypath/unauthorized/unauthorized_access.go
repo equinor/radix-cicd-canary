@@ -10,7 +10,7 @@ import (
 
 // Access Checks that we are not able to enter any application we should not
 // have access to
-func Access(env env.Env) (bool, error) {
+func Access(env env.Env, suiteName string) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 

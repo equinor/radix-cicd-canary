@@ -25,6 +25,7 @@ const (
 	timeoutOfTestConfig              = "timeoutOfTest"
 	sleepIntervalBetweenChecksConfig = "sleepIntervalBetweenChecks"
 	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
+	nspSleepIntervalConfig           = "nspSleepInterval"
 )
 
 // Env Holds all the environment variables
@@ -40,6 +41,7 @@ type Env struct {
 	timeoutOfTest                 time.Duration
 	sleepIntervalBetweenCheckFunc time.Duration
 	sleepIntervalBetweenTestRuns  time.Duration
+	nspSleepInterval              time.Duration
 }
 
 // NewEnv Constructor
@@ -56,6 +58,7 @@ func NewEnv() Env {
 		timeoutOfTest(),
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
+		getNSPSleepInterval(),
 	}
 }
 
@@ -112,6 +115,11 @@ func (env Env) GetSleepIntervalBetweenCheckFunc() time.Duration {
 // GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs from config map
 func (env Env) GetSleepIntervalBetweenTestRuns() time.Duration {
 	return env.sleepIntervalBetweenTestRuns
+}
+
+// GetNSPSleepInterval Gets the sleep inteval between NSP test runs from config map
+func (env Env) GetNSPSleepInterval() time.Duration {
+	return env.nspSleepInterval
 }
 
 func getBearerToken() string {
@@ -173,6 +181,15 @@ func getSleepIntervalBetweenTestRuns() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalTestRunsConfig))
 	if err != nil {
 		log.Fatalf("Could not read %s. Err: %v", sleepIntervalTestRunsConfig, err)
+	}
+
+	return time.Duration(sleepInterval) * time.Second
+}
+
+func getNSPSleepInterval() time.Duration {
+	sleepInterval, err := strconv.Atoi(getConfigFromMap(nspSleepIntervalConfig))
+	if err != nil {
+		log.Fatalf("Could not read %s. Err: %v", nspSleepIntervalConfig, err)
 	}
 
 	return time.Duration(sleepInterval) * time.Second

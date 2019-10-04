@@ -10,8 +10,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var logger *log.Entry
+
 // Set Test that we are able to set secret
-func Set(env env.Env) (bool, error) {
+func Set(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	test.WaitForCheckFunc(env, isDeploymentConsistent)
 
 	impersonateUser := env.GetImpersonateUser()
@@ -34,7 +38,7 @@ func Set(env env.Env) (bool, error) {
 
 	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
+		logger.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
 	}
 
 	return err == nil, err
@@ -43,7 +47,7 @@ func Set(env env.Env) (bool, error) {
 func isDeploymentConsistent(env env.Env, args []string) (bool, interface{}) {
 	environmentDetails := getEnvironmentDetails(env)
 	if environmentDetails != nil && environmentDetails.ActiveDeployment != nil && environmentDetails.Status != "" {
-		log.Info("Deployment is consistent. We can set the secret.")
+		logger.Info("Deployment is consistent. We can set the secret.")
 		return true, nil
 	}
 

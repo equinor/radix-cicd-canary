@@ -12,10 +12,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var logger *log.Entry
+
 const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 
 // DefaultResponding Checks if default alias of application is responding
-func DefaultResponding(env env.Env) (bool, error) {
+func DefaultResponding(env env.Env, suiteName string) (bool, error) {
+	logger = log.WithFields(log.Fields{"Suite": suiteName})
+
 	ok, _ := test.WaitForCheckFunc(env, isAppAliasDefined)
 	publicDomainName := getPublicDomainName(env)
 
@@ -26,11 +30,11 @@ func DefaultResponding(env env.Env) (bool, error) {
 func isAppAliasDefined(env env.Env, args []string) (bool, interface{}) {
 	appAlias := getApplicationAlias(env)
 	if appAlias != nil {
-		log.Info("App alias is defined. Now we can try to hit it to see if it responds")
+		logger.Info("App alias is defined. Now we can try to hit it to see if it responds")
 		return true, *appAlias
 	}
 
-	log.Info("App alias is not yet defined")
+	logger.Info("App alias is not yet defined")
 	return false, nil
 }
 
@@ -84,10 +88,10 @@ func isAliasResponding(env env.Env, args []string) (bool, interface{}) {
 	resp, err := client.Do(req)
 
 	if err == nil && resp.StatusCode == 200 {
-		log.Info("App alias responded ok")
+		logger.Info("App alias responded ok")
 		return true, nil
 	}
 
-	log.Info("Alias is still not responding")
+	logger.Info("Alias is still not responding")
 	return false, nil
 }

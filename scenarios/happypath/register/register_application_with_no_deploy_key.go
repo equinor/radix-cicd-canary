@@ -11,7 +11,7 @@ import (
 
 // ApplicationWithNoDeployKey Tests that we are able to register application
 // with no deploy key and that deploy key is generated
-func ApplicationWithNoDeployKey(env env.Env) (bool, error) {
+func ApplicationWithNoDeployKey(env env.Env, suiteName string) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 

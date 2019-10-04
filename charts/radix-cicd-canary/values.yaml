@@ -32,3 +32,4 @@ clusterFqdn: weekly-27.dev.radix.equinor.com
 timeoutOfTest: 1200
 sleepIntervalBetweenChecks: 5
 sleepIntervalTestRuns: 300
+nspSleepInterval: 15
