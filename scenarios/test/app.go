@@ -3,28 +3,10 @@ package test
 import (
 	"time"
 
+	"github.com/equinor/radix-cicd-canary/metrics"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
-)
-
-var (
-	testDurations = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Name: "radix_test_duration",
-			Help: "Duration of test",
-		},
-		[]string{"testName"},
-	)
-	scenarioDurations = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Name: "radix_scenario_duration",
-			Help: "Duration of Scenario",
-		},
-		[]string{"scenario"},
-	)
 )
 
 // Fn Prototype of a test function
@@ -87,7 +69,7 @@ func (runner Runner) Run(suites ...Suite) {
 	}
 
 	for scenario, elapsed := range scenarioDuration {
-		scenarioDurations.With(prometheus.Labels{"scenario": scenario}).Add(elapsed.Seconds())
+		metrics.AddScenarioDuration(scenario, elapsed)
 		log.Infof("%s elapsed time: %v", scenario, elapsed)
 	}
 }
@@ -161,11 +143,7 @@ func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 	end := time.Now()
 	elapsed := end.Sub(start)
 
-	addTestDuration(testToRun.Name, elapsed.Seconds())
+	metrics.AddTestDuration(testToRun.Name, elapsed)
 	log.Infof("Elapsed time: %v", elapsed)
 	return success
-}
-
-func addTestDuration(testname string, durationSec float64) {
-	testDurations.With(prometheus.Labels{"testName": testname}).Add(durationSec)
 }

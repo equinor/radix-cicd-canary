@@ -3,7 +3,7 @@ package ingress
 import (
 	"fmt"
 
-	metrics "github.com/equinor/radix-cicd-canary/metrics/nsp"
+	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
