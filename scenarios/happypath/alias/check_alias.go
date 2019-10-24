@@ -70,7 +70,9 @@ func getPublicDomainName(env env.Env) string {
 	client := httpUtils.GetEnvironmentClient(env)
 
 	environmentDetails, err := client.GetEnvironment(params, clientBearerToken)
-	if err == nil && environmentDetails.Payload != nil {
+	if err == nil &&
+		environmentDetails.Payload != nil &&
+		environmentDetails.Payload.ActiveDeployment != nil {
 		for _, component := range environmentDetails.Payload.ActiveDeployment.Components {
 			componentName := *component.Name
 			if componentName == config.App2Component1Name {
