@@ -8,8 +8,9 @@ The application is implemented in [Go](https://golang.org/). It provides metrics
 
 ![pic](diagrams/radix-cicd-canary.png)
 
-Currently, there is one scenario (or suite) implemented called `happypath`, with several tests listed as follows.
+Currently, there are two scenarios (or suites) implemented, named `Happy path` and `NSP`.
 
+The `Happy path` suite contains the following tests.
 1. Register application
 2. Register application with no deploy key
 3. List applications
@@ -21,6 +22,10 @@ Currently, there is one scenario (or suite) implemented called `happypath`, with
 9. Promote deployment to same environment
 10. Checks that access can be locked down by upodating AD group
 11. Delete applications
+
+The `NSP` suite contains the following tests.
+1. Reach ingress
+2. Reach service in different namespace
 
 ## Deploying
 

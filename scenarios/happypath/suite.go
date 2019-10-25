@@ -86,7 +86,7 @@ func TestSuite() test.Suite {
 			},
 			{
 				Name:        "UpdateADGroup",
-				Description: "Checks that access can be locked down by upodating AD group",
+				Description: "Checks that access can be locked down by updating AD group",
 				Test:        adgroup.Update,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
