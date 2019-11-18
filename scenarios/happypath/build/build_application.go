@@ -67,7 +67,7 @@ func Application(env env.Env, suiteName string) (bool, error) {
 
 	logger.Info("First job was completed")
 	log := getJobLogForStep(env, jobName, "build-app")
-	if !strings.Contains(log, Secret1Value) || strings.Contains(log, Secret2Value) {
+	if !strings.Contains(log, Secret1Value) || !strings.Contains(log, Secret2Value) {
 		logger.Error("Build secrets are not contained in build log")
 		return false, nil
 	}
