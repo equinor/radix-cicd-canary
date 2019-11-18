@@ -1,7 +1,10 @@
 package buildsecrets
 
 import (
-	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
+	"strings"
+
+	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -22,43 +25,94 @@ func Set(env env.Env, suiteName string) (bool, error) {
 		return false, nil
 	}
 
-	logger.Infof("Job was triggered to apply RA")
+	logger.Info("Job was triggered to apply RA")
 
 	// Get job
-	ok, _ = test.WaitForCheckFunc(env, jobIsListedAndFailed)
+	ok, jobSummary := test.WaitForCheckFuncWithArguments(env, build.IsJobListedWithStatus, []string{"Failed"})
 	if !ok {
+		return false, nil
+	}
+
+	jobName := (jobSummary.(*models.JobSummary)).Name
+	job := build.Job(env, jobName)
+	if len(job.Steps) != 2 {
+		logger.Error("Job should not contain any build step")
 		return false, nil
 	}
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
+	ok, _ = test.WaitForCheckFuncWithArguments(env, buildSecretsAreListedWithStatus, []string{"Pending"})
+	if !ok {
+		return false, nil
+	}
+
+	ok, err := setSecret(env, build.Secret1, build.Secret1Value)
+	if !ok {
+		return false, err
+	}
+
+	ok, err = setSecret(env, build.Secret2, build.Secret2Value)
+	if !ok {
+		return false, err
+	}
+
+	ok, _ = test.WaitForCheckFuncWithArguments(env, buildSecretsAreListedWithStatus, []string{"Consistent"})
+	if !ok {
+		return false, nil
+	}
 
 	return true, nil
 }
 
-func jobIsListedAndFailed(env env.Env, args []string) (bool, interface{}) {
+func buildSecretsAreListedWithStatus(env env.Env, args []string) (bool, interface{}) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := jobclient.NewGetApplicationJobsParams().
+	expectedStatus := args[0]
+	params := applicationclient.NewGetBuildSecretsParams().
 		WithAppName(config.App2Name).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	client := httpUtils.GetApplicationClient(env)
 
-	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
-	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 {
-		jobName := applicationJobs.Payload[0].Name
-		job := build.Job(env, jobName)
-
-		// Job has failed status and has no build step
-		if job != nil && job.Status == "Failed" && len(job.Steps) == 2 {
-			return true, applicationJobs.Payload[0]
+	buildsecrets, err := client.GetBuildSecrets(params, clientBearerToken)
+	if err == nil && buildsecrets.Payload != nil && len(buildsecrets.Payload) == 2 {
+		if strings.EqualFold(*buildsecrets.Payload[0].Name, build.Secret1) &&
+			strings.EqualFold(buildsecrets.Payload[0].Status, expectedStatus) &&
+			strings.EqualFold(*buildsecrets.Payload[1].Name, build.Secret2) &&
+			strings.EqualFold(buildsecrets.Payload[1].Status, expectedStatus) {
+			return true, nil
 		}
 	}
 
-	logger.Info("Job was not listed yet")
+	logger.Info("Build secrets are not listed yet")
 	return false, nil
+}
 
+func setSecret(env env.Env, secretName, secretValue string) (bool, error) {
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+
+	secretParameters := models.SecretParameters{
+		SecretValue: &secretValue,
+	}
+
+	params := applicationclient.NewUpdateBuildSecretsSecretValueParams().
+		WithAppName(config.App2Name).
+		WithSecretName(secretName).
+		WithSecretValue(&secretParameters).
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup)
+
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetApplicationClient(env)
+
+	_, err := client.UpdateBuildSecretsSecretValue(params, clientBearerToken)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
