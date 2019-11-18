@@ -24,14 +24,12 @@ type TriggerPipelineReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *TriggerPipelineReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewTriggerPipelineOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewTriggerPipelineNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -59,6 +57,10 @@ type TriggerPipelineOK struct {
 
 func (o *TriggerPipelineOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/{pipelineName}][%d] triggerPipelineOK  %+v", 200, o.Payload)
+}
+
+func (o *TriggerPipelineOK) GetPayload() *models.JobSummary {
+	return o.Payload
 }
 
 func (o *TriggerPipelineOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

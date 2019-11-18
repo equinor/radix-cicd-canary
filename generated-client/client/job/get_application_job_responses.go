@@ -24,21 +24,18 @@ type GetApplicationJobReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetApplicationJobReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetApplicationJobOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetApplicationJobUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetApplicationJobNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -66,6 +63,10 @@ type GetApplicationJobOK struct {
 
 func (o *GetApplicationJobOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}][%d] getApplicationJobOK  %+v", 200, o.Payload)
+}
+
+func (o *GetApplicationJobOK) GetPayload() *models.Job {
+	return o.Payload
 }
 
 func (o *GetApplicationJobOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

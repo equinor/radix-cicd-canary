@@ -24,28 +24,24 @@ type RegisterApplicationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *RegisterApplicationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewRegisterApplicationOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewRegisterApplicationBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewRegisterApplicationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 409:
 		result := NewRegisterApplicationConflict()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -73,6 +69,10 @@ type RegisterApplicationOK struct {
 
 func (o *RegisterApplicationOK) Error() string {
 	return fmt.Sprintf("[POST /applications][%d] registerApplicationOK  %+v", 200, o.Payload)
+}
+
+func (o *RegisterApplicationOK) GetPayload() *models.ApplicationRegistration {
+	return o.Payload
 }
 
 func (o *RegisterApplicationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

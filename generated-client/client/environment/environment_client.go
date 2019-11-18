@@ -6,6 +6,8 @@ package environment
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"fmt"
+
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
@@ -49,8 +51,14 @@ func (a *Client) ChangeEnvironmentComponentSecret(params *ChangeEnvironmentCompo
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ChangeEnvironmentComponentSecretOK), nil
-
+	success, ok := result.(*ChangeEnvironmentComponentSecretOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for changeEnvironmentComponentSecret: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -78,8 +86,14 @@ func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo run
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteEnvironmentOK), nil
-
+	success, ok := result.(*DeleteEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -107,8 +121,14 @@ func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvi
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetApplicationEnvironmentDeploymentsOK), nil
-
+	success, ok := result.(*GetApplicationEnvironmentDeploymentsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getApplicationEnvironmentDeployments: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -136,8 +156,14 @@ func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetEnvironmentOK), nil
-
+	success, ok := result.(*GetEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -165,8 +191,14 @@ func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, auth
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetEnvironmentSummaryOK), nil
-
+	success, ok := result.(*GetEnvironmentSummaryOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getEnvironmentSummary: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

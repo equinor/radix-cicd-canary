@@ -5,6 +5,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/adgroup"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/alias"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath/buildsecrets"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/delete"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/list"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/promote"
@@ -39,6 +40,13 @@ func TestSuite() test.Suite {
 				Name:        "ListApplications",
 				Description: "List applications",
 				Test:        list.Applications,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			},
+			{
+				Name:        "BuildSecrets",
+				Description: "Set build secrets",
+				Test:        buildsecrets.Set,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},

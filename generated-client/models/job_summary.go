@@ -87,8 +87,8 @@ const (
 	// JobSummaryPipelineBuildDeploy captures enum value "build-deploy"
 	JobSummaryPipelineBuildDeploy string = "build-deploy"
 
-	// JobSummaryPipelineNrBuild captures enum value " build"
-	JobSummaryPipelineNrBuild string = " build"
+	// JobSummaryPipelineBuild captures enum value " build"
+	JobSummaryPipelineBuild string = " build"
 )
 
 // prop value enum

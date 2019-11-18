@@ -6,6 +6,8 @@ package component
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"fmt"
+
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
@@ -49,8 +51,14 @@ func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAut
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ComponentsOK), nil
-
+	success, ok := result.(*ComponentsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for components: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -78,8 +86,119 @@ func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (
 	if err != nil {
 		return nil, err
 	}
-	return result.(*LogOK), nil
+	success, ok := result.(*LogOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for log: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
 
+/*
+RestartComponent restarts component
+*/
+func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*RestartComponentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRestartComponentParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "restartComponent",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/restart",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &RestartComponentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RestartComponentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for restartComponent: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+StartComponent starts component
+*/
+func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StartComponentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStartComponentParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "startComponent",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/start",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &StartComponentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*StartComponentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for startComponent: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+StopComponent stops component
+*/
+func (a *Client) StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StopComponentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStopComponentParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "stopComponent",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/stop",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &StopComponentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*StopComponentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stopComponent: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

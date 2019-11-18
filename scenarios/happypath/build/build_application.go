@@ -156,6 +156,17 @@ func isJobDone(env env.Env, args []string) (bool, interface{}) {
 }
 
 func getJobStatus(env env.Env, jobName string) string {
+	job := Job(env, jobName)
+	if job != nil {
+		return job.Status
+	}
+
+	logger.Info("Job was not listed yet")
+	return ""
+}
+
+// Job gets job from job name
+func Job(env env.Env, jobName string) *models.Job {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -170,9 +181,8 @@ func getJobStatus(env env.Env, jobName string) string {
 
 	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
 	if err == nil && applicationJob.Payload != nil {
-		return applicationJob.Payload.Status
+		return applicationJob.Payload
 	}
 
-	logger.Info("Job was not listed yet")
-	return ""
+	return nil
 }

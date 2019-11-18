@@ -39,6 +39,9 @@ type Component struct {
 	// Component secret names. From radixconfig.yaml
 	Secrets []string `json:"secrets"`
 
+	// Status of the component
+	Status string `json:"status,omitempty"`
+
 	// Variable names map to values. From radixconfig.yaml
 	Variables map[string]string `json:"variables,omitempty"`
 }
