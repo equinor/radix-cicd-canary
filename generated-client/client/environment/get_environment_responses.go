@@ -24,21 +24,18 @@ type GetEnvironmentReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetEnvironmentReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetEnvironmentOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetEnvironmentUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetEnvironmentNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -66,6 +63,10 @@ type GetEnvironmentOK struct {
 
 func (o *GetEnvironmentOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}][%d] getEnvironmentOK  %+v", 200, o.Payload)
+}
+
+func (o *GetEnvironmentOK) GetPayload() *models.Environment {
+	return o.Payload
 }
 
 func (o *GetEnvironmentOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

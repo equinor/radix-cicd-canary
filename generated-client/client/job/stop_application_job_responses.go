@@ -21,21 +21,18 @@ type StopApplicationJobReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StopApplicationJobReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewStopApplicationJobOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewStopApplicationJobUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewStopApplicationJobNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {

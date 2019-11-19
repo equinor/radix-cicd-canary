@@ -24,14 +24,12 @@ type ComponentsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ComponentsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewComponentsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 404:
 		result := NewComponentsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -59,6 +57,10 @@ type ComponentsOK struct {
 
 func (o *ComponentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components][%d] componentsOK  %+v", 200, o.Payload)
+}
+
+func (o *ComponentsOK) GetPayload() []*models.Component {
+	return o.Payload
 }
 
 func (o *ComponentsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

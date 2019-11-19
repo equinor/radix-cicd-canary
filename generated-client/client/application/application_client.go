@@ -6,6 +6,8 @@ package application
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"fmt"
+
 	"github.com/go-openapi/runtime"
 
 	strfmt "github.com/go-openapi/strfmt"
@@ -49,8 +51,14 @@ func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsPara
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ChangeRegistrationDetailsOK), nil
-
+	success, ok := result.(*ChangeRegistrationDetailsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for changeRegistrationDetails: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -78,8 +86,14 @@ func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo run
 	if err != nil {
 		return nil, err
 	}
-	return result.(*DeleteApplicationOK), nil
-
+	success, ok := result.(*DeleteApplicationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteApplication: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -107,8 +121,49 @@ func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetApplicationOK), nil
+	success, ok := result.(*GetApplicationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getApplication: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
 
+/*
+GetBuildSecrets lists the application build secrets
+*/
+func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBuildSecretsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetBuildSecretsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getBuildSecrets",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/buildsecrets",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetBuildSecretsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetBuildSecretsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getBuildSecrets: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -136,8 +191,49 @@ func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	return result.(*GetDeploymentsOK), nil
+	success, ok := result.(*GetDeploymentsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getDeployments: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
 
+/*
+GetPrivateImageHubs lists the application private image hubs
+*/
+func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPrivateImageHubsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetPrivateImageHubsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getPrivateImageHubs",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/privateimagehubs",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetPrivateImageHubsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetPrivateImageHubsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getPrivateImageHubs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -165,8 +261,14 @@ func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	return result.(*IsDeployKeyValidOK), nil
-
+	success, ok := result.(*IsDeployKeyValidOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for isDeployKeyValid: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -194,8 +296,14 @@ func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.Cli
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ListPipelinesOK), nil
-
+	success, ok := result.(*ListPipelinesOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for listPipelines: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -223,8 +331,14 @@ func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsPara
 	if err != nil {
 		return nil, err
 	}
-	return result.(*ModifyRegistrationDetailsOK), nil
-
+	success, ok := result.(*ModifyRegistrationDetailsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for modifyRegistrationDetails: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -252,8 +366,84 @@ func (a *Client) TriggerPipeline(params *TriggerPipelineParams, authInfo runtime
 	if err != nil {
 		return nil, err
 	}
-	return result.(*TriggerPipelineOK), nil
+	success, ok := result.(*TriggerPipelineOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for triggerPipeline: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
 
+/*
+UpdateBuildSecretsSecretValue updates an application build secret
+*/
+func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateBuildSecretsSecretValueOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpdateBuildSecretsSecretValueParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "updateBuildSecretsSecretValue",
+		Method:             "PUT",
+		PathPattern:        "/applications/{appName}/buildsecrets/{secretName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &UpdateBuildSecretsSecretValueReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*UpdateBuildSecretsSecretValueOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateBuildSecretsSecretValue: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+UpdatePrivateImageHubsSecretValue updates an application private image hub secret
+*/
+func (a *Client) UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdatePrivateImageHubsSecretValueOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpdatePrivateImageHubsSecretValueParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "updatePrivateImageHubsSecretValue",
+		Method:             "PUT",
+		PathPattern:        "/applications/{appName}/privateimagehubs/{serverName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &UpdatePrivateImageHubsSecretValueReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*UpdatePrivateImageHubsSecretValueOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updatePrivateImageHubsSecretValue: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 // SetTransport changes the transport on the client

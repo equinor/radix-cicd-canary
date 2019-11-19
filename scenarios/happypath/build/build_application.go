@@ -1,6 +1,7 @@
 package build
 
 import (
+	"strings"
 	"time"
 
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
@@ -14,6 +15,13 @@ import (
 
 var logger *log.Entry
 
+const (
+	Secret1      = "SECRET_1"
+	Secret2      = "SECRET_2"
+	Secret1Value = "SECRET_1_VALUE"
+	Secret2Value = "SECRET_2_VALUE"
+)
+
 // Application Tests that we are able to successfully build an application
 func Application(env env.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
@@ -26,7 +34,7 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	logger.Infof("First job was triggered")
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFunc(env, isJobListed)
+	ok, jobSummary := test.WaitForCheckFuncWithArguments(env, IsJobListedWithStatus, []string{"Running"})
 	if !ok {
 		return false, nil
 	}
@@ -43,7 +51,7 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	}
 	logger.Infof("Second job was triggered")
 
-	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Queued"})
+	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, IsJobListedWithStatus, []string{"Queued"})
 	if !ok {
 		return false, nil
 	}
@@ -58,7 +66,13 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	}
 
 	logger.Info("First job was completed")
-	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Running"})
+	log := getJobLogForStep(env, jobName, "build-app")
+	if !strings.Contains(log, Secret1Value) || !strings.Contains(log, Secret2Value) {
+		logger.Error("Build secrets are not contained in build log")
+		return false, nil
+	}
+
+	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, IsJobListedWithStatus, []string{"Running"})
 	if !ok {
 		return false, nil
 	}
@@ -71,7 +85,7 @@ func Application(env env.Env, suiteName string) (bool, error) {
 		return false, nil
 	}
 
-	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, isSecondJobExpectedStatus, []string{"Stopped"})
+	ok, jobSummary = test.WaitForCheckFuncWithArguments(env, IsJobListedWithStatus, []string{"Stopped"})
 	if !ok {
 		return false, nil
 	}
@@ -102,27 +116,8 @@ func stopJob(env env.Env, appName, jobName string) bool {
 	return false
 }
 
-func isJobListed(env env.Env, args []string) (bool, interface{}) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
-
-	params := jobclient.NewGetApplicationJobsParams().
-		WithAppName(config.App2Name).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
-
-	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
-	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 {
-		return true, applicationJobs.Payload[0]
-	}
-
-	logger.Info("Job was not listed yet")
-	return false, nil
-}
-
-func isSecondJobExpectedStatus(env env.Env, args []string) (bool, interface{}) {
+// IsJobListedWithStatus Checks if job exists with status
+func IsJobListedWithStatus(env env.Env, args []string) (bool, interface{}) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -135,12 +130,12 @@ func isSecondJobExpectedStatus(env env.Env, args []string) (bool, interface{}) {
 	client := httpUtils.GetJobClient(env)
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
-	if err == nil && applicationJobs.Payload != nil && len(applicationJobs.Payload) > 0 && applicationJobs.Payload[0].Status == expectedStatus {
-		logger.Infof("Second job was listed with status: %s", expectedStatus)
+	if err == nil && applicationJobs.Payload != nil &&
+		len(applicationJobs.Payload) > 0 &&
+		applicationJobs.Payload[0].Status == expectedStatus {
 		return true, applicationJobs.Payload[0]
 	}
 
-	logger.Infof("Second job was not listed yet. Expected status: %s", expectedStatus)
 	return false, nil
 }
 
@@ -156,6 +151,17 @@ func isJobDone(env env.Env, args []string) (bool, interface{}) {
 }
 
 func getJobStatus(env env.Env, jobName string) string {
+	job := Job(env, jobName)
+	if job != nil {
+		return job.Status
+	}
+
+	logger.Info("Job was not listed yet")
+	return ""
+}
+
+// Job gets job from job name
+func Job(env env.Env, jobName string) *models.Job {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -170,9 +176,36 @@ func getJobStatus(env env.Env, jobName string) string {
 
 	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
 	if err == nil && applicationJob.Payload != nil {
-		return applicationJob.Payload.Status
+		return applicationJob.Payload
 	}
 
-	logger.Info("Job was not listed yet")
+	return nil
+}
+
+// Job gets job from job name
+func getJobLogForStep(env env.Env, jobName, stepName string) string {
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+
+	params := jobclient.NewGetApplicationJobLogsParams().
+		WithAppName(config.App2Name).
+		WithJobName(jobName).
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup)
+
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetJobClient(env)
+
+	applicationJobLogs, err := client.GetApplicationJobLogs(params, clientBearerToken)
+	if err == nil &&
+		applicationJobLogs.Payload != nil {
+
+		for _, stepLog := range applicationJobLogs.Payload {
+			if strings.EqualFold(*stepLog.Name, stepName) {
+				return stepLog.Log
+			}
+		}
+	}
+
 	return ""
 }

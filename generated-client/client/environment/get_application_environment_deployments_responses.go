@@ -24,21 +24,18 @@ type GetApplicationEnvironmentDeploymentsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetApplicationEnvironmentDeploymentsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetApplicationEnvironmentDeploymentsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetApplicationEnvironmentDeploymentsUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetApplicationEnvironmentDeploymentsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -66,6 +63,10 @@ type GetApplicationEnvironmentDeploymentsOK struct {
 
 func (o *GetApplicationEnvironmentDeploymentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/deployments][%d] getApplicationEnvironmentDeploymentsOK  %+v", 200, o.Payload)
+}
+
+func (o *GetApplicationEnvironmentDeploymentsOK) GetPayload() []*models.DeploymentSummary {
+	return o.Payload
 }
 
 func (o *GetApplicationEnvironmentDeploymentsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

@@ -24,21 +24,18 @@ type GetApplicationReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetApplicationReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetApplicationOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetApplicationUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetApplicationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -66,6 +63,10 @@ type GetApplicationOK struct {
 
 func (o *GetApplicationOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationOK  %+v", 200, o.Payload)
+}
+
+func (o *GetApplicationOK) GetPayload() *models.Application {
+	return o.Payload
 }
 
 func (o *GetApplicationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

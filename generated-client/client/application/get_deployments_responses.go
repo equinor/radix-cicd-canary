@@ -24,21 +24,18 @@ type GetDeploymentsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetDeploymentsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetDeploymentsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetDeploymentsUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetDeploymentsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -66,6 +63,10 @@ type GetDeploymentsOK struct {
 
 func (o *GetDeploymentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments][%d] getDeploymentsOK  %+v", 200, o.Payload)
+}
+
+func (o *GetDeploymentsOK) GetPayload() []*models.DeploymentSummary {
+	return o.Payload
 }
 
 func (o *GetDeploymentsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

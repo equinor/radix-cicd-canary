@@ -24,21 +24,18 @@ type GetApplicationJobLogsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *GetApplicationJobLogsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewGetApplicationJobLogsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 401:
 		result := NewGetApplicationJobLogsUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewGetApplicationJobLogsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -66,6 +63,10 @@ type GetApplicationJobLogsOK struct {
 
 func (o *GetApplicationJobLogsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/logs][%d] getApplicationJobLogsOK  %+v", 200, o.Payload)
+}
+
+func (o *GetApplicationJobLogsOK) GetPayload() []*models.StepLog {
+	return o.Payload
 }
 
 func (o *GetApplicationJobLogsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

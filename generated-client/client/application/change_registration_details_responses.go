@@ -24,35 +24,30 @@ type ChangeRegistrationDetailsReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *ChangeRegistrationDetailsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-
 	case 200:
 		result := NewChangeRegistrationDetailsOK()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return result, nil
-
 	case 400:
 		result := NewChangeRegistrationDetailsBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 401:
 		result := NewChangeRegistrationDetailsUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 404:
 		result := NewChangeRegistrationDetailsNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
 		return nil, result
-
 	case 409:
 		result := NewChangeRegistrationDetailsConflict()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -80,6 +75,10 @@ type ChangeRegistrationDetailsOK struct {
 
 func (o *ChangeRegistrationDetailsOK) Error() string {
 	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsOK  %+v", 200, o.Payload)
+}
+
+func (o *ChangeRegistrationDetailsOK) GetPayload() *models.ApplicationRegistration {
+	return o.Payload
 }
 
 func (o *ChangeRegistrationDetailsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
