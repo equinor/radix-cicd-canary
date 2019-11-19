@@ -87,6 +87,7 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 			log.Warnf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
 			break
 		}
+		log.Infof("Setup success %s", setup.Description)
 	}
 
 	end := time.Now()

@@ -23,7 +23,7 @@ var logger *log.Entry
 func Update(env env.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	ok, _ := test.WaitForCheckFunc(env, hasAccess)
+	ok, _ := test.WaitForCheckFuncOrTimeout(env, hasAccess)
 	if !ok {
 		return false, nil
 	}
@@ -33,7 +33,7 @@ func Update(env env.Env, suiteName string) (bool, error) {
 		return false, err
 	}
 
-	ok, _ = test.WaitForCheckFunc(env, hasNoAccess)
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, hasNoAccess)
 	if !ok {
 		return false, nil
 	}
@@ -43,7 +43,7 @@ func Update(env env.Env, suiteName string) (bool, error) {
 		return false, err
 	}
 
-	ok, _ = test.WaitForCheckFunc(env, hasAccess)
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, hasAccess)
 	if !ok {
 		return false, err
 	}
@@ -51,11 +51,11 @@ func Update(env env.Env, suiteName string) (bool, error) {
 	return true, nil
 }
 
-func hasNoAccess(env env.Env, args []string) (bool, interface{}) {
+func hasNoAccess(env env.Env) (bool, interface{}) {
 	return hasProperAccess(env, false), nil
 }
 
-func hasAccess(env env.Env, args []string) (bool, interface{}) {
+func hasAccess(env env.Env) (bool, interface{}) {
 	return hasProperAccess(env, true), nil
 }
 

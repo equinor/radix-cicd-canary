@@ -1,12 +1,17 @@
-FROM golang:alpine3.9 as builder
+FROM golang:alpine3.10 as builder
 
-RUN apk update && apk add git && apk add -y ca-certificates curl && \
-    curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+ENV GO111MODULE=on
+
+RUN apk update && apk add git && apk add ca-certificates curl
+
 WORKDIR /go/src/github.com/equinor/radix-cicd-canary/
-COPY Gopkg.toml Gopkg.lock ./
-RUN dep ensure -vendor-only
+
+# get go dependecies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# build app
 COPY . .
-WORKDIR /go/src/github.com/equinor/radix-cicd-canary/
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -a -installsuffix cgo -o ./rootfs/radix-cicd-canary
 RUN adduser -D -g '' radix-cicd-canary
 

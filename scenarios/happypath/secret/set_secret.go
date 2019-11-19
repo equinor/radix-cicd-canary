@@ -16,7 +16,7 @@ var logger *log.Entry
 func Set(env env.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	test.WaitForCheckFunc(env, isDeploymentConsistent)
+	test.WaitForCheckFuncOrTimeout(env, isDeploymentConsistent)
 
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
@@ -44,7 +44,7 @@ func Set(env env.Env, suiteName string) (bool, error) {
 	return err == nil, err
 }
 
-func isDeploymentConsistent(env env.Env, args []string) (bool, interface{}) {
+func isDeploymentConsistent(env env.Env) (bool, interface{}) {
 	environmentDetails := getEnvironmentDetails(env)
 	if environmentDetails != nil && environmentDetails.ActiveDeployment != nil && environmentDetails.Status != "" {
 		logger.Info("Deployment is consistent. We can set the secret.")
