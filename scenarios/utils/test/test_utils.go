@@ -3,23 +3,29 @@ package test
 import (
 	"time"
 
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 )
 
 // CheckFn The prototype function for any check function
-type CheckFn func(env env.Env, args []string) (bool, interface{})
+type CheckFn func(env envUtil.Env, args []string) (bool, interface{})
+
+// CheckFnNew The prototype function for any check function
+type CheckFnNew func(env envUtil.Env) (bool, interface{})
 
 // WaitForCheckFunc Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFunc(env env.Env, checkFunc CheckFn) (bool, interface{}) {
-	return waitForCheckFuncOrTimeout(env, checkFunc, []string{})
+func WaitForCheckFunc(env envUtil.Env, checkFunc CheckFn) (bool, interface{}) {
+	fn := func(env envUtil.Env) (bool, interface{}) { return checkFunc(env, []string{}) }
+	return WaitForCheckFuncOrTimeout(env, fn)
 }
 
 // WaitForCheckFuncWithArguments Function to pass arguments to check function
-func WaitForCheckFuncWithArguments(env env.Env, checkFunc CheckFn, args []string) (bool, interface{}) {
-	return waitForCheckFuncOrTimeout(env, checkFunc, args)
+func WaitForCheckFuncWithArguments(env envUtil.Env, checkFunc CheckFn, args []string) (bool, interface{}) {
+	fn := func(env envUtil.Env) (bool, interface{}) { return checkFunc(env, args) }
+	return WaitForCheckFuncOrTimeout(env, fn)
 }
 
-func waitForCheckFuncOrTimeout(env env.Env, checkFunc CheckFn, args []string) (bool, interface{}) {
+// WaitForCheckFuncOrTimeout Call this to ensure we wait until a check is reached, or time out
+func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, interface{}) {
 	timeout := env.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := env.GetSleepIntervalBetweenCheckFunc()
 
@@ -27,7 +33,7 @@ func waitForCheckFuncOrTimeout(env env.Env, checkFunc CheckFn, args []string) (b
 
 	for {
 		startTime := time.Now()
-		success, obj := checkFunc(env, args)
+		success, obj := checkFunc(env)
 		if success {
 			return true, obj
 		}

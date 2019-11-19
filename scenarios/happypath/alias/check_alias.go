@@ -1,12 +1,13 @@
 package alias
 
 import (
+	"fmt"
 	"net/http"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
@@ -17,20 +18,23 @@ var logger *log.Entry
 const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 
 // DefaultResponding Checks if default alias of application is responding
-func DefaultResponding(env env.Env, suiteName string) (bool, error) {
+func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	ok, _ := test.WaitForCheckFunc(env, isAppAliasDefined)
+	ok, _ := test.WaitForCheckFuncOrTimeout(env, isAppAliasDefined)
 	publicDomainName := getPublicDomainName(env)
+	if publicDomainName == "" {
+		return false, fmt.Errorf("Public domain name of alias is empty")
+	}
 
-	ok, _ = test.WaitForCheckFuncWithArguments(env, isAliasResponding, []string{publicDomainName})
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) { return isAliasResponding(env, publicDomainName) })
 	return ok, nil
 }
 
-func isAppAliasDefined(env env.Env, args []string) (bool, interface{}) {
+func isAppAliasDefined(env envUtil.Env) (bool, interface{}) {
 	appAlias := getApplicationAlias(env)
 	if appAlias != nil {
-		logger.Info("App alias is defined. Now we can try to hit it to see if it responds")
+		logger.Infof("App alias is defined %s. Now we can try to hit it to see if it responds", *appAlias)
 		return true, *appAlias
 	}
 
@@ -38,7 +42,7 @@ func isAppAliasDefined(env env.Env, args []string) (bool, interface{}) {
 	return false, nil
 }
 
-func getApplicationAlias(env env.Env) *string {
+func getApplicationAlias(env envUtil.Env) *string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -57,7 +61,7 @@ func getApplicationAlias(env env.Env) *string {
 	return nil
 }
 
-func getPublicDomainName(env env.Env) string {
+func getPublicDomainName(env envUtil.Env) string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -84,8 +88,8 @@ func getPublicDomainName(env env.Env) string {
 	return ""
 }
 
-func isAliasResponding(env env.Env, args []string) (bool, interface{}) {
-	req := httpUtils.CreateRequest(env, args[0], "GET", nil)
+func isAliasResponding(env envUtil.Env, url string) (bool, interface{}) {
+	req := httpUtils.CreateRequest(env, url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 
