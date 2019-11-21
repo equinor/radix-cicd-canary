@@ -16,5 +16,5 @@ jobs:
           username: ${{ secrets.DEV_REGISTRY_USERNAME }}
           password: ${{ secrets.DEV_REGISTRY_PASSWORD }}
       - run: |
-          docker build . -t radixdev.azurecr.io/radix-cicd-canary:${{ github.branch }}-${{ github.sha }}
-          docker push radixdev.azurecr.io/radix-cicd-canary:${{ github.branch }}-${{ github.sha }}
+          docker build . -t radixdev.azurecr.io/radix-cicd-canary:${{ github.ref }}-${{ github.sha }}
+          docker push radixdev.azurecr.io/radix-cicd-canary:${{ github.ref }}-${{ github.sha }}
