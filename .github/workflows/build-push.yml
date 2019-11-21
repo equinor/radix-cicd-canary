@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Login to github registry
-        uses: actions-hub/docker/login@master
+        uses: actions/docker/login@8cdf801b322af5f369e00d85e9cf3a7122f49108
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
