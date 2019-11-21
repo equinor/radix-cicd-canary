@@ -8,6 +8,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/buildsecrets"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/delete"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/list"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/promote"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/register"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/secret"
@@ -68,6 +69,13 @@ func TestSuite() test.Suite {
 				Name:        "DefaultAliasResponding",
 				Description: "Check alias responding",
 				Test:        alias.DefaultResponding,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			},
+			{
+				Name:        "SetPrivateImageHub",
+				Description: "Check private image hub func",
+				Test:        privateimagehub.PrivateImageHub,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
