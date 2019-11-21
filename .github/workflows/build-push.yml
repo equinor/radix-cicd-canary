@@ -1,4 +1,4 @@
-name: radix-api-pr
+name: radix-cicd-canary-build
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
       - release
 jobs:
   build:
-    name: Build
+    name: Build-push
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
