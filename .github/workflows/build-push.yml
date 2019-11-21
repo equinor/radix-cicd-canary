@@ -16,15 +16,5 @@ jobs:
           username: ${{ secrets.DEV_REGISTRY_USERNAME }}
           password: ${{ secrets.DEV_REGISTRY_PASSWORD }}
       - run: |
-          docker build . -t radixdev.azurecr.io/radix-cicd-canary:${{ github.sha }}
-          docker push radixdev.azurecr.io/radix-cicd-canary:${{ github.sha }}
-      - name: Login to Azure
-        uses: Azure/github-actions/login@master
-        env:
-          AZURE_SUBSCRIPTION: "Omnia Radix Development"
-          AZURE_SERVICE_APP_ID: ${{ secrets.AZURE_SERVICE_APP_ID_DEV }}
-          AZURE_SERVICE_PASSWORD: ${{ secrets.AZURE_SERVICE_PASSWORD_DEV }}
-          AZURE_SERVICE_TENANT: ${{ secrets.AZURE_SERVICE_TENANT }}
-
-      - name: Build docker image
-        run: docker build -t radix-cicd-canary:${{ github.branch }}-latest .
+          docker build . -t radixdev.azurecr.io/radix-cicd-canary:${{ github.branch }}-${{ github.sha }}
+          docker push radixdev.azurecr.io/radix-cicd-canary:${{ github.branch }}-${{ github.sha }}
