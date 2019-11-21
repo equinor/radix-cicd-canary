@@ -1,12 +1,9 @@
 # Default values for radix-cicd-canary
 clusterFQDN: xx
 
-imageCredentials:
-  registry: radixdev.azurecr.io
-
 image:
-  repository: radix-cicd-canary
-  tag: "master-latest"
+  repository: xx
+  tag: xx
   pullPolicy: Always
 
 service:
