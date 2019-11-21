@@ -10,13 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
       - uses: azure/docker-login@v1
         with:
           login-server: radixdev.azurecr.io
           username: ${{ secrets.DEV_REGISTRY_USERNAME }}
           password: ${{ secrets.DEV_REGISTRY_PASSWORD }}
+      - uses: azure/docker-login@v1
+        with:
+          login-server: radixprod.azurecr.io
+          username: ${{ secrets.PROD_REGISTRY_USERNAME }}
+          password: ${{ secrets.PROD_REGISTRY_PASSWORD }}
+      - uses: azure/docker-login@v1
+        with:
+          login-server: radixus.azurecr.io
+          username: ${{ secrets.PROD_REGISTRY_USERNAME }}
+          password: ${{ secrets.PROD_REGISTRY_PASSWORD }}
       - run: |
-          docker build . -t radixdev.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
+          docker build . -t radixdev.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }} -t radixprod.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }} -t radixus.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
           docker push radixdev.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
+          docker push radixprod.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
+          docker push radixus.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
