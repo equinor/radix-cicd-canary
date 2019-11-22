@@ -31,5 +31,4 @@ require (
 	k8s.io/utils v0.0.0-20190712204705-3dccf664f023 // indirect
 )
 
-// github.com/Azure/go-autorest/autorest => github.com/Azure/go-autorest/autorest v0.0.0-20191028180845-3492b2aff503
 replace k8s.io/client-go => k8s.io/client-go v0.0.0-20190620085101-78d2af792bab
