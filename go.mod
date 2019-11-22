@@ -14,11 +14,13 @@ require (
 	github.com/googleapis/gnostic v0.3.0 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
+	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
 	github.com/prometheus/client_golang v1.0.0
 	github.com/prometheus/common v0.6.0 // indirect
 	github.com/prometheus/procfs v0.0.3 // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
+	go.mongodb.org/mongo-driver v1.0.4 // indirect
 	go.opencensus.io v0.22.2 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
@@ -31,5 +33,4 @@ require (
 	k8s.io/utils v0.0.0-20190712204705-3dccf664f023 // indirect
 )
 
-// github.com/Azure/go-autorest/autorest => github.com/Azure/go-autorest/autorest v0.0.0-20191028180845-3492b2aff503
 replace k8s.io/client-go => k8s.io/client-go v0.0.0-20190620085101-78d2af792bab
