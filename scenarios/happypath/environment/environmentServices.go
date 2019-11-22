@@ -11,7 +11,7 @@ import (
 func GetEnvironment(env env.Env, appName, envName string) (*models.Environment, error) {
 	params := environmentclient.NewGetEnvironmentParams().
 		WithAppName(appName).
-		WithEnvName(appName).
+		WithEnvName(envName).
 		WithImpersonateUser(env.GetImpersonateUserPointer()).
 		WithImpersonateGroup(env.GetImpersonateGroupPointer())
 	clientBearerToken := httpUtils.GetClientBearerToken(env)

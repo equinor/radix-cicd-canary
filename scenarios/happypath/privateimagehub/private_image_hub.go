@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
-	componentclient "github.com/equinor/radix-cicd-canary/generated-client/client/component"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/environment"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -24,24 +23,45 @@ func PrivateImageHub(env envUtil.Env, suiteName string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	logger.Infof("SUCCESS: private image hub is not set")
 
-	err = podNotLoaded(env)
-	if err != nil {
+	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		err := podNotLoaded(env)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	})
+	if !ok {
 		return false, fmt.Errorf("%s component is running before private image hub password was se. %v", config.App2ComponentPrivateImageHubName, err)
 	}
+	logger.Infof("SUCCESS: container is not loaded")
 
 	err = setPrivateImageHubPassword(env)
 	if err != nil {
 		return false, fmt.Errorf("Failed to set private image hub password. %v", err)
 	}
+	logger.Infof("SUCCESS: set private image hub password")
 
-	err = podLoaded(env)
-	if err != nil {
-		logger.Error(err)
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		err := podLoaded(env)
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	})
+	logger.Infof("SUCCESS: container is loaded")
+	if !ok {
 		return false, fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, err)
 	}
 
-	return false, nil
+	err = privateImageHubPasswordSet(env)
+	if err != nil {
+		return false, err
+	}
+	logger.Infof("SUCCESS: private image hub is verified set")
+
+	return true, nil
 }
 
 func podNotLoaded(env envUtil.Env) error {
@@ -56,8 +76,9 @@ func verifyPrivateImageHubPodStatus(env envUtil.Env, expectedStatus string) erro
 	actualStatus, err := getPrivateImageHubComponentStatus(env)
 	if err != nil {
 		return err
-	} else if actualStatus != expectedStatus{
-		return fmt.Errorf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, replica.ReplicaStatus.Status)
+	} else if actualStatus != expectedStatus {
+		logger.Errorf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
+		return fmt.Errorf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
 	}
 	return nil
 }
@@ -68,17 +89,24 @@ func getPrivateImageHubComponentStatus(env envUtil.Env) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	for _, comp := envQA.ActiveDeployment.Components {
-		if comp.Name == config.App2ComponentPrivateImageHubName {
-			replica:= comp.ReplicaList[0]
-			return replica.ReplicaStatus.Status
+	for _, comp := range envQA.ActiveDeployment.Components {
+		if *comp.Name == config.App2ComponentPrivateImageHubName {
+			replica := comp.ReplicaList[0]
+			return *replica.ReplicaStatus.Status, nil
 		}
 	}
 	return "", nil
 }
 
+func privateImageHubPasswordSet(env envUtil.Env) error {
+	return verifyPrivateImageHubStatus(env, "Consistent")
+}
+
 func privateImageHubPasswordNotSet(env envUtil.Env) error {
-	expectStatus := "Pending"
+	return verifyPrivateImageHubStatus(env, "Pending")
+}
+
+func verifyPrivateImageHubStatus(env envUtil.Env, expectStatus string) error {
 	imageHubs, err := getPrivateImageHubs(env, config.App2Name)
 	if err != nil {
 		return err
