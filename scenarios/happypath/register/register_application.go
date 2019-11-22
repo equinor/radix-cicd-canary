@@ -44,6 +44,7 @@ func Application(env env.Env, suiteName string) (bool, error) {
 
 	_, err := client.RegisterApplication(params, clientBearerToken)
 	if err != nil {
+		logger.Errorf("%v", err)
 		return false, err
 	}
 
@@ -53,21 +54,27 @@ func Application(env env.Env, suiteName string) (bool, error) {
 
 func isApplicationDefined(env env.Env, args []string) (bool, interface{}) {
 	appName := args[0]
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
-
-	params := applicationclient.NewGetApplicationParams().
-		WithAppName(appName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
-
-	_, err := client.GetApplication(params, clientBearerToken)
+	_, err := GetApplication(env, appName)
 	if err == nil {
 		return true, nil
 	}
 
 	logger.Info("Application is not defined")
 	return false, nil
+}
+
+// GetApplication gets an application by appName
+func GetApplication(env env.Env, appName string) (*models.Application, error) {
+	params := applicationclient.NewGetApplicationParams().
+		WithAppName(appName).
+		WithImpersonateUser(env.GetImpersonateUserPointer()).
+		WithImpersonateGroup(env.GetImpersonateGroupPointer())
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetApplicationClient(env)
+
+	result, err := client.GetApplication(params, clientBearerToken)
+	if err != nil {
+		return nil, err
+	}
+	return result.Payload, nil
 }

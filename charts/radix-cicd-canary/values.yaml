@@ -20,6 +20,9 @@ deployKey:
   public: xx
   private: xx
 
+privateImageHub:
+  password: xx
+
 clusterType: development
 
 radixGroups:

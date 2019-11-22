@@ -12,20 +12,21 @@ Currently, there are two scenarios (or suites) implemented, named `Happy path` a
 
 The `Happy path` suite contains the following tests.
 1. Register application
-2. Register application with no deploy key
-3. List applications
-4. Build application
-5. Set secret
-6. Check alias responding
-7. Check access to application user should not be able to access
-8. Promote deployment to other environment
-9. Promote deployment to same environment
-10. Checks that access can be locked down by upodating AD group
-11. Delete applications
+1. Register application with no deploy key
+1. List applications
+1. Build application
+1. Set secret
+1. Check alias responding
+1. Check private image hub
+1. Check access to application user should not be able to access
+1. Promote deployment to other environment
+1. Promote deployment to same environment
+1. Checks that access can be locked down by updating AD group
+1. Delete applications
 
 The `NSP` suite contains the following tests.
 1. Reach ingress
-2. Reach service in different namespace
+1. Reach service in different namespace
 
 ## Deploying
 

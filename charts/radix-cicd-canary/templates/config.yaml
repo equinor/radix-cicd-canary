@@ -24,3 +24,4 @@ data:
   sleepIntervalBetweenChecks: {{ .Values.sleepIntervalBetweenChecks | quote }}
   sleepIntervalTestRuns: {{ .Values.sleepIntervalTestRuns | quote }}
   nspSleepInterval: {{ .Values.nspSleepInterval | quote }}
+  privateImageHubPassword: {{ .Values.privateImageHub.password }}
