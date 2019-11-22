@@ -17,21 +17,29 @@ The `Happy path` suite contains the following tests.
 1. Register application
 2. Register application with no deploy key
 3. List applications
-4. Build application
-5. Set secret
-6. Check alias responding
-7. Check access to application user should not be able to access
-8. Promote deployment to other environment
-9. Promote deployment to same environment
-10. Checks that access can be locked down by upodating AD group
-11. Delete applications
+4. Set build secrets
+5. Build application
+6. Set secret
+7. Check alias responding
+8. Check access to application user should not be able to access
+9. Promote deployment to other environment
+10. Promote deployment to same environment
+11. Checks that access can be locked down by upodating AD group
+12. Delete applications
 
 The `NSP` suite contains the following tests.
 
 1. Reach ingress
 2. Reach service in different namespace
 
-## Deploying
+## Developer information
+
+### Development Process
+
+The `radix-cicd-canary` is developed using trunk-based development. There is a different setup for each cluster:
+
+- `master` branch should be used for deployment to `dev` clusters. When a pull request is approved and merged to `master`, Github actions will create a `radix-cicd-canary:master-<sha>` image and push it to ACR. Flux then installs it into the cluster.
+- `release` branch should be used for deployment to `playground` and `prod` clusters. When a pull request is approved and merged to `master`, and tested ok in `dev` cluster, we should immediately merge `master` into `release` and deploy those changes to `playground` and `prod` clusters, unless there are breaking changes which needs to be coordinated with release of our other components. When the `master` branch is merged to the `release` branch, Github actions will create a `radix-cicd-canary:release-<sha>` image and push it to ACR. Flux then installs it into the clusters.
 
 ### From a local machine
 
@@ -44,22 +52,9 @@ make deploy-via-helm ENVIRONMENT=<dev|prod> CLUSTER_FQDN=<clustername>.<clustert
 make deploy-via-helm ENVIRONMENT=dev CLUSTER_FQDN=weekly-27.dev.radix.equinor.com
 ```
 
-### In a cluster
+### Pre-requisites
 
-The application is installed by the `install_base_components.sh` script (in the [radix-platform repository](https://github.com/equinor/radix-platform/tree/master/scripts)) that is typically run when a new cluster is created. Before running the script, make sure that the docker file has been built and pushed to ACR:
-
-```bash
-make build-push ENVIRONMENT=<dev|prod>
-```
-
-And make sure that the Helm chart is pushed to ACR:
-
-```bash
-cd charts/radix-cicd-canary
-helm package .
-az acr helm push --name radixdev <tgz file>
-az acr helm push --name radixprod <tgz file>
-```
+The pre-requisite secret is installed by the `install_base_components.sh` script (in the [radix-platform repository](https://github.com/equinor/radix-platform/tree/master/scripts)) that is typically run when a new cluster is created:
 
 ## Debugging
 
