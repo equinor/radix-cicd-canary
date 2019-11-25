@@ -1,4 +1,4 @@
-# Radix CI/CD Canary
+# Radix CI/CD Canary.
 
 This application is an automated end-to-end test tool to be run continuously in a [Radix](https://www.radix.equinor.com) cluster to verify that the most important functionalities are behaving as expected. This document is for Radix developers, or anyone interested in poking around.
 
