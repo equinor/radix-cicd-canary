@@ -22,7 +22,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, isAppAliasDefined)
-	publicDomainName := getPublicDomainName(env)
+	publicDomainName := GetPublicDomainName(env, config.App2Component1Name)
 	if publicDomainName == "" {
 		return false, fmt.Errorf("Public domain name of alias is empty")
 	}
@@ -61,7 +61,8 @@ func getApplicationAlias(env envUtil.Env) *string {
 	return nil
 }
 
-func getPublicDomainName(env envUtil.Env) string {
+// GetPublicDomainName returns domain name for a component
+func GetPublicDomainName(env envUtil.Env, forComponentName string) string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -79,7 +80,7 @@ func getPublicDomainName(env envUtil.Env) string {
 		environmentDetails.Payload.ActiveDeployment != nil {
 		for _, component := range environmentDetails.Payload.ActiveDeployment.Components {
 			componentName := *component.Name
-			if componentName == config.App2Component1Name {
+			if componentName == forComponentName {
 				return component.Variables[publicDomainNameEnvironmentVariable]
 			}
 		}
