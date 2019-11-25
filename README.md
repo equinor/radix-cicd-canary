@@ -32,7 +32,7 @@ The `NSP` suite contains the following tests.
 
 ### From a local machine
 
-The tests are deployed to the cluster through a Helm chart, but first build the docker file (default it will push to radixdev. With ENVIRONMENT=prod it will push to radixprod):
+NOTE: The following only applies to development. Proper installation is done through installing base components and Flux Helmrelease. The tests can be deployed to the cluster through a Helm chart, but first build the docker file (default it will push to radixdev. With ENVIRONMENT=prod it will push to radixprod):
 
 ```bash
 make deploy-via-helm ENVIRONMENT=<dev|prod> CLUSTER_FQDN=<clustername>.<clustertype>.radix.equinor.com
