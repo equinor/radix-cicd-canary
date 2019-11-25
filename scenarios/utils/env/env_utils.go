@@ -26,6 +26,7 @@ const (
 	sleepIntervalBetweenChecksConfig = "sleepIntervalBetweenChecks"
 	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
 	nspSleepIntervalConfig           = "nspSleepInterval"
+	privateImageHubPasswordConfig    = "privateImageHubPassword"
 )
 
 // Env Holds all the environment variables
@@ -72,9 +73,19 @@ func (env Env) GetImpersonateUser() string {
 	return env.impersonateUser
 }
 
+// GetImpersonateUserPointer get impersonate user from config map
+func (env Env) GetImpersonateUserPointer() *string {
+	return &env.impersonateUser
+}
+
 // GetImpersonateGroup get impersonate group from config map
 func (env Env) GetImpersonateGroup() string {
 	return env.impersonateGroup
+}
+
+// GetImpersonateGroupPointer get impersonate group from config map
+func (env Env) GetImpersonateGroupPointer() *string {
+	return &env.impersonateGroup
 }
 
 // GetClusterFQDN get Radix cluster FQDN from config map
@@ -100,6 +111,11 @@ func (env Env) GetPublicKey() string {
 // GetPrivateKey get private deploy key from config map
 func (env Env) GetPrivateKey() string {
 	return env.privateKey
+}
+
+// GetPrivateImageHubPassword get private image hub password
+func (env Env) GetPrivateImageHubPassword() string {
+	return getConfigFromMap(privateImageHubPasswordConfig)
 }
 
 // GetTimeoutOfTest Get the time it should take before a test should time out from config map

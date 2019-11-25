@@ -21,16 +21,17 @@ The `Happy path` suite contains the following tests.
 5. Build application
 6. Set secret
 7. Check alias responding
-8. Check access to application user should not be able to access
-9. Promote deployment to other environment
-10. Promote deployment to same environment
-11. Checks that access can be locked down by upodating AD group
-12. Delete applications
+8. Check private image hub
+9. Check access to application user should not be able to access
+10. Promote deployment to other environment
+11. Promote deployment to same environment
+12. Checks that access can be locked down by upodating AD group
+13. Delete applications
 
 The `NSP` suite contains the following tests.
 
 1. Reach ingress
-2. Reach service in different namespace
+1. Reach service in different namespace
 
 ## Developer information
 
