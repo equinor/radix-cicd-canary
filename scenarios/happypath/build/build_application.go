@@ -66,6 +66,21 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	}
 
 	logger.Info("First job was completed")
+	steps := getStepsForJob(env, jobName)
+
+	expectedSteps := []string{"clone-config", "radix-pipeline", "clone", "build-app", "build-redis", "scan-app", "scan-redis"}
+	if steps == nil && len(steps) != len(expectedSteps) {
+		logger.Error("Pipeline steps was not as expected")
+		return false, nil
+	}
+
+	for index, step := range steps {
+		if !strings.EqualFold(step.Name, expectedSteps[index]) {
+			logger.Errorf("Expeced step %s, but got %s", expectedSteps[index], step.Name)
+			return false, nil
+		}
+	}
+
 	log := getJobLogForStep(env, jobName, "build-app")
 	if !strings.Contains(log, Secret1Value) || !strings.Contains(log, Secret2Value) {
 		logger.Error("Build secrets are not contained in build log")
@@ -208,4 +223,29 @@ func getJobLogForStep(env env.Env, jobName, stepName string) string {
 	}
 
 	return ""
+}
+
+// Job gets job from job name
+func getStepsForJob(env env.Env, jobName string) []*models.Step {
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+
+	params := jobclient.NewGetApplicationJobParams().
+		WithAppName(config.App2Name).
+		WithJobName(jobName).
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup)
+
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetJobClient(env)
+
+	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
+	if err == nil &&
+		applicationJob.Payload != nil &&
+		applicationJob.Payload.Steps != nil {
+
+		return applicationJob.Payload.Steps
+	}
+
+	return nil
 }
