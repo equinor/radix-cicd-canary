@@ -18,11 +18,15 @@ func ApplicationWithNoDeployKey(env env.Env, suiteName string) (bool, error) {
 	appName := config.App1Name
 	appRepo := config.App1Repository
 	appSharedSecret := config.App1SharedSecret
+	appOwner := config.App1Owner
+	appCreator := config.App1Creator
 
 	bodyParameters := models.ApplicationRegistration{
 		Name:         &appName,
 		Repository:   &appRepo,
 		SharedSecret: &appSharedSecret,
+		Owner:        &appOwner,
+		Creator:      &appCreator,
 	}
 
 	params := apiclient.NewRegisterApplicationParams().
