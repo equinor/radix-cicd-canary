@@ -6,6 +6,7 @@ import (
 
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -21,6 +22,11 @@ const (
 	Secret1Value = "SECRET_1_VALUE"
 	Secret2Value = "SECRET_2_VALUE"
 )
+
+type expectedStep struct {
+	name       string
+	components []string
+}
 
 // Application Tests that we are able to successfully build an application
 func Application(env env.Env, suiteName string) (bool, error) {
@@ -68,15 +74,28 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	logger.Info("First job was completed")
 	steps := getStepsForJob(env, jobName)
 
-	expectedSteps := []string{"clone-config", "radix-pipeline", "clone", "build-app", "build-redis", "scan-app", "scan-redis"}
+	expectedSteps := []expectedStep{
+		{name: "clone-config", components: []string{}},
+		{name: "radix-pipeline", components: []string{}},
+		{name: "clone", components: []string{}},
+		{name: "build-app", components: []string{"app"}},
+		{name: "build-redis", components: []string{"redis"}},
+		{name: "scan-app", components: []string{"app"}},
+		{name: "scan-redis", components: []string{"redis"}}}
+
 	if steps == nil && len(steps) != len(expectedSteps) {
 		logger.Error("Pipeline steps was not as expected")
 		return false, nil
 	}
 
 	for index, step := range steps {
-		if !strings.EqualFold(step.Name, expectedSteps[index]) {
-			logger.Errorf("Expeced step %s, but got %s", expectedSteps[index], step.Name)
+		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
+			logger.Errorf("Expeced step %s, but got %s", expectedSteps[index].name, step.Name)
+			return false, nil
+		}
+
+		if !array.EqualElements(step.Components, expectedSteps[index].components) {
+			logger.Errorf("Expeced components %s, but got %s", expectedSteps[index].components, step.Components)
 			return false, nil
 		}
 	}
