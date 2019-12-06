@@ -8,9 +8,7 @@ package models
 import (
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // ApplicationPatchRequest ApplicationPatchRequest contains fields that can be patched on a registration
@@ -18,30 +16,14 @@ import (
 type ApplicationPatchRequest struct {
 
 	// AdGroups the groups that should be able to access the application
-	// Required: true
 	AdGroups []string `json:"adGroups"`
+
+	// Owner of the application - should be an email
+	Owner string `json:"owner,omitempty"`
 }
 
 // Validate validates this application patch request
 func (m *ApplicationPatchRequest) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateAdGroups(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ApplicationPatchRequest) validateAdGroups(formats strfmt.Registry) error {
-
-	if err := validate.Required("adGroups", "body", m.AdGroups); err != nil {
-		return err
-	}
-
 	return nil
 }
 

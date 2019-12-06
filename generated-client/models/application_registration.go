@@ -21,9 +21,17 @@ type ApplicationRegistration struct {
 	// Required: true
 	AdGroups []string `json:"adGroups"`
 
+	// Owner of the application (email). Can be a single person or a shared group email
+	// Required: true
+	Creator *string `json:"creator"`
+
 	// Name the unique name of the Radix application
 	// Required: true
 	Name *string `json:"name"`
+
+	// Owner of the application (email). Can be a single person or a shared group email
+	// Required: true
+	Owner *string `json:"owner"`
 
 	// PrivateKey the private part of the deploy key set or returned
 	// after successful application
@@ -50,7 +58,15 @@ func (m *ApplicationRegistration) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateCreator(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateOwner(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,9 +93,27 @@ func (m *ApplicationRegistration) validateAdGroups(formats strfmt.Registry) erro
 	return nil
 }
 
+func (m *ApplicationRegistration) validateCreator(formats strfmt.Registry) error {
+
+	if err := validate.Required("creator", "body", m.Creator); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *ApplicationRegistration) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ApplicationRegistration) validateOwner(formats strfmt.Registry) error {
+
+	if err := validate.Required("owner", "body", m.Owner); err != nil {
 		return err
 	}
 
