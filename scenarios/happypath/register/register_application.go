@@ -24,11 +24,15 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	appName := config.App2Name
 	appRepo := config.App2Repository
 	appSharedSecret := config.App2SharedSecret
+	appCreator := config.App2Creator
+	appOwner := config.App2Owner
 
 	bodyParameters := models.ApplicationRegistration{
 		Name:         &appName,
 		Repository:   &appRepo,
 		SharedSecret: &appSharedSecret,
+		Owner:        &appOwner,
+		Creator:      &appCreator,
 		AdGroups:     nil,
 		PublicKey:    env.GetPublicKey(),
 		PrivateKey:   env.GetPrivateKey(),
