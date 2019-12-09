@@ -6,6 +6,7 @@ import (
 
 	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -21,6 +22,11 @@ const (
 	Secret1Value = "SECRET_1_VALUE"
 	Secret2Value = "SECRET_2_VALUE"
 )
+
+type expectedStep struct {
+	name       string
+	components []string
+}
 
 // Application Tests that we are able to successfully build an application
 func Application(env env.Env, suiteName string) (bool, error) {
@@ -66,6 +72,34 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	}
 
 	logger.Info("First job was completed")
+	steps := getStepsForJob(env, jobName)
+
+	expectedSteps := []expectedStep{
+		{name: "clone-config", components: []string{}},
+		{name: "radix-pipeline", components: []string{}},
+		{name: "clone", components: []string{}},
+		{name: "build-app", components: []string{"app"}},
+		{name: "build-redis", components: []string{"redis"}},
+		{name: "scan-app", components: []string{"app"}},
+		{name: "scan-redis", components: []string{"redis"}}}
+
+	if steps == nil && len(steps) != len(expectedSteps) {
+		logger.Error("Pipeline steps was not as expected")
+		return false, nil
+	}
+
+	for index, step := range steps {
+		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
+			logger.Errorf("Expeced step %s, but got %s", expectedSteps[index].name, step.Name)
+			return false, nil
+		}
+
+		if !array.EqualElements(step.Components, expectedSteps[index].components) {
+			logger.Errorf("Expeced components %s, but got %s", expectedSteps[index].components, step.Components)
+			return false, nil
+		}
+	}
+
 	log := getJobLogForStep(env, jobName, "build-app")
 	if !strings.Contains(log, Secret1Value) || !strings.Contains(log, Secret2Value) {
 		logger.Error("Build secrets are not contained in build log")
@@ -208,4 +242,29 @@ func getJobLogForStep(env env.Env, jobName, stepName string) string {
 	}
 
 	return ""
+}
+
+// Job gets job from job name
+func getStepsForJob(env env.Env, jobName string) []*models.Step {
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+
+	params := jobclient.NewGetApplicationJobParams().
+		WithAppName(config.App2Name).
+		WithJobName(jobName).
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup)
+
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetJobClient(env)
+
+	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
+	if err == nil &&
+		applicationJob.Payload != nil &&
+		applicationJob.Payload.Steps != nil {
+
+		return applicationJob.Payload.Steps
+	}
+
+	return nil
 }
