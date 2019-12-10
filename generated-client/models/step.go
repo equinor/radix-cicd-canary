@@ -19,6 +19,9 @@ import (
 // swagger:model Step
 type Step struct {
 
+	// Components associated components
+	Components []string `json:"components"`
+
 	// Ended timestamp
 	Ended string `json:"ended,omitempty"`
 
