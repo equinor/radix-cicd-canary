@@ -87,7 +87,7 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 			log.Warnf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
 			break
 		}
-		log.Infof("Setup success %s", setup.Description)
+		log.Debugf("Setup success %s", setup.Description)
 	}
 
 	end := time.Now()
@@ -118,7 +118,7 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 	suiteName := suite.Name
 	start := time.Now()
 
-	log.Infof("Running teardown tests in suite %s", suite.Name)
+	log.Debugf("Running teardown tests in suite %s", suite.Name)
 	for _, test := range suite.Teardown {
 		log.Info(test.Description)
 		runTest(env, test, suiteName)
@@ -138,7 +138,7 @@ func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 		log.Errorf("Error calling %s: %v", testToRun.Name, err)
 	} else {
 		testToRun.SuccessFn(testToRun.Name)
-		log.Info("Test success")
+		log.Debug("Test success")
 	}
 
 	end := time.Now()

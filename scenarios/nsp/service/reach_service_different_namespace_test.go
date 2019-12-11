@@ -20,6 +20,6 @@ func TestReachServiceDifferentNamespace(t *testing.T) {
 	environmentVariables := env.NewEnv()
 
 	ok, err := Reach(environmentVariables, suiteName)
-	assert.Error(t, err)
-	assert.False(t, ok)
+	assert.NoError(t, err)
+	assert.True(t, ok)
 }
