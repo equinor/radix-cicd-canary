@@ -44,6 +44,9 @@ type Component struct {
 
 	// Variable names map to values. From radixconfig.yaml
 	Variables map[string]string `json:"variables,omitempty"`
+
+	// horizontal scaling summary
+	HorizontalScalingSummary *HorizontalScalingSummary `json:"horizontalScalingSummary,omitempty"`
 }
 
 // Validate validates this component
@@ -63,6 +66,10 @@ func (m *Component) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateReplicaList(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateHorizontalScalingSummary(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -135,6 +142,24 @@ func (m *Component) validateReplicaList(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *Component) validateHorizontalScalingSummary(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.HorizontalScalingSummary) { // not required
+		return nil
+	}
+
+	if m.HorizontalScalingSummary != nil {
+		if err := m.HorizontalScalingSummary.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("horizontalScalingSummary")
+			}
+			return err
+		}
 	}
 
 	return nil
