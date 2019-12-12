@@ -34,8 +34,8 @@ func Application(env env.Env, suiteName string) (bool, error) {
 		Owner:        &appOwner,
 		Creator:      &appCreator,
 		AdGroups:     nil,
-		PublicKey:    env.GetPublicKey(),
-		PrivateKey:   env.GetPrivateKey(),
+		PublicKey:    env.GetPublicKeyCanary3(),
+		PrivateKey:   env.GetPrivateKeyCanary3(),
 	}
 
 	params := apiclient.NewRegisterApplicationParams().

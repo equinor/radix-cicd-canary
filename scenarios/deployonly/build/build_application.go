@@ -28,24 +28,13 @@ func Application(env env.Env, suiteName string) (bool, error) {
 	}
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFuncWithArguments(env, IsJobListedWithStatus, []string{"Running"})
+	ok, jobSummary := test.WaitForCheckFuncWithArguments(env, IsJobListedWithStatus, []string{"Succeeded"})
 	if !ok {
 		return false, nil
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
-
-	ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{jobName})
-	if !ok {
-		return false, nil
-	}
-	if status.(string) != "Succeeded" {
-		return false, nil
-	}
-
-	logger.Info("First job was completed")
 	steps := getStepsForJob(env, jobName)
-
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
 		{name: "radix-pipeline", components: []string{}}}
@@ -65,7 +54,7 @@ func IsJobListedWithStatus(env env.Env, args []string) (bool, interface{}) {
 
 	expectedStatus := args[0]
 	params := jobclient.NewGetApplicationJobsParams().
-		WithAppName(config.App2Name).
+		WithAppName(config.App3Name).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
@@ -130,7 +119,7 @@ func getStepsForJob(env env.Env, jobName string) []*models.Step {
 	impersonateGroup := env.GetImpersonateGroup()
 
 	params := jobclient.NewGetApplicationJobParams().
-		WithAppName(config.App2Name).
+		WithAppName(config.App3Name).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
