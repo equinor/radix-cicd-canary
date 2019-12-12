@@ -8,6 +8,7 @@ import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
@@ -138,6 +139,26 @@ func GetPublicDomainName(env env.Env, appName, envName, forComponentName string)
 // GetCanonicalDomainName returns canonical domain name for a component
 func GetCanonicalDomainName(env env.Env, appName, envName, forComponentName string) string {
 	return getEnvVariable(env, appName, envName, forComponentName, publicDomainNameEnvironmentVariable)
+}
+
+// IsPublicDomainNameDefined Waits for public domain name to be defined
+func IsPublicDomainNameDefined(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+	publicDomainName := GetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+	if publicDomainName == "" {
+		return false, nil
+	}
+
+	return true, publicDomainName
+}
+
+// IsCanonicalDomainNameDefined Waits for canonical domain name to be defined
+func IsCanonicalDomainNameDefined(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+	canonicalDomainName := GetCanonicalDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+	if canonicalDomainName == "" {
+		return false, nil
+	}
+
+	return true, canonicalDomainName
 }
 
 func getEnvVariable(env env.Env, appName, envName, forComponentName, variableName string) string {

@@ -16,17 +16,23 @@ var logger *log.Entry
 func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	publicDomainName := application.GetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
-	if publicDomainName == "" {
+	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return application.IsPublicDomainNameDefined(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+	})
+
+	if !ok {
 		return false, fmt.Errorf("Public domain name of alias is empty")
 	}
 
-	canonicalDomainName := application.GetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
-	if publicDomainName == "" {
-		return false, fmt.Errorf("Public domain name of alias is empty")
+	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return application.IsCanonicalDomainNameDefined(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+	})
+
+	if !ok {
+		return false, fmt.Errorf("Canonical domain name of alias is empty")
 	}
 
-	if application.IsRunningInActiveCluster(publicDomainName, canonicalDomainName) {
+	if application.IsRunningInActiveCluster(publicDomainName.(string), canonicalDomainName.(string)) {
 
 		ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 			return application.IsAliasDefined(env, config.App2Name)
@@ -37,8 +43,8 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 		}
 	}
 
-	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.AreResponding(env, config.App2Name, canonicalDomainName, publicDomainName)
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return application.AreResponding(env, config.App2Name, canonicalDomainName.(string), publicDomainName.(string))
 	})
 	return ok, nil
 }
