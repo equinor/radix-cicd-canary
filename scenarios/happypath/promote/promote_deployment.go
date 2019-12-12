@@ -6,6 +6,7 @@ import (
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -21,7 +22,7 @@ const (
 var logger *log.Entry
 
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
-func DeploymentToAnotherEnvironment(env env.Env, suiteName string) (bool, error) {
+func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Get deployments
@@ -43,7 +44,9 @@ func DeploymentToAnotherEnvironment(env env.Env, suiteName string) (bool, error)
 	}
 
 	// Get job
-	ok, status := test.WaitForCheckFuncWithArguments(env, job.IsDone, []string{config.App2Name, promoteJobName})
+	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return job.IsDone(env, config.App2Name, promoteJobName)
+	})
 	if ok && status.(string) == "Succeeded" {
 		deploymentsInEnvironment, err := getDeployments(env, envToDeployTo)
 		if err != nil {

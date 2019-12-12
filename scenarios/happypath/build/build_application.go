@@ -69,7 +69,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	logger.Info("Second job was queued")
-	ok, jobSummary = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return job.IsDone(env, config.App2Name, jobName)
 	})
 

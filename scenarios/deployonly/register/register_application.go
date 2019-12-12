@@ -3,7 +3,7 @@ package register
 import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,7 +12,7 @@ var logger *log.Entry
 
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(env env.Env, suiteName string) (bool, error) {
+func Application(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	appName := config.App3Name
@@ -27,6 +27,13 @@ func Application(env env.Env, suiteName string) (bool, error) {
 		return false, err
 	}
 
-	test.WaitForCheckFuncWithArguments(env, application.IsDefined, []string{config.App3Name})
+	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return application.IsDefined(env, config.App3Name)
+	})
+
+	if !ok {
+		return false, nil
+	}
+
 	return true, nil
 }

@@ -64,8 +64,7 @@ func Delete(env env.Env, appName string) (bool, error) {
 }
 
 // IsDefined Checks if application is defined
-func IsDefined(env env.Env, args []string) (bool, interface{}) {
-	appName := args[0]
+func IsDefined(env env.Env, appName string) (bool, interface{}) {
 	_, err := Get(env, appName)
 	if err == nil {
 		return true, nil
@@ -168,6 +167,18 @@ func getEnvVariable(env env.Env, appName, envName, forComponentName, variableNam
 	return ""
 }
 
+// AreResponding Checks if all endpoint responds
+func AreResponding(env env.Env, appName string, urls ...string) (bool, interface{}) {
+	for _, url := range urls {
+		ok, _ := IsResponding(env, appName, url)
+		if !ok {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
 // IsResponding Checks if endpoint is responding
 func IsResponding(env env.Env, appName, url string) (bool, interface{}) {
 	req := httpUtils.CreateRequest(env, url, "GET", nil)
@@ -179,6 +190,6 @@ func IsResponding(env env.Env, appName, url string) (bool, interface{}) {
 		return true, nil
 	}
 
-	log.Info("Alias is still not responding")
+	log.Infof("Alias '%s' is still not responding", url)
 	return false, nil
 }

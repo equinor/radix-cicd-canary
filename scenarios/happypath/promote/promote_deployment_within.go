@@ -1,10 +1,9 @@
 package promote
 
 import (
-	"strconv"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
@@ -13,7 +12,7 @@ import (
 const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
-func DeploymentWithinEnvironment(env env.Env, suiteName string) (bool, error) {
+func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Get deployments
@@ -35,9 +34,14 @@ func DeploymentWithinEnvironment(env env.Env, suiteName string) (bool, error) {
 	}
 
 	// Get job
-	ok, status := test.WaitForCheckFuncWithArguments(env, job.IsDone, []string{config.App2Name, promoteJobName})
+	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return job.IsDone(env, config.App2Name, promoteJobName)
+	})
 	if ok && status.(string) == "Succeeded" {
-		doneCheck, ok := test.WaitForCheckFuncWithArguments(env, isNewDeploymentExist, []string{strconv.Itoa(numDeploymentsBefore)})
+		doneCheck, ok := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+			return isNewDeploymentExist(env, numDeploymentsBefore)
+		})
+
 		if doneCheck && ok.(bool) {
 			return true, nil
 		}
@@ -46,13 +50,13 @@ func DeploymentWithinEnvironment(env env.Env, suiteName string) (bool, error) {
 	return false, nil
 }
 
-func isNewDeploymentExist(env env.Env, args []string) (bool, interface{}) {
+func isNewDeploymentExist(env env.Env, numDeploymentsBefore int) (bool, interface{}) {
 	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
 	if err != nil {
 		logger.Errorf("Error: %v", err)
 		return true, false
 	}
-	numDeploymentsBefore, err := strconv.Atoi(args[0])
+
 	if err != nil {
 		logger.Errorf("Error: %v", err)
 		return true, false
