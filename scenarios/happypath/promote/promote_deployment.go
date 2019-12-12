@@ -3,11 +3,11 @@ package promote
 import (
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
-	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
 )
@@ -43,7 +43,7 @@ func DeploymentToAnotherEnvironment(env env.Env, suiteName string) (bool, error)
 	}
 
 	// Get job
-	ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{promoteJobName})
+	ok, status := test.WaitForCheckFuncWithArguments(env, job.IsDone, []string{config.App2Name, promoteJobName})
 	if ok && status.(string) == "Succeeded" {
 		deploymentsInEnvironment, err := getDeployments(env, envToDeployTo)
 		if err != nil {
@@ -114,46 +114,4 @@ func promote(env env.Env, deployment *models.DeploymentSummary, from, to string)
 	}
 
 	return returnValue.Payload.Name, nil
-}
-
-func isJobDone(env env.Env, args []string) (bool, interface{}) {
-	jobStatus := getJobStatus(env, args[0])
-	if jobStatus == "Succeeded" || jobStatus == "Failed" {
-		logger.Info("Job is done")
-		return true, jobStatus
-	}
-
-	logger.Info("Job is not done yet")
-	return false, nil
-}
-
-func getJobStatus(env env.Env, jobName string) string {
-	applicationJob, err := getJob(env, jobName)
-	if err == nil && applicationJob != nil {
-		return applicationJob.Status
-	}
-
-	logger.Info("Job was not listed yet")
-	return ""
-}
-
-func getJob(env env.Env, jobName string) (*models.Job, error) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
-
-	params := jobclient.NewGetApplicationJobParams().
-		WithAppName(config.App2Name).
-		WithJobName(jobName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
-
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
-
-	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
-	if err != nil {
-		return nil, err
-	}
-
-	return applicationJob.Payload, nil
 }

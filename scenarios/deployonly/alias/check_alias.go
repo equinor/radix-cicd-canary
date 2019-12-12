@@ -16,20 +16,19 @@ var logger *log.Entry
 func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	publicDomainName := application.GetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+	publicDomainName := application.GetPublicDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	if publicDomainName == "" {
 		return false, fmt.Errorf("Public domain name of alias is empty")
 	}
 
-	canonicalDomainName := application.GetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+	canonicalDomainName := application.GetPublicDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	if publicDomainName == "" {
 		return false, fmt.Errorf("Public domain name of alias is empty")
 	}
 
 	if application.IsRunningInActiveCluster(publicDomainName, canonicalDomainName) {
-
 		ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-			return application.IsAliasDefined(env, config.App2Name)
+			return application.IsAliasDefined(env, config.App3Name)
 		})
 
 		if !ok {
@@ -38,7 +37,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsResponding(env, config.App2Name, publicDomainName)
+		return application.IsResponding(env, config.App3Name, publicDomainName)
 	})
 	return ok, nil
 }

@@ -28,5 +28,7 @@ const (
 	App3Repository                   = "https://github.com/equinor/radix-canarycicd-test-3"
 	App3SSHRepository                = "git@github.com:equinor/radix-canarycicd-test-3.git"
 	App3SharedSecret                 = "a sportless strobic spinach"
+	App3EnvironmentName              = "prod"
+	App3Component1Name               = "client"
 	RestrictedApplicationName        = "radix-api"
 )

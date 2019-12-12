@@ -3,7 +3,9 @@ package promote
 import (
 	"strconv"
 
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
 )
@@ -33,7 +35,7 @@ func DeploymentWithinEnvironment(env env.Env, suiteName string) (bool, error) {
 	}
 
 	// Get job
-	ok, status := test.WaitForCheckFuncWithArguments(env, isJobDone, []string{promoteJobName})
+	ok, status := test.WaitForCheckFuncWithArguments(env, job.IsDone, []string{config.App2Name, promoteJobName})
 	if ok && status.(string) == "Succeeded" {
 		doneCheck, ok := test.WaitForCheckFuncWithArguments(env, isNewDeploymentExist, []string{strconv.Itoa(numDeploymentsBefore)})
 		if doneCheck && ok.(bool) {
