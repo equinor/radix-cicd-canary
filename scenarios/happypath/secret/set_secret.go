@@ -46,7 +46,10 @@ func Set(env env.Env, suiteName string) (bool, error) {
 
 func isDeploymentConsistent(env env.Env) (bool, interface{}) {
 	environmentDetails := getEnvironmentDetails(env)
-	if environmentDetails != nil && environmentDetails.ActiveDeployment != nil && environmentDetails.Status != "" {
+	if environmentDetails != nil &&
+		environmentDetails.ActiveDeployment != nil &&
+		environmentDetails.Status != "" &&
+		len(environmentDetails.Secrets) > 0 {
 		logger.Info("Deployment is consistent. We can set the secret.")
 		return true, nil
 	}
