@@ -17,6 +17,8 @@ data:
   impersonateUser: {{ .Values.impersonate.user }}
   publicKey: {{ .Values.deployKey.public }}
   privateKeyBase64: {{ .Values.deployKey.private }}
+  publicKeyCanary3: {{ .Values.deployKeyCanary3.public }}
+  privateKeyCanary3Base64: {{ .Values.deployKeyCanary3.private }}
   radixApiPrefix: {{ .Values.radixApiPrefix}}
   radixWebhookPrefix: {{ .Values.radixWebhookPrefix}}
   clusterFqdn: {{ .Values.clusterFqdn}}

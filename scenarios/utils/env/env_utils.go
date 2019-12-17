@@ -22,6 +22,8 @@ const (
 	radixWebhookPrefixConfig         = "radixWebhookPrefix"
 	publicKeyConfig                  = "publicKey"
 	privateKeyBase64Config           = "privateKeyBase64"
+	publicKeyCanary3Config           = "publicKeyCanary3"
+	privateKeyCanary3Base64Config    = "privateKeyCanary3Base64"
 	timeoutOfTestConfig              = "timeoutOfTest"
 	sleepIntervalBetweenChecksConfig = "sleepIntervalBetweenChecks"
 	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
@@ -39,6 +41,8 @@ type Env struct {
 	webhookPrefix                 string
 	publicKey                     string
 	privateKey                    string
+	publicKeyCanary3              string
+	privateKeyCanary3             string
 	timeoutOfTest                 time.Duration
 	sleepIntervalBetweenCheckFunc time.Duration
 	sleepIntervalBetweenTestRuns  time.Duration
@@ -56,6 +60,8 @@ func NewEnv() Env {
 		getWebhookPrefix(),
 		getPublicKey(),
 		getPrivateKey(),
+		getPublicKeyCanary3(),
+		getPrivateKeyCanary3(),
 		timeoutOfTest(),
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
@@ -111,6 +117,16 @@ func (env Env) GetPublicKey() string {
 // GetPrivateKey get private deploy key from config map
 func (env Env) GetPrivateKey() string {
 	return env.privateKey
+}
+
+// GetPublicKeyCanary3 get public deploy key from config map
+func (env Env) GetPublicKeyCanary3() string {
+	return env.publicKeyCanary3
+}
+
+// GetPrivateKeyCanary3 get private deploy key from config map
+func (env Env) GetPrivateKeyCanary3() string {
+	return env.privateKeyCanary3
 }
 
 // GetPrivateImageHubPassword get private image hub password
@@ -172,6 +188,15 @@ func getPublicKey() string {
 
 func getPrivateKey() string {
 	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyBase64Config))
+	return string(data)
+}
+
+func getPublicKeyCanary3() string {
+	return getConfigFromMap(publicKeyCanary3Config)
+}
+
+func getPrivateKeyCanary3() string {
+	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyCanary3Base64Config))
 	return string(data)
 }
 

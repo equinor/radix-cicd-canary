@@ -17,6 +17,10 @@ deployKey:
   public: xx
   private: xx
 
+deployKeyCanary3:
+  public: xx
+  private: xx
+
 privateImageHub:
   password: xx
 

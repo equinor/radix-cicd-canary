@@ -18,12 +18,6 @@ func WaitForCheckFunc(env envUtil.Env, checkFunc CheckFn) (bool, interface{}) {
 	return WaitForCheckFuncOrTimeout(env, fn)
 }
 
-// WaitForCheckFuncWithArguments Function to pass arguments to check function
-func WaitForCheckFuncWithArguments(env envUtil.Env, checkFunc CheckFn, args []string) (bool, interface{}) {
-	fn := func(env envUtil.Env) (bool, interface{}) { return checkFunc(env, args) }
-	return WaitForCheckFuncOrTimeout(env, fn)
-}
-
 // WaitForCheckFuncOrTimeout Call this to ensure we wait until a check is reached, or time out
 func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, interface{}) {
 	timeout := env.GetTimeoutOfTest()
