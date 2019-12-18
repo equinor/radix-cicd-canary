@@ -17,13 +17,16 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 
 	client := httpUtils.GetHTTPDefaultClient()
 	url := fmt.Sprintf("%s/health", getIngressForRadixCanaryApp(env.GetClusterFQDN()))
-	logger.Infof("Requesting data from %s", url)
+	logger.Debugf("Requesting data from %s", url)
 
 	// Run tests ingress
 	_, err := client.Get(url)
 	if err == nil {
+		// Successful test
 		return true, nil
 	}
+
+	// Failed test
 	return false, err
 }
 

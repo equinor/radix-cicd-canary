@@ -15,20 +15,20 @@ var logger *log.Entry
 func Application(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	appName := config.App2Name
-	appRepo := config.App2Repository
-	appSharedSecret := config.App2SharedSecret
-	appCreator := config.App2Creator
-	appOwner := config.App2Owner
+	appName := config.App3Name
+	appRepo := config.App3Repository
+	appSharedSecret := config.App3SharedSecret
+	appCreator := config.App3Creator
+	appOwner := config.App3Owner
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKey(), env.GetPrivateKey())
+	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKeyCanary3(), env.GetPrivateKeyCanary3())
 	if err != nil {
 		logger.Errorf("%v", err)
 		return false, err
 	}
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsDefined(env, config.App2Name)
+		return application.IsDefined(env, config.App3Name)
 	})
 
 	if !ok {

@@ -8,7 +8,9 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
 )
@@ -16,7 +18,7 @@ import (
 var logger *log.Entry
 
 // Set Tests that we are able to successfully set build secrets
-func Set(env env.Env, suiteName string) (bool, error) {
+func Set(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build to apply RA with build secrets
@@ -28,13 +30,15 @@ func Set(env env.Env, suiteName string) (bool, error) {
 	logger.Info("Job was triggered to apply RA")
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFuncWithArguments(env, build.IsJobListedWithStatus, []string{"Failed"})
+	ok, jobSummary := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return job.IsListedWithStatus(env, config.App2Name, "Failed")
+	})
 	if !ok {
 		return false, nil
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
-	job := build.Job(env, jobName)
+	job := job.Get(env, config.App2Name, jobName)
 	if len(job.Steps) != 2 {
 		logger.Error("Job should not contain any build step")
 		return false, nil
@@ -42,7 +46,10 @@ func Set(env env.Env, suiteName string) (bool, error) {
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	ok, _ = test.WaitForCheckFuncWithArguments(env, buildSecretsAreListedWithStatus, []string{"Pending"})
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return buildSecretsAreListedWithStatus(env, "Pending")
+	})
+
 	if !ok {
 		return false, nil
 	}
@@ -57,7 +64,10 @@ func Set(env env.Env, suiteName string) (bool, error) {
 		return false, err
 	}
 
-	ok, _ = test.WaitForCheckFuncWithArguments(env, buildSecretsAreListedWithStatus, []string{"Consistent"})
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		return buildSecretsAreListedWithStatus(env, "Consistent")
+	})
+
 	if !ok {
 		return false, nil
 	}
@@ -65,11 +75,10 @@ func Set(env env.Env, suiteName string) (bool, error) {
 	return true, nil
 }
 
-func buildSecretsAreListedWithStatus(env env.Env, args []string) (bool, interface{}) {
+func buildSecretsAreListedWithStatus(env env.Env, expectedStatus string) (bool, interface{}) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	expectedStatus := args[0]
 	params := applicationclient.NewGetBuildSecretsParams().
 		WithAppName(config.App2Name).
 		WithImpersonateUser(&impersonateUser).

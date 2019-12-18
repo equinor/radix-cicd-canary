@@ -68,7 +68,7 @@ func TestSuite() test.Suite {
 			{
 				Name:        "SetPrivateImageHub",
 				Description: "Check private image hub func",
-				Test:        privateimagehub.PrivateImageHub,
+				Test:        privateimagehub.Set,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},

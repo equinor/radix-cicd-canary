@@ -17,7 +17,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsPublicDomainNameDefined(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+		return application.IsPublicDomainNameDefined(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 
 	if !ok {
@@ -25,7 +25,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsCanonicalDomainNameDefined(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+		return application.IsCanonicalDomainNameDefined(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 
 	if !ok {
@@ -33,9 +33,8 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if application.IsRunningInActiveCluster(publicDomainName.(string), canonicalDomainName.(string)) {
-
 		ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-			return application.IsAliasDefined(env, config.App2Name)
+			return application.IsAliasDefined(env, config.App3Name)
 		})
 
 		if !ok {
@@ -44,7 +43,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.AreResponding(env, config.App2Name, canonicalDomainName.(string), publicDomainName.(string))
+		return application.AreResponding(env, config.App3Name, canonicalDomainName.(string), publicDomainName.(string))
 	})
 	return ok, nil
 }

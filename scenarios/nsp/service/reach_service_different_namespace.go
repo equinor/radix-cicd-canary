@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -20,19 +21,22 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 	// Run tests service
 	_, err := client.Get(url)
 	if err == nil {
-		return true, nil
+		// Failing test
+		return false, errors.New("No error was returned when attempting to access service")
 	}
-	return false, err
+
+	// Successful
+	return true, nil
 }
 
 // Success is a function after a call to Reach succeeds
 func Success(testName string) {
-	metrics.AddServiceReachable()
+	metrics.AddServiceUnreachable()
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // Fail is a function after a call to Reach failed
 func Fail(testName string) {
-	metrics.AddServiceUnreachable()
+	metrics.AddServiceReachable()
 	logger.Infof("Test %s: FAIL", testName)
 }
