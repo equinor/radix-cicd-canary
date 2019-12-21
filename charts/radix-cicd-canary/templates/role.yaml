@@ -30,6 +30,7 @@ rules:
   verbs:
   - get    # required for testing ad-group updates using service account
   - update # required for testing ad-group updates using service account
+  - patch  # required for testing ad-group updates using service account
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
