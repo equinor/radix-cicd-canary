@@ -67,4 +67,4 @@ The tests can be debugged in their entirety by setting the `BEARER_TOKEN` value 
 
 ### Unit tests
 
-Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in the `env_utils.go` file, and then running debug on each unit test.
+Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in the `env_utils.go` file, and then running debug on each unit test
