@@ -342,23 +342,23 @@ func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsPara
 }
 
 /*
-TriggerPipeline runs a pipeline for a given application and branch
+TriggerPipelineBuild runs a build pipeline for a given application and branch
 */
-func (a *Client) TriggerPipeline(params *TriggerPipelineParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineOK, error) {
+func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewTriggerPipelineParams()
+		params = NewTriggerPipelineBuildParams()
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "triggerPipeline",
+		ID:                 "triggerPipelineBuild",
 		Method:             "POST",
-		PathPattern:        "/applications/{appName}/pipelines/{pipelineName}",
+		PathPattern:        "/applications/{appName}/pipelines/build",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
-		Reader:             &TriggerPipelineReader{formats: a.formats},
+		Reader:             &TriggerPipelineBuildReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -366,13 +366,118 @@ func (a *Client) TriggerPipeline(params *TriggerPipelineParams, authInfo runtime
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*TriggerPipelineOK)
+	success, ok := result.(*TriggerPipelineBuildOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for triggerPipeline: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for triggerPipelineBuild: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+TriggerPipelineBuildDeploy runs a build deploy pipeline for a given application and branch
+*/
+func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildDeployOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewTriggerPipelineBuildDeployParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "triggerPipelineBuildDeploy",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/pipelines/build-deploy",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &TriggerPipelineBuildDeployReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*TriggerPipelineBuildDeployOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for triggerPipelineBuildDeploy: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+TriggerPipelineDeploy runs a deploy pipeline for a given application and environment
+*/
+func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineDeployOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewTriggerPipelineDeployParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "triggerPipelineDeploy",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/pipelines/deploy",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &TriggerPipelineDeployReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*TriggerPipelineDeployOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for triggerPipelineDeploy: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+TriggerPipelinePromote runs a promote pipeline for a given application and branch
+*/
+func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelinePromoteOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewTriggerPipelinePromoteParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "triggerPipelinePromote",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/pipelines/promote",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &TriggerPipelinePromoteReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*TriggerPipelinePromoteOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for triggerPipelinePromote: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

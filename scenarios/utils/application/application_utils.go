@@ -63,6 +63,27 @@ func Delete(env env.Env, appName string) (bool, error) {
 	return err == nil, err
 }
 
+// Deploy Deploys application
+func Deploy(env env.Env, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
+	impersonateUser := env.GetImpersonateUser()
+	impersonateGroup := env.GetImpersonateGroup()
+
+	bodyParameters := models.PipelineParametersDeploy{
+		ToEnvironment: toEnvironment,
+	}
+
+	params := applicationclient.NewTriggerPipelineDeployParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup).
+		WithAppName(appName).
+		WithPipelineParametersDeploy(&bodyParameters)
+
+	clientBearerToken := httpUtils.GetClientBearerToken(env)
+	client := httpUtils.GetApplicationClient(env)
+
+	return client.TriggerPipelineDeploy(params, clientBearerToken)
+}
+
 // IsDefined Checks if application is defined
 func IsDefined(env env.Env, appName string) (bool, interface{}) {
 	_, err := Get(env, appName)
