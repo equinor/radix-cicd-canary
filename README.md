@@ -33,6 +33,14 @@ The `NSP` suite contains the following tests.
 1. Reach ingress
 1. Reach service in different namespace
 
+The `Deploy only` suite contains the following tests.
+
+1. Register application
+1. Deploy application
+1. Check private image hub func
+1. Check alias responding
+1. Delete applications
+
 ## Developer information
 
 ### Development Process

@@ -7,6 +7,7 @@ package component
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/go-openapi/runtime"
 
@@ -49,13 +50,23 @@ func NewLogOK() *LogOK {
 pod log
 */
 type LogOK struct {
+	Payload string
 }
 
 func (o *LogOK) Error() string {
-	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs][%d] logOK ", 200)
+	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs][%d] logOK  %+v", 200, o.Payload)
+}
+
+func (o *LogOK) GetPayload() string {
+	return o.Payload
 }
 
 func (o *LogOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	// response payload
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+		return err
+	}
 
 	return nil
 }
