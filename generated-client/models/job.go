@@ -49,7 +49,7 @@ type Job struct {
 	Started string `json:"started,omitempty"`
 
 	// Status of the job
-	// Enum: [Waiting Running Succeeded Failed]
+	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
 	Status string `json:"status,omitempty"`
 
 	// Array of steps
@@ -180,7 +180,7 @@ var jobTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["Waiting","Running","Succeeded","Failed"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Waiting","Running","Succeeded","Stopping","Stopped","Failed"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -198,6 +198,12 @@ const (
 
 	// JobStatusSucceeded captures enum value "Succeeded"
 	JobStatusSucceeded string = "Succeeded"
+
+	// JobStatusStopping captures enum value "Stopping"
+	JobStatusStopping string = "Stopping"
+
+	// JobStatusStopped captures enum value "Stopped"
+	JobStatusStopped string = "Stopped"
 
 	// JobStatusFailed captures enum value "Failed"
 	JobStatusFailed string = "Failed"

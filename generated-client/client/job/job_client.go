@@ -134,7 +134,7 @@ func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo r
 /*
 StopApplicationJob stops job
 */
-func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobOK, error) {
+func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStopApplicationJobParams()
@@ -156,7 +156,7 @@ func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo r
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*StopApplicationJobOK)
+	success, ok := result.(*StopApplicationJobNoContent)
 	if ok {
 		return success, nil
 	}
