@@ -33,6 +33,14 @@ The `NSP` suite contains the following tests.
 1. Reach ingress
 1. Reach service in different namespace
 
+The `Deploy only` suite contains the following tests.
+
+1. Register application
+1. Deploy application
+1. Check private image hub func
+1. Check alias responding
+1. Delete applications
+
 ## Developer information
 
 ### Development Process
@@ -67,4 +75,4 @@ The tests can be debugged in their entirety by setting the `BEARER_TOKEN` value 
 
 ### Unit tests
 
-Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in the `env_utils.go` file, and then running debug on each unit test.
+Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in the `env_utils.go` file, and then running debug on each unit test

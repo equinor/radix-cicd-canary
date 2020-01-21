@@ -21,8 +21,8 @@ type StopApplicationJobReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *StopApplicationJobReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewStopApplicationJobOK()
+	case 204:
+		result := NewStopApplicationJobNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -45,23 +45,23 @@ func (o *StopApplicationJobReader) ReadResponse(response runtime.ClientResponse,
 	}
 }
 
-// NewStopApplicationJobOK creates a StopApplicationJobOK with default headers values
-func NewStopApplicationJobOK() *StopApplicationJobOK {
-	return &StopApplicationJobOK{}
+// NewStopApplicationJobNoContent creates a StopApplicationJobNoContent with default headers values
+func NewStopApplicationJobNoContent() *StopApplicationJobNoContent {
+	return &StopApplicationJobNoContent{}
 }
 
-/*StopApplicationJobOK handles this case with default header values.
+/*StopApplicationJobNoContent handles this case with default header values.
 
 Job stopped ok
 */
-type StopApplicationJobOK struct {
+type StopApplicationJobNoContent struct {
 }
 
-func (o *StopApplicationJobOK) Error() string {
-	return fmt.Sprintf("[POST /applications/{appName}/jobs/{jobName}/stop][%d] stopApplicationJobOK ", 200)
+func (o *StopApplicationJobNoContent) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/jobs/{jobName}/stop][%d] stopApplicationJobNoContent ", 204)
 }
 
-func (o *StopApplicationJobOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *StopApplicationJobNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

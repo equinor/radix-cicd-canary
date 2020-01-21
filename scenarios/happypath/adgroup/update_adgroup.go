@@ -127,17 +127,16 @@ func buildApp(env env.Env) error {
 		},
 	}
 
-	params := apiclient.NewTriggerPipelineParams().
+	params := apiclient.NewTriggerPipelineBuildParams().
 		WithAppName(config.App2Name).
-		WithPipelineName(pipelineName).
-		WithPipelineParameters(&bodyParameters).
+		WithPipelineParametersBuild(&bodyParameters.PipelineParametersBuild).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetApplicationClient(env)
 
-	_, err := client.TriggerPipeline(params, clientBearerToken)
+	_, err := client.TriggerPipelineBuild(params, clientBearerToken)
 	if err != nil {
 		return err
 	}

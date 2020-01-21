@@ -102,16 +102,15 @@ func promote(env env.Env, deployment *models.DeploymentSummary, from, to string)
 		},
 	}
 
-	params := applicationclient.NewTriggerPipelineParams().
+	params := applicationclient.NewTriggerPipelinePromoteParams().
 		WithAppName(config.App2Name).
-		WithPipelineName(pipelineName).
-		WithPipelineParameters(&bodyParameters).
+		WithPipelineParametersPromote(&bodyParameters.PipelineParametersPromote).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetApplicationClient(env)
 
-	returnValue, err := client.TriggerPipeline(params, clientBearerToken)
+	returnValue, err := client.TriggerPipelinePromote(params, clientBearerToken)
 	if err != nil {
 		return "", err
 	}

@@ -3,8 +3,8 @@ package deployonly
 import (
 	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/alias"
-	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/build"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/delete"
+	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/deploy"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/register"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
@@ -22,10 +22,12 @@ func TestSuite() test.Suite {
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
+		},
+		Tests: []test.Spec{
 			{
-				Name:        "BuildDeployOnlyApplication",
-				Description: "Build application",
-				Test:        build.Application,
+				Name:        "DeployDeployOnlyApplication",
+				Description: "Deploy application",
+				Test:        deploy.Application,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
@@ -36,8 +38,6 @@ func TestSuite() test.Suite {
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
-		},
-		Tests: []test.Spec{
 			{
 				Name:        "DefaultDeployOnlyAliasResponding",
 				Description: "Check alias responding",
