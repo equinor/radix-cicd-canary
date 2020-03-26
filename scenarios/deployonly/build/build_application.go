@@ -40,6 +40,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	steps := job.GetSteps(env, config.App3Name, jobName)
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
+		{name: "config-2-map", components: []string{}},
 		{name: "radix-pipeline", components: []string{}}}
 
 	if steps == nil && len(steps) != len(expectedSteps) {
