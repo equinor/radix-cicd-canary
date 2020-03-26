@@ -39,7 +39,13 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
 	job := job.Get(env, config.App2Name, jobName)
-	if len(job.Steps) != 2 {
+
+	expectedSteps := []string{
+		"clone-config",
+		"config-2-map",
+		"radix-pipeline"}
+
+	if len(job.Steps) != len(expectedSteps) {
 		logger.Error("Job should not contain any build step")
 		return false, nil
 	}
