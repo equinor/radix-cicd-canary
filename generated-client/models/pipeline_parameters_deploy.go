@@ -18,6 +18,9 @@ type PipelineParametersDeploy struct {
 	// Name of environment to deploy
 	// REQUIRED for "deploy" pipeline
 	ToEnvironment string `json:"toEnvironment,omitempty"`
+
+	// TriggeredBy of the job - if empty will use user token upn (user principle name)
+	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
 // Validate validates this pipeline parameters deploy
