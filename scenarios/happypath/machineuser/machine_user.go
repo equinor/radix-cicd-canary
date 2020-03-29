@@ -37,8 +37,6 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	token := machineUserToken.(*string)
-	println(*token)
-
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return hasAccess(env, *token)
 	})
