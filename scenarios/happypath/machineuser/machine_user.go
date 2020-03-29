@@ -45,6 +45,12 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 		return false, nil
 	}
 
+	// Should only have access to its own application
+	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
+	if hasAccessToOtherApplication {
+		return false, nil
+	}
+
 	// Disable machine user
 	patchMachineUser(env, !enabled)
 
@@ -109,10 +115,9 @@ func hasAccess(env env.Env, machineUserToken string) (bool, interface{}) {
 }
 
 func hasProperAccess(env env.Env, machineUserToken string, properAccess bool) bool {
-	_, err := getApplication(env, machineUserToken)
-	accessToApplication := !isGetApplicationUnauthorized(err)
+	accessToApplication := hasAccessToApplication(env, config.App2Name, machineUserToken)
 
-	err = buildApp(env, machineUserToken)
+	err := buildApp(env, machineUserToken)
 	accessToBuild := !givesAccessError(err)
 
 	err = setSecret(env, machineUserToken)
@@ -124,6 +129,11 @@ func hasProperAccess(env env.Env, machineUserToken string, properAccess bool) bo
 	}
 
 	return hasProperAccess
+}
+
+func hasAccessToApplication(env env.Env, appName, machineUserToken string) bool {
+	_, err := getApplication(env, appName, machineUserToken)
+	return !isGetApplicationUnauthorized(err)
 }
 
 func isGetApplicationUnauthorized(err error) bool {
@@ -142,9 +152,9 @@ func isSetSecretUnauthorizedError(err error) bool {
 	return false
 }
 
-func getApplication(env env.Env, machineUserToken string) (*models.Application, error) {
+func getApplication(env env.Env, appName, machineUserToken string) (*models.Application, error) {
 	params := apiclient.NewGetApplicationParams().
-		WithAppName(config.App2Name)
+		WithAppName(appName)
 
 	clientBearerToken := httptransport.BearerToken(machineUserToken)
 	client := httpUtils.GetApplicationClient(env)
