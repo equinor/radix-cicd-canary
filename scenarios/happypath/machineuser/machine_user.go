@@ -133,7 +133,7 @@ func hasProperAccess(env env.Env, machineUserToken string, properAccess bool) bo
 
 func hasAccessToApplication(env env.Env, appName, machineUserToken string) bool {
 	_, err := getApplication(env, appName, machineUserToken)
-	return !isGetApplicationUnauthorized(err)
+	return !isGetApplicationUnauthorized(err) && !givesAccessError(err)
 }
 
 func isGetApplicationUnauthorized(err error) bool {
@@ -214,7 +214,8 @@ func setSecret(env env.Env, machineUserToken string) error {
 
 func givesAccessError(err error) bool {
 	const unauthorizedStatus = 401
-	return err != nil && checkErrorResponse(err, unauthorizedStatus)
+	const forbiddenStatus = 403
+	return err != nil && (checkErrorResponse(err, unauthorizedStatus) || checkErrorResponse(err, forbiddenStatus))
 }
 
 func checkErrorResponse(err error, expectedStatusCode int) bool {
