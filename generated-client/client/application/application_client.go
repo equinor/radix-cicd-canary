@@ -366,6 +366,7 @@ func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenPa
 	if err != nil {
 		return nil, err
 	}
+
 	success, ok := result.(*RegenerateMachineUserTokenOK)
 	if ok {
 		return success, nil
