@@ -81,6 +81,11 @@ type GetApplicationJobLogsParams struct {
 
 	*/
 	JobName string
+	/*SinceTime
+	  Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
+
+	*/
+	SinceTime *strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
@@ -164,6 +169,17 @@ func (o *GetApplicationJobLogsParams) SetJobName(jobName string) {
 	o.JobName = jobName
 }
 
+// WithSinceTime adds the sinceTime to the get application job logs params
+func (o *GetApplicationJobLogsParams) WithSinceTime(sinceTime *strfmt.DateTime) *GetApplicationJobLogsParams {
+	o.SetSinceTime(sinceTime)
+	return o
+}
+
+// SetSinceTime adds the sinceTime to the get application job logs params
+func (o *GetApplicationJobLogsParams) SetSinceTime(sinceTime *strfmt.DateTime) {
+	o.SinceTime = sinceTime
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *GetApplicationJobLogsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -198,6 +214,22 @@ func (o *GetApplicationJobLogsParams) WriteToRequest(r runtime.ClientRequest, re
 	// path param jobName
 	if err := r.SetPathParam("jobName", o.JobName); err != nil {
 		return err
+	}
+
+	if o.SinceTime != nil {
+
+		// query param sinceTime
+		var qrSinceTime strfmt.DateTime
+		if o.SinceTime != nil {
+			qrSinceTime = *o.SinceTime
+		}
+		qSinceTime := qrSinceTime.String()
+		if qSinceTime != "" {
+			if err := r.SetQueryParam("sinceTime", qSinceTime); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	if len(res) > 0 {

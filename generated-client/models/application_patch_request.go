@@ -18,6 +18,9 @@ type ApplicationPatchRequest struct {
 	// AdGroups the groups that should be able to access the application
 	AdGroups []string `json:"adGroups"`
 
+	// MachineUser is used for interacting directly with Radix API
+	MachineUser bool `json:"machineUser,omitempty"`
+
 	// Owner of the application - should be an email
 	Owner string `json:"owner,omitempty"`
 }

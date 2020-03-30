@@ -91,6 +91,11 @@ type LogParams struct {
 
 	*/
 	PodName string
+	/*SinceTime
+	  Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
+
+	*/
+	SinceTime *strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
@@ -196,6 +201,17 @@ func (o *LogParams) SetPodName(podName string) {
 	o.PodName = podName
 }
 
+// WithSinceTime adds the sinceTime to the log params
+func (o *LogParams) WithSinceTime(sinceTime *strfmt.DateTime) *LogParams {
+	o.SetSinceTime(sinceTime)
+	return o
+}
+
+// SetSinceTime adds the sinceTime to the log params
+func (o *LogParams) SetSinceTime(sinceTime *strfmt.DateTime) {
+	o.SinceTime = sinceTime
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *LogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -240,6 +256,22 @@ func (o *LogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry)
 	// path param podName
 	if err := r.SetPathParam("podName", o.PodName); err != nil {
 		return err
+	}
+
+	if o.SinceTime != nil {
+
+		// query param sinceTime
+		var qrSinceTime strfmt.DateTime
+		if o.SinceTime != nil {
+			qrSinceTime = *o.SinceTime
+		}
+		qSinceTime := qrSinceTime.String()
+		if qSinceTime != "" {
+			if err := r.SetQueryParam("sinceTime", qSinceTime); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	if len(res) > 0 {

@@ -50,6 +50,9 @@ type JobSummary struct {
 	// Status of the job
 	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
 	Status string `json:"status,omitempty"`
+
+	// TriggeredBy user that triggered the job. If through webhook = sender.login. If through api - usertoken.upn
+	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
 // Validate validates this job summary
