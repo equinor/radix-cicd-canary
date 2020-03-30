@@ -85,6 +85,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
+		{name: "config-2-map", components: []string{}},
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-app", components: []string{"app"}},

@@ -25,6 +25,9 @@ type PipelineParametersBuild struct {
 
 	// PushImage should image be pushed to container registry. Defaults pushing
 	PushImage string `json:"pushImage,omitempty"`
+
+	// TriggeredBy of the job - if empty will use user token upn (user principle name)
+	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
 // Validate validates this pipeline parameters build

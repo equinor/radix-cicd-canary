@@ -54,6 +54,9 @@ type Job struct {
 
 	// Array of steps
 	Steps []*Step `json:"steps"`
+
+	// TriggeredBy user that triggered the job. If through webhook = sender.login. If through api = usertoken.upn
+	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
 // Validate validates this job
