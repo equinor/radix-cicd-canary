@@ -239,6 +239,7 @@ func getNSPSleepInterval() time.Duration {
 // SetRequiredEnvironmentVariablesForTest Sets test environment variables, that would come from
 // launch config, when running complete scenario
 func SetRequiredEnvironmentVariablesForTest() {
+	os.Setenv("GODEBUG", "http2server=0,http2client=0")
 	os.Setenv("BEARER_TOKEN", "")
 }
 
