@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
@@ -47,6 +48,8 @@ type Env struct {
 	sleepIntervalBetweenCheckFunc time.Duration
 	sleepIntervalBetweenTestRuns  time.Duration
 	nspSleepInterval              time.Duration
+	suitelist                     []string
+	suiteListIsBlacklist          bool // suitelist is a whitelist by default
 }
 
 // NewEnv Constructor
@@ -66,6 +69,8 @@ func NewEnv() Env {
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
 		getNSPSleepInterval(),
+		getSuitelist(),
+		getIsBlacklist(),
 	}
 }
 
@@ -152,6 +157,16 @@ func (env Env) GetSleepIntervalBetweenTestRuns() time.Duration {
 // GetNSPSleepInterval Gets the sleep inteval between NSP test runs from config map
 func (env Env) GetNSPSleepInterval() time.Duration {
 	return env.nspSleepInterval
+}
+
+// GetSuiteList Gets a filter list for which suites to run
+func (env Env) GetSuiteList() []string {
+	return env.suitelist
+}
+
+// GetSuiteListIsBlacklist Gets whether suitelist is considered a blacklist
+func (env Env) GetSuiteListIsBlacklist() bool {
+	return env.suiteListIsBlacklist
 }
 
 func getBearerToken() string {
@@ -251,4 +266,19 @@ func getConfigFromMap(config string) string {
 	}
 	configValue := configmap.Data[config]
 	return configValue
+}
+
+func getSuitelist() []string {
+	suitelist := os.Getenv("SUITELIST")
+	// return empty list if no values (Split would return [""])
+	if len(suitelist) == 0 {
+		return make([]string, 0)
+	} else {
+		return strings.Split(os.Getenv("SUITELIST"), ":")
+	}
+}
+
+func getIsBlacklist() bool {
+	suitelistisblacklist := strings.ToLower(os.Getenv("SUITELISTISBLACKLIST"))
+	return suitelistisblacklist == "true" || suitelistisblacklist == "yes"
 }
