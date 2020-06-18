@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
@@ -29,6 +30,8 @@ const (
 	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
 	nspSleepIntervalConfig           = "nspSleepInterval"
 	privateImageHubPasswordConfig    = "privateImageHubPassword"
+	envVarSuiteList                  = "SUITE_LIST"
+	envVarIsBlacklist                = "SUITE_LIST_IS_BLACKLIST"
 )
 
 // Env Holds all the environment variables
@@ -47,6 +50,8 @@ type Env struct {
 	sleepIntervalBetweenCheckFunc time.Duration
 	sleepIntervalBetweenTestRuns  time.Duration
 	nspSleepInterval              time.Duration
+	suiteList                     []string
+	suiteListIsBlacklist          bool // suiteList is a whitelist by default
 }
 
 // NewEnv Constructor
@@ -66,6 +71,8 @@ func NewEnv() Env {
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
 		getNSPSleepInterval(),
+		getSuiteList(),
+		getIsBlacklist(),
 	}
 }
 
@@ -152,6 +159,16 @@ func (env Env) GetSleepIntervalBetweenTestRuns() time.Duration {
 // GetNSPSleepInterval Gets the sleep inteval between NSP test runs from config map
 func (env Env) GetNSPSleepInterval() time.Duration {
 	return env.nspSleepInterval
+}
+
+// GetSuiteList Gets a filter list for which suites to run
+func (env Env) GetSuiteList() []string {
+	return env.suiteList
+}
+
+// GetSuiteListIsBlacklist Gets whether suiteList is considered a blacklist
+func (env Env) GetSuiteListIsBlacklist() bool {
+	return env.suiteListIsBlacklist
 }
 
 func getBearerToken() string {
@@ -251,4 +268,19 @@ func getConfigFromMap(config string) string {
 	}
 	configValue := configmap.Data[config]
 	return configValue
+}
+
+func getSuiteList() []string {
+	suiteList := os.Getenv(envVarSuiteList)
+	// return empty list if no values (Split would return [""])
+	if len(suiteList) == 0 {
+		return make([]string, 0)
+	} else {
+		return strings.Split(suiteList, ":")
+	}
+}
+
+func getIsBlacklist() bool {
+	suiteListIsBlacklist := strings.ToLower(os.Getenv(envVarIsBlacklist))
+	return suiteListIsBlacklist == "true" || suiteListIsBlacklist == "yes"
 }
