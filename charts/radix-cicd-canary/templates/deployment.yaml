@@ -30,3 +30,5 @@ spec:
             - name: metrics
               containerPort: {{ .Values.service.internalPort }}
               protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
