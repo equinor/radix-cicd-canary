@@ -37,3 +37,11 @@ timeoutOfTest: 1200
 sleepIntervalBetweenChecks: 5
 sleepIntervalTestRuns: 300
 nspSleepInterval: 15
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 100Mi
+  requests:
+    cpu: 50m
+    memory: 100Mi
