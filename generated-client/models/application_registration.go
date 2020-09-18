@@ -6,14 +6,14 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ApplicationRegistration ApplicationRegistration describe an application
+//
 // swagger:model ApplicationRegistration
 type ApplicationRegistration struct {
 
@@ -51,6 +51,9 @@ type ApplicationRegistration struct {
 	// SharedSecret the shared secret of the webhook
 	// Required: true
 	SharedSecret *string `json:"sharedSecret"`
+
+	// WBS information
+	WBS string `json:"wbs,omitempty"`
 }
 
 // Validate validates this application registration

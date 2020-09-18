@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new component API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,23 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter) (*ComponentsOK, error)
+
+	Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (*LogOK, error)
+
+	RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*RestartComponentOK, error)
+
+	StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StartComponentOK, error)
+
+	StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StopComponentOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-Components gets components for a deployment
+  Components gets components for a deployment
 */
 func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter) (*ComponentsOK, error) {
 	// TODO: Validate the params before sending
@@ -62,7 +76,7 @@ func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAut
 }
 
 /*
-Log gets logs from a deployed pod
+  Log gets logs from a deployed pod
 */
 func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (*LogOK, error) {
 	// TODO: Validate the params before sending
@@ -97,7 +111,7 @@ func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (
 }
 
 /*
-RestartComponent restarts component
+  RestartComponent restarts a component stops running the component container pulls new image from image hub in radix configuration starts the container again using up to date image
 */
 func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*RestartComponentOK, error) {
 	// TODO: Validate the params before sending
@@ -132,7 +146,7 @@ func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runti
 }
 
 /*
-StartComponent starts component
+  StartComponent starts component
 */
 func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StartComponentOK, error) {
 	// TODO: Validate the params before sending
@@ -167,7 +181,7 @@ func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.C
 }
 
 /*
-StopComponent stops component
+  StopComponent stops component
 */
 func (a *Client) StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StopComponentOK, error) {
 	// TODO: Validate the params before sending

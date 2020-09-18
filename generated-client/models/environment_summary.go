@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // EnvironmentSummary EnvironmentSummary holds general information about environment
+//
 // swagger:model EnvironmentSummary
 type EnvironmentSummary struct {
 
@@ -80,7 +80,7 @@ const (
 
 // prop value enum
 func (m *EnvironmentSummary) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, environmentSummaryTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, environmentSummaryTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil

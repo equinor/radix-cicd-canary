@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new environment API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,25 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	ChangeEnvironmentComponentSecret(params *ChangeEnvironmentComponentSecretParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeEnvironmentComponentSecretOK, error)
+
+	CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*CreateEnvironmentOK, error)
+
+	DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteEnvironmentOK, error)
+
+	GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationEnvironmentDeploymentsOK, error)
+
+	GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentOK, error)
+
+	GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentSummaryOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-ChangeEnvironmentComponentSecret updates an application environment component secret
+  ChangeEnvironmentComponentSecret updates an application environment component secret
 */
 func (a *Client) ChangeEnvironmentComponentSecret(params *ChangeEnvironmentComponentSecretParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeEnvironmentComponentSecretOK, error) {
 	// TODO: Validate the params before sending
@@ -62,7 +78,42 @@ func (a *Client) ChangeEnvironmentComponentSecret(params *ChangeEnvironmentCompo
 }
 
 /*
-DeleteEnvironment deletes application environment
+  CreateEnvironment creates application environment
+*/
+func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*CreateEnvironmentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCreateEnvironmentParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "createEnvironment",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &CreateEnvironmentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*CreateEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for createEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  DeleteEnvironment deletes application environment
 */
 func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -97,7 +148,7 @@ func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo run
 }
 
 /*
-GetApplicationEnvironmentDeployments lists the application environment deployments
+  GetApplicationEnvironmentDeployments lists the application environment deployments
 */
 func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationEnvironmentDeploymentsOK, error) {
 	// TODO: Validate the params before sending
@@ -132,7 +183,7 @@ func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvi
 }
 
 /*
-GetEnvironment gets details for an application environment
+  GetEnvironment gets details for an application environment
 */
 func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -167,7 +218,7 @@ func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.C
 }
 
 /*
-GetEnvironmentSummary lists the environments for an application
+  GetEnvironmentSummary lists the environments for an application
 */
 func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentSummaryOK, error) {
 	// TODO: Validate the params before sending

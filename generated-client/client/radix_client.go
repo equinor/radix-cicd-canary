@@ -8,8 +8,7 @@ package client
 import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/client/component"
@@ -61,19 +60,12 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Radix {
 
 	cli := new(Radix)
 	cli.Transport = transport
-
 	cli.Application = application.New(transport, formats)
-
 	cli.Component = component.New(transport, formats)
-
 	cli.Deployment = deployment.New(transport, formats)
-
 	cli.Environment = environment.New(transport, formats)
-
 	cli.Job = job.New(transport, formats)
-
 	cli.Platform = platform.New(transport, formats)
-
 	return cli
 }
 
@@ -118,17 +110,17 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Radix is a client for radix
 type Radix struct {
-	Application *application.Client
+	Application application.ClientService
 
-	Component *component.Client
+	Component component.ClientService
 
-	Deployment *deployment.Client
+	Deployment deployment.ClientService
 
-	Environment *environment.Client
+	Environment environment.ClientService
 
-	Job *job.Client
+	Job job.ClientService
 
-	Platform *platform.Client
+	Platform platform.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -136,17 +128,10 @@ type Radix struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Radix) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-
 	c.Application.SetTransport(transport)
-
 	c.Component.SetTransport(transport)
-
 	c.Deployment.SetTransport(transport)
-
 	c.Environment.SetTransport(transport)
-
 	c.Job.SetTransport(transport)
-
 	c.Platform.SetTransport(transport)
-
 }

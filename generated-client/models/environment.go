@@ -9,14 +9,14 @@ import (
 	"encoding/json"
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Environment Environment holds detail information about environment
+//
 // swagger:model Environment
 type Environment struct {
 
@@ -145,7 +145,7 @@ const (
 
 // prop value enum
 func (m *Environment) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, environmentTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, environmentTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil

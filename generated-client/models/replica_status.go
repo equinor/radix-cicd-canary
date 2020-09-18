@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ReplicaStatus ReplicaStatus describes the status of a component container inside a pod
+//
 // swagger:model ReplicaStatus
 type ReplicaStatus struct {
 
@@ -72,7 +72,7 @@ const (
 
 // prop value enum
 func (m *ReplicaStatus) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, replicaStatusTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, replicaStatusTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
