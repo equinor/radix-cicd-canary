@@ -6,12 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // HorizontalScalingSummary HorizontalScalingSummary describe the summary of horizontal scaling of a component
+//
 // swagger:model HorizontalScalingSummary
 type HorizontalScalingSummary struct {
 

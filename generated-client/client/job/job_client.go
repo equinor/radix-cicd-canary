@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new job API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,21 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error)
+
+	GetApplicationJobLogs(params *GetApplicationJobLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobLogsOK, error)
+
+	GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error)
+
+	StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-GetApplicationJob gets the detail of a given job for a given application
+  GetApplicationJob gets the detail of a given job for a given application
 */
 func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error) {
 	// TODO: Validate the params before sending
@@ -62,7 +74,7 @@ func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo run
 }
 
 /*
-GetApplicationJobLogs gets a pipeline logs by combining different steps jobs logs
+  GetApplicationJobLogs gets a pipeline logs by combining different steps jobs logs
 */
 func (a *Client) GetApplicationJobLogs(params *GetApplicationJobLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobLogsOK, error) {
 	// TODO: Validate the params before sending
@@ -97,7 +109,7 @@ func (a *Client) GetApplicationJobLogs(params *GetApplicationJobLogsParams, auth
 }
 
 /*
-GetApplicationJobs gets the summary of jobs for a given application
+  GetApplicationJobs gets the summary of jobs for a given application
 */
 func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error) {
 	// TODO: Validate the params before sending
@@ -132,7 +144,7 @@ func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo r
 }
 
 /*
-StopApplicationJob stops job
+  StopApplicationJob stops job
 */
 func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error) {
 	// TODO: Validate the params before sending

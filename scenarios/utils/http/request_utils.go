@@ -108,32 +108,32 @@ func GetClientBearerToken(env env.Env) runtime.ClientAuthInfoWriter {
 }
 
 // GetPlatformClient Gets the Platform API client
-func GetPlatformClient(env env.Env) *platformAPIClient.Client {
+func GetPlatformClient(env env.Env) platformAPIClient.ClientService {
 	return platformAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetApplicationClient Gets the Application API client
-func GetApplicationClient(env env.Env) *applicationAPIClient.Client {
+func GetApplicationClient(env env.Env) applicationAPIClient.ClientService {
 	return applicationAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetJobClient Gets the Job API client
-func GetJobClient(env env.Env) *jobAPIClient.Client {
+func GetJobClient(env env.Env) jobAPIClient.ClientService {
 	return jobAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetEnvironmentClient Gets the Environment API client
-func GetEnvironmentClient(env env.Env) *environmentAPIClient.Client {
+func GetEnvironmentClient(env env.Env) environmentAPIClient.ClientService {
 	return environmentAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetDeploymentClient Gets the Deployment API client
-func GetDeploymentClient(env env.Env) *deploymentAPIClient.Client {
+func GetDeploymentClient(env env.Env) deploymentAPIClient.ClientService {
 	return deploymentAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetComponentClient Gets the Component API client
-func GetComponentClient(env env.Env) *componentAPIClient.Client {
+func GetComponentClient(env env.Env) componentAPIClient.ClientService {
 	return componentAPIClient.New(getTransport(env), strfmt.Default)
 }
 

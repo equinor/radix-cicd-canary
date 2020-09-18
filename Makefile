@@ -42,3 +42,8 @@ deploy-via-helm:
 		-f radix-cicd-canary-values.yaml
 
 	rm -f radix-cicd-canary-values.yaml
+
+
+.PHONY: test
+test:
+	go test -cover `go list ./...`

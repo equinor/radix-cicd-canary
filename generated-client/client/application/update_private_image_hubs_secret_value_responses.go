@@ -9,8 +9,7 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // UpdatePrivateImageHubsSecretValueReader is a Reader for the UpdatePrivateImageHubsSecretValue structure.

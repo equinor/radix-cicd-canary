@@ -20,8 +20,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	appSharedSecret := config.App2SharedSecret
 	appCreator := config.App2Creator
 	appOwner := config.App2Owner
+	appWbs := config.App2Wbs
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKey(), env.GetPrivateKey())
+	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKey(), env.GetPrivateKey(), appWbs)
 	if err != nil {
 		logger.Errorf("%v", err)
 		return false, err

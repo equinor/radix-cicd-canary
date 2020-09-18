@@ -6,12 +6,12 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	strfmt "github.com/go-openapi/strfmt"
-
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // ApplicationPatchRequest ApplicationPatchRequest contains fields that can be patched on a registration
+//
 // swagger:model ApplicationPatchRequest
 type ApplicationPatchRequest struct {
 
@@ -23,6 +23,12 @@ type ApplicationPatchRequest struct {
 
 	// Owner of the application - should be an email
 	Owner string `json:"owner,omitempty"`
+
+	// Repository the github repository
+	Repository string `json:"repository,omitempty"`
+
+	// WBS information
+	WBS string `json:"wbs,omitempty"`
 }
 
 // Validate validates this application patch request
