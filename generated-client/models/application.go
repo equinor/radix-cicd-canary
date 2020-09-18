@@ -8,13 +8,13 @@ package models
 import (
 	"strconv"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // Application Application details of an application
+//
 // swagger:model Application
 type Application struct {
 
@@ -32,6 +32,9 @@ type Application struct {
 
 	// Owner of the application (email). Can be a single person or a shared group email
 	Owner string `json:"owner,omitempty"`
+
+	// Repository the github repository
+	Repository string `json:"repository,omitempty"`
 
 	// app alias
 	AppAlias *ApplicationAlias `json:"appAlias,omitempty"`

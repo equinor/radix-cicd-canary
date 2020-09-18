@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new platform API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,17 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*RegisterApplicationOK, error)
+
+	ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter) (*ShowApplicationsOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-RegisterApplication creates an application registration
+  RegisterApplication creates an application registration
 */
 func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*RegisterApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -62,7 +70,7 @@ func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo
 }
 
 /*
-ShowApplications lists the applications n o t e doesn t get application summary latest job environments
+  ShowApplications lists the applications n o t e doesn t get application summary latest job environments
 */
 func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter) (*ShowApplicationsOK, error) {
 	// TODO: Validate the params before sending

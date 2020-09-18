@@ -9,12 +9,11 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new application API client.
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Client {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
 }
 
@@ -26,8 +25,45 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientService is the interface for Client methods
+type ClientService interface {
+	ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeRegistrationDetailsOK, error)
+
+	DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteApplicationOK, error)
+
+	GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationOK, error)
+
+	GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBuildSecretsOK, error)
+
+	GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetDeploymentsOK, error)
+
+	GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPrivateImageHubsOK, error)
+
+	IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runtime.ClientAuthInfoWriter) (*IsDeployKeyValidOK, error)
+
+	ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter) (*ListPipelinesOK, error)
+
+	ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ModifyRegistrationDetailsOK, error)
+
+	RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter) (*RegenerateMachineUserTokenOK, error)
+
+	TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildOK, error)
+
+	TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildDeployOK, error)
+
+	TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineDeployOK, error)
+
+	TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelinePromoteOK, error)
+
+	UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateBuildSecretsSecretValueOK, error)
+
+	UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdatePrivateImageHubsSecretValueOK, error)
+
+	SetTransport(transport runtime.ClientTransport)
+}
+
 /*
-ChangeRegistrationDetails updates application registration
+  ChangeRegistrationDetails updates application registration
 */
 func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeRegistrationDetailsOK, error) {
 	// TODO: Validate the params before sending
@@ -62,7 +98,7 @@ func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsPara
 }
 
 /*
-DeleteApplication deletes application
+  DeleteApplication deletes application
 */
 func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -97,7 +133,7 @@ func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo run
 }
 
 /*
-GetApplication gets the application application by name
+  GetApplication gets the application application by name
 */
 func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -132,7 +168,7 @@ func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.C
 }
 
 /*
-GetBuildSecrets lists the application build secrets
+  GetBuildSecrets lists the application build secrets
 */
 func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBuildSecretsOK, error) {
 	// TODO: Validate the params before sending
@@ -167,7 +203,7 @@ func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime
 }
 
 /*
-GetDeployments lists the application deployments
+  GetDeployments lists the application deployments
 */
 func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetDeploymentsOK, error) {
 	// TODO: Validate the params before sending
@@ -202,7 +238,7 @@ func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.C
 }
 
 /*
-GetPrivateImageHubs lists the application private image hubs
+  GetPrivateImageHubs lists the application private image hubs
 */
 func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPrivateImageHubsOK, error) {
 	// TODO: Validate the params before sending
@@ -237,7 +273,7 @@ func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo
 }
 
 /*
-IsDeployKeyValid checks if the deploy key is correctly setup for application by cloning the repository
+  IsDeployKeyValid checks if the deploy key is correctly setup for application by cloning the repository
 */
 func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runtime.ClientAuthInfoWriter) (*IsDeployKeyValidOK, error) {
 	// TODO: Validate the params before sending
@@ -272,7 +308,7 @@ func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runti
 }
 
 /*
-ListPipelines lists the supported pipelines
+  ListPipelines lists the supported pipelines
 */
 func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter) (*ListPipelinesOK, error) {
 	// TODO: Validate the params before sending
@@ -307,7 +343,7 @@ func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.Cli
 }
 
 /*
-ModifyRegistrationDetails updates specific field s of an application registration
+  ModifyRegistrationDetails updates specific field s of an application registration
 */
 func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ModifyRegistrationDetailsOK, error) {
 	// TODO: Validate the params before sending
@@ -342,7 +378,7 @@ func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsPara
 }
 
 /*
-RegenerateMachineUserToken regenerates machine user token
+  RegenerateMachineUserToken regenerates machine user token
 */
 func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter) (*RegenerateMachineUserTokenOK, error) {
 	// TODO: Validate the params before sending
@@ -366,7 +402,6 @@ func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenPa
 	if err != nil {
 		return nil, err
 	}
-
 	success, ok := result.(*RegenerateMachineUserTokenOK)
 	if ok {
 		return success, nil
@@ -378,7 +413,7 @@ func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenPa
 }
 
 /*
-TriggerPipelineBuild runs a build pipeline for a given application and branch
+  TriggerPipelineBuild runs a build pipeline for a given application and branch
 */
 func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildOK, error) {
 	// TODO: Validate the params before sending
@@ -413,7 +448,7 @@ func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authIn
 }
 
 /*
-TriggerPipelineBuildDeploy runs a build deploy pipeline for a given application and branch
+  TriggerPipelineBuildDeploy runs a build deploy pipeline for a given application and branch
 */
 func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildDeployOK, error) {
 	// TODO: Validate the params before sending
@@ -448,7 +483,7 @@ func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployPa
 }
 
 /*
-TriggerPipelineDeploy runs a deploy pipeline for a given application and environment
+  TriggerPipelineDeploy runs a deploy pipeline for a given application and environment
 */
 func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineDeployOK, error) {
 	// TODO: Validate the params before sending
@@ -483,7 +518,7 @@ func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, auth
 }
 
 /*
-TriggerPipelinePromote runs a promote pipeline for a given application and branch
+  TriggerPipelinePromote runs a promote pipeline for a given application and branch
 */
 func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelinePromoteOK, error) {
 	// TODO: Validate the params before sending
@@ -518,7 +553,7 @@ func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, au
 }
 
 /*
-UpdateBuildSecretsSecretValue updates an application build secret
+  UpdateBuildSecretsSecretValue updates an application build secret
 */
 func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateBuildSecretsSecretValueOK, error) {
 	// TODO: Validate the params before sending
@@ -553,7 +588,7 @@ func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretV
 }
 
 /*
-UpdatePrivateImageHubsSecretValue updates an application private image hub secret
+  UpdatePrivateImageHubsSecretValue updates an application private image hub secret
 */
 func (a *Client) UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdatePrivateImageHubsSecretValueOK, error) {
 	// TODO: Validate the params before sending

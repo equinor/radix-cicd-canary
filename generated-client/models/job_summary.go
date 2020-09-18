@@ -8,14 +8,14 @@ package models
 import (
 	"encoding/json"
 
-	strfmt "github.com/go-openapi/strfmt"
-
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // JobSummary JobSummary holds general information about job
+//
 // swagger:model JobSummary
 type JobSummary struct {
 
@@ -96,7 +96,7 @@ const (
 
 // prop value enum
 func (m *JobSummary) validatePipelineEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, jobSummaryTypePipelinePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, jobSummaryTypePipelinePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -151,7 +151,7 @@ const (
 
 // prop value enum
 func (m *JobSummary) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, jobSummaryTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, jobSummaryTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil

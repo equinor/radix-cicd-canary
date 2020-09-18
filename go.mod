@@ -9,7 +9,7 @@ require (
 	github.com/go-openapi/runtime v0.19.8
 	github.com/go-openapi/strfmt v0.19.3
 	github.com/go-openapi/swag v0.19.5
-	github.com/go-openapi/validate v0.19.3
+	github.com/go-openapi/validate v0.19.8
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/googleapis/gnostic v0.3.0 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
