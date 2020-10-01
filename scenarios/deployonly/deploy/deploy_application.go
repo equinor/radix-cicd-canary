@@ -30,7 +30,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	// Trigger deploy via Radix API
 	_, err := application.Deploy(env, appName, toEnvironment)
 	if err != nil {
-		logger.Errorf("%v", err)
+		logger.Errorf("Error calling Deploy for application %s:  %v", appName, err)
 		return false, err
 	}
 
@@ -39,6 +39,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 		return job.IsListedWithStatus(env, config.App3Name, "Succeeded")
 	})
 	if !ok {
+		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded")
 		return false, nil
 	}
 

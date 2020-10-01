@@ -32,6 +32,7 @@ const (
 	privateImageHubPasswordConfig    = "privateImageHubPassword"
 	envVarSuiteList                  = "SUITE_LIST"
 	envVarIsBlacklist                = "SUITE_LIST_IS_BLACKLIST"
+	envVarLogLevel                   = "LOG_LEVEL"
 )
 
 // Env Holds all the environment variables
@@ -52,6 +53,9 @@ type Env struct {
 	nspSleepInterval              time.Duration
 	suiteList                     []string
 	suiteListIsBlacklist          bool // suiteList is a whitelist by default
+	isDebugLogLevel               bool
+	isWarningLogLevel             bool
+	isErrorLogLevel               bool
 }
 
 // NewEnv Constructor
@@ -73,6 +77,9 @@ func NewEnv() Env {
 		getNSPSleepInterval(),
 		getSuiteList(),
 		getIsBlacklist(),
+		isDebugLogLevel(),
+		isWarningLogLevel(),
+		isErrorLogLevel(),
 	}
 }
 
@@ -169,6 +176,20 @@ func (env Env) GetSuiteList() []string {
 // GetSuiteListIsBlacklist Gets whether suiteList is considered a blacklist
 func (env Env) GetSuiteListIsBlacklist() bool {
 	return env.suiteListIsBlacklist
+}
+
+// GetLogLevel Gets log level
+func (env Env) GetLogLevel() log.Level {
+	switch {
+	case isDebugLogLevel():
+		return log.DebugLevel
+	case isWarningLogLevel():
+		return log.WarnLevel
+	case isErrorLogLevel():
+		return log.ErrorLevel
+	default:
+		return log.InfoLevel
+	}
 }
 
 func getBearerToken() string {
@@ -283,4 +304,16 @@ func getSuiteList() []string {
 func getIsBlacklist() bool {
 	suiteListIsBlacklist := strings.ToLower(os.Getenv(envVarIsBlacklist))
 	return suiteListIsBlacklist == "true" || suiteListIsBlacklist == "yes"
+}
+
+func isDebugLogLevel() bool {
+	return strings.EqualFold(os.Getenv(envVarLogLevel), "DEBUG")
+}
+
+func isWarningLogLevel() bool {
+	return strings.EqualFold(os.Getenv(envVarLogLevel), "WARNING")
+}
+
+func isErrorLogLevel() bool {
+	return strings.EqualFold(os.Getenv(envVarLogLevel), "ERROR")
 }

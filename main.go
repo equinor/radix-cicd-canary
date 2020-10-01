@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/nsp"
 	"net/http"
 	"time"
 
-	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -25,6 +25,7 @@ func main() {
 	log.Infof("Starting...")
 
 	environmentVariables := env.NewEnv()
+	log.SetLevel(environmentVariables.GetLogLevel())
 
 	sleepInterval := environmentVariables.GetSleepIntervalBetweenTestRuns()
 	happyPathSuite := happypath.TestSuite()
@@ -42,11 +43,14 @@ func main() {
 }
 
 func runSuites(environmentVariables env.Env, sleepInterval time.Duration, suites ...test.Suite) {
+	log.Debugf("Prepare to run %d suite(s)", len(suites))
 	suites = filterSuites(suites, environmentVariables)
 	if len(suites) == 0 {
+		log.Debug("No suites to run")
 		return
 	}
 
+	log.Debugf("Run %d suite(s)", len(suites))
 	runner := test.NewRunner(environmentVariables)
 	for {
 		runner.Run(suites...)
@@ -60,12 +64,16 @@ func filterSuites(suites []test.Suite, environmentVariables env.Env) []test.Suit
 		return suites
 	}
 
-	suitesToRun := make([]test.Suite, len(suites))
+	log.Debug("Filtering suites...")
+	suitesToRun := make([]test.Suite, 0)
 	isBlacklist := environmentVariables.GetSuiteListIsBlacklist()
 	for _, suite := range suites {
 		// pass the filter if mentioned and !isBlacklist OR if !mentioned and isBlacklist
 		if contains(filter, suite.Name) != isBlacklist {
+			log.Debugf("- run suite \"%s\"", suite.Name)
 			suitesToRun = append(suitesToRun, suite)
+		} else {
+			log.Debugf("- skip suite \"%s\"", suite.Name)
 		}
 	}
 	return suitesToRun

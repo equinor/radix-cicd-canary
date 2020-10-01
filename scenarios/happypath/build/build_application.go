@@ -45,6 +45,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running")
 		return false, nil
 	}
 
@@ -65,6 +66,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Queued")
 		return false, nil
 	}
 
@@ -110,8 +112,8 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 		}
 	}
 
-	log := job.GetLogForStep(env, config.App2Name, jobName, "build-app")
-	if !strings.Contains(log, Secret1Value) || !strings.Contains(log, Secret2Value) {
+	stepLog := job.GetLogForStep(env, config.App2Name, jobName, "build-app")
+	if !strings.Contains(stepLog, Secret1Value) || !strings.Contains(stepLog, Secret2Value) {
 		logger.Error("Build secrets are not contained in build log")
 		return false, nil
 	}
@@ -121,6 +123,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running")
 		return false, nil
 	}
 
@@ -137,6 +140,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Stopped")
 		return false, nil
 	}
 

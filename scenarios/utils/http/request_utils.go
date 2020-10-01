@@ -78,9 +78,12 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature", crypto.SHA1HMAC([]byte(sharedSecret), payload))
+
+	log.Debugf("Trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit)
+
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Errorf("Error %v", err)
+		log.Errorf("Error TriggerWebhookPush %v", err)
 		return false
 	}
 
@@ -97,8 +100,11 @@ func CheckResponse(resp *http.Response) bool {
 	}
 
 	if resp.StatusCode == 200 {
+		log.Debug("Response code: 200")
 		return true
 	}
+
+	log.Debugf("Response code: %d", resp.StatusCode)
 	return false
 }
 
