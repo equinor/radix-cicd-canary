@@ -33,6 +33,7 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Error("Cannot get machine token")
 		return false, nil
 	}
 
@@ -42,12 +43,14 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Error("Does not have expected access with machine token")
 		return false, nil
 	}
 
 	// Should only have access to its own application
 	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
 	if hasAccessToOtherApplication {
+		log.Debugf("Has not expected access to another application \"%s\"", config.App1Name)
 		return false, nil
 	}
 
@@ -60,6 +63,7 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Error("Has not expected access with machine token")
 		return false, nil
 	}
 
@@ -80,6 +84,7 @@ func getMachineUserToken(env env.Env) (bool, *string) {
 
 	tokenResponse, err := client.RegenerateMachineUserToken(params, clientBearerToken)
 	if err != nil {
+		log.Errorf("Cannot regenerate machine token: %s", err)
 		return false, nil
 	}
 

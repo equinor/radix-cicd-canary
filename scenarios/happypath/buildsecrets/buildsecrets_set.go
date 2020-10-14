@@ -34,6 +34,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Failed")
 	})
 	if !ok {
+		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Failed")
 		return false, nil
 	}
 

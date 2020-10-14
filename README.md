@@ -10,7 +10,7 @@ The application is implemented in [Go](https://golang.org/). It provides metrics
 
 ![pic](diagrams/radix-cicd-canary.png)
 
-Currently, there are two scenarios (or suites) implemented, named `Happy path` and `NSP`.
+Currently, there are following scenarios (or suites) implemented, named `Happy path`, `NSP` and `Deploy only`.
 
 The `Happy path` suite contains the following tests.
 
@@ -25,7 +25,7 @@ The `Happy path` suite contains the following tests.
 9. Check access to application user should not be able to access
 10. Promote deployment to other environment
 11. Promote deployment to same environment
-12. Checks that access can be locked down by upodating AD group
+12. Checks that access can be locked down by updating AD group
 13. Delete applications
 
 The `NSP` suite contains the following tests.
@@ -52,8 +52,15 @@ The `radix-cicd-canary` is developed using trunk-based development. There is a d
 
 ### From a local machine
 
-NOTE: The following only applies to development. Proper installation is done through installing base components and Flux Helmrelease. The tests can be deployed to the cluster through a Helm chart, but first build the docker file (default it will push to radixdev. With ENVIRONMENT=prod it will push to radixprod):
-
+NOTE: The following only applies to development. Proper installation is done through installing base components and Flux Helmrelease:
+First build the docker file (default it will push to radixdev. With ENVIRONMENT=prod it will push to radixprod):
+```bash
+make build-push
+```
+Then deploy to the cluster through a Helm chart:
+1. Stop `flux` applications" `flux`, `flux-helm-operator` and `flux-memcached` (otherwise Flux will downgrade custom deployed application back to originally deployed by `Flux`)
+2. Delete same image is it exists `make delete-dev-image`
+3. Set new patch version in `charts/radix-cicd-canary/Chart.yaml` and deploy the app:
 ```bash
 make deploy-via-helm ENVIRONMENT=<dev|prod> CLUSTER_FQDN=<clustername>.<clustertype>.radix.equinor.com
 
@@ -76,3 +83,18 @@ The tests can be debugged in their entirety by setting the `BEARER_TOKEN` value 
 ### Unit tests
 
 Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in the `env_utils.go` file, and then running debug on each unit test. Note the unit tests, are not really unit tests, but an ability to test a single functionality. Make sure that all scenarios before the test has executed before you start debugging a single test.
+
+### Custom configuration
+
+By default `Info` and `Error` messages are logged. This can be configured via environment variable `LOG_LEVEL` (pods need to be restarted after changes)
+* `LOG_LEVEL=ERROR` - log only `Error` messages
+* `LOG_LEVEL=INFO` or not set - log `Info` and `Error` messages
+* `LOG_LEVEL=WARNING` or not set - log `Info`, `Warning` and `Error` messages
+* `LOG_LEVEL=DEBUG` - log `Debug`, `Warning`, `Info` and `Error` messages
+
+By default all suites are running. This can be configured with environment variables
+* `SUITE_LIST` - list of suite names, separated by `:`
+* `SUITE_LIST_IS_BLACKLIST`
+  * `false`, `no` or not set - `SUITE_LIST` contains suites to be only running
+  * `true` or `yes` - `SUITE_LIST` contains suites, which should be skipped
+
