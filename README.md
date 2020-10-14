@@ -52,8 +52,15 @@ The `radix-cicd-canary` is developed using trunk-based development. There is a d
 
 ### From a local machine
 
-NOTE: The following only applies to development. Proper installation is done through installing base components and Flux Helmrelease. The tests can be deployed to the cluster through a Helm chart, but first build the docker file (default it will push to radixdev. With ENVIRONMENT=prod it will push to radixprod):
-
+NOTE: The following only applies to development. Proper installation is done through installing base components and Flux Helmrelease:
+First build the docker file (default it will push to radixdev. With ENVIRONMENT=prod it will push to radixprod):
+```bash
+make build-push
+```
+Then deploy to the cluster through a Helm chart:
+1. Stop `flux` applications" `flux`, `flux-helm-operator` and `flux-memcached` (otherwise Flux will downgrade custom deployed application back to originally deployed by `Flux`)
+2. Delete same image is it exists `make delete-dev-image`
+3. Set new patch version in `charts/radix-cicd-canary/Chart.yaml` and deploy the app:
 ```bash
 make deploy-via-helm ENVIRONMENT=<dev|prod> CLUSTER_FQDN=<clustername>.<clustertype>.radix.equinor.com
 

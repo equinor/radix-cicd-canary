@@ -22,10 +22,12 @@ func init() {
 }
 
 func main() {
-	log.Infof("Starting...")
+	log.Info("Starting...")
 
 	environmentVariables := env.NewEnv()
-	log.SetLevel(environmentVariables.GetLogLevel())
+	logLevel := environmentVariables.GetLogLevel()
+	log.Infof("Log level: %v", logLevel)
+	log.SetLevel(logLevel)
 
 	sleepInterval := environmentVariables.GetSleepIntervalBetweenTestRuns()
 	happyPathSuite := happypath.TestSuite()
@@ -38,8 +40,10 @@ func main() {
 	go runSuites(environmentVariables, sleepInterval, deployOnlySuite)
 	go runSuites(environmentVariables, nspSleepInterval, nspSuite)
 
+	log.Info("Started suites. Start metrics service.")
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":5000", nil)
+	log.Info("Complete.")
 }
 
 func runSuites(environmentVariables env.Env, sleepInterval time.Duration, suites ...test.Suite) {
