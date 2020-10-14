@@ -24,6 +24,9 @@ spec:
       automountServiceAccountToken: true
       containers:
         - name: {{ .Chart.Name }}
+          env:
+            - name: LOG_LEVEL
+              value: DEBUG
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

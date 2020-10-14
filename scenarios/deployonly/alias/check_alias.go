@@ -43,7 +43,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.AreResponding(env, config.App3Name, canonicalDomainName.(string), publicDomainName.(string))
+		return application.AreResponding(env, canonicalDomainName.(string), publicDomainName.(string))
 	})
 	return ok, nil
 }
