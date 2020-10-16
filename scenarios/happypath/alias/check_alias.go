@@ -1,7 +1,8 @@
 package alias
 
 import (
-	"fmt"
+	fmt "fmt"
+	"strings"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -17,7 +18,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsPublicDomainNameDefined(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+		return application.TryGetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
 	})
 
 	if !ok {
@@ -25,7 +26,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsCanonicalDomainNameDefined(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
+		return application.TryGetCanonicalDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
 	})
 
 	if !ok {
@@ -33,7 +34,6 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if application.IsRunningInActiveCluster(publicDomainName.(string), canonicalDomainName.(string)) {
-
 		ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 			return application.IsAliasDefined(env, config.App2Name)
 		})
@@ -44,7 +44,15 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.AreResponding(env, canonicalDomainName.(string), publicDomainName.(string))
+		schema := "https"
+		return application.AreResponding(env, getUrl(schema, canonicalDomainName.(string)), getUrl(schema, publicDomainName.(string)))
 	})
 	return ok, nil
+}
+
+func getUrl(schema string, domainName string) string {
+	if strings.HasPrefix("http://", domainName) || strings.HasPrefix("https://", domainName) {
+		return domainName
+	}
+	return fmt.Sprintf("%s://%s", schema, domainName)
 }

@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -16,20 +18,28 @@ import (
 type Secret struct {
 
 	// Component name of the component having the secret
+	// Example: api
 	Component string `json:"component,omitempty"`
 
 	// Name of the secret
+	// Example: db_password
 	Name string `json:"name,omitempty"`
 
 	// Status of the secret
 	// Pending = Secret exists in Radix config, but not in cluster
 	// Consistent = Secret exists in Radix config and in cluster
 	// Orphan = Secret does not exist in Radix config, but exists in cluster
+	// Example: Consistent
 	Status string `json:"status,omitempty"`
 }
 
 // Validate validates this secret
 func (m *Secret) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this secret based on context it is used
+func (m *Secret) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

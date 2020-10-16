@@ -23,14 +23,15 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	}
 	logger.Infof("SUCCESS: private image hub is not set")
 
-	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		err := podNotLoaded(env)
-		if err != nil {
+	ok, errorMessage := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+		errorMessage := podNotLoaded(env)
+		if len(errorMessage) > 0 {
 			return false, err
 		}
 		return true, nil
 	})
 	if !ok {
+		log.Error(errorMessage)
 		return false, fmt.Errorf("%s component is running before private image hub password was se. %v", config.App2ComponentPrivateImageHubName, err)
 	}
 	logger.Infof("SUCCESS: container is not loaded")
@@ -42,14 +43,15 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	logger.Infof("SUCCESS: set private image hub password")
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		err := podLoaded(env)
-		if err != nil {
-			return false, err
+		errorMessage := podLoaded(env)
+		if len(errorMessage) > 0 {
+			return false, errorMessage
 		}
 		return true, nil
 	})
 	logger.Infof("SUCCESS: container is loaded")
 	if !ok {
+		log.Error(errorMessage)
 		return false, fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, err)
 	}
 
@@ -62,23 +64,23 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	return true, nil
 }
 
-func podNotLoaded(env envUtil.Env) error {
+func podNotLoaded(env envUtil.Env) string {
 	return verifyPrivateImageHubPodStatus(env, "Failing")
 }
 
-func podLoaded(env envUtil.Env) error {
+func podLoaded(env envUtil.Env) string {
 	return verifyPrivateImageHubPodStatus(env, "Running")
 }
 
-func verifyPrivateImageHubPodStatus(env envUtil.Env, expectedStatus string) error {
+func verifyPrivateImageHubPodStatus(env envUtil.Env, expectedStatus string) string {
 	actualStatus, err := getPrivateImageHubComponentStatus(env)
 	if err != nil {
-		return err
+		return err.Error()
 	} else if actualStatus != expectedStatus {
-		logger.Errorf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
-		return fmt.Errorf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
+		logger.Debugf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
+		return fmt.Sprintf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
 	}
-	return nil
+	return ""
 }
 
 func getPrivateImageHubComponentStatus(env envUtil.Env) (string, error) {

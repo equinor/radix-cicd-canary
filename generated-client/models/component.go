@@ -6,6 +6,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -20,10 +21,12 @@ import (
 type Component struct {
 
 	// Image name
+	// Example: radixdev.azurecr.io/radix-api-server:cdgkg
 	// Required: true
 	Image *string `json:"image"`
 
 	// Name the component
+	// Example: server
 	// Required: true
 	Name *string `json:"name"`
 
@@ -34,12 +37,15 @@ type Component struct {
 	ReplicaList []*ReplicaSummary `json:"replicaList"`
 
 	// Array of pod names
+	// Example: server-78fc8857c4-hm76l,server-78fc8857c4-asfa2
 	Replicas []string `json:"replicas"`
 
 	// Component secret names. From radixconfig.yaml
+	// Example: DB_CON,A_SECRET
 	Secrets []string `json:"secrets"`
 
 	// Status of the component
+	// Example: Consistent
 	Status string `json:"status,omitempty"`
 
 	// Variable names map to values. From radixconfig.yaml
@@ -155,6 +161,78 @@ func (m *Component) validateHorizontalScalingSummary(formats strfmt.Registry) er
 
 	if m.HorizontalScalingSummary != nil {
 		if err := m.HorizontalScalingSummary.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("horizontalScalingSummary")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this component based on the context it is used
+func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePorts(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateReplicaList(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateHorizontalScalingSummary(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Component) contextValidatePorts(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Ports); i++ {
+
+		if m.Ports[i] != nil {
+			if err := m.Ports[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Component) contextValidateReplicaList(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.ReplicaList); i++ {
+
+		if m.ReplicaList[i] != nil {
+			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *Component) contextValidateHorizontalScalingSummary(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.HorizontalScalingSummary != nil {
+		if err := m.HorizontalScalingSummary.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("horizontalScalingSummary")
 			}

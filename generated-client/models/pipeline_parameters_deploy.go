@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -17,14 +19,21 @@ type PipelineParametersDeploy struct {
 
 	// Name of environment to deploy
 	// REQUIRED for "deploy" pipeline
+	// Example: prod
 	ToEnvironment string `json:"toEnvironment,omitempty"`
 
 	// TriggeredBy of the job - if empty will use user token upn (user principle name)
+	// Example: a_user@equinor.com
 	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
 // Validate validates this pipeline parameters deploy
 func (m *PipelineParametersDeploy) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this pipeline parameters deploy based on context it is used
+func (m *PipelineParametersDeploy) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

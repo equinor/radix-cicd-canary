@@ -152,29 +152,18 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 	return true
 }
 
-// GetPublicDomainName returns domain name for a component
-func GetPublicDomainName(env env.Env, appName, envName, forComponentName string) string {
-	return getEnvVariable(env, appName, envName, forComponentName, publicDomainNameEnvironmentVariable)
-}
-
-// GetCanonicalDomainName returns canonical domain name for a component
-func GetCanonicalDomainName(env env.Env, appName, envName, forComponentName string) string {
-	return getEnvVariable(env, appName, envName, forComponentName, publicDomainNameEnvironmentVariable)
-}
-
-// IsPublicDomainNameDefined Waits for public domain name to be defined
-func IsPublicDomainNameDefined(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
-	publicDomainName := GetPublicDomainName(env, appName, environmentName, componentName)
+// TryGetPublicDomainName Waits for public domain name to be defined
+func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+	publicDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
 		return false, nil
 	}
-
 	return true, publicDomainName
 }
 
-// IsCanonicalDomainNameDefined Waits for canonical domain name to be defined
-func IsCanonicalDomainNameDefined(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
-	canonicalDomainName := GetCanonicalDomainName(env, appName, environmentName, componentName)
+// TryGetCanonicalDomainName Waits for canonical domain name to be defined
+func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+	canonicalDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if canonicalDomainName == "" {
 		return false, nil
 	}
