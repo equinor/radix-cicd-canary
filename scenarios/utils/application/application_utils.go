@@ -230,7 +230,7 @@ func IsResponding(env env.Env, url string) (bool, interface{}) {
 	}
 
 	if err == nil && resp == nil {
-		log.Debugf("Request to alias '%s' returned no response and no err.")
+		log.Debugf("Request to alias '%s' returned no response and no err.", url)
 	}
 
 	log.Infof("Alias '%s' is still not responding", url)

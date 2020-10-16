@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	applicationAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -145,4 +146,11 @@ func getTransport(env env.Env) *httptransport.Runtime {
 	schemes := env.GetRadixAPISchemes()
 
 	return httptransport.New(radixAPIURL, basePath, schemes)
+}
+
+func GetUrl(schema string, domainName string) string {
+	if strings.HasPrefix("http://", domainName) || strings.HasPrefix("https://", domainName) {
+		return domainName
+	}
+	return fmt.Sprintf("%s://%s", schema, domainName)
 }

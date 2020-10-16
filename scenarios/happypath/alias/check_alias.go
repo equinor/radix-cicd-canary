@@ -2,11 +2,10 @@ package alias
 
 import (
 	fmt "fmt"
-	"strings"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
 )
@@ -45,14 +44,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		schema := "https"
-		return application.AreResponding(env, getUrl(schema, canonicalDomainName.(string)), getUrl(schema, publicDomainName.(string)))
+		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName.(string)), http.GetUrl(schema, publicDomainName.(string)))
 	})
 	return ok, nil
-}
-
-func getUrl(schema string, domainName string) string {
-	if strings.HasPrefix("http://", domainName) || strings.HasPrefix("https://", domainName) {
-		return domainName
-	}
-	return fmt.Sprintf("%s://%s", schema, domainName)
 }

@@ -2,6 +2,7 @@ package alias
 
 import (
 	"fmt"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -43,7 +44,8 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.AreResponding(env, canonicalDomainName.(string), publicDomainName.(string))
+		schema := "https"
+		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName.(string)), http.GetUrl(schema, publicDomainName.(string)))
 	})
 	return ok, nil
 }
