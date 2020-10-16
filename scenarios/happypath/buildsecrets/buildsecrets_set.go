@@ -24,6 +24,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	// Trigger build to apply RA with build secrets
 	ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
 	if !ok {
+		log.Errorf("Failed to trigger webhook push for for repository \"%s\" - exiting", config.App2SSHRepository)
 		return false, nil
 	}
 
@@ -58,6 +59,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Error("Failed buildSecretsAreListedWithStatus expected Pending")
 		return false, nil
 	}
 
@@ -76,6 +78,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
+		log.Error("Failed buildSecretsAreListedWithStatus expected Consistent")
 		return false, nil
 	}
 
@@ -108,6 +111,7 @@ func buildSecretsAreListedWithStatus(env env.Env, expectedStatus string) (bool, 
 }
 
 func setSecret(env env.Env, secretName, secretValue string) (bool, error) {
+	log.Debugf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -127,6 +131,7 @@ func setSecret(env env.Env, secretName, secretValue string) (bool, error) {
 
 	_, err := client.UpdateBuildSecretsSecretValue(params, clientBearerToken)
 	if err != nil {
+		log.Errorf("Failed to set secret %s", secretName)
 		return false, err
 	}
 

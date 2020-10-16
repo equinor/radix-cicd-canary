@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -18,18 +20,22 @@ import (
 type ImageHubSecret struct {
 
 	// Email provided in radixconfig.yaml
+	// Example: radix@equinor.com
 	Email string `json:"email,omitempty"`
 
 	// Server name of the image hub
+	// Example: myprivaterepo.azurecr.io
 	// Required: true
 	Server *string `json:"server"`
 
 	// Status of the secret
 	// Pending = Secret value is not set
 	// Consistent = Secret value is set
+	// Example: Consistent
 	Status string `json:"status,omitempty"`
 
 	// Username for connecting to private image hub
+	// Example: my-user-name
 	// Required: true
 	Username *string `json:"username"`
 }
@@ -67,6 +73,11 @@ func (m *ImageHubSecret) validateUsername(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this image hub secret based on context it is used
+func (m *ImageHubSecret) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -2,6 +2,7 @@ package alias
 
 import (
 	"fmt"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -17,7 +18,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsPublicDomainNameDefined(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
+		return application.TryGetPublicDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 
 	if !ok {
@@ -25,7 +26,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsCanonicalDomainNameDefined(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
+		return application.TryGetCanonicalDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 
 	if !ok {
@@ -43,7 +44,8 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.AreResponding(env, config.App3Name, canonicalDomainName.(string), publicDomainName.(string))
+		schema := "https"
+		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName.(string)), http.GetUrl(schema, publicDomainName.(string)))
 	})
 	return ok, nil
 }

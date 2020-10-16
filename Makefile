@@ -3,7 +3,9 @@ VERSION 	?= latest
 
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 VAULT_NAME ?= radix-vault-$(ENVIRONMENT)
-CLUSTER_FQDN ?= weekly-40-c.dev.radix.equinor.com
+
+CLUSTER_FQDN ?= weekly-60.dev.radix.equinor.com
+
 RADIX_API_PREFIX ?= server-radix-api-qa
 RADIX_WEBHOOK_PREFIX ?= webhook-radix-github-webhook-qa
 
@@ -45,6 +47,10 @@ deploy-via-helm:
 
 delete-dev-image:
 	az acr repository delete --n radixdev  --image  radix-cicd-canary:$(BRANCH)-$(VERSION) --yes
+
+delete-image-and-deploy:
+	make delete-dev-image
+	make deploy-via-helm
 
 .PHONY: test
 test:

@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -29,6 +31,7 @@ type ApplicationRegistration struct {
 	MachineUser bool `json:"machineUser,omitempty"`
 
 	// Name the unique name of the Radix application
+	// Example: radix-canary-golang
 	// Required: true
 	Name *string `json:"name"`
 
@@ -45,6 +48,7 @@ type ApplicationRegistration struct {
 	PublicKey string `json:"publicKey,omitempty"`
 
 	// Repository the github repository
+	// Example: https://github.com/equinor/radix-canary-golang
 	// Required: true
 	Repository *string `json:"repository"`
 
@@ -141,6 +145,11 @@ func (m *ApplicationRegistration) validateSharedSecret(formats strfmt.Registry) 
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this application registration based on context it is used
+func (m *ApplicationRegistration) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
