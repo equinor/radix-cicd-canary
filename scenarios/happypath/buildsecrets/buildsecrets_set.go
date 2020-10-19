@@ -1,9 +1,10 @@
 package buildsecrets
 
 import (
+	"fmt"
 	"strings"
 
-	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	applicationClient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -35,8 +36,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Failed")
 	})
 	if !ok {
-		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Failed")
-		return false, nil
+		return false, fmt.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Failed")
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -48,8 +48,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 		"radix-pipeline"}
 
 	if len(job.Steps) != len(expectedSteps) {
-		logger.Error("Job should not contain any build step")
-		return false, nil
+		return false, fmt.Errorf("Job should not contain any build step")
 	}
 
 	// First job failed, due to missing build secrets, as expected in test
@@ -59,8 +58,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Error("Failed buildSecretsAreListedWithStatus expected Pending")
-		return false, nil
+		return false, fmt.Errorf("Failed buildSecretsAreListedWithStatus expected Pending")
 	}
 
 	ok, err := setSecret(env, build.Secret1, build.Secret1Value)
@@ -78,8 +76,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Error("Failed buildSecretsAreListedWithStatus expected Consistent")
-		return false, nil
+		return false, fmt.Errorf("Failed buildSecretsAreListedWithStatus expected Consistent")
 	}
 
 	return true, nil
@@ -89,7 +86,7 @@ func buildSecretsAreListedWithStatus(env env.Env, expectedStatus string) (bool, 
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := applicationclient.NewGetBuildSecretsParams().
+	params := applicationClient.NewGetBuildSecretsParams().
 		WithAppName(config.App2Name).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
@@ -119,7 +116,7 @@ func setSecret(env env.Env, secretName, secretValue string) (bool, error) {
 		SecretValue: &secretValue,
 	}
 
-	params := applicationclient.NewUpdateBuildSecretsSecretValueParams().
+	params := applicationClient.NewUpdateBuildSecretsSecretValueParams().
 		WithAppName(config.App2Name).
 		WithSecretName(secretName).
 		WithSecretValue(&secretParameters).
@@ -131,8 +128,7 @@ func setSecret(env env.Env, secretName, secretValue string) (bool, error) {
 
 	_, err := client.UpdateBuildSecretsSecretValue(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Failed to set secret %s", secretName)
-		return false, err
+		return false, fmt.Errorf("Failed to set secret %s. Error: %v", secretName, err)
 	}
 
 	return true, nil
