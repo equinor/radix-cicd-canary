@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	applicationAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -50,9 +51,6 @@ func CreateRequest(env env.Env, url, method string, parameters interface{}) *htt
 		reader = bytes.NewReader(payload)
 	}
 
-	// Append protocol
-	url = fmt.Sprintf("https://%s", url)
-
 	req, _ := http.NewRequest(method, url, reader)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", env.GetBearerToken()))
 	req.Header.Add("Content-Type", "application/json")
@@ -72,15 +70,18 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 		},
 	}
 
-	req := CreateRequest(env, fmt.Sprintf("%s.%s/events/github", env.GetWebhookPrefix(), env.GetClusterFQDN()), "POST", parameters)
+	req := CreateRequest(env, fmt.Sprintf("%s/events/github", env.GetGitHubWebHookAPIURL()), "POST", parameters)
 	client := http.DefaultClient
 	payload, _ := json.Marshal(parameters)
 
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature", crypto.SHA1HMAC([]byte(sharedSecret), payload))
+
+	log.Debugf("Trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit)
+
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Errorf("Error %v", err)
+		log.Errorf("Error TriggerWebhookPush %v", err)
 		return false
 	}
 
@@ -97,8 +98,11 @@ func CheckResponse(resp *http.Response) bool {
 	}
 
 	if resp.StatusCode == 200 {
+		log.Debug("Response code: 200")
 		return true
 	}
+
+	log.Debugf("Response code: %d", resp.StatusCode)
 	return false
 }
 
@@ -138,8 +142,15 @@ func GetComponentClient(env env.Env) componentAPIClient.ClientService {
 }
 
 func getTransport(env env.Env) *httptransport.Runtime {
-	radixAPIURL := fmt.Sprintf("%s.%s", env.GetRadixAPIPrefix(), env.GetClusterFQDN())
-	schemes := []string{"https"}
+	radixAPIURL := env.GetRadixAPIURL()
+	schemes := env.GetRadixAPISchemes()
 
 	return httptransport.New(radixAPIURL, basePath, schemes)
+}
+
+func GetUrl(schema string, domainName string) string {
+	if strings.HasPrefix("http://", domainName) || strings.HasPrefix("https://", domainName) {
+		return domainName
+	}
+	return fmt.Sprintf("%s://%s", schema, domainName)
 }

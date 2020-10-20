@@ -2,6 +2,7 @@ package env
 
 import (
 	"encoding/base64"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -32,6 +33,9 @@ const (
 	privateImageHubPasswordConfig    = "privateImageHubPassword"
 	envVarSuiteList                  = "SUITE_LIST"
 	envVarIsBlacklist                = "SUITE_LIST_IS_BLACKLIST"
+	envVarLogLevel                   = "LOG_LEVEL"
+	envUseLocalRadixApi              = "USE_LOCAL_RADIX_API"
+	envUseLocalGitHubWebHookApi      = "USE_LOCAL_GITHUB_WEBHOOK_API"
 )
 
 // Env Holds all the environment variables
@@ -52,6 +56,9 @@ type Env struct {
 	nspSleepInterval              time.Duration
 	suiteList                     []string
 	suiteListIsBlacklist          bool // suiteList is a whitelist by default
+	isDebugLogLevel               bool
+	isWarningLogLevel             bool
+	isErrorLogLevel               bool
 }
 
 // NewEnv Constructor
@@ -73,6 +80,9 @@ func NewEnv() Env {
 		getNSPSleepInterval(),
 		getSuiteList(),
 		getIsBlacklist(),
+		isDebugLogLevel(),
+		isWarningLogLevel(),
+		isErrorLogLevel(),
 	}
 }
 
@@ -104,16 +114,6 @@ func (env Env) GetImpersonateGroupPointer() *string {
 // GetClusterFQDN get Radix cluster FQDN from config map
 func (env Env) GetClusterFQDN() string {
 	return env.clusterFQDN
-}
-
-// GetRadixAPIPrefix get Radix API prefix from config map
-func (env Env) GetRadixAPIPrefix() string {
-	return env.radixAPIPrefix
-}
-
-// GetWebhookPrefix get Radix Webhook prefix
-func (env Env) GetWebhookPrefix() string {
-	return env.webhookPrefix
 }
 
 // GetPublicKey get public deploy key from config map
@@ -169,6 +169,44 @@ func (env Env) GetSuiteList() []string {
 // GetSuiteListIsBlacklist Gets whether suiteList is considered a blacklist
 func (env Env) GetSuiteListIsBlacklist() bool {
 	return env.suiteListIsBlacklist
+}
+
+// GetLogLevel Gets log level
+func (env Env) GetLogLevel() log.Level {
+	switch {
+	case isDebugLogLevel():
+		return log.DebugLevel
+	case isWarningLogLevel():
+		return log.WarnLevel
+	case isErrorLogLevel():
+		return log.ErrorLevel
+	default:
+		return log.InfoLevel
+	}
+}
+
+func (env Env) GetRadixAPIURL() string {
+	if useLocalRadixApi() {
+		return "localhost:3002"
+	} else {
+		return fmt.Sprintf("%s.%s", env.getRadixAPIPrefix(), env.GetClusterFQDN())
+	}
+}
+
+func (env Env) GetGitHubWebHookAPIURL() string {
+	if useLocalGitHubWebHookApi() {
+		return "http://localhost:3001"
+	} else {
+		return fmt.Sprintf("https://%s.%s", env.getWebHookPrefix(), env.GetClusterFQDN())
+	}
+}
+
+func (env Env) GetRadixAPISchemes() []string {
+	if useLocalRadixApi() {
+		return []string{"http"}
+	} else {
+		return []string{"https"}
+	}
 }
 
 func getBearerToken() string {
@@ -281,6 +319,37 @@ func getSuiteList() []string {
 }
 
 func getIsBlacklist() bool {
-	suiteListIsBlacklist := strings.ToLower(os.Getenv(envVarIsBlacklist))
-	return suiteListIsBlacklist == "true" || suiteListIsBlacklist == "yes"
+	return envVarIsTrueOrYes(strings.ToLower(os.Getenv(envVarIsBlacklist)))
+}
+
+func (env Env) getRadixAPIPrefix() string {
+	return env.radixAPIPrefix
+}
+
+func (env Env) getWebHookPrefix() string {
+	return env.webhookPrefix
+}
+
+func isDebugLogLevel() bool {
+	return strings.EqualFold(os.Getenv(envVarLogLevel), "DEBUG")
+}
+
+func isWarningLogLevel() bool {
+	return strings.EqualFold(os.Getenv(envVarLogLevel), "WARNING")
+}
+
+func isErrorLogLevel() bool {
+	return strings.EqualFold(os.Getenv(envVarLogLevel), "ERROR")
+}
+
+func useLocalRadixApi() bool {
+	return envVarIsTrueOrYes(os.Getenv(envUseLocalRadixApi))
+}
+
+func useLocalGitHubWebHookApi() bool {
+	return envVarIsTrueOrYes(os.Getenv(envUseLocalGitHubWebHookApi))
+}
+
+func envVarIsTrueOrYes(envVar string) bool {
+	return strings.EqualFold(envVar, "true") || strings.EqualFold(envVar, "yes")
 }

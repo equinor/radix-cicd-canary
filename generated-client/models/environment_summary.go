@@ -6,6 +6,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -23,12 +24,14 @@ type EnvironmentSummary struct {
 	BranchMapping string `json:"branchMapping,omitempty"`
 
 	// Name of the environment
+	// Example: prod
 	Name string `json:"name,omitempty"`
 
 	// Status of the environment
 	// Pending = Environment exists in Radix config, but not in cluster
 	// Consistent = Environment exists in Radix config and in cluster
 	// Orphan = Environment does not exist in Radix config, but exists in cluster
+	// Example: Consistent
 	// Enum: [Pending Consistent Orphan]
 	Status string `json:"status,omitempty"`
 
@@ -108,6 +111,34 @@ func (m *EnvironmentSummary) validateActiveDeployment(formats strfmt.Registry) e
 
 	if m.ActiveDeployment != nil {
 		if err := m.ActiveDeployment.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("activeDeployment")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this environment summary based on the context it is used
+func (m *EnvironmentSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateActiveDeployment(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *EnvironmentSummary) contextValidateActiveDeployment(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ActiveDeployment != nil {
+		if err := m.ActiveDeployment.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("activeDeployment")
 			}

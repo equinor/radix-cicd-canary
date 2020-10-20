@@ -23,13 +23,21 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string) (bool, inte
 	client := httpUtils.GetJobClient(env)
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
-	if err == nil && applicationJobs.Payload != nil &&
-		len(applicationJobs.Payload) > 0 &&
-		applicationJobs.Payload[0].Status == expectedStatus {
-		return true, applicationJobs.Payload[0]
+	if err != nil {
+		log.Errorf("Error calling GetApplicationJobs for application %s: %v", appName, err)
+		return false, nil
 	}
-
-	return false, nil
+	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
+		log.Debugf("GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
+		return false, nil
+	}
+	if applicationJobs.Payload[0].Status != expectedStatus {
+		log.Debugf("GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
+			appName, expectedStatus, applicationJobs.Payload[0].Status)
+		return false, nil
+	}
+	log.Debugf("GetApplicationJobs for application %s received expected status \"%s\"", appName, expectedStatus)
+	return true, applicationJobs.Payload[0]
 }
 
 // Stop Stops a job

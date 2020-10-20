@@ -78,13 +78,14 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 	suiteName := suite.Name
 	setupFailed := false
 	start := time.Now()
+	log.Debugf("Setting-up suite \"%s\"", suiteName)
 
 	for _, setup := range suite.Setup {
 		log.Info(setup.Description)
 		success := runTest(env, setup, suiteName)
 		if !success {
 			setupFailed = true
-			log.Warnf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
+			log.Errorf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
 			break
 		}
 		log.Debugf("Setup success %s", setup.Description)
@@ -123,6 +124,7 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 		log.Info(test.Description)
 		runTest(env, test, suiteName)
 	}
+	log.Debug("Teardown complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -131,6 +133,7 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 
 func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 	start := time.Now()
+	log.Debugf("Running test \"%s\"", testToRun.Name)
 
 	success, err := testToRun.Test(env, suiteName)
 	if !success {

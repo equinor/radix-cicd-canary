@@ -152,29 +152,18 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 	return true
 }
 
-// GetPublicDomainName returns domain name for a component
-func GetPublicDomainName(env env.Env, appName, envName, forComponentName string) string {
-	return getEnvVariable(env, appName, envName, forComponentName, publicDomainNameEnvironmentVariable)
-}
-
-// GetCanonicalDomainName returns canonical domain name for a component
-func GetCanonicalDomainName(env env.Env, appName, envName, forComponentName string) string {
-	return getEnvVariable(env, appName, envName, forComponentName, publicDomainNameEnvironmentVariable)
-}
-
-// IsPublicDomainNameDefined Waits for public domain name to be defined
-func IsPublicDomainNameDefined(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
-	publicDomainName := GetPublicDomainName(env, appName, environmentName, componentName)
+// TryGetPublicDomainName Waits for public domain name to be defined
+func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+	publicDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
 		return false, nil
 	}
-
 	return true, publicDomainName
 }
 
-// IsCanonicalDomainNameDefined Waits for canonical domain name to be defined
-func IsCanonicalDomainNameDefined(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
-	canonicalDomainName := GetCanonicalDomainName(env, appName, environmentName, componentName)
+// TryGetCanonicalDomainName Waits for canonical domain name to be defined
+func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+	canonicalDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if canonicalDomainName == "" {
 		return false, nil
 	}
@@ -210,9 +199,9 @@ func getEnvVariable(env env.Env, appName, envName, forComponentName, variableNam
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(env env.Env, appName string, urls ...string) (bool, interface{}) {
+func AreResponding(env env.Env, urls ...string) (bool, interface{}) {
 	for _, url := range urls {
-		ok, _ := IsResponding(env, appName, url)
+		ok, _ := IsResponding(env, url)
 		if !ok {
 			return false, nil
 		}
@@ -222,7 +211,7 @@ func AreResponding(env env.Env, appName string, urls ...string) (bool, interface
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(env env.Env, appName, url string) (bool, interface{}) {
+func IsResponding(env env.Env, url string) (bool, interface{}) {
 	req := httpUtils.CreateRequest(env, url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
@@ -230,6 +219,18 @@ func IsResponding(env env.Env, appName, url string) (bool, interface{}) {
 	if err == nil && resp.StatusCode == 200 {
 		log.Info("App alias responded ok")
 		return true, nil
+	}
+
+	if err != nil {
+		log.Debugf("Request to alias '%s' returned error %v", url, err)
+	}
+
+	if resp != nil {
+		log.Debugf("Request to alias '%s' returned status %v", url, resp.StatusCode)
+	}
+
+	if err == nil && resp == nil {
+		log.Debugf("Request to alias '%s' returned no response and no err.", url)
 	}
 
 	log.Infof("Alias '%s' is still not responding", url)
