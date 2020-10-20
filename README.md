@@ -52,21 +52,24 @@ The `radix-cicd-canary` is developed using trunk-based development. There is a d
 
 ### From a local machine
 
-NOTE: The following only applies to development. Proper installation is done through installing base components and Flux Helmrelease:
-First build the docker file (default it will push to radixdev. With ENVIRONMENT=prod it will push to radixprod):
+NOTE: The following only applies to development. Proper installation have being done through installing base components and Flux Helmrelease:
+First build the docker file (default it will push to `radixdev`. With `ENVIRONMENT=prod` it will push to `radixprod`):
 ```bash
 make build-push
 ```
 Then deploy to the cluster through a Helm chart:
 1. Stop `flux` applications" `flux`, `flux-helm-operator` and `flux-memcached` (otherwise Flux will downgrade custom deployed application back to originally deployed by `Flux`)
+    ```shell script
+    kubectl scale deployment flux --replicas=1 --all;kubectl scale deployment flux-helm-operator --replicas=1 --all;kubectl scale deployment flux-memcached --replicas=1 --all
+    ```  
 2. Delete same image is it exists `make delete-dev-image`
 3. Set new patch version in `charts/radix-cicd-canary/Chart.yaml` and deploy the app:
-```bash
-make deploy-via-helm ENVIRONMENT=<dev|prod> CLUSTER_FQDN=<clustername>.<clustertype>.radix.equinor.com
-
-# Example:
-make deploy-via-helm ENVIRONMENT=dev CLUSTER_FQDN=weekly-27.dev.radix.equinor.com
-```
+    ```bash
+    make deploy-via-helm ENVIRONMENT=<dev|prod> CLUSTER_FQDN=<clustername>.<clustertype>.radix.equinor.com
+    
+    # Example:
+    make deploy-via-helm ENVIRONMENT=dev CLUSTER_FQDN=weekly-27.dev.radix.equinor.com
+    ```
 
 ### Pre-requisites
 
@@ -86,15 +89,22 @@ Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in t
 
 ### Custom configuration
 
-By default `Info` and `Error` messages are logged. This can be configured via environment variable `LOG_LEVEL` (pods need to be restarted after changes)
+By default `Info` and `Error` messages have being logged. This can be configured via environment variable `LOG_LEVEL` (pods need to be restarted after changes)
 * `LOG_LEVEL=ERROR` - log only `Error` messages
 * `LOG_LEVEL=INFO` or not set - log `Info` and `Error` messages
 * `LOG_LEVEL=WARNING` or not set - log `Info`, `Warning` and `Error` messages
 * `LOG_LEVEL=DEBUG` - log `Debug`, `Warning`, `Info` and `Error` messages
 
-By default all suites are running. This can be configured with environment variables
+By default, all suites are running. This can be configured with environment variables
 * `SUITE_LIST` - list of suite names, separated by `:`
 * `SUITE_LIST_IS_BLACKLIST`
   * `false`, `no` or not set - `SUITE_LIST` contains suites to be only running
   * `true` or `yes` - `SUITE_LIST` contains suites, which should be skipped
 
+To debug locally with connecting to the local services - set following environment variables:
+* `USE_LOCAL_GITHUB_WEBHOOK_API`
+  * `false`, `no` or not set - connecting to in-cluster `radix-api`
+  * `true` or `yes` - connecting to `radix-api`, running on `http://localhost:3001`
+* `USE_LOCAL_RADIX_API`
+  * `false`, `no` or not set - connecting to in-cluster `radix-api`
+  * `true` or `yes` - connecting to `radix-api`, running on `http://localhost:3002`
