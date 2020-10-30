@@ -16,8 +16,9 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error)
 	appOwner := config.App1Owner
 	appCreator := config.App1Creator
 	appWbs := config.App1Wbs
+	appConfigBranch := config.App1ConfigBranch
 
-	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, "", "", appWbs)
+	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, "", "", appWbs, appConfigBranch)
 	if err != nil {
 		logger.Errorf("%v", err)
 		return false, err

@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -20,17 +18,14 @@ import (
 type ApplicationAlias struct {
 
 	// ComponentName the component exposing the endpoint
-	// Example: frontend
 	// Required: true
 	ComponentName *string `json:"componentName"`
 
 	// EnvironmentName the environment hosting the endpoint
-	// Example: prod
 	// Required: true
 	EnvironmentName *string `json:"environmentName"`
 
 	// URL the public endpoint
-	// Example: https://my-app.app.radix.equinor.com
 	// Required: true
 	URL *string `json:"url"`
 }
@@ -81,11 +76,6 @@ func (m *ApplicationAlias) validateURL(formats strfmt.Registry) error {
 		return err
 	}
 
-	return nil
-}
-
-// ContextValidate validates this application alias based on context it is used
-func (m *ApplicationAlias) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -20,7 +18,6 @@ import (
 type ReplicaSummary struct {
 
 	// Pod name
-	// Example: server-78fc8857c4-hm76l
 	// Required: true
 	Name *string `json:"name"`
 
@@ -66,34 +63,6 @@ func (m *ReplicaSummary) validateReplicaStatus(formats strfmt.Registry) error {
 
 	if m.ReplicaStatus != nil {
 		if err := m.ReplicaStatus.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("replicaStatus")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this replica summary based on the context it is used
-func (m *ReplicaSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateReplicaStatus(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *ReplicaSummary) contextValidateReplicaStatus(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ReplicaStatus != nil {
-		if err := m.ReplicaStatus.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replicaStatus")
 			}
