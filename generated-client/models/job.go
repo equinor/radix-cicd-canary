@@ -6,7 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"encoding/json"
 	"strconv"
 
@@ -22,42 +21,34 @@ import (
 type Job struct {
 
 	// Branch branch to build from
-	// Example: master
 	Branch string `json:"branch,omitempty"`
 
 	// CommitID the commit ID of the branch to build
-	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
 	CommitID string `json:"commitID,omitempty"`
 
 	// Components (array of ComponentSummary) created by the job
 	Components []*ComponentSummary `json:"components"`
 
 	// Created timestamp
-	// Example: 2006-01-02T15:04:05Z
 	Created string `json:"created,omitempty"`
 
 	// Array of deployments
 	Deployments []*DeploymentSummary `json:"deployments"`
 
 	// Ended timestamp
-	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
 
 	// Name of the job
-	// Example: radix-pipeline-20181029135644-algpv-6hznh
 	Name string `json:"name,omitempty"`
 
 	// Name of the pipeline
-	// Example: build-deploy
 	// Enum: [build-deploy]
 	Pipeline string `json:"pipeline,omitempty"`
 
 	// Started timestamp
-	// Example: 2006-01-02T15:04:05Z
 	Started string `json:"started,omitempty"`
 
 	// Status of the job
-	// Example: Waiting
 	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
 	Status string `json:"status,omitempty"`
 
@@ -65,7 +56,6 @@ type Job struct {
 	Steps []*Step `json:"steps"`
 
 	// TriggeredBy user that triggered the job. If through webhook = sender.login. If through api = usertoken.upn
-	// Example: a_user@equinor.com
 	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
@@ -257,82 +247,6 @@ func (m *Job) validateSteps(formats strfmt.Registry) error {
 
 		if m.Steps[i] != nil {
 			if err := m.Steps[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("steps" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// ContextValidate validate this job based on the context it is used
-func (m *Job) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateComponents(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateDeployments(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateSteps(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *Job) contextValidateComponents(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Components); i++ {
-
-		if m.Components[i] != nil {
-			if err := m.Components[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("components" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-func (m *Job) contextValidateDeployments(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Deployments); i++ {
-
-		if m.Deployments[i] != nil {
-			if err := m.Deployments[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-func (m *Job) contextValidateSteps(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Steps); i++ {
-
-		if m.Steps[i] != nil {
-			if err := m.Steps[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("steps" + "." + strconv.Itoa(i))
 				}

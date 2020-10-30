@@ -6,7 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -29,7 +28,6 @@ type Application struct {
 	Jobs []*JobSummary `json:"jobs"`
 
 	// Name the name of the application
-	// Example: radix-canary-golang
 	Name string `json:"name,omitempty"`
 
 	// Owner of the application (email). Can be a single person or a shared group email
@@ -147,96 +145,6 @@ func (m *Application) validateRegistration(formats strfmt.Registry) error {
 
 	if m.Registration != nil {
 		if err := m.Registration.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("registration")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this application based on the context it is used
-func (m *Application) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateEnvironments(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateJobs(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateAppAlias(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateRegistration(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *Application) contextValidateEnvironments(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Environments); i++ {
-
-		if m.Environments[i] != nil {
-			if err := m.Environments[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("environments" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-func (m *Application) contextValidateJobs(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Jobs); i++ {
-
-		if m.Jobs[i] != nil {
-			if err := m.Jobs[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("jobs" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-func (m *Application) contextValidateAppAlias(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.AppAlias != nil {
-		if err := m.AppAlias.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("appAlias")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *Application) contextValidateRegistration(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Registration != nil {
-		if err := m.Registration.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("registration")
 			}

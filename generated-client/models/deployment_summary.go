@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -18,32 +16,23 @@ import (
 type DeploymentSummary struct {
 
 	// ActiveFrom Timestamp when the deployment starts (or created)
-	// Example: 2006-01-02T15:04:05Z
 	ActiveFrom string `json:"activeFrom,omitempty"`
 
 	// ActiveTo Timestamp when the deployment ends
-	// Example: 2006-01-02T15:04:05Z
 	ActiveTo string `json:"activeTo,omitempty"`
 
 	// Name of job creating deployment
 	CreatedByJob string `json:"createdByJob,omitempty"`
 
 	// Environment the environment this Radix application deployment runs in
-	// Example: prod
 	Environment string `json:"environment,omitempty"`
 
 	// Name the unique name of the Radix application deployment
-	// Example: radix-canary-golang-tzbqi
 	Name string `json:"name,omitempty"`
 }
 
 // Validate validates this deployment summary
 func (m *DeploymentSummary) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this deployment summary based on context it is used
-func (m *DeploymentSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
