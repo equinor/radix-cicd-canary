@@ -6,7 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -25,7 +24,6 @@ type ReplicaStatus struct {
 	// Failing = Container in Waiting state and the reason is anything else but ContainerCreating
 	// Running = Container in Running state
 	// Terminated = Container in Terminated state
-	// Example: Pending, Failing, Running, Terminated, Starting
 	// Required: true
 	// Enum: [Pending Failing Running Terminated]
 	Status *string `json:"status"`
@@ -91,11 +89,6 @@ func (m *ReplicaStatus) validateStatus(formats strfmt.Registry) error {
 		return err
 	}
 
-	return nil
-}
-
-// ContextValidate validates this replica status based on context it is used
-func (m *ReplicaStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

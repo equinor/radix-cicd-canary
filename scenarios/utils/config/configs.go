@@ -7,6 +7,7 @@ const (
 	App1Owner                        = "a-user@equinor.com"
 	App1Creator                      = "a-user@equinor.com"
 	App1Wbs                          = "WBS.APP.1"
+	App1ConfigBranch                 = "master"
 	App2Name                         = "canarycicd-test2"
 	App2Owner                        = "a-user@equinor.com"
 	App2Creator                      = "a-user@equinor.com"
@@ -22,6 +23,7 @@ const (
 	App2SecretName                   = "DB_PASS"
 	App2SecretValue                  = "Test"
 	App2Wbs                          = "WBS.APP.2"
+	App2ConfigBranch                 = "master"
 	App3Name                         = "canarycicd-test3"
 	App3Owner                        = "a-user@equinor.com"
 	App3Creator                      = "a-user@equinor.com"
@@ -33,5 +35,6 @@ const (
 	App3EnvironmentName              = "prod"
 	App3Component1Name               = "client"
 	App3Wbs                          = "WBS.APP.3"
+	App3ConfigBranch                 = "master"
 	RestrictedApplicationName        = "radix-api"
 )

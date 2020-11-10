@@ -21,8 +21,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	appCreator := config.App3Creator
 	appOwner := config.App3Owner
 	appWbs := config.App3Wbs
+	appConfigBranch := config.App3ConfigBranch
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKeyCanary3(), env.GetPrivateKeyCanary3(), appWbs)
+	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKeyCanary3(), env.GetPrivateKeyCanary3(), appWbs, appConfigBranch)
 	if err != nil {
 		logger.Errorf("%v", err)
 		return false, err

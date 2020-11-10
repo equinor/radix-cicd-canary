@@ -6,7 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -21,49 +20,38 @@ import (
 type JobSummary struct {
 
 	// AppName of the application
-	// Example: radix-pipeline-20181029135644-algpv-6hznh
 	AppName string `json:"appName,omitempty"`
 
 	// Branch branch to build from
-	// Example: master
 	Branch string `json:"branch,omitempty"`
 
 	// CommitID the commit ID of the branch to build
-	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
 	CommitID string `json:"commitID,omitempty"`
 
 	// Created timestamp
-	// Example: 2006-01-02T15:04:05Z
 	Created string `json:"created,omitempty"`
 
 	// Ended timestamp
-	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
 
 	// Environments the job deployed to
-	// Example: dev,qa
 	Environments []string `json:"environments"`
 
 	// Name of the job
-	// Example: radix-pipeline-20181029135644-algpv-6hznh
 	Name string `json:"name,omitempty"`
 
 	// Name of the pipeline
-	// Example: build-deploy
 	// Enum: [build-deploy  build]
 	Pipeline string `json:"pipeline,omitempty"`
 
 	// Started timestamp
-	// Example: 2006-01-02T15:04:05Z
 	Started string `json:"started,omitempty"`
 
 	// Status of the job
-	// Example: Waiting
 	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
 	Status string `json:"status,omitempty"`
 
 	// TriggeredBy user that triggered the job. If through webhook = sender.login. If through api - usertoken.upn
-	// Example: a_user@equinor.com
 	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
@@ -180,11 +168,6 @@ func (m *JobSummary) validateStatus(formats strfmt.Registry) error {
 		return err
 	}
 
-	return nil
-}
-
-// ContextValidate validates this job summary based on context it is used
-func (m *JobSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -20,7 +18,6 @@ import (
 type SecretParameters struct {
 
 	// Name the unique name of the Radix application deployment
-	// Example: p4$sW0rDz
 	// Required: true
 	SecretValue *string `json:"secretValue"`
 }
@@ -45,11 +42,6 @@ func (m *SecretParameters) validateSecretValue(formats strfmt.Registry) error {
 		return err
 	}
 
-	return nil
-}
-
-// ContextValidate validates this secret parameters based on context it is used
-func (m *SecretParameters) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

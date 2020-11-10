@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -20,12 +18,10 @@ import (
 type Port struct {
 
 	// Component port name. From radixconfig.yaml
-	// Example: http
 	// Required: true
 	Name *string `json:"name"`
 
 	// Component port number. From radixconfig.yaml
-	// Example: 8080
 	Port int32 `json:"port,omitempty"`
 }
 
@@ -49,11 +45,6 @@ func (m *Port) validateName(formats strfmt.Registry) error {
 		return err
 	}
 
-	return nil
-}
-
-// ContextValidate validates this port based on context it is used
-func (m *Port) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

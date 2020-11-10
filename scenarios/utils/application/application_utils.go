@@ -17,7 +17,7 @@ const canonicalDomainNameEnvironmentVariable = "RADIX_CANONICAL_DOMAIN_NAME"
 const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 
 // Register Will register application
-func Register(env env.Env, appName, appRepo, appSharedSecret, appOwner, appCreator, publicKey, privateKey string, wbs string) (*apiclient.RegisterApplicationOK, error) {
+func Register(env env.Env, appName, appRepo, appSharedSecret, appOwner, appCreator, publicKey, privateKey string, wbs string, configBranch string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 	bodyParameters := models.ApplicationRegistration{
@@ -30,6 +30,7 @@ func Register(env env.Env, appName, appRepo, appSharedSecret, appOwner, appCreat
 		PublicKey:    publicKey,
 		PrivateKey:   privateKey,
 		WBS:          wbs,
+		ConfigBranch: &configBranch,
 	}
 
 	params := apiclient.NewRegisterApplicationParams().

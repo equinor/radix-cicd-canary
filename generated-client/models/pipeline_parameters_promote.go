@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -19,31 +17,22 @@ type PipelineParametersPromote struct {
 
 	// ID of the deployment to promote
 	// REQUIRED for "promote" pipeline
-	// Example: dev-9tyu1-tftmnqzq
 	DeploymentName string `json:"deploymentName,omitempty"`
 
 	// Name of environment where to look for the deployment to be promoted
 	// REQUIRED for "promote" pipeline
-	// Example: prod
 	FromEnvironment string `json:"fromEnvironment,omitempty"`
 
 	// Name of environment to receive the promoted deployment
 	// REQUIRED for "promote" pipeline
-	// Example: prod
 	ToEnvironment string `json:"toEnvironment,omitempty"`
 
 	// TriggeredBy of the job - if empty will use user token upn (user principle name)
-	// Example: a_user@equinor.com
 	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
 // Validate validates this pipeline parameters promote
 func (m *PipelineParametersPromote) Validate(formats strfmt.Registry) error {
-	return nil
-}
-
-// ContextValidate validates this pipeline parameters promote based on context it is used
-func (m *PipelineParametersPromote) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

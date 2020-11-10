@@ -6,8 +6,6 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"context"
-
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -20,12 +18,10 @@ import (
 type PromotionParameters struct {
 
 	// FromEnvironment the environment to promote from
-	// Example: dev
 	// Required: true
 	FromEnvironment *string `json:"fromEnvironment"`
 
 	// ToEnvironment the environment to promote to
-	// Example: prod
 	// Required: true
 	ToEnvironment *string `json:"toEnvironment"`
 }
@@ -63,11 +59,6 @@ func (m *PromotionParameters) validateToEnvironment(formats strfmt.Registry) err
 		return err
 	}
 
-	return nil
-}
-
-// ContextValidate validates this promotion parameters based on context it is used
-func (m *PromotionParameters) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
