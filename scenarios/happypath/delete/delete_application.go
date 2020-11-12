@@ -30,6 +30,12 @@ func Applications(env env.Env, suiteName string) (bool, error) {
 		errorMessages += fmt.Sprintf("%s\n", err.Error())
 	}
 
+	success, err = application.Delete(env, config.App4Name)
+	if !success {
+		isAllSuccess = false
+		errorMessages += fmt.Sprintf("%s\n", err.Error())
+	}
+
 	if !isAllSuccess {
 		allErrors = fmt.Errorf("Errors:\n%s", errorMessages)
 	}

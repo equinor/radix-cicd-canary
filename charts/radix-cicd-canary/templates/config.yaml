@@ -19,6 +19,8 @@ data:
   privateKeyBase64: {{ .Values.deployKey.private }}
   publicKeyCanary3: {{ .Values.deployKeyCanary3.public }}
   privateKeyCanary3Base64: {{ .Values.deployKeyCanary3.private }}
+  publicKeyCanary4: {{ .Values.deployKeyCanary4.public }}
+  privateKeyCanary4Base64: {{ .Values.deployKeyCanary4.private }}
   radixApiPrefix: {{ .Values.radixApiPrefix}}
   radixWebhookPrefix: {{ .Values.radixWebhookPrefix}}
   clusterFqdn: {{ .Values.clusterFqdn}}

@@ -16,17 +16,20 @@ The `Happy path` suite contains the following tests.
 
 1. Register application
 2. Register application with no deploy key
-3. List applications
-4. Set build secrets
-5. Build application
-6. Set secret
-7. Check alias responding
-8. Check private image hub
-9. Check access to application user should not be able to access
-10. Promote deployment to other environment
-11. Promote deployment to same environment
-12. Checks that access can be locked down by updating AD group
-13. Delete applications
+3. Register application with main as config branch
+4. List applications
+5. Set build secrets
+6. Build application
+7. Set secret
+8. Check alias responding
+9. Check private image hub
+10. Check access to application user should not be able to access
+11. Promote deployment to other environment
+12. Promote deployment to same environment
+13. Checks that access can be locked down by updating AD group
+14. Checks that machine user can be created and get proper access
+15. Checks that radixconfig.yaml is read from correct config branch
+16. Delete applications
 
 The `NSP` suite contains the following tests.
 
