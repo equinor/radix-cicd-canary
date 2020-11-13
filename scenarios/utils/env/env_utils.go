@@ -26,6 +26,8 @@ const (
 	privateKeyBase64Config           = "privateKeyBase64"
 	publicKeyCanary3Config           = "publicKeyCanary3"
 	privateKeyCanary3Base64Config    = "privateKeyCanary3Base64"
+	publicKeyCanary4Config           = "publicKeyCanary4"
+	privateKeyCanary4Base64Config    = "privateKeyCanary4Base64"
 	timeoutOfTestConfig              = "timeoutOfTest"
 	sleepIntervalBetweenChecksConfig = "sleepIntervalBetweenChecks"
 	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
@@ -50,6 +52,8 @@ type Env struct {
 	privateKey                    string
 	publicKeyCanary3              string
 	privateKeyCanary3             string
+	publicKeyCanary4              string
+	privateKeyCanary4             string
 	timeoutOfTest                 time.Duration
 	sleepIntervalBetweenCheckFunc time.Duration
 	sleepIntervalBetweenTestRuns  time.Duration
@@ -74,6 +78,8 @@ func NewEnv() Env {
 		getPrivateKey(),
 		getPublicKeyCanary3(),
 		getPrivateKeyCanary3(),
+		getPublicKeyCanary4(),
+		getPrivateKeyCanary4(),
 		timeoutOfTest(),
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
@@ -134,6 +140,16 @@ func (env Env) GetPublicKeyCanary3() string {
 // GetPrivateKeyCanary3 get private deploy key from config map
 func (env Env) GetPrivateKeyCanary3() string {
 	return env.privateKeyCanary3
+}
+
+// GetPublicKeyCanary4 get public deploy key from config map
+func (env Env) GetPublicKeyCanary4() string {
+	return env.publicKeyCanary4
+}
+
+// GetPrivateKeyCanary4 get private deploy key from config map
+func (env Env) GetPrivateKeyCanary4() string {
+	return env.privateKeyCanary4
 }
 
 // GetPrivateImageHubPassword get private image hub password
@@ -252,6 +268,15 @@ func getPublicKeyCanary3() string {
 
 func getPrivateKeyCanary3() string {
 	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyCanary3Base64Config))
+	return string(data)
+}
+
+func getPublicKeyCanary4() string {
+	return getConfigFromMap(publicKeyCanary4Config)
+}
+
+func getPrivateKeyCanary4() string {
+	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyCanary4Base64Config))
 	return string(data)
 }
 

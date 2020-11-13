@@ -22,7 +22,7 @@ func WaitForCheckFunc(env envUtil.Env, checkFunc CheckFn) (bool, interface{}) {
 func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, interface{}) {
 	timeout := env.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := env.GetSleepIntervalBetweenCheckFunc()
-
+	firstSleepBetweenCheckFunc := time.Second
 	var accumulatedWait time.Duration
 
 	for {
@@ -34,7 +34,13 @@ func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, int
 
 		// should accumulatedWait include sleep?
 		if sleepIntervalBetweenCheckFunc > 0 {
-			time.Sleep(sleepIntervalBetweenCheckFunc)
+			sleepTime := sleepIntervalBetweenCheckFunc
+
+			if accumulatedWait == 0 && firstSleepBetweenCheckFunc < sleepIntervalBetweenCheckFunc {
+				sleepTime = firstSleepBetweenCheckFunc
+			}
+
+			time.Sleep(sleepTime)
 		}
 
 		waitPeriod := time.Now().Sub(startTime)

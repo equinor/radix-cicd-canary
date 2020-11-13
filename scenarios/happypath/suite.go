@@ -6,6 +6,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/alias"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/buildsecrets"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath/configbranch"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/delete"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/list"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/machineuser"
@@ -33,6 +34,13 @@ func TestSuite() test.Suite {
 				Name:        "RegisterApplicationWithNoDeployKey",
 				Description: "Register application with no deploy key",
 				Test:        register.ApplicationWithNoDeployKey,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			},
+			{
+				Name:        "RegisterApplicationWithMainConfigBranch",
+				Description: "Register application with main as config branch",
+				Test:        register.ApplicationWithMainConfigBranch,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
@@ -112,6 +120,13 @@ func TestSuite() test.Suite {
 				Name:        "CreateMachineUser",
 				Description: "Checks that machine user can be created and get proper access",
 				Test:        machineuser.Create,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			},
+			{
+				Name:        "ChangeConfigBranch",
+				Description: "Checks that radixconfig.yaml is read from correct config branch",
+				Test:        configbranch.Change,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/nsp"
-	"net/http"
-	"time"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"

@@ -33,9 +33,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	ok, err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
 	if !ok {
-		return false, nil
+		return false, err
 	}
 	logger.Infof("First job was triggered")
 
@@ -55,9 +55,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
 	time.Sleep(1 * time.Second)
-	ok = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	ok, err = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
 	if !ok {
-		return false, nil
+		return false, err
 	}
 	logger.Infof("Second job was triggered")
 
