@@ -23,10 +23,9 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build to apply RA with build secrets
-	ok := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	ok, err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
 	if !ok {
-		log.Errorf("Failed to trigger webhook push for for repository \"%s\" - exiting", config.App2SSHRepository)
-		return false, nil
+		return false, err
 	}
 
 	logger.Info("Job was triggered to apply RA")
@@ -61,7 +60,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 		return false, fmt.Errorf("Failed buildSecretsAreListedWithStatus expected Pending")
 	}
 
-	ok, err := setSecret(env, build.Secret1, build.Secret1Value)
+	ok, err = setSecret(env, build.Secret1, build.Secret1Value)
 	if !ok {
 		return false, err
 	}

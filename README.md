@@ -21,8 +21,8 @@ The `Happy path` suite contains the following tests.
 5. Set build secrets
 6. Build application
 7. Set secret
-8. Check alias responding
-9. Check private image hub
+8. Check private image hub
+9. Check alias responding
 10. Check access to application user should not be able to access
 11. Promote deployment to other environment
 12. Promote deployment to same environment

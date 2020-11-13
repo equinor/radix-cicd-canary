@@ -22,10 +22,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	ok := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
+	ok, err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
 	if !ok {
-		log.Debugf("Could not Trigger webhook push")
-		return false, nil
+		return false, err
 	}
 
 	// Get job
