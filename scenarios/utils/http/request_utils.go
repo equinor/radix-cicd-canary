@@ -21,6 +21,7 @@ import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -61,7 +62,7 @@ func CreateRequest(env env.Env, url, method string, parameters interface{}) *htt
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string) bool {
+func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string) (bool, error) {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -81,29 +82,32 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Errorf("Error TriggerWebhookPush %v", err)
-		return false
+		return false, errors.WithMessage(err,
+			fmt.Sprintf("error trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
-	return CheckResponse(resp)
+	if ok, err := CheckResponse(resp); !ok {
+		return false, errors.WithMessage(err,
+			fmt.Sprintf("error checking webhook response for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
+	}
+
+	return true, nil
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response) bool {
+func CheckResponse(resp *http.Response) (bool, error) {
 	defer resp.Body.Close()
 	_, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Errorf("Error reading response body: %v", err)
-		return false
+		return false, errors.WithMessage(err, "error reading response body")
 	}
 
 	if resp.StatusCode == 200 {
 		log.Debug("Response code: 200")
-		return true
+		return true, nil
 	}
 
-	log.Debugf("Response code: %d", resp.StatusCode)
-	return false
+	return false, fmt.Errorf("response status code is %d", resp.StatusCode)
 }
 
 // GetClientBearerToken Gets bearer token in order to make call to API server
