@@ -22,6 +22,13 @@ spec:
     spec:
       serviceAccount: "{{ .Chart.Name }}"
       automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        supplementalGroups:
+          - 1000
       containers:
         - name: {{ .Chart.Name }}
           env:
@@ -35,3 +42,7 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            privileged: false
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: false
