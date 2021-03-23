@@ -13,7 +13,9 @@ RUN go mod download
 # build app
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -a -installsuffix cgo -o ./rootfs/radix-cicd-canary
-RUN adduser -D -g '' radix-cicd-canary
+
+RUN addgroup -S -g 1000 radix-cicd-canary
+RUN adduser -S -u 1000 -G radix-cicd-canary radix-cicd-canary
 
 FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
