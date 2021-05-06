@@ -18,69 +18,85 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewRegisterApplicationParams creates a new RegisterApplicationParams object
-// with the default values initialized.
+// NewRegisterApplicationParams creates a new RegisterApplicationParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewRegisterApplicationParams() *RegisterApplicationParams {
-	var ()
 	return &RegisterApplicationParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewRegisterApplicationParamsWithTimeout creates a new RegisterApplicationParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewRegisterApplicationParamsWithTimeout(timeout time.Duration) *RegisterApplicationParams {
-	var ()
 	return &RegisterApplicationParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewRegisterApplicationParamsWithContext creates a new RegisterApplicationParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewRegisterApplicationParamsWithContext(ctx context.Context) *RegisterApplicationParams {
-	var ()
 	return &RegisterApplicationParams{
-
 		Context: ctx,
 	}
 }
 
 // NewRegisterApplicationParamsWithHTTPClient creates a new RegisterApplicationParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewRegisterApplicationParamsWithHTTPClient(client *http.Client) *RegisterApplicationParams {
-	var ()
 	return &RegisterApplicationParams{
 		HTTPClient: client,
 	}
 }
 
-/*RegisterApplicationParams contains all the parameters to send to the API endpoint
-for the register application operation typically these are written to a http.Request
+/* RegisterApplicationParams contains all the parameters to send to the API endpoint
+   for the register application operation.
+
+   Typically these are written to a http.Request.
 */
 type RegisterApplicationParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*ApplicationRegistration
-	  Application to register
 
+	/* ApplicationRegistration.
+
+	   Application to register
 	*/
 	ApplicationRegistration *models.ApplicationRegistration
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the register application params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RegisterApplicationParams) WithDefaults() *RegisterApplicationParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the register application params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RegisterApplicationParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the register application params
@@ -163,7 +179,6 @@ func (o *RegisterApplicationParams) WriteToRequest(r runtime.ClientRequest, reg 
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -172,9 +187,7 @@ func (o *RegisterApplicationParams) WriteToRequest(r runtime.ClientRequest, reg 
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
-
 	if o.ApplicationRegistration != nil {
 		if err := r.SetBodyParam(o.ApplicationRegistration); err != nil {
 			return err

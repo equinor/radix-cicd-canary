@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -16,20 +18,29 @@ import (
 type HorizontalScalingSummary struct {
 
 	// Component current average CPU utilization over all pods, represented as a percentage of requested CPU
+	// Example: 70
 	CurrentCPUUtilizationPercentage int32 `json:"currentCPUUtilizationPercentage,omitempty"`
 
 	// Component maximum replicas. From radixconfig.yaml
+	// Example: 5
 	MaxReplicas int32 `json:"maxReplicas,omitempty"`
 
 	// Component minimum replicas. From radixconfig.yaml
+	// Example: 2
 	MinReplicas int32 `json:"minReplicas,omitempty"`
 
 	// Component target average CPU utilization over all pods
+	// Example: 80
 	TargetCPUUtilizationPercentage int32 `json:"targetCPUUtilizationPercentage,omitempty"`
 }
 
 // Validate validates this horizontal scaling summary
 func (m *HorizontalScalingSummary) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this horizontal scaling summary based on context it is used
+func (m *HorizontalScalingSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

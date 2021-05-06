@@ -50,7 +50,6 @@ func (o *ChangeEnvironmentComponentSecretReader) ReadResponse(response runtime.C
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -61,7 +60,7 @@ func NewChangeEnvironmentComponentSecretOK() *ChangeEnvironmentComponentSecretOK
 	return &ChangeEnvironmentComponentSecretOK{}
 }
 
-/*ChangeEnvironmentComponentSecretOK handles this case with default header values.
+/* ChangeEnvironmentComponentSecretOK describes a response with status code 200, with default header values.
 
 success
 */
@@ -82,7 +81,7 @@ func NewChangeEnvironmentComponentSecretBadRequest() *ChangeEnvironmentComponent
 	return &ChangeEnvironmentComponentSecretBadRequest{}
 }
 
-/*ChangeEnvironmentComponentSecretBadRequest handles this case with default header values.
+/* ChangeEnvironmentComponentSecretBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
@@ -103,7 +102,7 @@ func NewChangeEnvironmentComponentSecretUnauthorized() *ChangeEnvironmentCompone
 	return &ChangeEnvironmentComponentSecretUnauthorized{}
 }
 
-/*ChangeEnvironmentComponentSecretUnauthorized handles this case with default header values.
+/* ChangeEnvironmentComponentSecretUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -124,7 +123,7 @@ func NewChangeEnvironmentComponentSecretNotFound() *ChangeEnvironmentComponentSe
 	return &ChangeEnvironmentComponentSecretNotFound{}
 }
 
-/*ChangeEnvironmentComponentSecretNotFound handles this case with default header values.
+/* ChangeEnvironmentComponentSecretNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -145,7 +144,7 @@ func NewChangeEnvironmentComponentSecretConflict() *ChangeEnvironmentComponentSe
 	return &ChangeEnvironmentComponentSecretConflict{}
 }
 
-/*ChangeEnvironmentComponentSecretConflict handles this case with default header values.
+/* ChangeEnvironmentComponentSecretConflict describes a response with status code 409, with default header values.
 
 Conflict
 */

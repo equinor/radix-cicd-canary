@@ -3,7 +3,7 @@ package job
 import (
 	"strings"
 
-	jobclient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
+	pipelineJobclient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -15,7 +15,7 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string) (bool, inte
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := jobclient.NewGetApplicationJobsParams().
+	params := pipelineJobclient.NewGetApplicationJobsParams().
 		WithAppName(appName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
@@ -48,7 +48,7 @@ func Stop(env env.Env, appName, jobName string) bool {
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetJobClient(env)
 
-	params := jobclient.NewStopApplicationJobParams().
+	params := pipelineJobclient.NewStopApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
@@ -91,7 +91,7 @@ func Get(env env.Env, appName, jobName string) *models.Job {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := jobclient.NewGetApplicationJobParams().
+	params := pipelineJobclient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
@@ -113,7 +113,7 @@ func GetSteps(env env.Env, appName, jobName string) []*models.Step {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := jobclient.NewGetApplicationJobParams().
+	params := pipelineJobclient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
@@ -138,7 +138,7 @@ func GetLogForStep(env env.Env, appName, jobName, stepName string) string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := jobclient.NewGetApplicationJobLogsParams().
+	params := pipelineJobclient.NewGetApplicationJobLogsParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).

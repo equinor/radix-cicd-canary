@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -18,12 +20,19 @@ import (
 type ComponentSummary struct {
 
 	// Image name
+	// Example: radixdev.azurecr.io/radix-api-server:cdgkg
 	// Required: true
 	Image *string `json:"image"`
 
 	// Name the component
+	// Example: server
 	// Required: true
 	Name *string `json:"name"`
+
+	// Type of component
+	// Example: component
+	// Required: true
+	Type *string `json:"type"`
 }
 
 // Validate validates this component summary
@@ -35,6 +44,10 @@ func (m *ComponentSummary) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -59,6 +72,20 @@ func (m *ComponentSummary) validateName(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+func (m *ComponentSummary) validateType(formats strfmt.Registry) error {
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this component summary based on context it is used
+func (m *ComponentSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

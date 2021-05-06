@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -18,12 +20,14 @@ import (
 type BuildSecret struct {
 
 	// Name name of the build secret
+	// Example: SECRET_1
 	// Required: true
 	Name *string `json:"name"`
 
 	// Status of the secret
 	// Pending = Secret value is not set
 	// Consistent = Secret value is set
+	// Example: Consistent
 	Status string `json:"status,omitempty"`
 }
 
@@ -47,6 +51,11 @@ func (m *BuildSecret) validateName(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this build secret based on context it is used
+func (m *BuildSecret) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
