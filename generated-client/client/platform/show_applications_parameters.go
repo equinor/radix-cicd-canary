@@ -16,69 +16,85 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewShowApplicationsParams creates a new ShowApplicationsParams object
-// with the default values initialized.
+// NewShowApplicationsParams creates a new ShowApplicationsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewShowApplicationsParams() *ShowApplicationsParams {
-	var ()
 	return &ShowApplicationsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewShowApplicationsParamsWithTimeout creates a new ShowApplicationsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewShowApplicationsParamsWithTimeout(timeout time.Duration) *ShowApplicationsParams {
-	var ()
 	return &ShowApplicationsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewShowApplicationsParamsWithContext creates a new ShowApplicationsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewShowApplicationsParamsWithContext(ctx context.Context) *ShowApplicationsParams {
-	var ()
 	return &ShowApplicationsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewShowApplicationsParamsWithHTTPClient creates a new ShowApplicationsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewShowApplicationsParamsWithHTTPClient(client *http.Client) *ShowApplicationsParams {
-	var ()
 	return &ShowApplicationsParams{
 		HTTPClient: client,
 	}
 }
 
-/*ShowApplicationsParams contains all the parameters to send to the API endpoint
-for the show applications operation typically these are written to a http.Request
+/* ShowApplicationsParams contains all the parameters to send to the API endpoint
+   for the show applications operation.
+
+   Typically these are written to a http.Request.
 */
 type ShowApplicationsParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*SSHRepo
-	  ssh repo to identify Radix application if exists
 
+	/* SSHRepo.
+
+	   ssh repo to identify Radix application if exists
 	*/
 	SSHRepo *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the show applications params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ShowApplicationsParams) WithDefaults() *ShowApplicationsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the show applications params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ShowApplicationsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the show applications params
@@ -161,7 +177,6 @@ func (o *ShowApplicationsParams) WriteToRequest(r runtime.ClientRequest, reg str
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -170,23 +185,23 @@ func (o *ShowApplicationsParams) WriteToRequest(r runtime.ClientRequest, reg str
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	if o.SSHRepo != nil {
 
 		// query param sshRepo
 		var qrSSHRepo string
+
 		if o.SSHRepo != nil {
 			qrSSHRepo = *o.SSHRepo
 		}
 		qSSHRepo := qrSSHRepo
 		if qSSHRepo != "" {
+
 			if err := r.SetQueryParam("sshRepo", qSSHRepo); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

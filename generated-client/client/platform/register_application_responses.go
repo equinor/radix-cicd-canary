@@ -47,7 +47,6 @@ func (o *RegisterApplicationReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -58,7 +57,7 @@ func NewRegisterApplicationOK() *RegisterApplicationOK {
 	return &RegisterApplicationOK{}
 }
 
-/*RegisterApplicationOK handles this case with default header values.
+/* RegisterApplicationOK describes a response with status code 200, with default header values.
 
 Successful application registration
 */
@@ -69,7 +68,6 @@ type RegisterApplicationOK struct {
 func (o *RegisterApplicationOK) Error() string {
 	return fmt.Sprintf("[POST /applications][%d] registerApplicationOK  %+v", 200, o.Payload)
 }
-
 func (o *RegisterApplicationOK) GetPayload() *models.ApplicationRegistration {
 	return o.Payload
 }
@@ -91,7 +89,7 @@ func NewRegisterApplicationBadRequest() *RegisterApplicationBadRequest {
 	return &RegisterApplicationBadRequest{}
 }
 
-/*RegisterApplicationBadRequest handles this case with default header values.
+/* RegisterApplicationBadRequest describes a response with status code 400, with default header values.
 
 Invalid application registration
 */
@@ -112,7 +110,7 @@ func NewRegisterApplicationUnauthorized() *RegisterApplicationUnauthorized {
 	return &RegisterApplicationUnauthorized{}
 }
 
-/*RegisterApplicationUnauthorized handles this case with default header values.
+/* RegisterApplicationUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -133,7 +131,7 @@ func NewRegisterApplicationConflict() *RegisterApplicationConflict {
 	return &RegisterApplicationConflict{}
 }
 
-/*RegisterApplicationConflict handles this case with default header values.
+/* RegisterApplicationConflict describes a response with status code 409, with default header values.
 
 Conflict
 */

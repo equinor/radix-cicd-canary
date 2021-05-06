@@ -18,89 +18,109 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewChangeEnvironmentComponentSecretParams creates a new ChangeEnvironmentComponentSecretParams object
-// with the default values initialized.
+// NewChangeEnvironmentComponentSecretParams creates a new ChangeEnvironmentComponentSecretParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewChangeEnvironmentComponentSecretParams() *ChangeEnvironmentComponentSecretParams {
-	var ()
 	return &ChangeEnvironmentComponentSecretParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewChangeEnvironmentComponentSecretParamsWithTimeout creates a new ChangeEnvironmentComponentSecretParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewChangeEnvironmentComponentSecretParamsWithTimeout(timeout time.Duration) *ChangeEnvironmentComponentSecretParams {
-	var ()
 	return &ChangeEnvironmentComponentSecretParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewChangeEnvironmentComponentSecretParamsWithContext creates a new ChangeEnvironmentComponentSecretParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewChangeEnvironmentComponentSecretParamsWithContext(ctx context.Context) *ChangeEnvironmentComponentSecretParams {
-	var ()
 	return &ChangeEnvironmentComponentSecretParams{
-
 		Context: ctx,
 	}
 }
 
 // NewChangeEnvironmentComponentSecretParamsWithHTTPClient creates a new ChangeEnvironmentComponentSecretParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewChangeEnvironmentComponentSecretParamsWithHTTPClient(client *http.Client) *ChangeEnvironmentComponentSecretParams {
-	var ()
 	return &ChangeEnvironmentComponentSecretParams{
 		HTTPClient: client,
 	}
 }
 
-/*ChangeEnvironmentComponentSecretParams contains all the parameters to send to the API endpoint
-for the change environment component secret operation typically these are written to a http.Request
+/* ChangeEnvironmentComponentSecretParams contains all the parameters to send to the API endpoint
+   for the change environment component secret operation.
+
+   Typically these are written to a http.Request.
 */
 type ChangeEnvironmentComponentSecretParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
-	/*ComponentName
-	  environment component of Radix application
 
+	/* ComponentName.
+
+	   environment component of Radix application
 	*/
 	ComponentName string
-	/*ComponentSecret
-	  New secret value
 
+	/* ComponentSecret.
+
+	   New secret value
 	*/
 	ComponentSecret *models.SecretParameters
-	/*EnvName
-	  environment of Radix application
 
+	/* EnvName.
+
+	   environment of Radix application
 	*/
 	EnvName string
-	/*SecretName
-	  environment component secret name to be updated
 
+	/* SecretName.
+
+	   environment component secret name to be updated
 	*/
 	SecretName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the change environment component secret params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ChangeEnvironmentComponentSecretParams) WithDefaults() *ChangeEnvironmentComponentSecretParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the change environment component secret params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ChangeEnvironmentComponentSecretParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the change environment component secret params
@@ -227,7 +247,6 @@ func (o *ChangeEnvironmentComponentSecretParams) WriteToRequest(r runtime.Client
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -236,7 +255,6 @@ func (o *ChangeEnvironmentComponentSecretParams) WriteToRequest(r runtime.Client
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName
@@ -248,7 +266,6 @@ func (o *ChangeEnvironmentComponentSecretParams) WriteToRequest(r runtime.Client
 	if err := r.SetPathParam("componentName", o.ComponentName); err != nil {
 		return err
 	}
-
 	if o.ComponentSecret != nil {
 		if err := r.SetBodyParam(o.ComponentSecret); err != nil {
 			return err

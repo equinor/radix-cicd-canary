@@ -11,10 +11,12 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/buildstatus"
 	"github.com/equinor/radix-cicd-canary/generated-client/client/component"
 	"github.com/equinor/radix-cicd-canary/generated-client/client/deployment"
 	"github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/client/job"
+	"github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 )
 
@@ -61,10 +63,12 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Radix {
 	cli := new(Radix)
 	cli.Transport = transport
 	cli.Application = application.New(transport, formats)
+	cli.Buildstatus = buildstatus.New(transport, formats)
 	cli.Component = component.New(transport, formats)
 	cli.Deployment = deployment.New(transport, formats)
 	cli.Environment = environment.New(transport, formats)
 	cli.Job = job.New(transport, formats)
+	cli.PipelineJob = pipeline_job.New(transport, formats)
 	cli.Platform = platform.New(transport, formats)
 	return cli
 }
@@ -112,6 +116,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type Radix struct {
 	Application application.ClientService
 
+	Buildstatus buildstatus.ClientService
+
 	Component component.ClientService
 
 	Deployment deployment.ClientService
@@ -119,6 +125,8 @@ type Radix struct {
 	Environment environment.ClientService
 
 	Job job.ClientService
+
+	PipelineJob pipeline_job.ClientService
 
 	Platform platform.ClientService
 
@@ -129,9 +137,11 @@ type Radix struct {
 func (c *Radix) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.Application.SetTransport(transport)
+	c.Buildstatus.SetTransport(transport)
 	c.Component.SetTransport(transport)
 	c.Deployment.SetTransport(transport)
 	c.Environment.SetTransport(transport)
 	c.Job.SetTransport(transport)
+	c.PipelineJob.SetTransport(transport)
 	c.Platform.SetTransport(transport)
 }

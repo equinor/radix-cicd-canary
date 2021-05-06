@@ -41,7 +41,6 @@ func (o *GetApplicationEnvironmentDeploymentsReader) ReadResponse(response runti
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -52,7 +51,7 @@ func NewGetApplicationEnvironmentDeploymentsOK() *GetApplicationEnvironmentDeplo
 	return &GetApplicationEnvironmentDeploymentsOK{}
 }
 
-/*GetApplicationEnvironmentDeploymentsOK handles this case with default header values.
+/* GetApplicationEnvironmentDeploymentsOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -63,7 +62,6 @@ type GetApplicationEnvironmentDeploymentsOK struct {
 func (o *GetApplicationEnvironmentDeploymentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/deployments][%d] getApplicationEnvironmentDeploymentsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetApplicationEnvironmentDeploymentsOK) GetPayload() []*models.DeploymentSummary {
 	return o.Payload
 }
@@ -83,7 +81,7 @@ func NewGetApplicationEnvironmentDeploymentsUnauthorized() *GetApplicationEnviro
 	return &GetApplicationEnvironmentDeploymentsUnauthorized{}
 }
 
-/*GetApplicationEnvironmentDeploymentsUnauthorized handles this case with default header values.
+/* GetApplicationEnvironmentDeploymentsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -104,7 +102,7 @@ func NewGetApplicationEnvironmentDeploymentsNotFound() *GetApplicationEnvironmen
 	return &GetApplicationEnvironmentDeploymentsNotFound{}
 }
 
-/*GetApplicationEnvironmentDeploymentsNotFound handles this case with default header values.
+/* GetApplicationEnvironmentDeploymentsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

@@ -14,7 +14,7 @@ import (
 	componentAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/component"
 	deploymentAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/deployment"
 	environmentAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
-	jobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
+	pipelineJobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	platformAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/crypto"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -126,8 +126,8 @@ func GetApplicationClient(env env.Env) applicationAPIClient.ClientService {
 }
 
 // GetJobClient Gets the Job API client
-func GetJobClient(env env.Env) jobAPIClient.ClientService {
-	return jobAPIClient.New(getTransport(env), strfmt.Default)
+func GetJobClient(env env.Env) pipelineJobAPIClient.ClientService {
+	return pipelineJobAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 // GetEnvironmentClient Gets the Environment API client

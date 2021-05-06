@@ -1,6 +1,7 @@
 package env
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
@@ -325,7 +326,7 @@ func SetRequiredEnvironmentVariablesForTest() {
 
 func getConfigFromMap(config string) string {
 	kubeClient := kubeUtils.GetKubernetesClient()
-	configmap, err := kubeClient.CoreV1().ConfigMaps(namespace).Get(configMapName, metav1.GetOptions{})
+	configmap, err := kubeClient.CoreV1().ConfigMaps(namespace).Get(context.Background(), configMapName, metav1.GetOptions{})
 	if err != nil {
 		log.Fatalf("Error reading config map: %v", err)
 	}
