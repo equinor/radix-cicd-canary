@@ -25,156 +25,52 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error)
-
-	GetApplicationJobLogs(params *GetApplicationJobLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobLogsOK, error)
-
-	GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error)
-
-	StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error)
+	JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*JobLogOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  GetApplicationJob gets the detail of a given job for a given application
+  JobLog gets log from a scheduled job
 */
-func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error) {
+func (a *Client) JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*JobLogOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetApplicationJobParams()
+		params = NewJobLogParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "getApplicationJob",
+	op := &runtime.ClientOperation{
+		ID:                 "jobLog",
 		Method:             "GET",
-		PathPattern:        "/applications/{appName}/jobs/{jobName}",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
-		Reader:             &GetApplicationJobReader{formats: a.formats},
+		Reader:             &JobLogReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetApplicationJobOK)
+	success, ok := result.(*JobLogOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getApplicationJob: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-  GetApplicationJobLogs gets a pipeline logs by combining different steps jobs logs
-*/
-func (a *Client) GetApplicationJobLogs(params *GetApplicationJobLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobLogsOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetApplicationJobLogsParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "getApplicationJobLogs",
-		Method:             "GET",
-		PathPattern:        "/applications/{appName}/jobs/{jobName}/logs",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &GetApplicationJobLogsReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*GetApplicationJobLogsOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getApplicationJobLogs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-  GetApplicationJobs gets the summary of jobs for a given application
-*/
-func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetApplicationJobsParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "getApplicationJobs",
-		Method:             "GET",
-		PathPattern:        "/applications/{appName}/jobs",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &GetApplicationJobsReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*GetApplicationJobsOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getApplicationJobs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-  StopApplicationJob stops job
-*/
-func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewStopApplicationJobParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "stopApplicationJob",
-		Method:             "POST",
-		PathPattern:        "/applications/{appName}/jobs/{jobName}/stop",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &StopApplicationJobReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*StopApplicationJobNoContent)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for stopApplicationJob: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for jobLog: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

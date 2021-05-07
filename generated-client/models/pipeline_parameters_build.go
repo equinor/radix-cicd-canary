@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -17,21 +19,30 @@ type PipelineParametersBuild struct {
 
 	// Branch the branch to build
 	// REQUIRED for "build" and "build-deploy" pipelines
+	// Example: master
 	Branch string `json:"branch,omitempty"`
 
 	// CommitID the commit ID of the branch to build
 	// REQUIRED for "build" and "build-deploy" pipelines
+	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
 	CommitID string `json:"commitID,omitempty"`
 
 	// PushImage should image be pushed to container registry. Defaults pushing
+	// Example: true
 	PushImage string `json:"pushImage,omitempty"`
 
 	// TriggeredBy of the job - if empty will use user token upn (user principle name)
+	// Example: a_user@equinor.com
 	TriggeredBy string `json:"triggeredBy,omitempty"`
 }
 
 // Validate validates this pipeline parameters build
 func (m *PipelineParametersBuild) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this pipeline parameters build based on context it is used
+func (m *PipelineParametersBuild) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

@@ -25,17 +25,22 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter) (*ComponentsOK, error)
+	Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ComponentsOK, error)
 
-	Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (*LogOK, error)
+	Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*LogOK, error)
 
-	RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*RestartComponentOK, error)
+	ReplicaLog(params *ReplicaLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ReplicaLogOK, error)
 
-	StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StartComponentOK, error)
+	RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartComponentOK, error)
 
-	StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StopComponentOK, error)
+	StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartComponentOK, error)
+
+	StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopComponentOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -43,13 +48,12 @@ type ClientService interface {
 /*
   Components gets components for a deployment
 */
-func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter) (*ComponentsOK, error) {
+func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ComponentsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewComponentsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "components",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/deployments/{deploymentName}/components",
@@ -61,7 +65,12 @@ func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -78,13 +87,12 @@ func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAut
 /*
   Log gets logs from a deployed pod
 */
-func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (*LogOK, error) {
+func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*LogOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewLogParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "log",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs",
@@ -96,7 +104,12 @@ func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -111,15 +124,53 @@ func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter) (
 }
 
 /*
+  ReplicaLog gets logs from a deployed pod
+*/
+func (a *Client) ReplicaLog(params *ReplicaLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ReplicaLogOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewReplicaLogParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "replicaLog",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/replicas/{podName}/logs",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ReplicaLogReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ReplicaLogOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for replicaLog: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   RestartComponent restarts a component stops running the component container pulls new image from image hub in radix configuration starts the container again using up to date image
 */
-func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*RestartComponentOK, error) {
+func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartComponentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRestartComponentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "restartComponent",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/restart",
@@ -131,7 +182,12 @@ func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -148,13 +204,12 @@ func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runti
 /*
   StartComponent starts component
 */
-func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StartComponentOK, error) {
+func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartComponentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStartComponentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "startComponent",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/start",
@@ -166,7 +221,12 @@ func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -183,13 +243,12 @@ func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.C
 /*
   StopComponent stops component
 */
-func (a *Client) StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter) (*StopComponentOK, error) {
+func (a *Client) StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopComponentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStopComponentParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stopComponent",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/stop",
@@ -201,7 +260,12 @@ func (a *Client) StopComponent(params *StopComponentParams, authInfo runtime.Cli
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

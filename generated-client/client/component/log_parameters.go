@@ -16,89 +16,111 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewLogParams creates a new LogParams object
-// with the default values initialized.
+// NewLogParams creates a new LogParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewLogParams() *LogParams {
-	var ()
 	return &LogParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewLogParamsWithTimeout creates a new LogParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewLogParamsWithTimeout(timeout time.Duration) *LogParams {
-	var ()
 	return &LogParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewLogParamsWithContext creates a new LogParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewLogParamsWithContext(ctx context.Context) *LogParams {
-	var ()
 	return &LogParams{
-
 		Context: ctx,
 	}
 }
 
 // NewLogParamsWithHTTPClient creates a new LogParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewLogParamsWithHTTPClient(client *http.Client) *LogParams {
-	var ()
 	return &LogParams{
 		HTTPClient: client,
 	}
 }
 
-/*LogParams contains all the parameters to send to the API endpoint
-for the log operation typically these are written to a http.Request
+/* LogParams contains all the parameters to send to the API endpoint
+   for the log operation.
+
+   Typically these are written to a http.Request.
 */
 type LogParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
-	/*ComponentName
-	  Name of component
 
+	/* ComponentName.
+
+	   Name of component
 	*/
 	ComponentName string
-	/*DeploymentName
-	  Name of deployment
 
+	/* DeploymentName.
+
+	   Name of deployment
 	*/
 	DeploymentName string
-	/*PodName
-	  Name of pod
 
+	/* PodName.
+
+	   Name of pod
 	*/
 	PodName string
-	/*SinceTime
-	  Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
 
+	/* SinceTime.
+
+	   Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
+
+	   Format: date-time
 	*/
 	SinceTime *strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the log params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *LogParams) WithDefaults() *LogParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the log params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *LogParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the log params
@@ -225,7 +247,6 @@ func (o *LogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry)
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -234,7 +255,6 @@ func (o *LogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry)
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName
@@ -261,16 +281,17 @@ func (o *LogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry)
 
 		// query param sinceTime
 		var qrSinceTime strfmt.DateTime
+
 		if o.SinceTime != nil {
 			qrSinceTime = *o.SinceTime
 		}
 		qSinceTime := qrSinceTime.String()
 		if qSinceTime != "" {
+
 			if err := r.SetQueryParam("sinceTime", qSinceTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

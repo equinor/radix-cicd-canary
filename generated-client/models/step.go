@@ -6,6 +6,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
@@ -23,15 +24,19 @@ type Step struct {
 	Components []string `json:"components"`
 
 	// Ended timestamp
+	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
 
 	// Name of the step
+	// Example: build
 	Name string `json:"name,omitempty"`
 
 	// Started timestamp
+	// Example: 2006-01-02T15:04:05Z
 	Started string `json:"started,omitempty"`
 
 	// Status of the step
+	// Example: Waiting
 	// Enum: [Waiting Running Succeeded Failed]
 	Status string `json:"status,omitempty"`
 }
@@ -86,7 +91,6 @@ func (m *Step) validateStatusEnum(path, location string, value string) error {
 }
 
 func (m *Step) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -96,6 +100,11 @@ func (m *Step) validateStatus(formats strfmt.Registry) error {
 		return err
 	}
 
+	return nil
+}
+
+// ContextValidate validates this step based on context it is used
+func (m *Step) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 

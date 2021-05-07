@@ -18,74 +18,91 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewTriggerPipelinePromoteParams creates a new TriggerPipelinePromoteParams object
-// with the default values initialized.
+// NewTriggerPipelinePromoteParams creates a new TriggerPipelinePromoteParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewTriggerPipelinePromoteParams() *TriggerPipelinePromoteParams {
-	var ()
 	return &TriggerPipelinePromoteParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewTriggerPipelinePromoteParamsWithTimeout creates a new TriggerPipelinePromoteParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewTriggerPipelinePromoteParamsWithTimeout(timeout time.Duration) *TriggerPipelinePromoteParams {
-	var ()
 	return &TriggerPipelinePromoteParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewTriggerPipelinePromoteParamsWithContext creates a new TriggerPipelinePromoteParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewTriggerPipelinePromoteParamsWithContext(ctx context.Context) *TriggerPipelinePromoteParams {
-	var ()
 	return &TriggerPipelinePromoteParams{
-
 		Context: ctx,
 	}
 }
 
 // NewTriggerPipelinePromoteParamsWithHTTPClient creates a new TriggerPipelinePromoteParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewTriggerPipelinePromoteParamsWithHTTPClient(client *http.Client) *TriggerPipelinePromoteParams {
-	var ()
 	return &TriggerPipelinePromoteParams{
 		HTTPClient: client,
 	}
 }
 
-/*TriggerPipelinePromoteParams contains all the parameters to send to the API endpoint
-for the trigger pipeline promote operation typically these are written to a http.Request
+/* TriggerPipelinePromoteParams contains all the parameters to send to the API endpoint
+   for the trigger pipeline promote operation.
+
+   Typically these are written to a http.Request.
 */
 type TriggerPipelinePromoteParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*PipelineParametersPromote
-	  Pipeline parameters
 
+	/* PipelineParametersPromote.
+
+	   Pipeline parameters
 	*/
 	PipelineParametersPromote *models.PipelineParametersPromote
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the trigger pipeline promote params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *TriggerPipelinePromoteParams) WithDefaults() *TriggerPipelinePromoteParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the trigger pipeline promote params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *TriggerPipelinePromoteParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the trigger pipeline promote params
@@ -179,7 +196,6 @@ func (o *TriggerPipelinePromoteParams) WriteToRequest(r runtime.ClientRequest, r
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -188,9 +204,7 @@ func (o *TriggerPipelinePromoteParams) WriteToRequest(r runtime.ClientRequest, r
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
-
 	if o.PipelineParametersPromote != nil {
 		if err := r.SetBodyParam(o.PipelineParametersPromote); err != nil {
 			return err
