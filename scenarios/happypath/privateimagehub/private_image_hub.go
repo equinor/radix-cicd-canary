@@ -37,11 +37,11 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 
 	err = privateimagehub.SetPassword(env, config.App2Name)
 	if err != nil {
-		return false, fmt.Errorf("Failed to set private image hub password. %v", err)
+		return false, fmt.Errorf("failed to set private image hub password. %v", err)
 	}
 	logger.Infof("SUCCESS: set private image hub password")
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	ok, errorMessage = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		errorMessage := podLoaded(env)
 		if len(errorMessage) > 0 {
 			return false, errorMessage
@@ -50,7 +50,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 	logger.Infof("SUCCESS: container is loaded")
 	if !ok {
-		return false, fmt.Errorf("%s component does not run after setting private image hub password. Error %s", config.App2ComponentPrivateImageHubName, errorMessage)
+		return false, fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, errorMessage)
 	}
 
 	err = privateimagehub.PasswordSet(env, config.App2Name)
