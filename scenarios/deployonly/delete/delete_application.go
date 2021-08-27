@@ -15,7 +15,7 @@ var logger *log.Entry
 func Applications(env env.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	// HACK Try sleeping for 60 seconds to hopefully preventing kubed from crashing
+	// HACK Try sleeping for 60 seconds to hopefully prevent kubed from crashing
 	logger.Info("Sleeping for 60 seconds before deleteing application to prevent kubed from crashing")
 	time.Sleep(60 * time.Second)
 
