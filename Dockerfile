@@ -21,5 +21,5 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /go/src/github.com/equinor/radix-cicd-canary/rootfs/radix-cicd-canary /usr/local/bin/radix-cicd-canary
-USER radix-cicd-canary
+USER 1000
 ENTRYPOINT ["/usr/local/bin/radix-cicd-canary"]
