@@ -7,22 +7,31 @@ on:
 jobs:
   build:
     name: Build-push
+    env:
+      IMAGE: radix-acr-cleanup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Generate build ID
+        id: prep
+        run: |
+          branch=${GITHUB_REF##*/}
+          sha=${GITHUB_SHA::8}
+          ts=$(date +%s)
+          echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
       - run: |
-          docker build . -t radixdev.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }} -t radixprod.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }} -t radixus.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
+          docker build . -t radixdev.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }} -t radixprod.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
       - uses: azure/docker-login@v1
         with:
           login-server: radixdev.azurecr.io
           username: ${{ secrets.DEV_REGISTRY_USERNAME }}
           password: ${{ secrets.DEV_REGISTRY_PASSWORD }}
       - run: |
-          docker push radixdev.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
+          docker push radixdev.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
       - uses: azure/docker-login@v1
         with:
           login-server: radixprod.azurecr.io
           username: ${{ secrets.PROD_REGISTRY_USERNAME }}
           password: ${{ secrets.PROD_REGISTRY_PASSWORD }}
       - run: |
-          docker push radixprod.azurecr.io/radix-cicd-canary:${GITHUB_REF##*/}-${{ github.sha }}
+          docker push radixprod.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
