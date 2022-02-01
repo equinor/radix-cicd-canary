@@ -31,6 +31,6 @@ jobs:
       - name: 'Login to ACR radixcanary'
         run: |
           az acr login --name radixcanary
-       - name: push release to radixcanary
+      - name: push release to radixcanary
         run: |
           docker push radixcanary.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
