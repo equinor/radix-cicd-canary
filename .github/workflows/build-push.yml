@@ -7,8 +7,8 @@ on:
 permissions:
   id-token: write
 jobs:
-  build:
-    name: Build-push
+  build-deploy-image-dev:
+    name: Build-push to dev
     env:
       IMAGE: radix-cicd-canary
     runs-on: ubuntu-latest
@@ -21,28 +21,44 @@ jobs:
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
           echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
-      - run: |
-          docker build . -t radixdev.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }} -t radixprod.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
-      - uses: azure/login@v1
+      - name: 'Build docker image'
+        run: |
+          docker build . -t radixdev.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
+      - name: 'Login to dev'
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID_DEV }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}
-      - name: 'Login to ACR radixdev'
+      - name: 'Push to dev'
         run: |
-          az acr login --name radixdev 
-      - name: 'Push to ACR radixdev'
-        run: |
+          az acr login --name radixdev
           docker push radixdev.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
-      - uses: azure/login@v1
+  build-deploy-image-prod:
+    if: github.ref == 'refs/heads/release'
+    name: Build-push to prod
+    env:
+      IMAGE: radix-cicd-canary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Generate build ID
+        id: prep
+        run: |
+          branch=${GITHUB_REF##*/}
+          sha=${GITHUB_SHA::8}
+          ts=$(date +%s)
+          echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
+      - name: 'Build docker image'
+        run: |
+          docker build . -t radixprod.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
+      - name: 'Login to prod'
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID_PROD }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_PROD }}
-      - name: 'Login to ACR radixprod'
+      - name: 'Push to prod'
         run: |
-          az acr login --name radixprod 
-      - name: 'Push to ACR radixprod'
-        run: |
+          az acr login --name radixprod
           docker push radixprod.azurecr.io/${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
-
