@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -62,6 +63,9 @@ type JobSummary struct {
 	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
 	Status string `json:"status,omitempty"`
 
+	// List of RadixJobStepScanOutput for a job
+	StepSummaryScans []*RadixJobStepScanOutput `json:"stepSummaryScans"`
+
 	// TriggeredBy user that triggered the job. If through webhook = sender.login. If through api - usertoken.upn
 	// Example: a_user@equinor.com
 	TriggeredBy string `json:"triggeredBy,omitempty"`
@@ -76,6 +80,10 @@ func (m *JobSummary) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStepSummaryScans(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -181,8 +189,63 @@ func (m *JobSummary) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this job summary based on context it is used
+func (m *JobSummary) validateStepSummaryScans(formats strfmt.Registry) error {
+	if swag.IsZero(m.StepSummaryScans) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.StepSummaryScans); i++ {
+		if swag.IsZero(m.StepSummaryScans[i]) { // not required
+			continue
+		}
+
+		if m.StepSummaryScans[i] != nil {
+			if err := m.StepSummaryScans[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this job summary based on the context it is used
 func (m *JobSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStepSummaryScans(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *JobSummary) contextValidateStepSummaryScans(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.StepSummaryScans); i++ {
+
+		if m.StepSummaryScans[i] != nil {
+			if err := m.StepSummaryScans[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

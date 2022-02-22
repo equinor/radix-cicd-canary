@@ -16,7 +16,7 @@ generate-client:
 	swagger generate client -t ./generated-client -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radix
 
 build:
-	docker build -t radix-cicd-canary .
+	docker build -t radix-cicd-canary:$(BRANCH)-$(VERSION) .
 
 run:
 	docker run -it --rm -p 5000:5000 radix-cicd-canary

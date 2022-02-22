@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Port Port describe an component part of an deployment
+// Port Port describe a port of a component
 //
 // swagger:model Port
 type Port struct {

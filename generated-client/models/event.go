@@ -91,6 +91,8 @@ func (m *Event) validateInvolvedObjectState(formats strfmt.Registry) error {
 		if err := m.InvolvedObjectState.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("involvedObjectState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("involvedObjectState")
 			}
 			return err
 		}
@@ -119,6 +121,8 @@ func (m *Event) contextValidateInvolvedObjectState(ctx context.Context, formats 
 		if err := m.InvolvedObjectState.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("involvedObjectState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("involvedObjectState")
 			}
 			return err
 		}

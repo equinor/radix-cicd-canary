@@ -2,7 +2,6 @@ package promote
 
 import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -50,7 +49,7 @@ func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) (bool, error
 	return false, nil
 }
 
-func isNewDeploymentExist(env env.Env, numDeploymentsBefore int) (bool, interface{}) {
+func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) (bool, interface{}) {
 	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
 	if err != nil {
 		logger.Errorf("Error: %v", err)

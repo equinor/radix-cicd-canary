@@ -71,6 +71,14 @@ type GetBuildStatusParams struct {
 	*/
 	EnvName string
 
+	/* Pipeline.
+
+	   Type of pipeline job to get status for.
+
+	   Default: "build-deploy"
+	*/
+	Pipeline *string
+
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
@@ -88,7 +96,18 @@ func (o *GetBuildStatusParams) WithDefaults() *GetBuildStatusParams {
 //
 // All values with no default are reset to their zero value.
 func (o *GetBuildStatusParams) SetDefaults() {
-	// no default values defined for this parameter
+	var (
+		pipelineDefault = string("build-deploy")
+	)
+
+	val := GetBuildStatusParams{
+		Pipeline: &pipelineDefault,
+	}
+
+	val.timeout = o.timeout
+	val.Context = o.Context
+	val.HTTPClient = o.HTTPClient
+	*o = val
 }
 
 // WithTimeout adds the timeout to the get build status params
@@ -146,6 +165,17 @@ func (o *GetBuildStatusParams) SetEnvName(envName string) {
 	o.EnvName = envName
 }
 
+// WithPipeline adds the pipeline to the get build status params
+func (o *GetBuildStatusParams) WithPipeline(pipeline *string) *GetBuildStatusParams {
+	o.SetPipeline(pipeline)
+	return o
+}
+
+// SetPipeline adds the pipeline to the get build status params
+func (o *GetBuildStatusParams) SetPipeline(pipeline *string) {
+	o.Pipeline = pipeline
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *GetBuildStatusParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -162,6 +192,23 @@ func (o *GetBuildStatusParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 	// path param envName
 	if err := r.SetPathParam("envName", o.EnvName); err != nil {
 		return err
+	}
+
+	if o.Pipeline != nil {
+
+		// query param pipeline
+		var qrPipeline string
+
+		if o.Pipeline != nil {
+			qrPipeline = *o.Pipeline
+		}
+		qPipeline := qrPipeline
+		if qPipeline != "" {
+
+			if err := r.SetQueryParam("pipeline", qPipeline); err != nil {
+				return err
+			}
+		}
 	}
 
 	if len(res) > 0 {

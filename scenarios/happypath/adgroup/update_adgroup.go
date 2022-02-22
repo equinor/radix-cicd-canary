@@ -61,13 +61,13 @@ func hasAccess(env env.Env) (bool, interface{}) {
 
 func hasProperAccess(env env.Env, properAccess bool) bool {
 	_, err := getApplication(env)
-	accessToApplication := !givesAccessError(err)
+	accessToApplication := !isGetApplicationForbidden(err)
 
 	err = buildApp(env)
-	accessToBuild := !givesAccessError(err)
+	accessToBuild := !isTriggerPipelineBuildForbidden(err)
 
 	err = setSecret(env)
-	accessToSecret := !givesAccessError(err)
+	accessToSecret := !isChangeComponentSecretForbidden(err)
 
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
 	if !hasProperAccess {
@@ -121,15 +121,13 @@ func buildApp(env env.Env) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	bodyParameters := models.PipelineParameters{
-		PipelineParametersBuild: models.PipelineParametersBuild{
-			Branch: config.App2BranchToBuildFrom,
-		},
+	bodyParameters := models.PipelineParametersBuild{
+		Branch: config.App2BranchToBuildFrom,
 	}
 
 	params := apiclient.NewTriggerPipelineBuildParams().
 		WithAppName(config.App2Name).
-		WithPipelineParametersBuild(&bodyParameters.PipelineParametersBuild).
+		WithPipelineParametersBuild(&bodyParameters).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
@@ -148,7 +146,7 @@ func setSecret(env env.Env) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := environmentclient.NewChangeEnvironmentComponentSecretParams().
+	params := environmentclient.NewChangeComponentSecretParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(config.App2Name).
@@ -163,18 +161,35 @@ func setSecret(env env.Env) error {
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetEnvironmentClient(env)
 
-	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
+	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		logger.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
+		logger.Errorf("Error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
 		return err
 	}
 
 	return nil
 }
 
-func givesAccessError(err error) bool {
-	const successStatusCode = 403
-	return err != nil && checkErrorResponse(err, successStatusCode)
+func isChangeComponentSecretForbidden(err error) bool {
+	switch err.(type) {
+	case *environmentclient.ChangeComponentSecretForbidden:
+		return true
+	}
+
+	return false
+}
+
+func isGetApplicationForbidden(err error) bool {
+	switch err.(type) {
+	case *apiclient.GetApplicationForbidden:
+		return true
+	}
+
+	return false
+}
+
+func isTriggerPipelineBuildForbidden(err error) bool {
+	return err != nil && checkErrorResponse(err, 403)
 }
 
 func checkErrorResponse(err error, expectedStatusCode int) bool {

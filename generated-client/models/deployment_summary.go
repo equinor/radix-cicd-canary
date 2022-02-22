@@ -8,8 +8,10 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // DeploymentSummary DeploymentSummary describe an deployment
@@ -19,26 +21,86 @@ type DeploymentSummary struct {
 
 	// ActiveFrom Timestamp when the deployment starts (or created)
 	// Example: 2006-01-02T15:04:05Z
-	ActiveFrom string `json:"activeFrom,omitempty"`
+	// Required: true
+	ActiveFrom *string `json:"activeFrom"`
 
 	// ActiveTo Timestamp when the deployment ends
 	// Example: 2006-01-02T15:04:05Z
 	ActiveTo string `json:"activeTo,omitempty"`
+
+	// CommitID the commit ID of the branch to build
+	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
+	CommitID string `json:"commitID,omitempty"`
 
 	// Name of job creating deployment
 	CreatedByJob string `json:"createdByJob,omitempty"`
 
 	// Environment the environment this Radix application deployment runs in
 	// Example: prod
-	Environment string `json:"environment,omitempty"`
+	// Required: true
+	Environment *string `json:"environment"`
 
 	// Name the unique name of the Radix application deployment
 	// Example: radix-canary-golang-tzbqi
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
+
+	// Type of pipeline job
+	// Example: build-deploy
+	PipelineJobType string `json:"pipelineJobType,omitempty"`
+
+	// Name of the environment the deployment was promoted from
+	// Applies only for pipeline jobs of type 'promote'
+	// Example: qa
+	PromotedFromEnvironment string `json:"promotedFromEnvironment,omitempty"`
 }
 
 // Validate validates this deployment summary
 func (m *DeploymentSummary) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateActiveFrom(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEnvironment(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *DeploymentSummary) validateActiveFrom(formats strfmt.Registry) error {
+
+	if err := validate.Required("activeFrom", "body", m.ActiveFrom); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *DeploymentSummary) validateEnvironment(formats strfmt.Registry) error {
+
+	if err := validate.Required("environment", "body", m.Environment); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *DeploymentSummary) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
 	return nil
 }
 

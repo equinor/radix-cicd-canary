@@ -30,7 +30,13 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	ChangeEnvVar(params *ChangeEnvVarParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeEnvVarOK, error)
+
 	Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ComponentsOK, error)
+
+	EnvVars(params *EnvVarsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnvVarsOK, error)
+
+	GetOAuthPodLog(params *GetOAuthPodLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetOAuthPodLogOK, error)
 
 	Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*LogOK, error)
 
@@ -38,11 +44,52 @@ type ClientService interface {
 
 	RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartComponentOK, error)
 
+	RestartOAuthAuxiliaryResource(params *RestartOAuthAuxiliaryResourceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartOAuthAuxiliaryResourceOK, error)
+
 	StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartComponentOK, error)
 
 	StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopComponentOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  ChangeEnvVar updates an environment variable
+*/
+func (a *Client) ChangeEnvVar(params *ChangeEnvVarParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeEnvVarOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewChangeEnvVarParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "changeEnvVar",
+		Method:             "PATCH",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/envvars",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ChangeEnvVarReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ChangeEnvVarOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for changeEnvVar: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -81,6 +128,84 @@ func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAut
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for components: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  EnvVars gets environment variables for component
+*/
+func (a *Client) EnvVars(params *EnvVarsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnvVarsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewEnvVarsParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "envVars",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/envvars",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &EnvVarsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*EnvVarsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for envVars: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetOAuthPodLog gets logs for an oauth auxiliary resource pod
+*/
+func (a *Client) GetOAuthPodLog(params *GetOAuthPodLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetOAuthPodLogOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetOAuthPodLogParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getOAuthPodLog",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetOAuthPodLogReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetOAuthPodLogOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getOAuthPodLog: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -198,6 +323,45 @@ func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runti
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for restartComponent: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  RestartOAuthAuxiliaryResource restarts a auxiliary resource for a component
+*/
+func (a *Client) RestartOAuthAuxiliaryResource(params *RestartOAuthAuxiliaryResourceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartOAuthAuxiliaryResourceOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRestartOAuthAuxiliaryResourceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "restartOAuthAuxiliaryResource",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &RestartOAuthAuxiliaryResourceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RestartOAuthAuxiliaryResourceOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for restartOAuthAuxiliaryResource: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

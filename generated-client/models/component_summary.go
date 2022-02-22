@@ -14,13 +14,13 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// ComponentSummary ComponentSummary describe an component part of an deployment
+// ComponentSummary ComponentSummary describe a component part of a deployment
 //
 // swagger:model ComponentSummary
 type ComponentSummary struct {
 
 	// Image name
-	// Example: radixdev.azurecr.io/radix-api-server:cdgkg
+	// Example: radixdev.azurecr.io/app-server:cdgkg
 	// Required: true
 	Image *string `json:"image"`
 
