@@ -8,8 +8,10 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Secret Secret holds general information about secret
@@ -21,9 +23,18 @@ type Secret struct {
 	// Example: api
 	Component string `json:"component,omitempty"`
 
-	// Name of the secret
+	// DisplayName of the secret
+	// Example: Database password
+	DisplayName string `json:"displayName,omitempty"`
+
+	// Name of the secret or its property, related to type and resource)
 	// Example: db_password
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
+
+	// Resource of the secrets
+	// Example: volumeAbc
+	Resource string `json:"resource,omitempty"`
 
 	// Status of the secret
 	// Pending = Secret exists in Radix config, but not in cluster
@@ -31,15 +42,80 @@ type Secret struct {
 	// Orphan = Secret does not exist in Radix config, but exists in cluster
 	// Example: Consistent
 	Status string `json:"status,omitempty"`
+
+	// type
+	Type SecretType `json:"type,omitempty"`
 }
 
 // Validate validates this secret
 func (m *Secret) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this secret based on context it is used
+func (m *Secret) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Secret) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("type")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("type")
+		}
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this secret based on the context it is used
 func (m *Secret) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Secret) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := m.Type.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("type")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("type")
+		}
+		return err
+	}
+
 	return nil
 }
 

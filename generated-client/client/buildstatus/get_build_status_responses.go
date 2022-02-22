@@ -26,8 +26,8 @@ func (o *GetBuildStatusReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return result, nil
-	case 404:
-		result := NewGetBuildStatusNotFound()
+	case 500:
+		result := NewGetBuildStatusInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -58,23 +58,23 @@ func (o *GetBuildStatusOK) readResponse(response runtime.ClientResponse, consume
 	return nil
 }
 
-// NewGetBuildStatusNotFound creates a GetBuildStatusNotFound with default headers values
-func NewGetBuildStatusNotFound() *GetBuildStatusNotFound {
-	return &GetBuildStatusNotFound{}
+// NewGetBuildStatusInternalServerError creates a GetBuildStatusInternalServerError with default headers values
+func NewGetBuildStatusInternalServerError() *GetBuildStatusInternalServerError {
+	return &GetBuildStatusInternalServerError{}
 }
 
-/* GetBuildStatusNotFound describes a response with status code 404, with default header values.
+/* GetBuildStatusInternalServerError describes a response with status code 500, with default header values.
 
-Not found
+Internal Server Error
 */
-type GetBuildStatusNotFound struct {
+type GetBuildStatusInternalServerError struct {
 }
 
-func (o *GetBuildStatusNotFound) Error() string {
-	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/buildstatus][%d] getBuildStatusNotFound ", 404)
+func (o *GetBuildStatusInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/buildstatus][%d] getBuildStatusInternalServerError ", 500)
 }
 
-func (o *GetBuildStatusNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetBuildStatusInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

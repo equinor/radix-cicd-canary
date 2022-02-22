@@ -35,8 +35,26 @@ func (o *RegenerateMachineUserTokenReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewRegenerateMachineUserTokenForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewRegenerateMachineUserTokenNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 409:
+		result := NewRegenerateMachineUserTokenConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewRegenerateMachineUserTokenInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -99,6 +117,27 @@ func (o *RegenerateMachineUserTokenUnauthorized) readResponse(response runtime.C
 	return nil
 }
 
+// NewRegenerateMachineUserTokenForbidden creates a RegenerateMachineUserTokenForbidden with default headers values
+func NewRegenerateMachineUserTokenForbidden() *RegenerateMachineUserTokenForbidden {
+	return &RegenerateMachineUserTokenForbidden{}
+}
+
+/* RegenerateMachineUserTokenForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type RegenerateMachineUserTokenForbidden struct {
+}
+
+func (o *RegenerateMachineUserTokenForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-machine-user-token][%d] regenerateMachineUserTokenForbidden ", 403)
+}
+
+func (o *RegenerateMachineUserTokenForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 // NewRegenerateMachineUserTokenNotFound creates a RegenerateMachineUserTokenNotFound with default headers values
 func NewRegenerateMachineUserTokenNotFound() *RegenerateMachineUserTokenNotFound {
 	return &RegenerateMachineUserTokenNotFound{}
@@ -116,6 +155,48 @@ func (o *RegenerateMachineUserTokenNotFound) Error() string {
 }
 
 func (o *RegenerateMachineUserTokenNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewRegenerateMachineUserTokenConflict creates a RegenerateMachineUserTokenConflict with default headers values
+func NewRegenerateMachineUserTokenConflict() *RegenerateMachineUserTokenConflict {
+	return &RegenerateMachineUserTokenConflict{}
+}
+
+/* RegenerateMachineUserTokenConflict describes a response with status code 409, with default header values.
+
+Conflict
+*/
+type RegenerateMachineUserTokenConflict struct {
+}
+
+func (o *RegenerateMachineUserTokenConflict) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-machine-user-token][%d] regenerateMachineUserTokenConflict ", 409)
+}
+
+func (o *RegenerateMachineUserTokenConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewRegenerateMachineUserTokenInternalServerError creates a RegenerateMachineUserTokenInternalServerError with default headers values
+func NewRegenerateMachineUserTokenInternalServerError() *RegenerateMachineUserTokenInternalServerError {
+	return &RegenerateMachineUserTokenInternalServerError{}
+}
+
+/* RegenerateMachineUserTokenInternalServerError describes a response with status code 500, with default header values.
+
+Internal server error
+*/
+type RegenerateMachineUserTokenInternalServerError struct {
+}
+
+func (o *RegenerateMachineUserTokenInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-machine-user-token][%d] regenerateMachineUserTokenInternalServerError ", 500)
+}
+
+func (o *RegenerateMachineUserTokenInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

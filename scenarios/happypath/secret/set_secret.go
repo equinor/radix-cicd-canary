@@ -21,7 +21,7 @@ func Set(env env.Env, suiteName string) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := environmentclient.NewChangeEnvironmentComponentSecretParams().
+	params := environmentclient.NewChangeComponentSecretParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(config.App2Name).
@@ -36,9 +36,9 @@ func Set(env env.Env, suiteName string) (bool, error) {
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetEnvironmentClient(env)
 
-	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
+	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		logger.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
+		logger.Errorf("Error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
 	}
 
 	return err == nil, err
