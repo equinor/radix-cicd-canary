@@ -7,9 +7,9 @@ image:
   pullPolicy: Always
 
 service:
-  # annotations: {}
   type: ClusterIP
   internalPort: 5000
+  annotations: {}
 
 impersonate:
   user: t_iknu@equinor.com
