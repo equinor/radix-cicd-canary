@@ -32,8 +32,26 @@ func (o *IsDeployKeyValidReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewIsDeployKeyValidForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewIsDeployKeyValidNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 409:
+		result := NewIsDeployKeyValidConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewIsDeployKeyValidInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -85,6 +103,27 @@ func (o *IsDeployKeyValidUnauthorized) readResponse(response runtime.ClientRespo
 	return nil
 }
 
+// NewIsDeployKeyValidForbidden creates a IsDeployKeyValidForbidden with default headers values
+func NewIsDeployKeyValidForbidden() *IsDeployKeyValidForbidden {
+	return &IsDeployKeyValidForbidden{}
+}
+
+/* IsDeployKeyValidForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type IsDeployKeyValidForbidden struct {
+}
+
+func (o *IsDeployKeyValidForbidden) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deploykey-valid][%d] isDeployKeyValidForbidden ", 403)
+}
+
+func (o *IsDeployKeyValidForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 // NewIsDeployKeyValidNotFound creates a IsDeployKeyValidNotFound with default headers values
 func NewIsDeployKeyValidNotFound() *IsDeployKeyValidNotFound {
 	return &IsDeployKeyValidNotFound{}
@@ -102,6 +141,48 @@ func (o *IsDeployKeyValidNotFound) Error() string {
 }
 
 func (o *IsDeployKeyValidNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewIsDeployKeyValidConflict creates a IsDeployKeyValidConflict with default headers values
+func NewIsDeployKeyValidConflict() *IsDeployKeyValidConflict {
+	return &IsDeployKeyValidConflict{}
+}
+
+/* IsDeployKeyValidConflict describes a response with status code 409, with default header values.
+
+Conflict
+*/
+type IsDeployKeyValidConflict struct {
+}
+
+func (o *IsDeployKeyValidConflict) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deploykey-valid][%d] isDeployKeyValidConflict ", 409)
+}
+
+func (o *IsDeployKeyValidConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewIsDeployKeyValidInternalServerError creates a IsDeployKeyValidInternalServerError with default headers values
+func NewIsDeployKeyValidInternalServerError() *IsDeployKeyValidInternalServerError {
+	return &IsDeployKeyValidInternalServerError{}
+}
+
+/* IsDeployKeyValidInternalServerError describes a response with status code 500, with default header values.
+
+Internal server error
+*/
+type IsDeployKeyValidInternalServerError struct {
+}
+
+func (o *IsDeployKeyValidInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deploykey-valid][%d] isDeployKeyValidInternalServerError ", 500)
+}
+
+func (o *IsDeployKeyValidInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

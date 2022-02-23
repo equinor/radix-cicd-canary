@@ -30,40 +30,54 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	ChangeEnvironmentComponentSecret(params *ChangeEnvironmentComponentSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeEnvironmentComponentSecretOK, error)
+	ChangeComponentSecret(params *ChangeComponentSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeComponentSecretOK, error)
 
 	CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateEnvironmentOK, error)
 
 	DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteEnvironmentOK, error)
 
+	DisableEnvironmentAlerting(params *DisableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableEnvironmentAlertingOK, error)
+
+	EnableEnvironmentAlerting(params *EnableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableEnvironmentAlertingOK, error)
+
 	GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationEnvironmentDeploymentsOK, error)
 
 	GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentOK, error)
+
+	GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentAlertingConfigOK, error)
 
 	GetEnvironmentEvents(params *GetEnvironmentEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentEventsOK, error)
 
 	GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentSummaryOK, error)
 
+	RestartEnvironment(params *RestartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartEnvironmentOK, error)
+
+	StartEnvironment(params *StartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartEnvironmentOK, error)
+
+	StopEnvironment(params *StopEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopEnvironmentOK, error)
+
+	UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEnvironmentAlertingConfigOK, error)
+
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  ChangeEnvironmentComponentSecret updates an application environment component secret
+  ChangeComponentSecret updates an application environment component secret
 */
-func (a *Client) ChangeEnvironmentComponentSecret(params *ChangeEnvironmentComponentSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeEnvironmentComponentSecretOK, error) {
+func (a *Client) ChangeComponentSecret(params *ChangeComponentSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeComponentSecretOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewChangeEnvironmentComponentSecretParams()
+		params = NewChangeComponentSecretParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "changeEnvironmentComponentSecret",
+		ID:                 "changeComponentSecret",
 		Method:             "PUT",
 		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http", "https"},
 		Params:             params,
-		Reader:             &ChangeEnvironmentComponentSecretReader{formats: a.formats},
+		Reader:             &ChangeComponentSecretReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -76,13 +90,13 @@ func (a *Client) ChangeEnvironmentComponentSecret(params *ChangeEnvironmentCompo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*ChangeEnvironmentComponentSecretOK)
+	success, ok := result.(*ChangeComponentSecretOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for changeEnvironmentComponentSecret: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for changeComponentSecret: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -165,6 +179,84 @@ func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo run
 }
 
 /*
+  DisableEnvironmentAlerting disables alerting for an environment
+*/
+func (a *Client) DisableEnvironmentAlerting(params *DisableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableEnvironmentAlertingOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDisableEnvironmentAlertingParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "disableEnvironmentAlerting",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/alerting/disable",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &DisableEnvironmentAlertingReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DisableEnvironmentAlertingOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for disableEnvironmentAlerting: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  EnableEnvironmentAlerting enables alerting for an environment
+*/
+func (a *Client) EnableEnvironmentAlerting(params *EnableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableEnvironmentAlertingOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewEnableEnvironmentAlertingParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "enableEnvironmentAlerting",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/alerting/enable",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &EnableEnvironmentAlertingReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*EnableEnvironmentAlertingOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for enableEnvironmentAlerting: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   GetApplicationEnvironmentDeployments lists the application environment deployments
 */
 func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationEnvironmentDeploymentsOK, error) {
@@ -243,6 +335,45 @@ func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.C
 }
 
 /*
+  GetEnvironmentAlertingConfig gets alerts configuration for an environment
+*/
+func (a *Client) GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentAlertingConfigOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetEnvironmentAlertingConfigParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getEnvironmentAlertingConfig",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/environments/{envName}/alerting",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetEnvironmentAlertingConfigReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetEnvironmentAlertingConfigOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getEnvironmentAlertingConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   GetEnvironmentEvents lists events for an application environment
 */
 func (a *Client) GetEnvironmentEvents(params *GetEnvironmentEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentEventsOK, error) {
@@ -317,6 +448,162 @@ func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, auth
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getEnvironmentSummary: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  RestartEnvironment restarts all components in the environment stops all running components in the environment pulls new images from image hub in radix configuration starts all components in the environment again using up to date image
+*/
+func (a *Client) RestartEnvironment(params *RestartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartEnvironmentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRestartEnvironmentParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "restartEnvironment",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/restart",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &RestartEnvironmentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RestartEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for restartEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  StartEnvironment starts all components in the environment
+*/
+func (a *Client) StartEnvironment(params *StartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartEnvironmentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStartEnvironmentParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "startEnvironment",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/start",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &StartEnvironmentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*StartEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for startEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  StopEnvironment stops all components in the environment
+*/
+func (a *Client) StopEnvironment(params *StopEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopEnvironmentOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewStopEnvironmentParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "stopEnvironment",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/stop",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &StopEnvironmentReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*StopEnvironmentOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for stopEnvironment: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  UpdateEnvironmentAlertingConfig updates alerts configuration for an environment
+*/
+func (a *Client) UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEnvironmentAlertingConfigOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpdateEnvironmentAlertingConfigParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "updateEnvironmentAlertingConfig",
+		Method:             "PUT",
+		PathPattern:        "/applications/{appName}/environments/{envName}/alerting",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &UpdateEnvironmentAlertingConfigReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*UpdateEnvironmentAlertingConfigOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for updateEnvironmentAlertingConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

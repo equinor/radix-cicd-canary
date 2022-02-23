@@ -35,8 +35,26 @@ func (o *GetApplicationReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewGetApplicationForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewGetApplicationNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 409:
+		result := NewGetApplicationConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewGetApplicationInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -99,6 +117,27 @@ func (o *GetApplicationUnauthorized) readResponse(response runtime.ClientRespons
 	return nil
 }
 
+// NewGetApplicationForbidden creates a GetApplicationForbidden with default headers values
+func NewGetApplicationForbidden() *GetApplicationForbidden {
+	return &GetApplicationForbidden{}
+}
+
+/* GetApplicationForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type GetApplicationForbidden struct {
+}
+
+func (o *GetApplicationForbidden) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationForbidden ", 403)
+}
+
+func (o *GetApplicationForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 // NewGetApplicationNotFound creates a GetApplicationNotFound with default headers values
 func NewGetApplicationNotFound() *GetApplicationNotFound {
 	return &GetApplicationNotFound{}
@@ -116,6 +155,48 @@ func (o *GetApplicationNotFound) Error() string {
 }
 
 func (o *GetApplicationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewGetApplicationConflict creates a GetApplicationConflict with default headers values
+func NewGetApplicationConflict() *GetApplicationConflict {
+	return &GetApplicationConflict{}
+}
+
+/* GetApplicationConflict describes a response with status code 409, with default header values.
+
+Conflict
+*/
+type GetApplicationConflict struct {
+}
+
+func (o *GetApplicationConflict) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationConflict ", 409)
+}
+
+func (o *GetApplicationConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewGetApplicationInternalServerError creates a GetApplicationInternalServerError with default headers values
+func NewGetApplicationInternalServerError() *GetApplicationInternalServerError {
+	return &GetApplicationInternalServerError{}
+}
+
+/* GetApplicationInternalServerError describes a response with status code 500, with default header values.
+
+Internal server error
+*/
+type GetApplicationInternalServerError struct {
+}
+
+func (o *GetApplicationInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationInternalServerError ", 500)
+}
+
+func (o *GetApplicationInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

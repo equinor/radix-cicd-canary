@@ -29,6 +29,10 @@ type ScheduledJobSummary struct {
 	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
 
+	// Status message, if any, of the job
+	// Example: \"Error occurred\
+	Message string `json:"message,omitempty"`
+
 	// Name of the scheduled job
 	// Example: job-component-20181029135644-algpv-6hznh
 	Name string `json:"name,omitempty"`
@@ -78,6 +82,8 @@ func (m *ScheduledJobSummary) validateReplicaList(formats strfmt.Registry) error
 			if err := m.ReplicaList[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -164,6 +170,8 @@ func (m *ScheduledJobSummary) contextValidateReplicaList(ctx context.Context, fo
 			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

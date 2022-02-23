@@ -70,6 +70,8 @@ func (m *Deployment) validateComponents(formats strfmt.Registry) error {
 			if err := m.Components[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -102,6 +104,8 @@ func (m *Deployment) contextValidateComponents(ctx context.Context, formats strf
 			if err := m.Components[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

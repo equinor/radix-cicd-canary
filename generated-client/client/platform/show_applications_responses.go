@@ -35,8 +35,26 @@ func (o *ShowApplicationsReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewShowApplicationsForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewShowApplicationsNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 409:
+		result := NewShowApplicationsConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewShowApplicationsInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -97,6 +115,27 @@ func (o *ShowApplicationsUnauthorized) readResponse(response runtime.ClientRespo
 	return nil
 }
 
+// NewShowApplicationsForbidden creates a ShowApplicationsForbidden with default headers values
+func NewShowApplicationsForbidden() *ShowApplicationsForbidden {
+	return &ShowApplicationsForbidden{}
+}
+
+/* ShowApplicationsForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type ShowApplicationsForbidden struct {
+}
+
+func (o *ShowApplicationsForbidden) Error() string {
+	return fmt.Sprintf("[GET /applications][%d] showApplicationsForbidden ", 403)
+}
+
+func (o *ShowApplicationsForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
 // NewShowApplicationsNotFound creates a ShowApplicationsNotFound with default headers values
 func NewShowApplicationsNotFound() *ShowApplicationsNotFound {
 	return &ShowApplicationsNotFound{}
@@ -114,6 +153,48 @@ func (o *ShowApplicationsNotFound) Error() string {
 }
 
 func (o *ShowApplicationsNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewShowApplicationsConflict creates a ShowApplicationsConflict with default headers values
+func NewShowApplicationsConflict() *ShowApplicationsConflict {
+	return &ShowApplicationsConflict{}
+}
+
+/* ShowApplicationsConflict describes a response with status code 409, with default header values.
+
+Conflict
+*/
+type ShowApplicationsConflict struct {
+}
+
+func (o *ShowApplicationsConflict) Error() string {
+	return fmt.Sprintf("[GET /applications][%d] showApplicationsConflict ", 409)
+}
+
+func (o *ShowApplicationsConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewShowApplicationsInternalServerError creates a ShowApplicationsInternalServerError with default headers values
+func NewShowApplicationsInternalServerError() *ShowApplicationsInternalServerError {
+	return &ShowApplicationsInternalServerError{}
+}
+
+/* ShowApplicationsInternalServerError describes a response with status code 500, with default header values.
+
+Internal server error
+*/
+type ShowApplicationsInternalServerError struct {
+}
+
+func (o *ShowApplicationsInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications][%d] showApplicationsInternalServerError ", 500)
+}
+
+func (o *ShowApplicationsInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

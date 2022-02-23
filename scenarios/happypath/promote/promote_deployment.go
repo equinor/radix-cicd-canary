@@ -5,7 +5,6 @@ import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
@@ -60,7 +59,7 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) (bool, er
 	return false, nil
 }
 
-func getLastDeployment(env env.Env, environment string) (*models.DeploymentSummary, error) {
+func getLastDeployment(env envUtil.Env, environment string) (*models.DeploymentSummary, error) {
 	deployments, err := getDeployments(env, environment)
 	if err != nil || len(deployments) == 0 {
 		return nil, err
@@ -70,7 +69,7 @@ func getLastDeployment(env env.Env, environment string) (*models.DeploymentSumma
 	return deployments[0], nil
 }
 
-func getDeployments(env env.Env, environment string) ([]*models.DeploymentSummary, error) {
+func getDeployments(env envUtil.Env, environment string) ([]*models.DeploymentSummary, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -90,21 +89,19 @@ func getDeployments(env env.Env, environment string) ([]*models.DeploymentSummar
 	return deployments.Payload, nil
 }
 
-func promote(env env.Env, deployment *models.DeploymentSummary, from, to string) (string, error) {
+func promote(env envUtil.Env, deployment *models.DeploymentSummary, from, to string) (string, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	bodyParameters := models.PipelineParameters{
-		PipelineParametersPromote: models.PipelineParametersPromote{
-			DeploymentName:  deployment.Name,
-			FromEnvironment: from,
-			ToEnvironment:   to,
-		},
+	bodyParameters := models.PipelineParametersPromote{
+		DeploymentName:  *deployment.Name,
+		FromEnvironment: from,
+		ToEnvironment:   to,
 	}
 
 	params := applicationclient.NewTriggerPipelinePromoteParams().
 		WithAppName(config.App2Name).
-		WithPipelineParametersPromote(&bodyParameters.PipelineParametersPromote).
+		WithPipelineParametersPromote(&bodyParameters).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(env)

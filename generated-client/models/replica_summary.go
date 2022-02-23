@@ -23,6 +23,14 @@ type ReplicaSummary struct {
 	// Example: 2006-01-02T15:04:05Z
 	Created string `json:"created,omitempty"`
 
+	// The image the container is running.
+	// Example: radixdev.azurecr.io/app-server:cdgkg
+	Image string `json:"image,omitempty"`
+
+	// ImageID of the container's image.
+	// Example: radixdev.azurecr.io/app-server@sha256:d40cda01916ef63da3607c03785efabc56eb2fc2e0dab0726b1a843e9ded093f
+	ImageID string `json:"imageId,omitempty"`
+
 	// Pod name
 	// Example: server-78fc8857c4-hm76l
 	// Required: true
@@ -74,6 +82,8 @@ func (m *ReplicaSummary) validateReplicaStatus(formats strfmt.Registry) error {
 		if err := m.ReplicaStatus.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replicaStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("replicaStatus")
 			}
 			return err
 		}
@@ -102,6 +112,8 @@ func (m *ReplicaSummary) contextValidateReplicaStatus(ctx context.Context, forma
 		if err := m.ReplicaStatus.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replicaStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("replicaStatus")
 			}
 			return err
 		}

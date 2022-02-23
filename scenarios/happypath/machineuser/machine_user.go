@@ -5,17 +5,12 @@ import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/sirupsen/logrus"
-)
-
-const (
-	pipelineName = "build"
 )
 
 var logger *log.Entry
@@ -70,7 +65,7 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	return true, nil
 }
 
-func getMachineUserToken(env env.Env) (bool, *string) {
+func getMachineUserToken(env envUtil.Env) (bool, *string) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -91,7 +86,7 @@ func getMachineUserToken(env env.Env) (bool, *string) {
 	return true, tokenResponse.Payload.Token
 }
 
-func patchMachineUser(env env.Env, enabled bool) error {
+func patchMachineUser(env envUtil.Env, enabled bool) error {
 	log.Debugf("Set MachineUser to %v", enabled)
 	patchRequest := models.ApplicationPatchRequest{
 		MachineUser: &enabled,
@@ -112,19 +107,19 @@ func patchMachineUser(env env.Env, enabled bool) error {
 	return nil
 }
 
-func hasNoAccess(env env.Env, machineUserToken string) (bool, interface{}) {
+func hasNoAccess(env envUtil.Env, machineUserToken string) (bool, interface{}) {
 	return hasProperAccess(env, machineUserToken, false), nil
 }
 
-func hasAccess(env env.Env, machineUserToken string) (bool, interface{}) {
+func hasAccess(env envUtil.Env, machineUserToken string) (bool, interface{}) {
 	return hasProperAccess(env, machineUserToken, true), nil
 }
 
-func hasProperAccess(env env.Env, machineUserToken string, properAccess bool) bool {
+func hasProperAccess(env envUtil.Env, machineUserToken string, properAccess bool) bool {
 	accessToApplication := hasAccessToApplication(env, config.App2Name, machineUserToken)
 
 	err := buildApp(env, machineUserToken)
-	accessToBuild := !givesAccessError(err)
+	accessToBuild := !isTriggerPipelineBuildUnauthorized(err)
 
 	err = setSecret(env, machineUserToken)
 	accessToSecret := !isSetSecretUnauthorizedError(err)
@@ -137,9 +132,9 @@ func hasProperAccess(env env.Env, machineUserToken string, properAccess bool) bo
 	return hasProperAccess
 }
 
-func hasAccessToApplication(env env.Env, appName, machineUserToken string) bool {
+func hasAccessToApplication(env envUtil.Env, appName, machineUserToken string) bool {
 	_, err := getApplication(env, appName, machineUserToken)
-	return !isGetApplicationUnauthorized(err) && !givesAccessError(err)
+	return !isGetApplicationUnauthorized(err) && !isGetApplicationForbidden(err)
 }
 
 func isGetApplicationUnauthorized(err error) bool {
@@ -151,14 +146,14 @@ func isGetApplicationUnauthorized(err error) bool {
 }
 
 func isSetSecretUnauthorizedError(err error) bool {
-	if _, ok := err.(*environmentclient.ChangeEnvironmentComponentSecretUnauthorized); ok {
+	if _, ok := err.(*environmentclient.ChangeComponentSecretUnauthorized); ok {
 		return true
 	}
 
 	return false
 }
 
-func getApplication(env env.Env, appName, machineUserToken string) (*models.Application, error) {
+func getApplication(env envUtil.Env, appName, machineUserToken string) (*models.Application, error) {
 	params := apiclient.NewGetApplicationParams().
 		WithAppName(appName)
 
@@ -173,16 +168,14 @@ func getApplication(env env.Env, appName, machineUserToken string) (*models.Appl
 	return application.Payload, nil
 }
 
-func buildApp(env env.Env, machineUserToken string) error {
-	bodyParameters := models.PipelineParameters{
-		PipelineParametersBuild: models.PipelineParametersBuild{
-			Branch: config.App2BranchToBuildFrom,
-		},
+func buildApp(env envUtil.Env, machineUserToken string) error {
+	bodyParameters := models.PipelineParametersBuild{
+		Branch: config.App2BranchToBuildFrom,
 	}
 
 	params := apiclient.NewTriggerPipelineBuildParams().
 		WithAppName(config.App2Name).
-		WithPipelineParametersBuild(&bodyParameters.PipelineParametersBuild)
+		WithPipelineParametersBuild(&bodyParameters)
 
 	clientBearerToken := httptransport.BearerToken(machineUserToken)
 	client := httpUtils.GetApplicationClient(env)
@@ -195,8 +188,8 @@ func buildApp(env env.Env, machineUserToken string) error {
 	return nil
 }
 
-func setSecret(env env.Env, machineUserToken string) error {
-	params := environmentclient.NewChangeEnvironmentComponentSecretParams().
+func setSecret(env envUtil.Env, machineUserToken string) error {
+	params := environmentclient.NewChangeComponentSecretParams().
 		WithAppName(config.App2Name).
 		WithEnvName(config.App2EnvironmentName).
 		WithComponentName(config.App2Component2Name).
@@ -209,19 +202,26 @@ func setSecret(env env.Env, machineUserToken string) error {
 	clientBearerToken := httptransport.BearerToken(machineUserToken)
 	client := httpUtils.GetEnvironmentClient(env)
 
-	_, err := client.ChangeEnvironmentComponentSecret(params, clientBearerToken)
+	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		logger.Errorf("Error calling ChangeEnvironmentComponentSecret for application %s: %v", config.App2Name, err)
+		logger.Errorf("Error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
 		return err
 	}
 
 	return nil
 }
 
-func givesAccessError(err error) bool {
-	const unauthorizedStatus = 401
-	const forbiddenStatus = 403
-	return err != nil && (checkErrorResponse(err, unauthorizedStatus) || checkErrorResponse(err, forbiddenStatus))
+func isTriggerPipelineBuildUnauthorized(err error) bool {
+	return err != nil && checkErrorResponse(err, 401)
+}
+
+func isGetApplicationForbidden(err error) bool {
+	switch err.(type) {
+	case *apiclient.GetApplicationForbidden:
+		return true
+	}
+
+	return false
 }
 
 func checkErrorResponse(err error, expectedStatusCode int) bool {

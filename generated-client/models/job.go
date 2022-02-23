@@ -113,6 +113,8 @@ func (m *Job) validateComponents(formats strfmt.Registry) error {
 			if err := m.Components[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -137,6 +139,8 @@ func (m *Job) validateDeployments(formats strfmt.Registry) error {
 			if err := m.Deployments[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -254,6 +258,8 @@ func (m *Job) validateSteps(formats strfmt.Registry) error {
 			if err := m.Steps[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("steps" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("steps" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -294,6 +300,8 @@ func (m *Job) contextValidateComponents(ctx context.Context, formats strfmt.Regi
 			if err := m.Components[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -312,6 +320,8 @@ func (m *Job) contextValidateDeployments(ctx context.Context, formats strfmt.Reg
 			if err := m.Deployments[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -330,6 +340,8 @@ func (m *Job) contextValidateSteps(ctx context.Context, formats strfmt.Registry)
 			if err := m.Steps[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("steps" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("steps" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
