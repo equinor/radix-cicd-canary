@@ -89,8 +89,9 @@ func getPrivateImageHubComponentStatus(env envUtil.Env) (string, error) {
 	}
 	for _, comp := range envQA.ActiveDeployment.Components {
 		if *comp.Name == config.App2ComponentPrivateImageHubName && len(comp.ReplicaList) > 0 {
-			replica := comp.ReplicaList[0]
-			return *replica.ReplicaStatus.Status, nil
+			if replica := comp.ReplicaList[0]; replica != nil {
+				return *replica.ReplicaStatus.Status, nil
+			}
 		}
 	}
 	return "", nil
