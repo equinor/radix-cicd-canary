@@ -16,3 +16,4 @@ vendor.orig/
 bin/
 rootfs/
 .vscode/
+.idea
