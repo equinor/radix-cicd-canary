@@ -17,10 +17,12 @@ import (
 var logger *log.Entry
 
 const (
-	Secret1      = "SECRET_1"
-	Secret2      = "SECRET_2"
-	Secret1Value = "SECRET_1_VALUE"
-	Secret2Value = "SECRET_2_VALUE"
+	Secret1            = "SECRET_1"
+	Secret2            = "SECRET_2"
+	Secret1Value       = "SECRET_1_VALUE"
+	Secret2Value       = "SECRET_2_VALUE"
+	Secret1ValueSha256 = "7cb08032ffb66e835ceeb10b849a8728440b0631ccb11f652b807534df26275e"
+	Secret2ValueSha256 = "087f38fb04a52265ad5394fc20a6bfaa78c44bd58097dbcb690031a85b6e8313"
 )
 
 type expectedStep struct {
@@ -113,7 +115,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	stepLog := job.GetLogForStep(env, config.App2Name, jobName, "build-app")
-	if !strings.Contains(stepLog, Secret1Value) || !strings.Contains(stepLog, Secret2Value) {
+	//Validate if Dockerfile build output contains SHA256 hash of build secrets:
+	//https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
+	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
 		logger.Error("Build secrets are not contained in build log")
 		return false, nil
 	}
