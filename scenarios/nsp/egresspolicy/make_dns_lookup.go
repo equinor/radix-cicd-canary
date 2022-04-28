@@ -32,9 +32,8 @@ func lookupDns(dnsUrl string, suiteName string) (bool, error) {
 
 	if dnsErr != nil {
 		return false, dnsErr
-	} else {
-		return dnsResponse.StatusCode == 200, dnsErr
-	}
+	} 
+	return dnsResponse.StatusCode == 200, nil
 }
 
 // InternalDnsSuccess is a function after a call to Lookup succeeds
