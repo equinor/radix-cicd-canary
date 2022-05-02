@@ -1,7 +1,7 @@
 package deployonly
 
 import (
-	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/happypath"
+	"github.com/equinor/radix-cicd-canary/metrics"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/alias"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/delete"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/deploy"

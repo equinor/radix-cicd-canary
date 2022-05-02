@@ -2,7 +2,8 @@ package service
 
 import (
 	"errors"
-	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
+	"github.com/equinor/radix-cicd-canary/metrics"
+	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
@@ -31,12 +32,16 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 
 // Success is a function after a call to Reach succeeds
 func Success(testName string) {
-	metrics.AddServiceUnreachable()
+	nspMetrics.AddServiceUnreachable()
+	metrics.AddTestSuccess(testName)
+	metrics.AddTestNoError(testName)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // Fail is a function after a call to Reach failed
 func Fail(testName string) {
-	metrics.AddServiceReachable()
+	nspMetrics.AddServiceReachable()
+	metrics.AddTestNoSuccess(testName)
+	metrics.AddTestError(testName)
 	logger.Infof("Test %s: FAIL", testName)
 }
