@@ -2,7 +2,6 @@ package ingress
 
 import (
 	"fmt"
-	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -38,15 +37,15 @@ func getIngressForRadixCanaryApp(clusterFQDN string) string {
 // Success is a function after a call to Reach succeeds
 func Success(testName string) {
 	nspMetrics.AddIngressReachable()
-	metrics.AddTestSuccess(testName)
-	metrics.AddTestNoError(testName)
+	nspMetrics.AddTestSuccess(testName)
+	nspMetrics.AddTestNoError(testName)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // Fail is a function after a call to Reach failed
 func Fail(testName string) {
 	nspMetrics.AddIngressUnreachable()
-	metrics.AddTestNoSuccess(testName)
-	metrics.AddTestError(testName)
+	nspMetrics.AddTestNoSuccess(testName)
+	nspMetrics.AddTestError(testName)
 	logger.Infof("Test %s: FAIL", testName)
 }
