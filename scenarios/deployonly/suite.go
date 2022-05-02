@@ -1,7 +1,7 @@
 package deployonly
 
 import (
-	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/happypath"
+	metrics2 "github.com/equinor/radix-cicd-canary/metrics"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/alias"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/delete"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/deploy"
@@ -59,11 +59,11 @@ func TestSuite() test.Suite {
 }
 
 func successFunction(testName string) {
-	metrics.AddTestSuccess(testName)
-	metrics.AddTestNoError(testName)
+	metrics2.AddTestSuccess(testName)
+	metrics2.AddTestNoError(testName)
 }
 
 func failFunction(testName string) {
-	metrics.AddTestNoSuccess(testName)
-	metrics.AddTestError(testName)
+	metrics2.AddTestNoSuccess(testName)
+	metrics2.AddTestError(testName)
 }

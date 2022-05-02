@@ -2,7 +2,6 @@ package egresspolicy
 
 import (
 	"fmt"
-	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
@@ -32,32 +31,8 @@ func lookupDns(dnsUrl string, suiteName string) (bool, error) {
 
 	if dnsErr != nil {
 		return false, dnsErr
-	} 
+	}
 	return dnsResponse.StatusCode == 200, nil
-}
-
-// InternalDnsSuccess is a function after a call to Lookup succeeds
-func InternalDnsSuccess(testName string) {
-	metrics.AddInternalDnsIsHealthy()
-	logger.Infof("Test %s: SUCCESS", testName)
-}
-
-// InternalDnsFail is a function after a call to Lookup failed
-func InternalDnsFail(testName string) {
-	metrics.AddInternalDnsIsUnhealthy()
-	logger.Infof("Test %s: FAIL", testName)
-}
-
-// PublicDnsSuccess is a function after a call to Lookup succeeds
-func PublicDnsSuccess(testName string) {
-	metrics.AddPublicDnsIsHealthy()
-	logger.Infof("Test %s: SUCCESS", testName)
-}
-
-// PublicDnsFail is a function after a call to Lookup failed
-func PublicDnsFail(testName string) {
-	metrics.AddPublicDnsIsUnhealthy()
-	logger.Infof("Test %s: FAIL", testName)
 }
 
 func getIngressForRadixCanaryApp(clusterFQDN string) string {

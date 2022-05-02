@@ -1,7 +1,7 @@
 package happypath
 
 import (
-	metrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/happypath"
+	"github.com/equinor/radix-cicd-canary/metrics"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/adgroup"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/alias"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
