@@ -2,6 +2,7 @@ package egresspolicy
 
 import (
 	"fmt"
+	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -44,31 +45,31 @@ func getIngressForRadixCanaryApp(clusterFQDN string) string {
 // InternalDnsSuccess is a function after a call to Lookup succeeds
 func InternalDnsSuccess(testName string) {
 	nspMetrics.AddInternalDnsIsHealthy()
-	nspMetrics.AddTestSuccess(testName)
-	nspMetrics.AddTestNoError(testName)
+	metrics.AddTestSuccess(testName, nspMetrics.Success)
+	metrics.AddTestNoError(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // InternalDnsFail is a function after a call to Lookup failed
 func InternalDnsFail(testName string) {
 	nspMetrics.AddInternalDnsIsUnhealthy()
-	nspMetrics.AddTestNoSuccess(testName)
-	nspMetrics.AddTestError(testName)
+	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
+	metrics.AddTestError(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }
 
 // PublicDnsSuccess is a function after a call to Lookup succeeds
 func PublicDnsSuccess(testName string) {
 	nspMetrics.AddPublicDnsIsHealthy()
-	nspMetrics.AddTestSuccess(testName)
-	nspMetrics.AddTestNoError(testName)
+	metrics.AddTestSuccess(testName, nspMetrics.Success)
+	metrics.AddTestNoError(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // PublicDnsFail is a function after a call to Lookup failed
 func PublicDnsFail(testName string) {
 	nspMetrics.AddPublicDnsIsUnhealthy()
-	nspMetrics.AddTestNoSuccess(testName)
-	nspMetrics.AddTestError(testName)
+	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
+	metrics.AddTestError(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }

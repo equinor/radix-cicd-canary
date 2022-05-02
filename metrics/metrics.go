@@ -35,14 +35,14 @@ func AddTestDuration(testname string, elapsed time.Duration) {
 }
 
 var (
-	errors = promauto.NewCounterVec(
+	Errors = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "radix_test_errors",
 			Help: "Test errors",
 		},
 		[]string{"testName"},
 	)
-	success = promauto.NewCounterVec(
+	Success = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "radix_test_success",
 			Help: "Test success",
@@ -52,21 +52,21 @@ var (
 )
 
 // AddTestSuccess adds 1 to the success counter metrics for provided test
-func AddTestSuccess(testname string) {
-	success.With(prometheus.Labels{"testName": testname}).Add(1)
+func AddTestSuccess(testname string, vec *prometheus.CounterVec) {
+	vec.With(prometheus.Labels{"testName": testname}).Add(1)
 }
 
 // AddTestNoSuccess adds 0 to the success counter metrics for provided test
-func AddTestNoSuccess(testname string) {
-	success.With(prometheus.Labels{"testName": testname}).Add(0)
+func AddTestNoSuccess(testname string, vec *prometheus.CounterVec) {
+	vec.With(prometheus.Labels{"testName": testname}).Add(0)
 }
 
 // AddTestError adds 1 to the errors counter metrics for provided test
-func AddTestError(testname string) {
-	errors.With(prometheus.Labels{"testName": testname}).Add(1)
+func AddTestError(testname string, vec *prometheus.CounterVec) {
+	vec.With(prometheus.Labels{"testName": testname}).Add(1)
 }
 
 // AddTestNoError adds 0 to the errors counter metrics for provided test
-func AddTestNoError(testname string) {
-	errors.With(prometheus.Labels{"testName": testname}).Add(0)
+func AddTestNoError(testname string, vec *prometheus.CounterVec) {
+	vec.With(prometheus.Labels{"testName": testname}).Add(0)
 }
