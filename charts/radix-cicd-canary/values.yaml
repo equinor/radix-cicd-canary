@@ -11,6 +11,11 @@ service:
   internalPort: 5000
   annotations: {}
 
+serviceAccount:
+  # The name of the service account to use.
+  # If not set, a name is generated using the fullname template
+  name: ""
+
 impersonate:
   user: t_iknu@equinor.com
 
