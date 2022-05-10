@@ -27,6 +27,18 @@ type PipelineParametersBuild struct {
 	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
 	CommitID string `json:"commitID,omitempty"`
 
+	// ImageName of the component, without repository name and image-tag
+	// Example: radix-component
+	ImageName string `json:"imageName,omitempty"`
+
+	// ImageRepository of the component, without image name and image-tag
+	// Example: ghcr.io/test
+	ImageRepository string `json:"imageRepository,omitempty"`
+
+	// ImageTag of the image - if empty will use default logic
+	// Example: master-latest
+	ImageTag string `json:"imageTag,omitempty"`
+
 	// PushImage should image be pushed to container registry. Defaults pushing
 	// Example: true
 	PushImage string `json:"pushImage,omitempty"`

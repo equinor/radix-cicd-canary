@@ -16,7 +16,7 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	client := httpUtils.GetHTTPDefaultClient()
-	url := fmt.Sprintf("%s/health", getIngressForRadixCanaryApp(env.GetClusterFQDN()))
+	url := fmt.Sprintf("%s/health", env.GetGolangCanaryUrl())
 	logger.Debugf("Requesting data from %s", url)
 
 	// Run tests ingress
@@ -28,11 +28,6 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 
 	// Failed test
 	return false, err
-}
-
-func getIngressForRadixCanaryApp(clusterFQDN string) string {
-	canaryURLPrefix := "https://www-radix-canary-golang-prod"
-	return fmt.Sprintf("%s.%s", canaryURLPrefix, clusterFQDN)
 }
 
 // Success is a function after a call to Reach succeeds

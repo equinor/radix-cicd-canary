@@ -18,6 +18,10 @@ import (
 // swagger:model JobScheduleDescription
 type JobScheduleDescription struct {
 
+	// JobId Optional ID of a job
+	// Example: 'job1'
+	JobID string `json:"jobId,omitempty"`
+
 	// Payload holding json data to be mapped to component
 	// Example: {'data':'value'}
 	Payload string `json:"payload,omitempty"`

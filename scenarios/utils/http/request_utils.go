@@ -14,6 +14,7 @@ import (
 	componentAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/component"
 	deploymentAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/deployment"
 	environmentAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
+	jobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	pipelineJobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	platformAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/crypto"
@@ -110,6 +111,16 @@ func CheckResponse(resp *http.Response) (bool, error) {
 	return false, fmt.Errorf("response status code is %d", resp.StatusCode)
 }
 
+// CheckUrl Checks that a GET request to specified URL returns 200 without errors
+func CheckUrl(url string) (bool, error) {
+	log.Debugf("Sending request to %s", url)
+	response, err := http.Get(url)
+	if err != nil {
+		return false, err
+	}
+	return CheckResponse(response)
+}
+
 // GetClientBearerToken Gets bearer token in order to make call to API server
 func GetClientBearerToken(env env.Env) runtime.ClientAuthInfoWriter {
 	return httptransport.BearerToken(env.GetBearerToken())
@@ -143,6 +154,11 @@ func GetDeploymentClient(env env.Env) deploymentAPIClient.ClientService {
 // GetComponentClient Gets the Component API client
 func GetComponentClient(env env.Env) componentAPIClient.ClientService {
 	return componentAPIClient.New(getTransport(env), strfmt.Default)
+}
+
+// GetK8sJobClient Gets the K8s job API client
+func GetK8sJobClient(env env.Env) jobAPIClient.ClientService {
+	return jobAPIClient.New(getTransport(env), strfmt.Default)
 }
 
 func getTransport(env env.Env) *httptransport.Runtime {

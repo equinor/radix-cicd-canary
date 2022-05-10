@@ -13,13 +13,13 @@ var logger *log.Entry
 
 // LookupInternalDNS tests that we are able to make lookups to internal DNS
 func LookupInternalDNS(env env.Env, suiteName string) (bool, error) {
-	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", getIngressForRadixCanaryApp(env.GetClusterFQDN()))
+	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(internalDnsUrl, suiteName)
 }
 
 // LookupPublicDNS tests that we are able to make lookups to public DNS
 func LookupPublicDNS(env env.Env, suiteName string) (bool, error) {
-	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", getIngressForRadixCanaryApp(env.GetClusterFQDN()))
+	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(publicDnsUrl, suiteName)
 }
 
@@ -35,11 +35,6 @@ func lookupDns(dnsUrl string, suiteName string) (bool, error) {
 		return false, dnsErr
 	}
 	return dnsResponse.StatusCode == 200, nil
-}
-
-func getIngressForRadixCanaryApp(clusterFQDN string) string {
-	canaryURLPrefix := "https://web-radix-networkpolicy-canary-egressrulestopublicdns"
-	return fmt.Sprintf("%s.%s", canaryURLPrefix, clusterFQDN)
 }
 
 // InternalDnsSuccess is a function after a call to Lookup succeeds

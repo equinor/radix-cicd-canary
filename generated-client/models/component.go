@@ -40,9 +40,6 @@ type Component struct {
 	// Example: server-78fc8857c4-hm76l,server-78fc8857c4-asfa2
 	Replicas []string `json:"replicas"`
 
-	// Array of ScheduledJobList
-	ScheduledJobList []*ScheduledJobSummary `json:"scheduledJobList"`
-
 	// ScheduledJobPayloadPath defines the payload path, where payload for Job Scheduler will be mapped as a file. From radixconfig.yaml
 	// Example: \"/tmp/payload\
 	ScheduledJobPayloadPath string `json:"scheduledJobPayloadPath,omitempty"`
@@ -91,10 +88,6 @@ func (m *Component) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateReplicaList(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateScheduledJobList(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -186,32 +179,6 @@ func (m *Component) validateReplicaList(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Component) validateScheduledJobList(formats strfmt.Registry) error {
-	if swag.IsZero(m.ScheduledJobList) { // not required
-		return nil
-	}
-
-	for i := 0; i < len(m.ScheduledJobList); i++ {
-		if swag.IsZero(m.ScheduledJobList[i]) { // not required
-			continue
-		}
-
-		if m.ScheduledJobList[i] != nil {
-			if err := m.ScheduledJobList[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("scheduledJobList" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("scheduledJobList" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
 func (m *Component) validateType(formats strfmt.Registry) error {
 
 	if err := validate.Required("type", "body", m.Type); err != nil {
@@ -271,10 +238,6 @@ func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateScheduledJobList(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.contextValidateHorizontalScalingSummary(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -319,26 +282,6 @@ func (m *Component) contextValidateReplicaList(ctx context.Context, formats strf
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-func (m *Component) contextValidateScheduledJobList(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.ScheduledJobList); i++ {
-
-		if m.ScheduledJobList[i] != nil {
-			if err := m.ScheduledJobList[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("scheduledJobList" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("scheduledJobList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

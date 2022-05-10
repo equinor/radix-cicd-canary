@@ -20,6 +20,10 @@ import (
 // swagger:model JobStatus
 type JobStatus struct {
 
+	// BatchName Optional Batch ID of a job
+	// Example: 'batch1'
+	BatchName string `json:"batchName,omitempty"`
+
 	// Created timestamp
 	// Example: 2006-01-02T15:04:05Z
 	// Required: true
@@ -28,6 +32,10 @@ type JobStatus struct {
 	// Ended timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
+
+	// JobId Optional ID of a job
+	// Example: 'job1'
+	JobID string `json:"jobId,omitempty"`
 
 	// Status message, if any, of the job
 	// Example: \"Error occurred\
@@ -44,7 +52,7 @@ type JobStatus struct {
 
 	// Status of the job
 	// Example: Waiting
-	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
+	// Enum: [Waiting Running Succeeded Stopping Stopped Failed DeadlineExceeded]
 	Status string `json:"status,omitempty"`
 }
 
@@ -92,7 +100,7 @@ var jobStatusTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["Waiting","Running","Succeeded","Stopping","Stopped","Failed"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Waiting","Running","Succeeded","Stopping","Stopped","Failed","DeadlineExceeded"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -119,6 +127,9 @@ const (
 
 	// JobStatusStatusFailed captures enum value "Failed"
 	JobStatusStatusFailed string = "Failed"
+
+	// JobStatusStatusDeadlineExceeded captures enum value "DeadlineExceeded"
+	JobStatusStatusDeadlineExceeded string = "DeadlineExceeded"
 )
 
 // prop value enum
