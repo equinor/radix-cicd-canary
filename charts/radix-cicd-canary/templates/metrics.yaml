@@ -34,6 +34,5 @@ spec:
     protocol: TCP
     targetPort: metrics
   selector:
-    matchLabels:
-      {{- include "cicd-canary.selectorLabels" . | nindent 6 }}
+    {{- include "cicd-canary.selectorLabels" . | nindent 4 }}
   type: ClusterIP
