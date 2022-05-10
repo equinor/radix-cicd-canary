@@ -50,6 +50,10 @@ timeoutOfTest: 1200
 sleepIntervalBetweenChecks: 5
 sleepIntervalTestRuns: 300
 nspSleepInterval: 15
+nspLongSleepInterval: 600
+networkPolicyCanaryAppName: "radix-networkpolicy-canary"
+networkPolicyCanaryJobComponentName: "myjob"
+golangCanaryUrl: "https://www-radix-canary-golang-prod.radix.equinor.com"
 
 resources:
   limits:

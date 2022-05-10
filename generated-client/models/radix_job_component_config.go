@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// RadixJobComponentConfig radix job component config
+// RadixJobComponentConfig RadixJobComponentConfig holds description of RadixJobComponent
 //
 // swagger:model RadixJobComponentConfig
 type RadixJobComponentConfig struct {
