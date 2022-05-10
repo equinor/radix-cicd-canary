@@ -73,47 +73,47 @@ func getReachRadixSiteUrl(env env.Env, appEnv string) string {
 // ReachRadixSiteSuccess is a function after a call to ReachRadixSite succeeds
 func ReachRadixSiteSuccess(testName string) {
 	nspMetrics.AddRadixSiteReachable()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // ReachRadixSiteFail is a function after a call to ReachRadixSite failed
 func ReachRadixSiteFail(testName string) {
 	nspMetrics.AddRadixSiteUnreachable()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }
 
 // NotReachRadixSiteSuccess is a function after a call to NotReachRadixSite succeeds
 func NotReachRadixSiteSuccess(testName string) {
 	nspMetrics.AddNotRadixSiteReachable()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // NotReachRadixSiteFail is a function after a call to NotReachRadixSite failed
 func NotReachRadixSiteFail(testName string) {
 	nspMetrics.AddNotRadixSiteUnreachable()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }
 
 // NotReachExternalSiteSuccess is a function after a call to NotReachExternalSite failed
 func NotReachExternalSiteSuccess(testName string) {
 	nspMetrics.AddNotExternalSiteReachable()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // NotReachExternalSiteFail is a function after a call to NotReachExternalSite failed
 func NotReachExternalSiteFail(testName string) {
 	nspMetrics.AddNotExternalSiteUnreachable()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }

@@ -29,15 +29,15 @@ func ReachOauthIdp(env env.Env, suiteName string) (bool, error) {
 // ReachOauthIdpSuccess is a function after a call to ReachOauthIdp succeeds
 func ReachOauthIdpSuccess(testName string) {
 	nspMetrics.AddOauthIdpReachable()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // ReachOauthIdpFail is a function after a call to ReachOauthIdp failed
 func ReachOauthIdpFail(testName string) {
 	nspMetrics.AddOauthIdpUnreachable()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }

@@ -31,15 +31,15 @@ func GetJobList(env env.Env, suiteName string) (bool, error) {
 // GetJobListSuccess is a function after a call to GetJobList succeeds
 func GetJobListSuccess(testName string) {
 	nspMetrics.AddGetJobListSuccess()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // GetJobListFail is a function after a call to GetJobList failed
 func GetJobListFail(testName string) {
 	nspMetrics.AddGetJobListFail()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }

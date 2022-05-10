@@ -59,11 +59,11 @@ func TestSuite() test.Suite {
 }
 
 func successFunction(testName string) {
-	metrics.AddTestSuccess(testName, metrics.Success)
-	metrics.AddTestNoError(testName, metrics.Errors)
+	metrics.AddTestOne(testName, metrics.Success)
+	metrics.AddTestZero(testName, metrics.Errors)
 }
 
 func failFunction(testName string) {
-	metrics.AddTestNoSuccess(testName, metrics.Success)
-	metrics.AddTestError(testName, metrics.Errors)
+	metrics.AddTestZero(testName, metrics.Success)
+	metrics.AddTestOne(testName, metrics.Errors)
 }

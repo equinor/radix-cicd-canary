@@ -79,15 +79,15 @@ func startJobBatch(env envUtil.Env, appEnv string) (error, string) {
 // StartAndCheckJobBatchSuccess is a function after a call to Lookup succeeds
 func StartAndCheckJobBatchSuccess(testName string) {
 	nspMetrics.AddStartAndCheckJobBatchSuccess()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // StartAndCheckJobBatchFail is a function after a call to Lookup failed
 func StartAndCheckJobBatchFail(testName string) {
 	nspMetrics.AddStartAndCheckJobBatchFail()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }
