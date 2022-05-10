@@ -21,7 +21,7 @@ func ReachOauthIdp(env env.Env, suiteName string) (bool, error) {
 	}
 	_, err := client.Get(oauthCallbackUrl)
 	if err == http.ErrHandlerTimeout {
-		return false, fmt.Errorf("got no response from /oauth/callback within %d seconds. should be allowed by nsp", timeout)
+		return false, fmt.Errorf("got no response from /oauth/callback within %d seconds, which likely means oauth pod could not connect to IDP. should be allowed by nsp", timeout)
 	}
 	return true, nil
 }
