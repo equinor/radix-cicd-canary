@@ -1,26 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Chart.Name }}"
+  name: {{ template "cicd-canary.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: "{{ .Chart.Name }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "cicd-canary.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{ .Chart.Name }}"
-      release: {{ .Release.Name }}
+      {{- include "cicd-canary.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: "{{ .Chart.Name }}"
-        release: {{ .Release.Name }}
+        {{- include "cicd-canary.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccount: "{{ .Chart.Name }}"
+      serviceAccount: {{ include "cicd-canary.serviceAccountName" . }}
       automountServiceAccountToken: true
       securityContext:
         runAsNonRoot: true
