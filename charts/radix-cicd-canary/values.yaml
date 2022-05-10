@@ -1,4 +1,7 @@
 # Default values for radix-cicd-canary
+nameOverride: ""
+fullnameOverride: ""
+
 clusterFQDN: xx
 
 image:
