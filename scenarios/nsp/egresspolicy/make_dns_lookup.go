@@ -40,31 +40,31 @@ func lookupDns(dnsUrl string, suiteName string) (bool, error) {
 // InternalDnsSuccess is a function after a call to Lookup succeeds
 func InternalDnsSuccess(testName string) {
 	nspMetrics.AddInternalDnsIsHealthy()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // InternalDnsFail is a function after a call to Lookup failed
 func InternalDnsFail(testName string) {
 	nspMetrics.AddInternalDnsIsUnhealthy()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }
 
 // PublicDnsSuccess is a function after a call to Lookup succeeds
 func PublicDnsSuccess(testName string) {
 	nspMetrics.AddPublicDnsIsHealthy()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // PublicDnsFail is a function after a call to Lookup failed
 func PublicDnsFail(testName string) {
 	nspMetrics.AddPublicDnsIsUnhealthy()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }

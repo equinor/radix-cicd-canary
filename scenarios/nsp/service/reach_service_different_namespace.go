@@ -33,15 +33,15 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 // Success is a function after a call to Reach succeeds
 func Success(testName string) {
 	nspMetrics.AddServiceUnreachable()
-	metrics.AddTestSuccess(testName, nspMetrics.Success)
-	metrics.AddTestNoError(testName, nspMetrics.Errors)
+	metrics.AddTestOne(testName, nspMetrics.Success)
+	metrics.AddTestZero(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: SUCCESS", testName)
 }
 
 // Fail is a function after a call to Reach failed
 func Fail(testName string) {
 	nspMetrics.AddServiceReachable()
-	metrics.AddTestNoSuccess(testName, nspMetrics.Success)
-	metrics.AddTestError(testName, nspMetrics.Errors)
+	metrics.AddTestZero(testName, nspMetrics.Success)
+	metrics.AddTestOne(testName, nspMetrics.Errors)
 	logger.Infof("Test %s: FAIL", testName)
 }

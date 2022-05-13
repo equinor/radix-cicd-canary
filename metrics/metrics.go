@@ -51,22 +51,12 @@ var (
 	)
 )
 
-// AddTestSuccess adds 1 to the success counter metrics for provided test
-func AddTestSuccess(testname string, vec *prometheus.CounterVec) {
+// AddTestOne adds 1 to the provided counter metrics for provided test
+func AddTestOne(testname string, vec *prometheus.CounterVec) {
 	vec.With(prometheus.Labels{"testName": testname}).Add(1)
 }
 
-// AddTestNoSuccess adds 0 to the success counter metrics for provided test
-func AddTestNoSuccess(testname string, vec *prometheus.CounterVec) {
-	vec.With(prometheus.Labels{"testName": testname}).Add(0)
-}
-
-// AddTestError adds 1 to the errors counter metrics for provided test
-func AddTestError(testname string, vec *prometheus.CounterVec) {
-	vec.With(prometheus.Labels{"testName": testname}).Add(1)
-}
-
-// AddTestNoError adds 0 to the errors counter metrics for provided test
-func AddTestNoError(testname string, vec *prometheus.CounterVec) {
+// AddTestZero adds 0 to the provided counter metrics for provided test
+func AddTestZero(testname string, vec *prometheus.CounterVec) {
 	vec.With(prometheus.Labels{"testName": testname}).Add(0)
 }
