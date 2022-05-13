@@ -29,6 +29,9 @@ deployKeyCanary4:
 privateImageHub:
   password: xx
 
+networkPolicyCanary:
+  password: xx
+
 clusterType: development
 
 radixGroups:

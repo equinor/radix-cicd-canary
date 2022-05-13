@@ -29,3 +29,8 @@ data:
   sleepIntervalTestRuns: {{ .Values.sleepIntervalTestRuns | quote }}
   nspSleepInterval: {{ .Values.nspSleepInterval | quote }}
   privateImageHubPassword: {{ .Values.privateImageHub.password }}
+  nspLongSleepInterval: {{ .Values.nspLongSleepInterval | quote }}
+  networkPolicyCanaryAppName: {{ .Values.networkPolicyCanaryAppName }}
+  networkPolicyCanaryJobComponentName: {{ .Values.networkPolicyCanaryJobComponentName }}
+  golangCanaryUrl: {{ .Values.golangCanaryUrl }}
+  networkPolicyCanaryPassword: {{ .Values.networkPolicyCanary.password }}
