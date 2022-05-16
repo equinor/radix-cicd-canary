@@ -86,7 +86,7 @@ type GetApplicationEnvironmentDeploymentsParams struct {
 
 	/* Latest.
 
-	   indicator to allow only listing latest
+	   indicator to allow only listing the latest
 	*/
 	Latest *bool
 

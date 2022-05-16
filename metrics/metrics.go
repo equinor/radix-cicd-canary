@@ -33,3 +33,30 @@ func AddScenarioDuration(scenario string, elapsed time.Duration) {
 func AddTestDuration(testname string, elapsed time.Duration) {
 	testDurations.With(prometheus.Labels{"testName": testname}).Set(elapsed.Seconds())
 }
+
+var (
+	Errors = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "radix_test_errors",
+			Help: "Test errors",
+		},
+		[]string{"testName"},
+	)
+	Success = promauto.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "radix_test_success",
+			Help: "Test success",
+		},
+		[]string{"testName"},
+	)
+)
+
+// AddTestOne adds 1 to the provided counter metrics for provided test
+func AddTestOne(testname string, vec *prometheus.CounterVec) {
+	vec.With(prometheus.Labels{"testName": testname}).Add(1)
+}
+
+// AddTestZero adds 0 to the provided counter metrics for provided test
+func AddTestZero(testname string, vec *prometheus.CounterVec) {
+	vec.With(prometheus.Labels{"testName": testname}).Add(0)
+}

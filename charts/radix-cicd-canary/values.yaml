@@ -1,4 +1,7 @@
 # Default values for radix-cicd-canary
+nameOverride: ""
+fullnameOverride: ""
+
 clusterFQDN: xx
 
 image:
@@ -10,6 +13,11 @@ service:
   type: ClusterIP
   internalPort: 5000
   annotations: {}
+
+serviceAccount:
+  # The name of the service account to use.
+  # If not set, a name is generated using the fullname template
+  name: ""
 
 impersonate:
   user: t_iknu@equinor.com
@@ -42,6 +50,10 @@ timeoutOfTest: 1200
 sleepIntervalBetweenChecks: 5
 sleepIntervalTestRuns: 300
 nspSleepInterval: 15
+nspLongSleepInterval: 600
+networkPolicyCanaryAppName: "radix-networkpolicy-canary"
+networkPolicyCanaryJobComponentName: "myjob"
+golangCanaryUrl: "https://www-radix-canary-golang-prod.radix.equinor.com"
 
 resources:
   limits:

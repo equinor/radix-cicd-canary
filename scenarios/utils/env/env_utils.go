@@ -16,54 +16,62 @@ import (
 )
 
 const (
-	namespace                        = "radix-cicd-canary"
-	configMapName                    = "radix-cicd-canary"
-	impersonateUserConfig            = "impersonateUser"
-	impersonateGroupConfig           = "impersonateGroup"
-	clusterFQDNConfig                = "clusterFqdn"
-	radixAPIPrefixConfig             = "radixApiPrefix"
-	radixWebhookPrefixConfig         = "radixWebhookPrefix"
-	publicKeyConfig                  = "publicKey"
-	privateKeyBase64Config           = "privateKeyBase64"
-	publicKeyCanary3Config           = "publicKeyCanary3"
-	privateKeyCanary3Base64Config    = "privateKeyCanary3Base64"
-	publicKeyCanary4Config           = "publicKeyCanary4"
-	privateKeyCanary4Base64Config    = "privateKeyCanary4Base64"
-	timeoutOfTestConfig              = "timeoutOfTest"
-	sleepIntervalBetweenChecksConfig = "sleepIntervalBetweenChecks"
-	sleepIntervalTestRunsConfig      = "sleepIntervalTestRuns"
-	nspSleepIntervalConfig           = "nspSleepInterval"
-	privateImageHubPasswordConfig    = "privateImageHubPassword"
-	envVarSuiteList                  = "SUITE_LIST"
-	envVarIsBlacklist                = "SUITE_LIST_IS_BLACKLIST"
-	envVarLogLevel                   = "LOG_LEVEL"
-	envUseLocalRadixApi              = "USE_LOCAL_RADIX_API"
-	envUseLocalGitHubWebHookApi      = "USE_LOCAL_GITHUB_WEBHOOK_API"
+	namespace                                 = "radix-cicd-canary"
+	configMapName                             = "radix-cicd-canary"
+	impersonateUserConfig                     = "impersonateUser"
+	impersonateGroupConfig                    = "impersonateGroup"
+	clusterFQDNConfig                         = "clusterFqdn"
+	radixAPIPrefixConfig                      = "radixApiPrefix"
+	radixWebhookPrefixConfig                  = "radixWebhookPrefix"
+	publicKeyConfig                           = "publicKey"
+	privateKeyBase64Config                    = "privateKeyBase64"
+	publicKeyCanary3Config                    = "publicKeyCanary3"
+	privateKeyCanary3Base64Config             = "privateKeyCanary3Base64"
+	publicKeyCanary4Config                    = "publicKeyCanary4"
+	privateKeyCanary4Base64Config             = "privateKeyCanary4Base64"
+	timeoutOfTestConfig                       = "timeoutOfTest"
+	sleepIntervalBetweenChecksConfig          = "sleepIntervalBetweenChecks"
+	sleepIntervalTestRunsConfig               = "sleepIntervalTestRuns"
+	nspSleepIntervalConfig                    = "nspSleepInterval"
+	nspLongSleepIntervalConfig                = "nspLongSleepInterval"
+	privateImageHubPasswordConfig             = "privateImageHubPassword"
+	networkPolicyCanaryAppNameConfig          = "networkPolicyCanaryAppName"
+	golangCanaryUrlConfig                     = "golangCanaryUrl"
+	networkPolicyCanaryJobComponentNameConfig = "networkPolicyCanaryJobComponentName"
+	envVarSuiteList                           = "SUITE_LIST"
+	envVarIsBlacklist                         = "SUITE_LIST_IS_BLACKLIST"
+	envVarLogLevel                            = "LOG_LEVEL"
+	envUseLocalRadixApi                       = "USE_LOCAL_RADIX_API"
+	envUseLocalGitHubWebHookApi               = "USE_LOCAL_GITHUB_WEBHOOK_API"
 )
 
 // Env Holds all the environment variables
 type Env struct {
-	bearerToken                   string
-	impersonateUser               string
-	impersonateGroup              string
-	clusterFQDN                   string
-	radixAPIPrefix                string
-	webhookPrefix                 string
-	publicKey                     string
-	privateKey                    string
-	publicKeyCanary3              string
-	privateKeyCanary3             string
-	publicKeyCanary4              string
-	privateKeyCanary4             string
-	timeoutOfTest                 time.Duration
-	sleepIntervalBetweenCheckFunc time.Duration
-	sleepIntervalBetweenTestRuns  time.Duration
-	nspSleepInterval              time.Duration
-	suiteList                     []string
-	suiteListIsBlacklist          bool // suiteList is a whitelist by default
-	isDebugLogLevel               bool
-	isWarningLogLevel             bool
-	isErrorLogLevel               bool
+	bearerToken                         string
+	impersonateUser                     string
+	impersonateGroup                    string
+	clusterFQDN                         string
+	radixAPIPrefix                      string
+	webhookPrefix                       string
+	publicKey                           string
+	privateKey                          string
+	publicKeyCanary3                    string
+	privateKeyCanary3                   string
+	publicKeyCanary4                    string
+	privateKeyCanary4                   string
+	timeoutOfTest                       time.Duration
+	sleepIntervalBetweenCheckFunc       time.Duration
+	sleepIntervalBetweenTestRuns        time.Duration
+	nspSleepInterval                    time.Duration
+	nspLongSleepInterval                time.Duration
+	suiteList                           []string
+	suiteListIsBlacklist                bool // suiteList is a whitelist by default
+	isDebugLogLevel                     bool
+	isWarningLogLevel                   bool
+	isErrorLogLevel                     bool
+	networkPolicyCanaryAppName          string
+	networkPolicyCanaryJobComponentName string
+	golangCanaryUrl                     string
 }
 
 // NewEnv Constructor
@@ -85,11 +93,15 @@ func NewEnv() Env {
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
 		getNSPSleepInterval(),
+		GetNSPLongSleepInterval(),
 		getSuiteList(),
 		getIsBlacklist(),
 		isDebugLogLevel(),
 		isWarningLogLevel(),
 		isErrorLogLevel(),
+		getNetworkPolicyCanaryAppName(),
+		getNetworkPolicyCanaryJobComponentName(),
+		getGolangCanaryUrl(),
 	}
 }
 
@@ -178,6 +190,11 @@ func (env Env) GetNSPSleepInterval() time.Duration {
 	return env.nspSleepInterval
 }
 
+// GetNSPLongSleepInterval Gets the sleep inteval between NSPLong test runs from config map
+func (env Env) GetNSPLongSleepInterval() time.Duration {
+	return env.nspLongSleepInterval
+}
+
 // GetSuiteList Gets a filter list for which suites to run
 func (env Env) GetSuiteList() []string {
 	return env.suiteList
@@ -216,6 +233,23 @@ func (env Env) GetGitHubWebHookAPIURL() string {
 	} else {
 		return fmt.Sprintf("https://%s.%s", env.getWebHookPrefix(), env.GetClusterFQDN())
 	}
+}
+
+func (env Env) GetNetworkPolicyCanaryUrl(appEnv string) string {
+	canaryURLPrefix := fmt.Sprintf("https://web-%s-%s", env.GetNetworkPolicyCanaryAppName(), appEnv)
+	return fmt.Sprintf("%s.%s", canaryURLPrefix, env.GetClusterFQDN())
+}
+
+func (env Env) GetGolangCanaryUrl() string {
+	return env.golangCanaryUrl
+}
+
+func (env Env) GetNetworkPolicyCanaryAppName() string {
+	return env.networkPolicyCanaryAppName
+}
+
+func (env Env) GetNetworkPolicyCanaryJobComponentName() string {
+	return env.networkPolicyCanaryJobComponentName
 }
 
 func (env Env) GetRadixAPISchemes() []string {
@@ -308,10 +342,43 @@ func getSleepIntervalBetweenTestRuns() time.Duration {
 	return time.Duration(sleepInterval) * time.Second
 }
 
+func getNetworkPolicyCanaryAppName() string {
+	appName := getConfigFromMap(networkPolicyCanaryAppNameConfig)
+	if appName == "" {
+		log.Fatalf("Could not read %s from configmap", networkPolicyCanaryAppNameConfig)
+	}
+	return appName
+}
+
+func getGolangCanaryUrl() string {
+	url := getConfigFromMap(golangCanaryUrlConfig)
+	if url == "" {
+		log.Fatalf("Could not read %s from configmap", golangCanaryUrlConfig)
+	}
+	return url
+}
+
+func getNetworkPolicyCanaryJobComponentName() string {
+	jobComponentName := getConfigFromMap(networkPolicyCanaryJobComponentNameConfig)
+	if jobComponentName == "" {
+		log.Fatalf("Could not read %s from configmap", networkPolicyCanaryJobComponentNameConfig)
+	}
+	return jobComponentName
+}
+
 func getNSPSleepInterval() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(nspSleepIntervalConfig))
 	if err != nil {
 		log.Fatalf("Could not read %s. Err: %v", nspSleepIntervalConfig, err)
+	}
+
+	return time.Duration(sleepInterval) * time.Second
+}
+
+func GetNSPLongSleepInterval() time.Duration {
+	sleepInterval, err := strconv.Atoi(getConfigFromMap(nspLongSleepIntervalConfig))
+	if err != nil {
+		log.Fatalf("Could not read %s. Err: %v", nspLongSleepIntervalConfig, err)
 	}
 
 	return time.Duration(sleepInterval) * time.Second

@@ -288,7 +288,7 @@ func (a *Client) ReplicaLog(params *ReplicaLogParams, authInfo runtime.ClientAut
 }
 
 /*
-  RestartComponent restarts a component stops running the component container pulls new image from image hub in radix configuration starts the container again using up to date image
+  RestartComponent restarts a component stops running the component container pulls new image from image hub in radix configuration starts the container again using an up to date image
 */
 func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartComponentOK, error) {
 	// TODO: Validate the params before sending
@@ -327,7 +327,7 @@ func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runti
 }
 
 /*
-  RestartOAuthAuxiliaryResource restarts a auxiliary resource for a component
+  RestartOAuthAuxiliaryResource restarts an auxiliary resource for a component
 */
 func (a *Client) RestartOAuthAuxiliaryResource(params *RestartOAuthAuxiliaryResourceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartOAuthAuxiliaryResourceOK, error) {
 	// TODO: Validate the params before sending

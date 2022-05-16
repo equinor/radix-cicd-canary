@@ -21,6 +21,10 @@ import (
 // swagger:model ScheduledJobSummary
 type ScheduledJobSummary struct {
 
+	// BatchName Batch name, if any
+	// Example: \"batch-abc\
+	BatchName string `json:"batchName,omitempty"`
+
 	// Created timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Created string `json:"created,omitempty"`
@@ -29,7 +33,11 @@ type ScheduledJobSummary struct {
 	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
 
-	// Status message, if any, of the job
+	// JobId JobId, if any
+	// Example: \"job1\
+	JobID string `json:"jobId,omitempty"`
+
+	// Message of a status, if any, of the job
 	// Example: \"Error occurred\
 	Message string `json:"message,omitempty"`
 
@@ -46,8 +54,9 @@ type ScheduledJobSummary struct {
 
 	// Status of the job
 	// Example: Waiting
+	// Required: true
 	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
-	Status string `json:"status,omitempty"`
+	Status *string `json:"status"`
 }
 
 // Validate validates this scheduled job summary
@@ -136,12 +145,13 @@ func (m *ScheduledJobSummary) validateStatusEnum(path, location string, value st
 }
 
 func (m *ScheduledJobSummary) validateStatus(formats strfmt.Registry) error {
-	if swag.IsZero(m.Status) { // not required
-		return nil
+
+	if err := validate.Required("status", "body", m.Status); err != nil {
+		return err
 	}
 
 	// value enum
-	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
+	if err := m.validateStatusEnum("status", "body", *m.Status); err != nil {
 		return err
 	}
 

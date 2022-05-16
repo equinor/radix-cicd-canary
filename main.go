@@ -1,12 +1,13 @@
 package main
 
 import (
+	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
 	"net/http"
 	"time"
 
-	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
-	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/nsp"
+	nsplong "github.com/equinor/radix-cicd-canary/scenarios/nsp-long"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -35,11 +36,14 @@ func main() {
 	deployOnlySuite := deployonly.TestSuite()
 
 	nspSleepInterval := environmentVariables.GetNSPSleepInterval()
+	nspLongSleepInterval := environmentVariables.GetNSPLongSleepInterval()
 	nspSuite := nsp.TestSuite()
+	nspLongSuite := nsplong.TestSuite()
 
 	go runSuites(environmentVariables, sleepInterval, happyPathSuite)
 	go runSuites(environmentVariables, sleepInterval, deployOnlySuite)
 	go runSuites(environmentVariables, nspSleepInterval, nspSuite)
+	go runSuites(environmentVariables, nspLongSleepInterval, nspLongSuite)
 
 	log.Info("Started suites. Start metrics service.")
 	http.Handle("/metrics", promhttp.Handler())

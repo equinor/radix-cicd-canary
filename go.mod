@@ -3,6 +3,7 @@ module github.com/equinor/radix-cicd-canary
 go 1.17
 
 require (
+	github.com/equinor/radix-common v1.1.11
 	github.com/go-openapi/errors v0.20.2
 	github.com/go-openapi/runtime v0.23.0
 	github.com/go-openapi/strfmt v0.21.2
@@ -42,7 +43,7 @@ require (
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
-	github.com/imdario/mergo v0.3.5 // indirect
+	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
