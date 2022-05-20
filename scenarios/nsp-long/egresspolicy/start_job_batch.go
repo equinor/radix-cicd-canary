@@ -24,7 +24,9 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) (bool, error) {
 
 	var batchNames []string
 	for _, appEnv := range appEnvs {
-		err, batchName := startJobBatch(env, appEnv)
+		baseUrl := env.GetNetworkPolicyCanaryUrl(appEnv)
+		password := env.GetNetworkPolicyCanaryPassword()
+		err, batchName := startJobBatch(baseUrl, password, appEnv)
 		if err != nil {
 			return false, err
 		} else {
@@ -56,11 +58,17 @@ func checkJobBatch(env envUtil.Env, appName, appEnv string, jobComponentName str
 	return ok
 }
 
-func startJobBatch(env envUtil.Env, appEnv string) (error, string) {
-	jobBatchUrl := fmt.Sprintf("%s/startjobbatch", env.GetNetworkPolicyCanaryUrl(appEnv))
-	response, err := http.Get(jobBatchUrl)
+func startJobBatch(baseUrl string, password string, appEnv string) (error, string) {
+	jobBatchUrl := fmt.Sprintf("%s/startjobbatch", baseUrl)
+	httpClient := &http.Client{}
+	req, _ := http.NewRequest("GET", jobBatchUrl, nil)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", password))
+	response, err := httpClient.Do(req)
 	if err != nil {
 		return err, ""
+	}
+	if response.StatusCode != 200 {
+		return fmt.Errorf("got non-200 OK from %s", jobBatchUrl), ""
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)

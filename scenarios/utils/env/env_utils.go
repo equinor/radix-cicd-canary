@@ -35,6 +35,7 @@ const (
 	nspSleepIntervalConfig                    = "nspSleepInterval"
 	nspLongSleepIntervalConfig                = "nspLongSleepInterval"
 	privateImageHubPasswordConfig             = "privateImageHubPassword"
+	networkPolicyCanaryPasswordConfig         = "networkPolicyCanaryPassword"
 	networkPolicyCanaryAppNameConfig          = "networkPolicyCanaryAppName"
 	golangCanaryUrlConfig                     = "golangCanaryUrl"
 	networkPolicyCanaryJobComponentNameConfig = "networkPolicyCanaryJobComponentName"
@@ -59,6 +60,7 @@ type Env struct {
 	privateKeyCanary3                   string
 	publicKeyCanary4                    string
 	privateKeyCanary4                   string
+	networkPolicyCanaryPassword         string
 	timeoutOfTest                       time.Duration
 	sleepIntervalBetweenCheckFunc       time.Duration
 	sleepIntervalBetweenTestRuns        time.Duration
@@ -89,6 +91,7 @@ func NewEnv() Env {
 		getPrivateKeyCanary3(),
 		getPublicKeyCanary4(),
 		getPrivateKeyCanary4(),
+		getNetworkPolicyCanaryPassword(),
 		timeoutOfTest(),
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
@@ -168,6 +171,11 @@ func (env Env) GetPrivateKeyCanary4() string {
 // GetPrivateImageHubPassword get private image hub password
 func (env Env) GetPrivateImageHubPassword() string {
 	return getConfigFromMap(privateImageHubPasswordConfig)
+}
+
+// GetNetworkPolicyCanaryPassword get networkpolicy-canary HTTP password from environment
+func (env Env) GetNetworkPolicyCanaryPassword() string {
+	return env.networkPolicyCanaryPassword
 }
 
 // GetTimeoutOfTest Get the time it should take before a test should time out from config map
@@ -313,6 +321,10 @@ func getPublicKeyCanary4() string {
 func getPrivateKeyCanary4() string {
 	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyCanary4Base64Config))
 	return string(data)
+}
+
+func getNetworkPolicyCanaryPassword() string {
+	return getConfigFromMap(networkPolicyCanaryPasswordConfig)
 }
 
 func timeoutOfTest() time.Duration {
