@@ -10,7 +10,7 @@ The application is implemented in [Go](https://golang.org/). It provides metrics
 
 ![pic](diagrams/radix-cicd-canary.png)
 
-Currently, there are following scenarios (or suites) implemented, named `Happy path`, `NSP` and `Deploy only`.
+Currently, there are following scenarios (or suites) implemented, named `Happy path`, `NSP`, `NSP-Long` and `Deploy only`.
 
 The `Happy path` suite contains the following tests.
 
@@ -31,10 +31,20 @@ The `Happy path` suite contains the following tests.
 15. Checks that radixconfig.yaml is read from correct config branch
 16. Delete applications
 
-The `NSP` suite contains the following tests.
+The `NSP` (Network Security Policy) suite contains the following tests.
 
 1. Reach ingress
-1. Reach service in different namespace
+2. Reach service in different namespace
+3. Do DNS lookup toward public nameservers from [networkpolicy-canary](https://console.dev.radix.equinor.com/applications/radix-networkpolicy-canary).
+4. Do DNS lookup toward internal K8s nameserver from networkpolicy-canary.
+5. Get list of Radix jobs in networkpolicy-canary's namespace from networkpolicy-canary.
+6. Test that http://login.microsoft.com/ can be reached from networkpolicy-canary.
+
+The `NSP-Long` suite contains the following tests. The `NSP-Long` suite has longer test interval than the `NSP` suite.
+
+1. Test scheduling of job batch from networkpolicy-canary.
+2. Test whether [radix-canary-golang](https://github.com/equinor/radix-canary-golang) can be reached from networkpolicy-canary.
+3. Test whether well known external websites can be reached from networkpolicy-canary.
 
 The `Deploy only` suite contains the following tests.
 
