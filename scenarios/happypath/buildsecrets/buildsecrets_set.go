@@ -43,7 +43,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 
 	expectedSteps := []string{
 		"clone-config",
-		"config-2-map",
+		"prepare-pipelines",
 		"radix-pipeline"}
 
 	if len(job.Steps) != len(expectedSteps) {
