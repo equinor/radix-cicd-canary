@@ -52,10 +52,11 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
-		{name: "config-2-map", components: []string{}},
+		{name: "prepare-pipelines", components: []string{}},
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www", components: []string{"www"}},
+		{name: "run-pipelines", components: []string{}},
 		{name: "scan-www", components: []string{"www"}},
 	}
 
@@ -91,10 +92,11 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 
 	expectedSteps = []expectedStep{
 		{name: "clone-config", components: []string{}},
-		{name: "config-2-map", components: []string{}},
+		{name: "prepare-pipelines", components: []string{}},
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www2", components: []string{"www2"}},
+		{name: "run-pipelines", components: []string{}},
 		{name: "scan-www2", components: []string{"www2"}},
 	}
 
