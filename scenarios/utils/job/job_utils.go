@@ -148,7 +148,7 @@ func GetLogForStep(env env.Env, appName, jobName, stepName string) string {
 
 	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("fauled to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
+		log.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
 		return ""
 	}
 	return applicationJobLogs.Payload
