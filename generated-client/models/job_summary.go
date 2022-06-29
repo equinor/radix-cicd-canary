@@ -107,8 +107,8 @@ func init() {
 
 const (
 
-	// JobSummaryPipelineBuildDashDeploy captures enum value "build-deploy"
-	JobSummaryPipelineBuildDashDeploy string = "build-deploy"
+	// JobSummaryPipelineBuildDeploy captures enum value "build-deploy"
+	JobSummaryPipelineBuildDeploy string = "build-deploy"
 
 	// JobSummaryPipelineBuild captures enum value " build"
 	JobSummaryPipelineBuild string = " build"
@@ -123,6 +123,7 @@ func (m *JobSummary) validatePipelineEnum(path, location string, value string) e
 }
 
 func (m *JobSummary) validatePipeline(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Pipeline) { // not required
 		return nil
 	}
@@ -177,6 +178,7 @@ func (m *JobSummary) validateStatusEnum(path, location string, value string) err
 }
 
 func (m *JobSummary) validateStatus(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -190,6 +192,7 @@ func (m *JobSummary) validateStatus(formats strfmt.Registry) error {
 }
 
 func (m *JobSummary) validateStepSummaryScans(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.StepSummaryScans) { // not required
 		return nil
 	}
@@ -203,8 +206,6 @@ func (m *JobSummary) validateStepSummaryScans(formats strfmt.Registry) error {
 			if err := m.StepSummaryScans[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -237,8 +238,6 @@ func (m *JobSummary) contextValidateStepSummaryScans(ctx context.Context, format
 			if err := m.StepSummaryScans[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

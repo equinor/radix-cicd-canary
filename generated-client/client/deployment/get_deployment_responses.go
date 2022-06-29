@@ -41,6 +41,7 @@ func (o *GetDeploymentReader) ReadResponse(response runtime.ClientResponse, cons
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -51,7 +52,7 @@ func NewGetDeploymentOK() *GetDeploymentOK {
 	return &GetDeploymentOK{}
 }
 
-/* GetDeploymentOK describes a response with status code 200, with default header values.
+/*GetDeploymentOK handles this case with default header values.
 
 Successful get deployment
 */
@@ -62,6 +63,7 @@ type GetDeploymentOK struct {
 func (o *GetDeploymentOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}][%d] getDeploymentOK  %+v", 200, o.Payload)
 }
+
 func (o *GetDeploymentOK) GetPayload() *models.Deployment {
 	return o.Payload
 }
@@ -83,7 +85,7 @@ func NewGetDeploymentUnauthorized() *GetDeploymentUnauthorized {
 	return &GetDeploymentUnauthorized{}
 }
 
-/* GetDeploymentUnauthorized describes a response with status code 401, with default header values.
+/*GetDeploymentUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -104,7 +106,7 @@ func NewGetDeploymentNotFound() *GetDeploymentNotFound {
 	return &GetDeploymentNotFound{}
 }
 
-/* GetDeploymentNotFound describes a response with status code 404, with default header values.
+/*GetDeploymentNotFound handles this case with default header values.
 
 Not found
 */

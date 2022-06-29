@@ -16,91 +16,74 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetEnvironmentEventsParams creates a new GetEnvironmentEventsParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetEnvironmentEventsParams creates a new GetEnvironmentEventsParams object
+// with the default values initialized.
 func NewGetEnvironmentEventsParams() *GetEnvironmentEventsParams {
+	var ()
 	return &GetEnvironmentEventsParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetEnvironmentEventsParamsWithTimeout creates a new GetEnvironmentEventsParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetEnvironmentEventsParamsWithTimeout(timeout time.Duration) *GetEnvironmentEventsParams {
+	var ()
 	return &GetEnvironmentEventsParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetEnvironmentEventsParamsWithContext creates a new GetEnvironmentEventsParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetEnvironmentEventsParamsWithContext(ctx context.Context) *GetEnvironmentEventsParams {
+	var ()
 	return &GetEnvironmentEventsParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetEnvironmentEventsParamsWithHTTPClient creates a new GetEnvironmentEventsParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetEnvironmentEventsParamsWithHTTPClient(client *http.Client) *GetEnvironmentEventsParams {
+	var ()
 	return &GetEnvironmentEventsParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetEnvironmentEventsParams contains all the parameters to send to the API endpoint
-   for the get environment events operation.
-
-   Typically these are written to a http.Request.
+/*GetEnvironmentEventsParams contains all the parameters to send to the API endpoint
+for the get environment events operation typically these are written to a http.Request
 */
 type GetEnvironmentEventsParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  name of Radix application
 
-	/* AppName.
-
-	   name of Radix application
 	*/
 	AppName string
+	/*EnvName
+	  name of environment
 
-	/* EnvName.
-
-	   name of environment
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get environment events params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetEnvironmentEventsParams) WithDefaults() *GetEnvironmentEventsParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get environment events params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetEnvironmentEventsParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get environment events params
@@ -194,6 +177,7 @@ func (o *GetEnvironmentEventsParams) WriteToRequest(r runtime.ClientRequest, reg
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -202,6 +186,7 @@ func (o *GetEnvironmentEventsParams) WriteToRequest(r runtime.ClientRequest, reg
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

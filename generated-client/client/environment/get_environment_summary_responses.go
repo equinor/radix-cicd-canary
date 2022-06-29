@@ -41,6 +41,7 @@ func (o *GetEnvironmentSummaryReader) ReadResponse(response runtime.ClientRespon
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -51,7 +52,7 @@ func NewGetEnvironmentSummaryOK() *GetEnvironmentSummaryOK {
 	return &GetEnvironmentSummaryOK{}
 }
 
-/* GetEnvironmentSummaryOK describes a response with status code 200, with default header values.
+/*GetEnvironmentSummaryOK handles this case with default header values.
 
 Successful operation
 */
@@ -62,6 +63,7 @@ type GetEnvironmentSummaryOK struct {
 func (o *GetEnvironmentSummaryOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments][%d] getEnvironmentSummaryOK  %+v", 200, o.Payload)
 }
+
 func (o *GetEnvironmentSummaryOK) GetPayload() []*models.EnvironmentSummary {
 	return o.Payload
 }
@@ -81,7 +83,7 @@ func NewGetEnvironmentSummaryUnauthorized() *GetEnvironmentSummaryUnauthorized {
 	return &GetEnvironmentSummaryUnauthorized{}
 }
 
-/* GetEnvironmentSummaryUnauthorized describes a response with status code 401, with default header values.
+/*GetEnvironmentSummaryUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -102,7 +104,7 @@ func NewGetEnvironmentSummaryNotFound() *GetEnvironmentSummaryNotFound {
 	return &GetEnvironmentSummaryNotFound{}
 }
 
-/* GetEnvironmentSummaryNotFound describes a response with status code 404, with default header values.
+/*GetEnvironmentSummaryNotFound handles this case with default header values.
 
 Not found
 */

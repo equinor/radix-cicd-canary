@@ -16,85 +16,69 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetApplicationAlertingConfigParams creates a new GetApplicationAlertingConfigParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetApplicationAlertingConfigParams creates a new GetApplicationAlertingConfigParams object
+// with the default values initialized.
 func NewGetApplicationAlertingConfigParams() *GetApplicationAlertingConfigParams {
+	var ()
 	return &GetApplicationAlertingConfigParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetApplicationAlertingConfigParamsWithTimeout creates a new GetApplicationAlertingConfigParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetApplicationAlertingConfigParamsWithTimeout(timeout time.Duration) *GetApplicationAlertingConfigParams {
+	var ()
 	return &GetApplicationAlertingConfigParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetApplicationAlertingConfigParamsWithContext creates a new GetApplicationAlertingConfigParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetApplicationAlertingConfigParamsWithContext(ctx context.Context) *GetApplicationAlertingConfigParams {
+	var ()
 	return &GetApplicationAlertingConfigParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetApplicationAlertingConfigParamsWithHTTPClient creates a new GetApplicationAlertingConfigParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetApplicationAlertingConfigParamsWithHTTPClient(client *http.Client) *GetApplicationAlertingConfigParams {
+	var ()
 	return &GetApplicationAlertingConfigParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
-   for the get application alerting config operation.
-
-   Typically these are written to a http.Request.
+/*GetApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
+for the get application alerting config operation typically these are written to a http.Request
 */
 type GetApplicationAlertingConfigParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get application alerting config params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetApplicationAlertingConfigParams) WithDefaults() *GetApplicationAlertingConfigParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get application alerting config params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetApplicationAlertingConfigParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get application alerting config params
@@ -177,6 +161,7 @@ func (o *GetApplicationAlertingConfigParams) WriteToRequest(r runtime.ClientRequ
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -185,6 +170,7 @@ func (o *GetApplicationAlertingConfigParams) WriteToRequest(r runtime.ClientRequ
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

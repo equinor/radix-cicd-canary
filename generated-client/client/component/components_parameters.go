@@ -16,91 +16,74 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewComponentsParams creates a new ComponentsParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewComponentsParams creates a new ComponentsParams object
+// with the default values initialized.
 func NewComponentsParams() *ComponentsParams {
+	var ()
 	return &ComponentsParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewComponentsParamsWithTimeout creates a new ComponentsParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewComponentsParamsWithTimeout(timeout time.Duration) *ComponentsParams {
+	var ()
 	return &ComponentsParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewComponentsParamsWithContext creates a new ComponentsParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewComponentsParamsWithContext(ctx context.Context) *ComponentsParams {
+	var ()
 	return &ComponentsParams{
+
 		Context: ctx,
 	}
 }
 
 // NewComponentsParamsWithHTTPClient creates a new ComponentsParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewComponentsParamsWithHTTPClient(client *http.Client) *ComponentsParams {
+	var ()
 	return &ComponentsParams{
 		HTTPClient: client,
 	}
 }
 
-/* ComponentsParams contains all the parameters to send to the API endpoint
-   for the components operation.
-
-   Typically these are written to a http.Request.
+/*ComponentsParams contains all the parameters to send to the API endpoint
+for the components operation typically these are written to a http.Request
 */
 type ComponentsParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*DeploymentName
+	  Name of deployment
 
-	/* DeploymentName.
-
-	   Name of deployment
 	*/
 	DeploymentName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the components params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *ComponentsParams) WithDefaults() *ComponentsParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the components params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *ComponentsParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the components params
@@ -194,6 +177,7 @@ func (o *ComponentsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -202,6 +186,7 @@ func (o *ComponentsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

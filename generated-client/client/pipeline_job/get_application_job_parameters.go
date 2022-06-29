@@ -16,91 +16,74 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetApplicationJobParams creates a new GetApplicationJobParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetApplicationJobParams creates a new GetApplicationJobParams object
+// with the default values initialized.
 func NewGetApplicationJobParams() *GetApplicationJobParams {
+	var ()
 	return &GetApplicationJobParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetApplicationJobParamsWithTimeout creates a new GetApplicationJobParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetApplicationJobParamsWithTimeout(timeout time.Duration) *GetApplicationJobParams {
+	var ()
 	return &GetApplicationJobParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetApplicationJobParamsWithContext creates a new GetApplicationJobParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetApplicationJobParamsWithContext(ctx context.Context) *GetApplicationJobParams {
+	var ()
 	return &GetApplicationJobParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetApplicationJobParamsWithHTTPClient creates a new GetApplicationJobParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetApplicationJobParamsWithHTTPClient(client *http.Client) *GetApplicationJobParams {
+	var ()
 	return &GetApplicationJobParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetApplicationJobParams contains all the parameters to send to the API endpoint
-   for the get application job operation.
-
-   Typically these are written to a http.Request.
+/*GetApplicationJobParams contains all the parameters to send to the API endpoint
+for the get application job operation typically these are written to a http.Request
 */
 type GetApplicationJobParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  name of Radix application
 
-	/* AppName.
-
-	   name of Radix application
 	*/
 	AppName string
+	/*JobName
+	  name of job
 
-	/* JobName.
-
-	   name of job
 	*/
 	JobName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get application job params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetApplicationJobParams) WithDefaults() *GetApplicationJobParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get application job params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetApplicationJobParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get application job params
@@ -194,6 +177,7 @@ func (o *GetApplicationJobParams) WriteToRequest(r runtime.ClientRequest, reg st
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -202,6 +186,7 @@ func (o *GetApplicationJobParams) WriteToRequest(r runtime.ClientRequest, reg st
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

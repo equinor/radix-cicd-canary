@@ -16,97 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewStartComponentParams creates a new StartComponentParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewStartComponentParams creates a new StartComponentParams object
+// with the default values initialized.
 func NewStartComponentParams() *StartComponentParams {
+	var ()
 	return &StartComponentParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewStartComponentParamsWithTimeout creates a new StartComponentParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewStartComponentParamsWithTimeout(timeout time.Duration) *StartComponentParams {
+	var ()
 	return &StartComponentParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewStartComponentParamsWithContext creates a new StartComponentParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewStartComponentParamsWithContext(ctx context.Context) *StartComponentParams {
+	var ()
 	return &StartComponentParams{
+
 		Context: ctx,
 	}
 }
 
 // NewStartComponentParamsWithHTTPClient creates a new StartComponentParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewStartComponentParamsWithHTTPClient(client *http.Client) *StartComponentParams {
+	var ()
 	return &StartComponentParams{
 		HTTPClient: client,
 	}
 }
 
-/* StartComponentParams contains all the parameters to send to the API endpoint
-   for the start component operation.
-
-   Typically these are written to a http.Request.
+/*StartComponentParams contains all the parameters to send to the API endpoint
+for the start component operation typically these are written to a http.Request
 */
 type StartComponentParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*ComponentName
+	  Name of component
 
-	/* ComponentName.
-
-	   Name of component
 	*/
 	ComponentName string
+	/*EnvName
+	  Name of environment
 
-	/* EnvName.
-
-	   Name of environment
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the start component params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *StartComponentParams) WithDefaults() *StartComponentParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the start component params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *StartComponentParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the start component params
@@ -211,6 +193,7 @@ func (o *StartComponentParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -219,6 +202,7 @@ func (o *StartComponentParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

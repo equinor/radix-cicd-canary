@@ -16,91 +16,74 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewStopEnvironmentParams creates a new StopEnvironmentParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewStopEnvironmentParams creates a new StopEnvironmentParams object
+// with the default values initialized.
 func NewStopEnvironmentParams() *StopEnvironmentParams {
+	var ()
 	return &StopEnvironmentParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewStopEnvironmentParamsWithTimeout creates a new StopEnvironmentParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewStopEnvironmentParamsWithTimeout(timeout time.Duration) *StopEnvironmentParams {
+	var ()
 	return &StopEnvironmentParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewStopEnvironmentParamsWithContext creates a new StopEnvironmentParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewStopEnvironmentParamsWithContext(ctx context.Context) *StopEnvironmentParams {
+	var ()
 	return &StopEnvironmentParams{
+
 		Context: ctx,
 	}
 }
 
 // NewStopEnvironmentParamsWithHTTPClient creates a new StopEnvironmentParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewStopEnvironmentParamsWithHTTPClient(client *http.Client) *StopEnvironmentParams {
+	var ()
 	return &StopEnvironmentParams{
 		HTTPClient: client,
 	}
 }
 
-/* StopEnvironmentParams contains all the parameters to send to the API endpoint
-   for the stop environment operation.
-
-   Typically these are written to a http.Request.
+/*StopEnvironmentParams contains all the parameters to send to the API endpoint
+for the stop environment operation typically these are written to a http.Request
 */
 type StopEnvironmentParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*EnvName
+	  Name of environment
 
-	/* EnvName.
-
-	   Name of environment
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the stop environment params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *StopEnvironmentParams) WithDefaults() *StopEnvironmentParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the stop environment params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *StopEnvironmentParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the stop environment params
@@ -194,6 +177,7 @@ func (o *StopEnvironmentParams) WriteToRequest(r runtime.ClientRequest, reg strf
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -202,6 +186,7 @@ func (o *StopEnvironmentParams) WriteToRequest(r runtime.ClientRequest, reg strf
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

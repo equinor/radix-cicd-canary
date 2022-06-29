@@ -18,97 +18,79 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewUpdateBuildSecretsSecretValueParams creates a new UpdateBuildSecretsSecretValueParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewUpdateBuildSecretsSecretValueParams creates a new UpdateBuildSecretsSecretValueParams object
+// with the default values initialized.
 func NewUpdateBuildSecretsSecretValueParams() *UpdateBuildSecretsSecretValueParams {
+	var ()
 	return &UpdateBuildSecretsSecretValueParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewUpdateBuildSecretsSecretValueParamsWithTimeout creates a new UpdateBuildSecretsSecretValueParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewUpdateBuildSecretsSecretValueParamsWithTimeout(timeout time.Duration) *UpdateBuildSecretsSecretValueParams {
+	var ()
 	return &UpdateBuildSecretsSecretValueParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewUpdateBuildSecretsSecretValueParamsWithContext creates a new UpdateBuildSecretsSecretValueParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewUpdateBuildSecretsSecretValueParamsWithContext(ctx context.Context) *UpdateBuildSecretsSecretValueParams {
+	var ()
 	return &UpdateBuildSecretsSecretValueParams{
+
 		Context: ctx,
 	}
 }
 
 // NewUpdateBuildSecretsSecretValueParamsWithHTTPClient creates a new UpdateBuildSecretsSecretValueParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewUpdateBuildSecretsSecretValueParamsWithHTTPClient(client *http.Client) *UpdateBuildSecretsSecretValueParams {
+	var ()
 	return &UpdateBuildSecretsSecretValueParams{
 		HTTPClient: client,
 	}
 }
 
-/* UpdateBuildSecretsSecretValueParams contains all the parameters to send to the API endpoint
-   for the update build secrets secret value operation.
-
-   Typically these are written to a http.Request.
+/*UpdateBuildSecretsSecretValueParams contains all the parameters to send to the API endpoint
+for the update build secrets secret value operation typically these are written to a http.Request
 */
 type UpdateBuildSecretsSecretValueParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*SecretName
+	  name of secret
 
-	/* SecretName.
-
-	   name of secret
 	*/
 	SecretName string
+	/*SecretValue
+	  New secret value
 
-	/* SecretValue.
-
-	   New secret value
 	*/
 	SecretValue *models.SecretParameters
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the update build secrets secret value params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *UpdateBuildSecretsSecretValueParams) WithDefaults() *UpdateBuildSecretsSecretValueParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the update build secrets secret value params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *UpdateBuildSecretsSecretValueParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the update build secrets secret value params
@@ -213,6 +195,7 @@ func (o *UpdateBuildSecretsSecretValueParams) WriteToRequest(r runtime.ClientReq
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -221,6 +204,7 @@ func (o *UpdateBuildSecretsSecretValueParams) WriteToRequest(r runtime.ClientReq
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName
@@ -232,6 +216,7 @@ func (o *UpdateBuildSecretsSecretValueParams) WriteToRequest(r runtime.ClientReq
 	if err := r.SetPathParam("secretName", o.SecretName); err != nil {
 		return err
 	}
+
 	if o.SecretValue != nil {
 		if err := r.SetBodyParam(o.SecretValue); err != nil {
 			return err

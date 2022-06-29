@@ -18,103 +18,84 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewChangeEnvVarParams creates a new ChangeEnvVarParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewChangeEnvVarParams creates a new ChangeEnvVarParams object
+// with the default values initialized.
 func NewChangeEnvVarParams() *ChangeEnvVarParams {
+	var ()
 	return &ChangeEnvVarParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewChangeEnvVarParamsWithTimeout creates a new ChangeEnvVarParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewChangeEnvVarParamsWithTimeout(timeout time.Duration) *ChangeEnvVarParams {
+	var ()
 	return &ChangeEnvVarParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewChangeEnvVarParamsWithContext creates a new ChangeEnvVarParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewChangeEnvVarParamsWithContext(ctx context.Context) *ChangeEnvVarParams {
+	var ()
 	return &ChangeEnvVarParams{
+
 		Context: ctx,
 	}
 }
 
 // NewChangeEnvVarParamsWithHTTPClient creates a new ChangeEnvVarParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewChangeEnvVarParamsWithHTTPClient(client *http.Client) *ChangeEnvVarParams {
+	var ()
 	return &ChangeEnvVarParams{
 		HTTPClient: client,
 	}
 }
 
-/* ChangeEnvVarParams contains all the parameters to send to the API endpoint
-   for the change env var operation.
-
-   Typically these are written to a http.Request.
+/*ChangeEnvVarParams contains all the parameters to send to the API endpoint
+for the change env var operation typically these are written to a http.Request
 */
 type ChangeEnvVarParams struct {
 
-	/* EnvVarParameter.
+	/*EnvVarParameter
+	  Environment variables new values and metadata
 
-	   Environment variables new values and metadata
 	*/
 	EnvVarParameter []*models.EnvVarParameter
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	/* ImpersonateGroup.
-
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*ComponentName
+	  environment component of Radix application
 
-	/* ComponentName.
-
-	   environment component of Radix application
 	*/
 	ComponentName string
+	/*EnvName
+	  environment of Radix application
 
-	/* EnvName.
-
-	   environment of Radix application
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the change env var params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *ChangeEnvVarParams) WithDefaults() *ChangeEnvVarParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the change env var params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *ChangeEnvVarParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the change env var params
@@ -223,6 +204,7 @@ func (o *ChangeEnvVarParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		return err
 	}
 	var res []error
+
 	if o.EnvVarParameter != nil {
 		if err := r.SetBodyParam(o.EnvVarParameter); err != nil {
 			return err
@@ -235,6 +217,7 @@ func (o *ChangeEnvVarParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -243,6 +226,7 @@ func (o *ChangeEnvVarParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

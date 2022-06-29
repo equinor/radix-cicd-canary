@@ -33,6 +33,7 @@ func (o *LogReader) ReadResponse(response runtime.ClientResponse, consumer runti
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -43,7 +44,7 @@ func NewLogOK() *LogOK {
 	return &LogOK{}
 }
 
-/* LogOK describes a response with status code 200, with default header values.
+/*LogOK handles this case with default header values.
 
 pod log
 */
@@ -54,6 +55,7 @@ type LogOK struct {
 func (o *LogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs][%d] logOK  %+v", 200, o.Payload)
 }
+
 func (o *LogOK) GetPayload() string {
 	return o.Payload
 }
@@ -73,7 +75,7 @@ func NewLogNotFound() *LogNotFound {
 	return &LogNotFound{}
 }
 
-/* LogNotFound describes a response with status code 404, with default header values.
+/*LogNotFound handles this case with default header values.
 
 Not found
 */

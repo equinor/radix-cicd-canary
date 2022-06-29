@@ -59,6 +59,7 @@ func (o *ShowApplicationsReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -69,7 +70,7 @@ func NewShowApplicationsOK() *ShowApplicationsOK {
 	return &ShowApplicationsOK{}
 }
 
-/* ShowApplicationsOK describes a response with status code 200, with default header values.
+/*ShowApplicationsOK handles this case with default header values.
 
 Successful operation
 */
@@ -80,6 +81,7 @@ type ShowApplicationsOK struct {
 func (o *ShowApplicationsOK) Error() string {
 	return fmt.Sprintf("[GET /applications][%d] showApplicationsOK  %+v", 200, o.Payload)
 }
+
 func (o *ShowApplicationsOK) GetPayload() []*models.ApplicationSummary {
 	return o.Payload
 }
@@ -99,7 +101,7 @@ func NewShowApplicationsUnauthorized() *ShowApplicationsUnauthorized {
 	return &ShowApplicationsUnauthorized{}
 }
 
-/* ShowApplicationsUnauthorized describes a response with status code 401, with default header values.
+/*ShowApplicationsUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -120,7 +122,7 @@ func NewShowApplicationsForbidden() *ShowApplicationsForbidden {
 	return &ShowApplicationsForbidden{}
 }
 
-/* ShowApplicationsForbidden describes a response with status code 403, with default header values.
+/*ShowApplicationsForbidden handles this case with default header values.
 
 Forbidden
 */
@@ -141,7 +143,7 @@ func NewShowApplicationsNotFound() *ShowApplicationsNotFound {
 	return &ShowApplicationsNotFound{}
 }
 
-/* ShowApplicationsNotFound describes a response with status code 404, with default header values.
+/*ShowApplicationsNotFound handles this case with default header values.
 
 Not found
 */
@@ -162,7 +164,7 @@ func NewShowApplicationsConflict() *ShowApplicationsConflict {
 	return &ShowApplicationsConflict{}
 }
 
-/* ShowApplicationsConflict describes a response with status code 409, with default header values.
+/*ShowApplicationsConflict handles this case with default header values.
 
 Conflict
 */
@@ -183,7 +185,7 @@ func NewShowApplicationsInternalServerError() *ShowApplicationsInternalServerErr
 	return &ShowApplicationsInternalServerError{}
 }
 
-/* ShowApplicationsInternalServerError describes a response with status code 500, with default header values.
+/*ShowApplicationsInternalServerError handles this case with default header values.
 
 Internal server error
 */

@@ -41,6 +41,7 @@ func (o *GetBuildSecretsReader) ReadResponse(response runtime.ClientResponse, co
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -51,7 +52,7 @@ func NewGetBuildSecretsOK() *GetBuildSecretsOK {
 	return &GetBuildSecretsOK{}
 }
 
-/* GetBuildSecretsOK describes a response with status code 200, with default header values.
+/*GetBuildSecretsOK handles this case with default header values.
 
 Successful operation
 */
@@ -62,6 +63,7 @@ type GetBuildSecretsOK struct {
 func (o *GetBuildSecretsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/buildsecrets][%d] getBuildSecretsOK  %+v", 200, o.Payload)
 }
+
 func (o *GetBuildSecretsOK) GetPayload() []*models.BuildSecret {
 	return o.Payload
 }
@@ -81,7 +83,7 @@ func NewGetBuildSecretsUnauthorized() *GetBuildSecretsUnauthorized {
 	return &GetBuildSecretsUnauthorized{}
 }
 
-/* GetBuildSecretsUnauthorized describes a response with status code 401, with default header values.
+/*GetBuildSecretsUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -102,7 +104,7 @@ func NewGetBuildSecretsNotFound() *GetBuildSecretsNotFound {
 	return &GetBuildSecretsNotFound{}
 }
 
-/* GetBuildSecretsNotFound describes a response with status code 404, with default header values.
+/*GetBuildSecretsNotFound handles this case with default header values.
 
 Not found
 */

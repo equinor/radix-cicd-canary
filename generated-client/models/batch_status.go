@@ -96,6 +96,7 @@ func (m *BatchStatus) validateCreated(formats strfmt.Registry) error {
 }
 
 func (m *BatchStatus) validateJobStatuses(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.JobStatuses) { // not required
 		return nil
 	}
@@ -109,8 +110,6 @@ func (m *BatchStatus) validateJobStatuses(formats strfmt.Registry) error {
 			if err := m.JobStatuses[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -175,6 +174,7 @@ func (m *BatchStatus) validateStatusEnum(path, location string, value string) er
 }
 
 func (m *BatchStatus) validateStatus(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -209,8 +209,6 @@ func (m *BatchStatus) contextValidateJobStatuses(ctx context.Context, formats st
 			if err := m.JobStatuses[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

@@ -18,91 +18,74 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewUpdateApplicationAlertingConfigParams creates a new UpdateApplicationAlertingConfigParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewUpdateApplicationAlertingConfigParams creates a new UpdateApplicationAlertingConfigParams object
+// with the default values initialized.
 func NewUpdateApplicationAlertingConfigParams() *UpdateApplicationAlertingConfigParams {
+	var ()
 	return &UpdateApplicationAlertingConfigParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewUpdateApplicationAlertingConfigParamsWithTimeout creates a new UpdateApplicationAlertingConfigParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewUpdateApplicationAlertingConfigParamsWithTimeout(timeout time.Duration) *UpdateApplicationAlertingConfigParams {
+	var ()
 	return &UpdateApplicationAlertingConfigParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewUpdateApplicationAlertingConfigParamsWithContext creates a new UpdateApplicationAlertingConfigParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewUpdateApplicationAlertingConfigParamsWithContext(ctx context.Context) *UpdateApplicationAlertingConfigParams {
+	var ()
 	return &UpdateApplicationAlertingConfigParams{
+
 		Context: ctx,
 	}
 }
 
 // NewUpdateApplicationAlertingConfigParamsWithHTTPClient creates a new UpdateApplicationAlertingConfigParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewUpdateApplicationAlertingConfigParamsWithHTTPClient(client *http.Client) *UpdateApplicationAlertingConfigParams {
+	var ()
 	return &UpdateApplicationAlertingConfigParams{
 		HTTPClient: client,
 	}
 }
 
-/* UpdateApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
-   for the update application alerting config operation.
-
-   Typically these are written to a http.Request.
+/*UpdateApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
+for the update application alerting config operation typically these are written to a http.Request
 */
 type UpdateApplicationAlertingConfigParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AlertsConfig
+	  Alerts configuration
 
-	/* AlertsConfig.
-
-	   Alerts configuration
 	*/
 	AlertsConfig *models.UpdateAlertingConfig
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the update application alerting config params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *UpdateApplicationAlertingConfigParams) WithDefaults() *UpdateApplicationAlertingConfigParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the update application alerting config params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *UpdateApplicationAlertingConfigParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the update application alerting config params
@@ -196,6 +179,7 @@ func (o *UpdateApplicationAlertingConfigParams) WriteToRequest(r runtime.ClientR
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -204,7 +188,9 @@ func (o *UpdateApplicationAlertingConfigParams) WriteToRequest(r runtime.ClientR
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
+
 	if o.AlertsConfig != nil {
 		if err := r.SetBodyParam(o.AlertsConfig); err != nil {
 			return err

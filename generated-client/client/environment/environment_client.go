@@ -25,38 +25,35 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-// ClientOption is the option for Client methods
-type ClientOption func(*runtime.ClientOperation)
-
 // ClientService is the interface for Client methods
 type ClientService interface {
-	ChangeComponentSecret(params *ChangeComponentSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeComponentSecretOK, error)
+	ChangeComponentSecret(params *ChangeComponentSecretParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeComponentSecretOK, error)
 
-	CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateEnvironmentOK, error)
+	CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*CreateEnvironmentOK, error)
 
-	DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteEnvironmentOK, error)
+	DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteEnvironmentOK, error)
 
-	DisableEnvironmentAlerting(params *DisableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableEnvironmentAlertingOK, error)
+	DisableEnvironmentAlerting(params *DisableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*DisableEnvironmentAlertingOK, error)
 
-	EnableEnvironmentAlerting(params *EnableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableEnvironmentAlertingOK, error)
+	EnableEnvironmentAlerting(params *EnableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*EnableEnvironmentAlertingOK, error)
 
-	GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationEnvironmentDeploymentsOK, error)
+	GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationEnvironmentDeploymentsOK, error)
 
-	GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentOK, error)
+	GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentOK, error)
 
-	GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentAlertingConfigOK, error)
+	GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentAlertingConfigOK, error)
 
-	GetEnvironmentEvents(params *GetEnvironmentEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentEventsOK, error)
+	GetEnvironmentEvents(params *GetEnvironmentEventsParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentEventsOK, error)
 
-	GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentSummaryOK, error)
+	GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentSummaryOK, error)
 
-	RestartEnvironment(params *RestartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartEnvironmentOK, error)
+	RestartEnvironment(params *RestartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*RestartEnvironmentOK, error)
 
-	StartEnvironment(params *StartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartEnvironmentOK, error)
+	StartEnvironment(params *StartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*StartEnvironmentOK, error)
 
-	StopEnvironment(params *StopEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopEnvironmentOK, error)
+	StopEnvironment(params *StopEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*StopEnvironmentOK, error)
 
-	UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEnvironmentAlertingConfigOK, error)
+	UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateEnvironmentAlertingConfigOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -64,12 +61,13 @@ type ClientService interface {
 /*
   ChangeComponentSecret updates an application environment component secret
 */
-func (a *Client) ChangeComponentSecret(params *ChangeComponentSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeComponentSecretOK, error) {
+func (a *Client) ChangeComponentSecret(params *ChangeComponentSecretParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeComponentSecretOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewChangeComponentSecretParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "changeComponentSecret",
 		Method:             "PUT",
 		PathPattern:        "/applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}",
@@ -81,12 +79,7 @@ func (a *Client) ChangeComponentSecret(params *ChangeComponentSecretParams, auth
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -103,12 +96,13 @@ func (a *Client) ChangeComponentSecret(params *ChangeComponentSecretParams, auth
 /*
   CreateEnvironment creates application environment
 */
-func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateEnvironmentOK, error) {
+func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*CreateEnvironmentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateEnvironmentParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "createEnvironment",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}",
@@ -120,12 +114,7 @@ func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo run
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -142,12 +131,13 @@ func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo run
 /*
   DeleteEnvironment deletes application environment
 */
-func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteEnvironmentOK, error) {
+func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteEnvironmentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteEnvironmentParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "deleteEnvironment",
 		Method:             "DELETE",
 		PathPattern:        "/applications/{appName}/environments/{envName}",
@@ -159,12 +149,7 @@ func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo run
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -181,12 +166,13 @@ func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo run
 /*
   DisableEnvironmentAlerting disables alerting for an environment
 */
-func (a *Client) DisableEnvironmentAlerting(params *DisableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableEnvironmentAlertingOK, error) {
+func (a *Client) DisableEnvironmentAlerting(params *DisableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*DisableEnvironmentAlertingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDisableEnvironmentAlertingParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "disableEnvironmentAlerting",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/alerting/disable",
@@ -198,12 +184,7 @@ func (a *Client) DisableEnvironmentAlerting(params *DisableEnvironmentAlertingPa
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -220,12 +201,13 @@ func (a *Client) DisableEnvironmentAlerting(params *DisableEnvironmentAlertingPa
 /*
   EnableEnvironmentAlerting enables alerting for an environment
 */
-func (a *Client) EnableEnvironmentAlerting(params *EnableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableEnvironmentAlertingOK, error) {
+func (a *Client) EnableEnvironmentAlerting(params *EnableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*EnableEnvironmentAlertingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewEnableEnvironmentAlertingParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "enableEnvironmentAlerting",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/alerting/enable",
@@ -237,12 +219,7 @@ func (a *Client) EnableEnvironmentAlerting(params *EnableEnvironmentAlertingPara
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -259,12 +236,13 @@ func (a *Client) EnableEnvironmentAlerting(params *EnableEnvironmentAlertingPara
 /*
   GetApplicationEnvironmentDeployments lists the application environment deployments
 */
-func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationEnvironmentDeploymentsOK, error) {
+func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationEnvironmentDeploymentsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetApplicationEnvironmentDeploymentsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getApplicationEnvironmentDeployments",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/deployments",
@@ -276,12 +254,7 @@ func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvi
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -298,12 +271,13 @@ func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvi
 /*
   GetEnvironment gets details for an application environment
 */
-func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentOK, error) {
+func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetEnvironmentParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getEnvironment",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}",
@@ -315,12 +289,7 @@ func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -337,12 +306,13 @@ func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.C
 /*
   GetEnvironmentAlertingConfig gets alerts configuration for an environment
 */
-func (a *Client) GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentAlertingConfigOK, error) {
+func (a *Client) GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentAlertingConfigOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetEnvironmentAlertingConfigParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getEnvironmentAlertingConfig",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/alerting",
@@ -354,12 +324,7 @@ func (a *Client) GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConf
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -376,12 +341,13 @@ func (a *Client) GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConf
 /*
   GetEnvironmentEvents lists events for an application environment
 */
-func (a *Client) GetEnvironmentEvents(params *GetEnvironmentEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentEventsOK, error) {
+func (a *Client) GetEnvironmentEvents(params *GetEnvironmentEventsParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentEventsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetEnvironmentEventsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getEnvironmentEvents",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/events",
@@ -393,12 +359,7 @@ func (a *Client) GetEnvironmentEvents(params *GetEnvironmentEventsParams, authIn
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -415,12 +376,13 @@ func (a *Client) GetEnvironmentEvents(params *GetEnvironmentEventsParams, authIn
 /*
   GetEnvironmentSummary lists the environments for an application
 */
-func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentSummaryOK, error) {
+func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter) (*GetEnvironmentSummaryOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetEnvironmentSummaryParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getEnvironmentSummary",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments",
@@ -432,12 +394,7 @@ func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, auth
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -454,12 +411,13 @@ func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, auth
 /*
   RestartEnvironment restarts all components in the environment stops all running components in the environment pulls new images from image hub in radix configuration starts all components in the environment again using up to date image
 */
-func (a *Client) RestartEnvironment(params *RestartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartEnvironmentOK, error) {
+func (a *Client) RestartEnvironment(params *RestartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*RestartEnvironmentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRestartEnvironmentParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "restartEnvironment",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/restart",
@@ -471,12 +429,7 @@ func (a *Client) RestartEnvironment(params *RestartEnvironmentParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -493,12 +446,13 @@ func (a *Client) RestartEnvironment(params *RestartEnvironmentParams, authInfo r
 /*
   StartEnvironment starts all components in the environment
 */
-func (a *Client) StartEnvironment(params *StartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartEnvironmentOK, error) {
+func (a *Client) StartEnvironment(params *StartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*StartEnvironmentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStartEnvironmentParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "startEnvironment",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/start",
@@ -510,12 +464,7 @@ func (a *Client) StartEnvironment(params *StartEnvironmentParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -532,12 +481,13 @@ func (a *Client) StartEnvironment(params *StartEnvironmentParams, authInfo runti
 /*
   StopEnvironment stops all components in the environment
 */
-func (a *Client) StopEnvironment(params *StopEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopEnvironmentOK, error) {
+func (a *Client) StopEnvironment(params *StopEnvironmentParams, authInfo runtime.ClientAuthInfoWriter) (*StopEnvironmentOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStopEnvironmentParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stopEnvironment",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/environments/{envName}/stop",
@@ -549,12 +499,7 @@ func (a *Client) StopEnvironment(params *StopEnvironmentParams, authInfo runtime
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -571,12 +516,13 @@ func (a *Client) StopEnvironment(params *StopEnvironmentParams, authInfo runtime
 /*
   UpdateEnvironmentAlertingConfig updates alerts configuration for an environment
 */
-func (a *Client) UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEnvironmentAlertingConfigOK, error) {
+func (a *Client) UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateEnvironmentAlertingConfigOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateEnvironmentAlertingConfigParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "updateEnvironmentAlertingConfig",
 		Method:             "PUT",
 		PathPattern:        "/applications/{appName}/environments/{envName}/alerting",
@@ -588,12 +534,7 @@ func (a *Client) UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlerti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}

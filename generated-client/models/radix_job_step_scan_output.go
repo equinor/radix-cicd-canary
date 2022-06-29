@@ -54,6 +54,7 @@ func (m *RadixJobStepScanOutput) Validate(formats strfmt.Registry) error {
 }
 
 func (m *RadixJobStepScanOutput) validateStatus(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -61,8 +62,6 @@ func (m *RadixJobStepScanOutput) validateStatus(formats strfmt.Registry) error {
 	if err := m.Status.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("status")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("status")
 		}
 		return err
 	}
@@ -71,19 +70,16 @@ func (m *RadixJobStepScanOutput) validateStatus(formats strfmt.Registry) error {
 }
 
 func (m *RadixJobStepScanOutput) validateVulnerabilities(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Vulnerabilities) { // not required
 		return nil
 	}
 
-	if m.Vulnerabilities != nil {
-		if err := m.Vulnerabilities.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("vulnerabilities")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("vulnerabilities")
-			}
-			return err
+	if err := m.Vulnerabilities.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("vulnerabilities")
 		}
+		return err
 	}
 
 	return nil
@@ -112,8 +108,6 @@ func (m *RadixJobStepScanOutput) contextValidateStatus(ctx context.Context, form
 	if err := m.Status.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("status")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("status")
 		}
 		return err
 	}
@@ -126,8 +120,6 @@ func (m *RadixJobStepScanOutput) contextValidateVulnerabilities(ctx context.Cont
 	if err := m.Vulnerabilities.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("vulnerabilities")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("vulnerabilities")
 		}
 		return err
 	}

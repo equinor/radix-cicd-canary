@@ -90,6 +90,7 @@ func (m *EnvironmentSummary) validateStatusEnum(path, location string, value str
 }
 
 func (m *EnvironmentSummary) validateStatus(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -103,6 +104,7 @@ func (m *EnvironmentSummary) validateStatus(formats strfmt.Registry) error {
 }
 
 func (m *EnvironmentSummary) validateActiveDeployment(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.ActiveDeployment) { // not required
 		return nil
 	}
@@ -111,8 +113,6 @@ func (m *EnvironmentSummary) validateActiveDeployment(formats strfmt.Registry) e
 		if err := m.ActiveDeployment.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("activeDeployment")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("activeDeployment")
 			}
 			return err
 		}
@@ -141,8 +141,6 @@ func (m *EnvironmentSummary) contextValidateActiveDeployment(ctx context.Context
 		if err := m.ActiveDeployment.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("activeDeployment")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("activeDeployment")
 			}
 			return err
 		}

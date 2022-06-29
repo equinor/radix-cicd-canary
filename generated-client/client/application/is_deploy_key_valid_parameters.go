@@ -16,85 +16,69 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewIsDeployKeyValidParams creates a new IsDeployKeyValidParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewIsDeployKeyValidParams creates a new IsDeployKeyValidParams object
+// with the default values initialized.
 func NewIsDeployKeyValidParams() *IsDeployKeyValidParams {
+	var ()
 	return &IsDeployKeyValidParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewIsDeployKeyValidParamsWithTimeout creates a new IsDeployKeyValidParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewIsDeployKeyValidParamsWithTimeout(timeout time.Duration) *IsDeployKeyValidParams {
+	var ()
 	return &IsDeployKeyValidParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewIsDeployKeyValidParamsWithContext creates a new IsDeployKeyValidParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewIsDeployKeyValidParamsWithContext(ctx context.Context) *IsDeployKeyValidParams {
+	var ()
 	return &IsDeployKeyValidParams{
+
 		Context: ctx,
 	}
 }
 
 // NewIsDeployKeyValidParamsWithHTTPClient creates a new IsDeployKeyValidParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewIsDeployKeyValidParamsWithHTTPClient(client *http.Client) *IsDeployKeyValidParams {
+	var ()
 	return &IsDeployKeyValidParams{
 		HTTPClient: client,
 	}
 }
 
-/* IsDeployKeyValidParams contains all the parameters to send to the API endpoint
-   for the is deploy key valid operation.
-
-   Typically these are written to a http.Request.
+/*IsDeployKeyValidParams contains all the parameters to send to the API endpoint
+for the is deploy key valid operation typically these are written to a http.Request
 */
 type IsDeployKeyValidParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the is deploy key valid params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *IsDeployKeyValidParams) WithDefaults() *IsDeployKeyValidParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the is deploy key valid params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *IsDeployKeyValidParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the is deploy key valid params
@@ -177,6 +161,7 @@ func (o *IsDeployKeyValidParams) WriteToRequest(r runtime.ClientRequest, reg str
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -185,6 +170,7 @@ func (o *IsDeployKeyValidParams) WriteToRequest(r runtime.ClientRequest, reg str
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

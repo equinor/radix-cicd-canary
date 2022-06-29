@@ -25,58 +25,55 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-// ClientOption is the option for Client methods
-type ClientOption func(*runtime.ClientOperation)
-
 // ClientService is the interface for Client methods
 type ClientService interface {
-	ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeRegistrationDetailsOK, error)
+	ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeRegistrationDetailsOK, error)
 
-	DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteApplicationOK, error)
+	DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteApplicationOK, error)
 
-	DisableApplicationAlerting(params *DisableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableApplicationAlertingOK, error)
+	DisableApplicationAlerting(params *DisableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*DisableApplicationAlertingOK, error)
 
-	EnableApplicationAlerting(params *EnableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableApplicationAlertingOK, error)
+	EnableApplicationAlerting(params *EnableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*EnableApplicationAlertingOK, error)
 
-	GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationOK, error)
+	GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationOK, error)
 
-	GetApplicationAlertingConfig(params *GetApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationAlertingConfigOK, error)
+	GetApplicationAlertingConfig(params *GetApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationAlertingConfigOK, error)
 
-	GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBuildSecretsOK, error)
+	GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBuildSecretsOK, error)
 
-	GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeploymentsOK, error)
+	GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetDeploymentsOK, error)
 
-	GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPrivateImageHubsOK, error)
+	GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPrivateImageHubsOK, error)
 
-	IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IsDeployKeyValidOK, error)
+	IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runtime.ClientAuthInfoWriter) (*IsDeployKeyValidOK, error)
 
-	ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListPipelinesOK, error)
+	ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter) (*ListPipelinesOK, error)
 
-	ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ModifyRegistrationDetailsOK, error)
+	ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ModifyRegistrationDetailsOK, error)
 
-	RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyOK, error)
+	RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter) (*RegenerateDeployKeyOK, error)
 
-	RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateMachineUserTokenOK, error)
+	RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter) (*RegenerateMachineUserTokenOK, error)
 
-	RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartApplicationOK, error)
+	RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*RestartApplicationOK, error)
 
-	StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartApplicationOK, error)
+	StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*StartApplicationOK, error)
 
-	StopApplication(params *StopApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationOK, error)
+	StopApplication(params *StopApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationOK, error)
 
-	TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineBuildOK, error)
+	TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildOK, error)
 
-	TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineBuildDeployOK, error)
+	TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildDeployOK, error)
 
-	TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineDeployOK, error)
+	TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineDeployOK, error)
 
-	TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelinePromoteOK, error)
+	TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelinePromoteOK, error)
 
-	UpdateApplicationAlertingConfig(params *UpdateApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateApplicationAlertingConfigOK, error)
+	UpdateApplicationAlertingConfig(params *UpdateApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateApplicationAlertingConfigOK, error)
 
-	UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateBuildSecretsSecretValueOK, error)
+	UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateBuildSecretsSecretValueOK, error)
 
-	UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdatePrivateImageHubsSecretValueOK, error)
+	UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdatePrivateImageHubsSecretValueOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -84,12 +81,13 @@ type ClientService interface {
 /*
   ChangeRegistrationDetails updates application registration
 */
-func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeRegistrationDetailsOK, error) {
+func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ChangeRegistrationDetailsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewChangeRegistrationDetailsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "changeRegistrationDetails",
 		Method:             "PUT",
 		PathPattern:        "/applications/{appName}",
@@ -101,12 +99,7 @@ func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsPara
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -123,12 +116,13 @@ func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsPara
 /*
   DeleteApplication deletes application
 */
-func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteApplicationOK, error) {
+func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*DeleteApplicationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteApplicationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "deleteApplication",
 		Method:             "DELETE",
 		PathPattern:        "/applications/{appName}",
@@ -140,12 +134,7 @@ func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo run
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -162,12 +151,13 @@ func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo run
 /*
   DisableApplicationAlerting disables alerting for application namespace
 */
-func (a *Client) DisableApplicationAlerting(params *DisableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableApplicationAlertingOK, error) {
+func (a *Client) DisableApplicationAlerting(params *DisableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*DisableApplicationAlertingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDisableApplicationAlertingParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "disableApplicationAlerting",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/alerting/disable",
@@ -179,12 +169,7 @@ func (a *Client) DisableApplicationAlerting(params *DisableApplicationAlertingPa
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -201,12 +186,13 @@ func (a *Client) DisableApplicationAlerting(params *DisableApplicationAlertingPa
 /*
   EnableApplicationAlerting enables alerting for application namespace
 */
-func (a *Client) EnableApplicationAlerting(params *EnableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableApplicationAlertingOK, error) {
+func (a *Client) EnableApplicationAlerting(params *EnableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter) (*EnableApplicationAlertingOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewEnableApplicationAlertingParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "enableApplicationAlerting",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/alerting/enable",
@@ -218,12 +204,7 @@ func (a *Client) EnableApplicationAlerting(params *EnableApplicationAlertingPara
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -240,12 +221,13 @@ func (a *Client) EnableApplicationAlerting(params *EnableApplicationAlertingPara
 /*
   GetApplication gets the application application by name
 */
-func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationOK, error) {
+func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetApplicationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getApplication",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}",
@@ -257,12 +239,7 @@ func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -279,12 +256,13 @@ func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.C
 /*
   GetApplicationAlertingConfig gets alerts configuration for application namespace
 */
-func (a *Client) GetApplicationAlertingConfig(params *GetApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationAlertingConfigOK, error) {
+func (a *Client) GetApplicationAlertingConfig(params *GetApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationAlertingConfigOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetApplicationAlertingConfigParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getApplicationAlertingConfig",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/alerting",
@@ -296,12 +274,7 @@ func (a *Client) GetApplicationAlertingConfig(params *GetApplicationAlertingConf
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -318,12 +291,13 @@ func (a *Client) GetApplicationAlertingConfig(params *GetApplicationAlertingConf
 /*
   GetBuildSecrets lists the application build secrets
 */
-func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBuildSecretsOK, error) {
+func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter) (*GetBuildSecretsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetBuildSecretsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getBuildSecrets",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/buildsecrets",
@@ -335,12 +309,7 @@ func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -357,12 +326,13 @@ func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime
 /*
   GetDeployments lists the application deployments
 */
-func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeploymentsOK, error) {
+func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter) (*GetDeploymentsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetDeploymentsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getDeployments",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/deployments",
@@ -374,12 +344,7 @@ func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -396,12 +361,13 @@ func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.C
 /*
   GetPrivateImageHubs lists the application private image hubs
 */
-func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPrivateImageHubsOK, error) {
+func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPrivateImageHubsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPrivateImageHubsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getPrivateImageHubs",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/privateimagehubs",
@@ -413,12 +379,7 @@ func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -435,12 +396,13 @@ func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo
 /*
   IsDeployKeyValid checks if the deploy key is correctly setup for application by cloning the repository
 */
-func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IsDeployKeyValidOK, error) {
+func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runtime.ClientAuthInfoWriter) (*IsDeployKeyValidOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewIsDeployKeyValidParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "isDeployKeyValid",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/deploykey-valid",
@@ -452,12 +414,7 @@ func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -474,12 +431,13 @@ func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runti
 /*
   ListPipelines lists the supported pipelines
 */
-func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListPipelinesOK, error) {
+func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter) (*ListPipelinesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewListPipelinesParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "listPipelines",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/pipelines",
@@ -491,12 +449,7 @@ func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.Cli
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -513,12 +466,13 @@ func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.Cli
 /*
   ModifyRegistrationDetails updates specific field s of an application registration
 */
-func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ModifyRegistrationDetailsOK, error) {
+func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter) (*ModifyRegistrationDetailsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewModifyRegistrationDetailsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "modifyRegistrationDetails",
 		Method:             "PATCH",
 		PathPattern:        "/applications/{appName}",
@@ -530,12 +484,7 @@ func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsPara
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -552,12 +501,13 @@ func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsPara
 /*
   RegenerateDeployKey regenerates deploy key
 */
-func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyOK, error) {
+func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter) (*RegenerateDeployKeyOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRegenerateDeployKeyParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "regenerateDeployKey",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/regenerate-deploy-key",
@@ -569,12 +519,7 @@ func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -591,12 +536,13 @@ func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo
 /*
   RegenerateMachineUserToken regenerates machine user token
 */
-func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateMachineUserTokenOK, error) {
+func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter) (*RegenerateMachineUserTokenOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRegenerateMachineUserTokenParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "regenerateMachineUserToken",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/regenerate-machine-user-token",
@@ -608,12 +554,7 @@ func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenPa
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -630,12 +571,13 @@ func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenPa
 /*
   RestartApplication restarts all components in all environments of the application stops all running components in all environments of the application pulls new images from image hub in radix configuration starts all components in all environments of the application again using up to date image
 */
-func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartApplicationOK, error) {
+func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*RestartApplicationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRestartApplicationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "restartApplication",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/restart",
@@ -647,12 +589,7 @@ func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -669,12 +606,13 @@ func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo r
 /*
   StartApplication starts all components in all environments of the application
 */
-func (a *Client) StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartApplicationOK, error) {
+func (a *Client) StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*StartApplicationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStartApplicationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "startApplication",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/start",
@@ -686,12 +624,7 @@ func (a *Client) StartApplication(params *StartApplicationParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -708,12 +641,13 @@ func (a *Client) StartApplication(params *StartApplicationParams, authInfo runti
 /*
   StopApplication stops all components in the environment
 */
-func (a *Client) StopApplication(params *StopApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationOK, error) {
+func (a *Client) StopApplication(params *StopApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStopApplicationParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stopApplication",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/stop",
@@ -725,12 +659,7 @@ func (a *Client) StopApplication(params *StopApplicationParams, authInfo runtime
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -747,12 +676,13 @@ func (a *Client) StopApplication(params *StopApplicationParams, authInfo runtime
 /*
   TriggerPipelineBuild runs a build pipeline for a given application and branch
 */
-func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineBuildOK, error) {
+func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewTriggerPipelineBuildParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "triggerPipelineBuild",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/pipelines/build",
@@ -764,12 +694,7 @@ func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authIn
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -786,12 +711,13 @@ func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authIn
 /*
   TriggerPipelineBuildDeploy runs a build deploy pipeline for a given application and branch
 */
-func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineBuildDeployOK, error) {
+func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineBuildDeployOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewTriggerPipelineBuildDeployParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "triggerPipelineBuildDeploy",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/pipelines/build-deploy",
@@ -803,12 +729,7 @@ func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployPa
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -825,12 +746,13 @@ func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployPa
 /*
   TriggerPipelineDeploy runs a deploy pipeline for a given application and environment
 */
-func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineDeployOK, error) {
+func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelineDeployOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewTriggerPipelineDeployParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "triggerPipelineDeploy",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/pipelines/deploy",
@@ -842,12 +764,7 @@ func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, auth
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -864,12 +781,13 @@ func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, auth
 /*
   TriggerPipelinePromote runs a promote pipeline for a given application and branch
 */
-func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelinePromoteOK, error) {
+func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter) (*TriggerPipelinePromoteOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewTriggerPipelinePromoteParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "triggerPipelinePromote",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/pipelines/promote",
@@ -881,12 +799,7 @@ func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, au
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -903,12 +816,13 @@ func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, au
 /*
   UpdateApplicationAlertingConfig updates alerts configuration for application namespace
 */
-func (a *Client) UpdateApplicationAlertingConfig(params *UpdateApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateApplicationAlertingConfigOK, error) {
+func (a *Client) UpdateApplicationAlertingConfig(params *UpdateApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateApplicationAlertingConfigOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateApplicationAlertingConfigParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "updateApplicationAlertingConfig",
 		Method:             "PUT",
 		PathPattern:        "/applications/{appName}/alerting",
@@ -920,12 +834,7 @@ func (a *Client) UpdateApplicationAlertingConfig(params *UpdateApplicationAlerti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -942,12 +851,13 @@ func (a *Client) UpdateApplicationAlertingConfig(params *UpdateApplicationAlerti
 /*
   UpdateBuildSecretsSecretValue updates an application build secret
 */
-func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateBuildSecretsSecretValueOK, error) {
+func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdateBuildSecretsSecretValueOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdateBuildSecretsSecretValueParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "updateBuildSecretsSecretValue",
 		Method:             "PUT",
 		PathPattern:        "/applications/{appName}/buildsecrets/{secretName}",
@@ -959,12 +869,7 @@ func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretV
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -981,12 +886,13 @@ func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretV
 /*
   UpdatePrivateImageHubsSecretValue updates an application private image hub secret
 */
-func (a *Client) UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdatePrivateImageHubsSecretValueOK, error) {
+func (a *Client) UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter) (*UpdatePrivateImageHubsSecretValueOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewUpdatePrivateImageHubsSecretValueParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "updatePrivateImageHubsSecretValue",
 		Method:             "PUT",
 		PathPattern:        "/applications/{appName}/privateimagehubs/{serverName}",
@@ -998,12 +904,7 @@ func (a *Client) UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHub
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}

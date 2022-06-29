@@ -48,6 +48,7 @@ func (m *AuxiliaryResourceDeployment) Validate(formats strfmt.Registry) error {
 }
 
 func (m *AuxiliaryResourceDeployment) validateReplicaList(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.ReplicaList) { // not required
 		return nil
 	}
@@ -61,8 +62,6 @@ func (m *AuxiliaryResourceDeployment) validateReplicaList(formats strfmt.Registr
 			if err := m.ReplicaList[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -104,8 +103,6 @@ func (m *AuxiliaryResourceDeployment) contextValidateReplicaList(ctx context.Con
 			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
