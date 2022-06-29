@@ -141,6 +141,7 @@ func (m *JobStatus) validateStatusEnum(path, location string, value string) erro
 }
 
 func (m *JobStatus) validateStatus(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}

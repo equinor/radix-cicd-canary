@@ -53,6 +53,7 @@ func (o *ModifyRegistrationDetailsReader) ReadResponse(response runtime.ClientRe
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -63,7 +64,7 @@ func NewModifyRegistrationDetailsOK() *ModifyRegistrationDetailsOK {
 	return &ModifyRegistrationDetailsOK{}
 }
 
-/* ModifyRegistrationDetailsOK describes a response with status code 200, with default header values.
+/*ModifyRegistrationDetailsOK handles this case with default header values.
 
 Successful at modifying registration details
 */
@@ -74,6 +75,7 @@ type ModifyRegistrationDetailsOK struct {
 func (o *ModifyRegistrationDetailsOK) Error() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}][%d] modifyRegistrationDetailsOK  %+v", 200, o.Payload)
 }
+
 func (o *ModifyRegistrationDetailsOK) GetPayload() *models.ApplicationRegistration {
 	return o.Payload
 }
@@ -95,7 +97,7 @@ func NewModifyRegistrationDetailsBadRequest() *ModifyRegistrationDetailsBadReque
 	return &ModifyRegistrationDetailsBadRequest{}
 }
 
-/* ModifyRegistrationDetailsBadRequest describes a response with status code 400, with default header values.
+/*ModifyRegistrationDetailsBadRequest handles this case with default header values.
 
 Invalid application
 */
@@ -116,7 +118,7 @@ func NewModifyRegistrationDetailsUnauthorized() *ModifyRegistrationDetailsUnauth
 	return &ModifyRegistrationDetailsUnauthorized{}
 }
 
-/* ModifyRegistrationDetailsUnauthorized describes a response with status code 401, with default header values.
+/*ModifyRegistrationDetailsUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -137,7 +139,7 @@ func NewModifyRegistrationDetailsNotFound() *ModifyRegistrationDetailsNotFound {
 	return &ModifyRegistrationDetailsNotFound{}
 }
 
-/* ModifyRegistrationDetailsNotFound describes a response with status code 404, with default header values.
+/*ModifyRegistrationDetailsNotFound handles this case with default header values.
 
 Not found
 */
@@ -158,7 +160,7 @@ func NewModifyRegistrationDetailsConflict() *ModifyRegistrationDetailsConflict {
 	return &ModifyRegistrationDetailsConflict{}
 }
 
-/* ModifyRegistrationDetailsConflict describes a response with status code 409, with default header values.
+/*ModifyRegistrationDetailsConflict handles this case with default header values.
 
 Conflict
 */

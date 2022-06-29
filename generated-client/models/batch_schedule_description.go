@@ -61,8 +61,6 @@ func (m *BatchScheduleDescription) validateJobScheduleDescriptions(formats strfm
 			if err := m.JobScheduleDescriptions[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobScheduleDescriptions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("jobScheduleDescriptions" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -74,6 +72,7 @@ func (m *BatchScheduleDescription) validateJobScheduleDescriptions(formats strfm
 }
 
 func (m *BatchScheduleDescription) validateDefaultRadixJobComponentConfig(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.DefaultRadixJobComponentConfig) { // not required
 		return nil
 	}
@@ -82,8 +81,6 @@ func (m *BatchScheduleDescription) validateDefaultRadixJobComponentConfig(format
 		if err := m.DefaultRadixJobComponentConfig.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("defaultRadixJobComponentConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("defaultRadixJobComponentConfig")
 			}
 			return err
 		}
@@ -118,8 +115,6 @@ func (m *BatchScheduleDescription) contextValidateJobScheduleDescriptions(ctx co
 			if err := m.JobScheduleDescriptions[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobScheduleDescriptions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("jobScheduleDescriptions" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -136,8 +131,6 @@ func (m *BatchScheduleDescription) contextValidateDefaultRadixJobComponentConfig
 		if err := m.DefaultRadixJobComponentConfig.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("defaultRadixJobComponentConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("defaultRadixJobComponentConfig")
 			}
 			return err
 		}

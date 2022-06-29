@@ -37,6 +37,7 @@ func (m *ObjectState) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ObjectState) validatePod(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Pod) { // not required
 		return nil
 	}
@@ -45,8 +46,6 @@ func (m *ObjectState) validatePod(formats strfmt.Registry) error {
 		if err := m.Pod.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("pod")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("pod")
 			}
 			return err
 		}
@@ -75,8 +74,6 @@ func (m *ObjectState) contextValidatePod(ctx context.Context, formats strfmt.Reg
 		if err := m.Pod.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("pod")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("pod")
 			}
 			return err
 		}

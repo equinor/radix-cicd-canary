@@ -16,103 +16,84 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetJobParams creates a new GetJobParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetJobParams creates a new GetJobParams object
+// with the default values initialized.
 func NewGetJobParams() *GetJobParams {
+	var ()
 	return &GetJobParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetJobParamsWithTimeout creates a new GetJobParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetJobParamsWithTimeout(timeout time.Duration) *GetJobParams {
+	var ()
 	return &GetJobParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetJobParamsWithContext creates a new GetJobParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetJobParamsWithContext(ctx context.Context) *GetJobParams {
+	var ()
 	return &GetJobParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetJobParamsWithHTTPClient creates a new GetJobParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetJobParamsWithHTTPClient(client *http.Client) *GetJobParams {
+	var ()
 	return &GetJobParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetJobParams contains all the parameters to send to the API endpoint
-   for the get job operation.
-
-   Typically these are written to a http.Request.
+/*GetJobParams contains all the parameters to send to the API endpoint
+for the get job operation typically these are written to a http.Request
 */
 type GetJobParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*EnvName
+	  Name of environment
 
-	/* EnvName.
-
-	   Name of environment
 	*/
 	EnvName string
+	/*JobComponentName
+	  Name of job-component
 
-	/* JobComponentName.
-
-	   Name of job-component
 	*/
 	JobComponentName string
+	/*JobName
+	  Name of job
 
-	/* JobName.
-
-	   Name of job
 	*/
 	JobName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get job params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetJobParams) WithDefaults() *GetJobParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get job params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetJobParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get job params
@@ -228,6 +209,7 @@ func (o *GetJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -236,6 +218,7 @@ func (o *GetJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

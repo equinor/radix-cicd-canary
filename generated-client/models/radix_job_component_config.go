@@ -47,6 +47,7 @@ func (m *RadixJobComponentConfig) Validate(formats strfmt.Registry) error {
 }
 
 func (m *RadixJobComponentConfig) validateNode(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Node) { // not required
 		return nil
 	}
@@ -55,8 +56,6 @@ func (m *RadixJobComponentConfig) validateNode(formats strfmt.Registry) error {
 		if err := m.Node.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("node")
 			}
 			return err
 		}
@@ -66,6 +65,7 @@ func (m *RadixJobComponentConfig) validateNode(formats strfmt.Registry) error {
 }
 
 func (m *RadixJobComponentConfig) validateResources(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Resources) { // not required
 		return nil
 	}
@@ -74,8 +74,6 @@ func (m *RadixJobComponentConfig) validateResources(formats strfmt.Registry) err
 		if err := m.Resources.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
 			}
 			return err
 		}
@@ -108,8 +106,6 @@ func (m *RadixJobComponentConfig) contextValidateNode(ctx context.Context, forma
 		if err := m.Node.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("node")
 			}
 			return err
 		}
@@ -124,8 +120,6 @@ func (m *RadixJobComponentConfig) contextValidateResources(ctx context.Context, 
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
 			}
 			return err
 		}

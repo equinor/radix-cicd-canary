@@ -35,6 +35,7 @@ func (o *GetBatchReader) ReadResponse(response runtime.ClientResponse, consumer 
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -45,7 +46,7 @@ func NewGetBatchOK() *GetBatchOK {
 	return &GetBatchOK{}
 }
 
-/* GetBatchOK describes a response with status code 200, with default header values.
+/*GetBatchOK handles this case with default header values.
 
 scheduled batch
 */
@@ -56,6 +57,7 @@ type GetBatchOK struct {
 func (o *GetBatchOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] getBatchOK  %+v", 200, o.Payload)
 }
+
 func (o *GetBatchOK) GetPayload() *models.ScheduledBatchSummary {
 	return o.Payload
 }
@@ -77,7 +79,7 @@ func NewGetBatchNotFound() *GetBatchNotFound {
 	return &GetBatchNotFound{}
 }
 
-/* GetBatchNotFound describes a response with status code 404, with default header values.
+/*GetBatchNotFound handles this case with default header values.
 
 Not found
 */

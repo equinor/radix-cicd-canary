@@ -59,6 +59,7 @@ func (o *DisableApplicationAlertingReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -69,7 +70,7 @@ func NewDisableApplicationAlertingOK() *DisableApplicationAlertingOK {
 	return &DisableApplicationAlertingOK{}
 }
 
-/* DisableApplicationAlertingOK describes a response with status code 200, with default header values.
+/*DisableApplicationAlertingOK handles this case with default header values.
 
 Successful disable alerting
 */
@@ -80,6 +81,7 @@ type DisableApplicationAlertingOK struct {
 func (o *DisableApplicationAlertingOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/disable][%d] disableApplicationAlertingOK  %+v", 200, o.Payload)
 }
+
 func (o *DisableApplicationAlertingOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -101,7 +103,7 @@ func NewDisableApplicationAlertingBadRequest() *DisableApplicationAlertingBadReq
 	return &DisableApplicationAlertingBadRequest{}
 }
 
-/* DisableApplicationAlertingBadRequest describes a response with status code 400, with default header values.
+/*DisableApplicationAlertingBadRequest handles this case with default header values.
 
 Alerting already enabled
 */
@@ -122,7 +124,7 @@ func NewDisableApplicationAlertingUnauthorized() *DisableApplicationAlertingUnau
 	return &DisableApplicationAlertingUnauthorized{}
 }
 
-/* DisableApplicationAlertingUnauthorized describes a response with status code 401, with default header values.
+/*DisableApplicationAlertingUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -143,7 +145,7 @@ func NewDisableApplicationAlertingForbidden() *DisableApplicationAlertingForbidd
 	return &DisableApplicationAlertingForbidden{}
 }
 
-/* DisableApplicationAlertingForbidden describes a response with status code 403, with default header values.
+/*DisableApplicationAlertingForbidden handles this case with default header values.
 
 Forbidden
 */
@@ -164,7 +166,7 @@ func NewDisableApplicationAlertingNotFound() *DisableApplicationAlertingNotFound
 	return &DisableApplicationAlertingNotFound{}
 }
 
-/* DisableApplicationAlertingNotFound describes a response with status code 404, with default header values.
+/*DisableApplicationAlertingNotFound handles this case with default header values.
 
 Not found
 */
@@ -185,7 +187,7 @@ func NewDisableApplicationAlertingInternalServerError() *DisableApplicationAlert
 	return &DisableApplicationAlertingInternalServerError{}
 }
 
-/* DisableApplicationAlertingInternalServerError describes a response with status code 500, with default header values.
+/*DisableApplicationAlertingInternalServerError handles this case with default header values.
 
 Internal server error
 */

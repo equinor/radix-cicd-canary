@@ -18,109 +18,89 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewChangeComponentSecretParams creates a new ChangeComponentSecretParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewChangeComponentSecretParams creates a new ChangeComponentSecretParams object
+// with the default values initialized.
 func NewChangeComponentSecretParams() *ChangeComponentSecretParams {
+	var ()
 	return &ChangeComponentSecretParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewChangeComponentSecretParamsWithTimeout creates a new ChangeComponentSecretParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewChangeComponentSecretParamsWithTimeout(timeout time.Duration) *ChangeComponentSecretParams {
+	var ()
 	return &ChangeComponentSecretParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewChangeComponentSecretParamsWithContext creates a new ChangeComponentSecretParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewChangeComponentSecretParamsWithContext(ctx context.Context) *ChangeComponentSecretParams {
+	var ()
 	return &ChangeComponentSecretParams{
+
 		Context: ctx,
 	}
 }
 
 // NewChangeComponentSecretParamsWithHTTPClient creates a new ChangeComponentSecretParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewChangeComponentSecretParamsWithHTTPClient(client *http.Client) *ChangeComponentSecretParams {
+	var ()
 	return &ChangeComponentSecretParams{
 		HTTPClient: client,
 	}
 }
 
-/* ChangeComponentSecretParams contains all the parameters to send to the API endpoint
-   for the change component secret operation.
-
-   Typically these are written to a http.Request.
+/*ChangeComponentSecretParams contains all the parameters to send to the API endpoint
+for the change component secret operation typically these are written to a http.Request
 */
 type ChangeComponentSecretParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*ComponentName
+	  secret component of Radix application
 
-	/* ComponentName.
-
-	   secret component of Radix application
 	*/
 	ComponentName string
+	/*ComponentSecret
+	  New secret value
 
-	/* ComponentSecret.
-
-	   New secret value
 	*/
 	ComponentSecret *models.SecretParameters
+	/*EnvName
+	  secret of Radix application
 
-	/* EnvName.
-
-	   secret of Radix application
 	*/
 	EnvName string
+	/*SecretName
+	  environment component secret name to be updated
 
-	/* SecretName.
-
-	   environment component secret name to be updated
 	*/
 	SecretName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the change component secret params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *ChangeComponentSecretParams) WithDefaults() *ChangeComponentSecretParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the change component secret params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *ChangeComponentSecretParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the change component secret params
@@ -247,6 +227,7 @@ func (o *ChangeComponentSecretParams) WriteToRequest(r runtime.ClientRequest, re
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -255,6 +236,7 @@ func (o *ChangeComponentSecretParams) WriteToRequest(r runtime.ClientRequest, re
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName
@@ -266,6 +248,7 @@ func (o *ChangeComponentSecretParams) WriteToRequest(r runtime.ClientRequest, re
 	if err := r.SetPathParam("componentName", o.ComponentName); err != nil {
 		return err
 	}
+
 	if o.ComponentSecret != nil {
 		if err := r.SetBodyParam(o.ComponentSecret); err != nil {
 			return err

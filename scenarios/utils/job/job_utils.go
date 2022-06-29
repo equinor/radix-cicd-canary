@@ -1,8 +1,6 @@
 package job
 
 import (
-	"strings"
-
 	pipelineJobclient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -138,25 +136,20 @@ func GetLogForStep(env env.Env, appName, jobName, stepName string) string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
-	params := pipelineJobclient.NewGetApplicationJobLogsParams().
+	params := pipelineJobclient.NewGetPipelineJobStepLogsParams().
 		WithAppName(appName).
 		WithJobName(jobName).
+		WithStepName(stepName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetJobClient(env)
 
-	applicationJobLogs, err := client.GetApplicationJobLogs(params, clientBearerToken)
-	if err == nil &&
-		applicationJobLogs.Payload != nil {
-
-		for _, stepLog := range applicationJobLogs.Payload {
-			if strings.EqualFold(*stepLog.Name, stepName) {
-				return stepLog.Log
-			}
-		}
+	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, clientBearerToken)
+	if err != nil {
+		log.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
+		return ""
 	}
-
-	return ""
+	return applicationJobLogs.Payload
 }

@@ -18,91 +18,74 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewTriggerPipelineBuildDeployParams creates a new TriggerPipelineBuildDeployParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewTriggerPipelineBuildDeployParams creates a new TriggerPipelineBuildDeployParams object
+// with the default values initialized.
 func NewTriggerPipelineBuildDeployParams() *TriggerPipelineBuildDeployParams {
+	var ()
 	return &TriggerPipelineBuildDeployParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewTriggerPipelineBuildDeployParamsWithTimeout creates a new TriggerPipelineBuildDeployParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewTriggerPipelineBuildDeployParamsWithTimeout(timeout time.Duration) *TriggerPipelineBuildDeployParams {
+	var ()
 	return &TriggerPipelineBuildDeployParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewTriggerPipelineBuildDeployParamsWithContext creates a new TriggerPipelineBuildDeployParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewTriggerPipelineBuildDeployParamsWithContext(ctx context.Context) *TriggerPipelineBuildDeployParams {
+	var ()
 	return &TriggerPipelineBuildDeployParams{
+
 		Context: ctx,
 	}
 }
 
 // NewTriggerPipelineBuildDeployParamsWithHTTPClient creates a new TriggerPipelineBuildDeployParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewTriggerPipelineBuildDeployParamsWithHTTPClient(client *http.Client) *TriggerPipelineBuildDeployParams {
+	var ()
 	return &TriggerPipelineBuildDeployParams{
 		HTTPClient: client,
 	}
 }
 
-/* TriggerPipelineBuildDeployParams contains all the parameters to send to the API endpoint
-   for the trigger pipeline build deploy operation.
-
-   Typically these are written to a http.Request.
+/*TriggerPipelineBuildDeployParams contains all the parameters to send to the API endpoint
+for the trigger pipeline build deploy operation typically these are written to a http.Request
 */
 type TriggerPipelineBuildDeployParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*PipelineParametersBuild
+	  Pipeline parameters
 
-	/* PipelineParametersBuild.
-
-	   Pipeline parameters
 	*/
 	PipelineParametersBuild *models.PipelineParametersBuild
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the trigger pipeline build deploy params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *TriggerPipelineBuildDeployParams) WithDefaults() *TriggerPipelineBuildDeployParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the trigger pipeline build deploy params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *TriggerPipelineBuildDeployParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the trigger pipeline build deploy params
@@ -196,6 +179,7 @@ func (o *TriggerPipelineBuildDeployParams) WriteToRequest(r runtime.ClientReques
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -204,7 +188,9 @@ func (o *TriggerPipelineBuildDeployParams) WriteToRequest(r runtime.ClientReques
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
+
 	if o.PipelineParametersBuild != nil {
 		if err := r.SetBodyParam(o.PipelineParametersBuild); err != nil {
 			return err

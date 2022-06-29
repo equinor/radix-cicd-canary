@@ -48,8 +48,6 @@ func (m *OAuth2AuxiliaryResource) validateDeployment(formats strfmt.Registry) er
 		if err := m.Deployment.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("deployment")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployment")
 			}
 			return err
 		}
@@ -78,8 +76,6 @@ func (m *OAuth2AuxiliaryResource) contextValidateDeployment(ctx context.Context,
 		if err := m.Deployment.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("deployment")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployment")
 			}
 			return err
 		}

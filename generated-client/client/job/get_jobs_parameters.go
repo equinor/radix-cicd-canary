@@ -16,97 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetJobsParams creates a new GetJobsParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetJobsParams creates a new GetJobsParams object
+// with the default values initialized.
 func NewGetJobsParams() *GetJobsParams {
+	var ()
 	return &GetJobsParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetJobsParamsWithTimeout creates a new GetJobsParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetJobsParamsWithTimeout(timeout time.Duration) *GetJobsParams {
+	var ()
 	return &GetJobsParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetJobsParamsWithContext creates a new GetJobsParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetJobsParamsWithContext(ctx context.Context) *GetJobsParams {
+	var ()
 	return &GetJobsParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetJobsParamsWithHTTPClient creates a new GetJobsParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetJobsParamsWithHTTPClient(client *http.Client) *GetJobsParams {
+	var ()
 	return &GetJobsParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetJobsParams contains all the parameters to send to the API endpoint
-   for the get jobs operation.
-
-   Typically these are written to a http.Request.
+/*GetJobsParams contains all the parameters to send to the API endpoint
+for the get jobs operation typically these are written to a http.Request
 */
 type GetJobsParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*EnvName
+	  Name of environment
 
-	/* EnvName.
-
-	   Name of environment
 	*/
 	EnvName string
+	/*JobComponentName
+	  Name of job-component
 
-	/* JobComponentName.
-
-	   Name of job-component
 	*/
 	JobComponentName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get jobs params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetJobsParams) WithDefaults() *GetJobsParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get jobs params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetJobsParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get jobs params
@@ -211,6 +193,7 @@ func (o *GetJobsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -219,6 +202,7 @@ func (o *GetJobsParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

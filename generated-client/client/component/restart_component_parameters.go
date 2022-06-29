@@ -16,97 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewRestartComponentParams creates a new RestartComponentParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewRestartComponentParams creates a new RestartComponentParams object
+// with the default values initialized.
 func NewRestartComponentParams() *RestartComponentParams {
+	var ()
 	return &RestartComponentParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewRestartComponentParamsWithTimeout creates a new RestartComponentParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewRestartComponentParamsWithTimeout(timeout time.Duration) *RestartComponentParams {
+	var ()
 	return &RestartComponentParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewRestartComponentParamsWithContext creates a new RestartComponentParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewRestartComponentParamsWithContext(ctx context.Context) *RestartComponentParams {
+	var ()
 	return &RestartComponentParams{
+
 		Context: ctx,
 	}
 }
 
 // NewRestartComponentParamsWithHTTPClient creates a new RestartComponentParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewRestartComponentParamsWithHTTPClient(client *http.Client) *RestartComponentParams {
+	var ()
 	return &RestartComponentParams{
 		HTTPClient: client,
 	}
 }
 
-/* RestartComponentParams contains all the parameters to send to the API endpoint
-   for the restart component operation.
-
-   Typically these are written to a http.Request.
+/*RestartComponentParams contains all the parameters to send to the API endpoint
+for the restart component operation typically these are written to a http.Request
 */
 type RestartComponentParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*ComponentName
+	  Name of component
 
-	/* ComponentName.
-
-	   Name of component
 	*/
 	ComponentName string
+	/*EnvName
+	  Name of environment
 
-	/* EnvName.
-
-	   Name of environment
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the restart component params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *RestartComponentParams) WithDefaults() *RestartComponentParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the restart component params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *RestartComponentParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the restart component params
@@ -211,6 +193,7 @@ func (o *RestartComponentParams) WriteToRequest(r runtime.ClientRequest, reg str
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -219,6 +202,7 @@ func (o *RestartComponentParams) WriteToRequest(r runtime.ClientRequest, reg str
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

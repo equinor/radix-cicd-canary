@@ -16,97 +16,79 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetPipelineJobStepScanOutputParams creates a new GetPipelineJobStepScanOutputParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetPipelineJobStepScanOutputParams creates a new GetPipelineJobStepScanOutputParams object
+// with the default values initialized.
 func NewGetPipelineJobStepScanOutputParams() *GetPipelineJobStepScanOutputParams {
+	var ()
 	return &GetPipelineJobStepScanOutputParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetPipelineJobStepScanOutputParamsWithTimeout creates a new GetPipelineJobStepScanOutputParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetPipelineJobStepScanOutputParamsWithTimeout(timeout time.Duration) *GetPipelineJobStepScanOutputParams {
+	var ()
 	return &GetPipelineJobStepScanOutputParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetPipelineJobStepScanOutputParamsWithContext creates a new GetPipelineJobStepScanOutputParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetPipelineJobStepScanOutputParamsWithContext(ctx context.Context) *GetPipelineJobStepScanOutputParams {
+	var ()
 	return &GetPipelineJobStepScanOutputParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetPipelineJobStepScanOutputParamsWithHTTPClient creates a new GetPipelineJobStepScanOutputParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetPipelineJobStepScanOutputParamsWithHTTPClient(client *http.Client) *GetPipelineJobStepScanOutputParams {
+	var ()
 	return &GetPipelineJobStepScanOutputParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetPipelineJobStepScanOutputParams contains all the parameters to send to the API endpoint
-   for the get pipeline job step scan output operation.
-
-   Typically these are written to a http.Request.
+/*GetPipelineJobStepScanOutputParams contains all the parameters to send to the API endpoint
+for the get pipeline job step scan output operation typically these are written to a http.Request
 */
 type GetPipelineJobStepScanOutputParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  name of Radix application
 
-	/* AppName.
-
-	   name of Radix application
 	*/
 	AppName string
+	/*JobName
+	  Name of pipeline job
 
-	/* JobName.
-
-	   Name of pipeline job
 	*/
 	JobName string
+	/*StepName
+	  Name of the step
 
-	/* StepName.
-
-	   Name of the step
 	*/
 	StepName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get pipeline job step scan output params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetPipelineJobStepScanOutputParams) WithDefaults() *GetPipelineJobStepScanOutputParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get pipeline job step scan output params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetPipelineJobStepScanOutputParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get pipeline job step scan output params
@@ -211,6 +193,7 @@ func (o *GetPipelineJobStepScanOutputParams) WriteToRequest(r runtime.ClientRequ
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -219,6 +202,7 @@ func (o *GetPipelineJobStepScanOutputParams) WriteToRequest(r runtime.ClientRequ
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

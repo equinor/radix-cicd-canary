@@ -16,111 +16,99 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewJobLogParams creates a new JobLogParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewJobLogParams creates a new JobLogParams object
+// with the default values initialized.
 func NewJobLogParams() *JobLogParams {
+	var ()
 	return &JobLogParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewJobLogParamsWithTimeout creates a new JobLogParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewJobLogParamsWithTimeout(timeout time.Duration) *JobLogParams {
+	var ()
 	return &JobLogParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewJobLogParamsWithContext creates a new JobLogParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewJobLogParamsWithContext(ctx context.Context) *JobLogParams {
+	var ()
 	return &JobLogParams{
+
 		Context: ctx,
 	}
 }
 
 // NewJobLogParamsWithHTTPClient creates a new JobLogParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewJobLogParamsWithHTTPClient(client *http.Client) *JobLogParams {
+	var ()
 	return &JobLogParams{
 		HTTPClient: client,
 	}
 }
 
-/* JobLogParams contains all the parameters to send to the API endpoint
-   for the job log operation.
-
-   Typically these are written to a http.Request.
+/*JobLogParams contains all the parameters to send to the API endpoint
+for the job log operation typically these are written to a http.Request
 */
 type JobLogParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*EnvName
+	  Name of environment
 
-	/* EnvName.
-
-	   Name of environment
 	*/
 	EnvName string
+	/*File
+	  Get log as a file if true
 
-	/* JobComponentName.
+	*/
+	File *string
+	/*JobComponentName
+	  Name of job-component
 
-	   Name of job-component
 	*/
 	JobComponentName string
+	/*Lines
+	  Get log lines (example 1000)
 
-	/* ScheduledJobName.
+	*/
+	Lines *string
+	/*ScheduledJobName
+	  Name of scheduled job
 
-	   Name of scheduled job
 	*/
 	ScheduledJobName string
+	/*SinceTime
+	  Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
 
-	/* SinceTime.
-
-	   Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
-
-	   Format: date-time
 	*/
 	SinceTime *strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the job log params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *JobLogParams) WithDefaults() *JobLogParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the job log params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *JobLogParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the job log params
@@ -200,6 +188,17 @@ func (o *JobLogParams) SetEnvName(envName string) {
 	o.EnvName = envName
 }
 
+// WithFile adds the file to the job log params
+func (o *JobLogParams) WithFile(file *string) *JobLogParams {
+	o.SetFile(file)
+	return o
+}
+
+// SetFile adds the file to the job log params
+func (o *JobLogParams) SetFile(file *string) {
+	o.File = file
+}
+
 // WithJobComponentName adds the jobComponentName to the job log params
 func (o *JobLogParams) WithJobComponentName(jobComponentName string) *JobLogParams {
 	o.SetJobComponentName(jobComponentName)
@@ -209,6 +208,17 @@ func (o *JobLogParams) WithJobComponentName(jobComponentName string) *JobLogPara
 // SetJobComponentName adds the jobComponentName to the job log params
 func (o *JobLogParams) SetJobComponentName(jobComponentName string) {
 	o.JobComponentName = jobComponentName
+}
+
+// WithLines adds the lines to the job log params
+func (o *JobLogParams) WithLines(lines *string) *JobLogParams {
+	o.SetLines(lines)
+	return o
+}
+
+// SetLines adds the lines to the job log params
+func (o *JobLogParams) SetLines(lines *string) {
+	o.Lines = lines
 }
 
 // WithScheduledJobName adds the scheduledJobName to the job log params
@@ -247,6 +257,7 @@ func (o *JobLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -255,6 +266,7 @@ func (o *JobLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName
@@ -267,9 +279,41 @@ func (o *JobLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 		return err
 	}
 
+	if o.File != nil {
+
+		// query param file
+		var qrFile string
+		if o.File != nil {
+			qrFile = *o.File
+		}
+		qFile := qrFile
+		if qFile != "" {
+			if err := r.SetQueryParam("file", qFile); err != nil {
+				return err
+			}
+		}
+
+	}
+
 	// path param jobComponentName
 	if err := r.SetPathParam("jobComponentName", o.JobComponentName); err != nil {
 		return err
+	}
+
+	if o.Lines != nil {
+
+		// query param lines
+		var qrLines string
+		if o.Lines != nil {
+			qrLines = *o.Lines
+		}
+		qLines := qrLines
+		if qLines != "" {
+			if err := r.SetQueryParam("lines", qLines); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	// path param scheduledJobName
@@ -281,17 +325,16 @@ func (o *JobLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 
 		// query param sinceTime
 		var qrSinceTime strfmt.DateTime
-
 		if o.SinceTime != nil {
 			qrSinceTime = *o.SinceTime
 		}
 		qSinceTime := qrSinceTime.String()
 		if qSinceTime != "" {
-
 			if err := r.SetQueryParam("sinceTime", qSinceTime); err != nil {
 				return err
 			}
 		}
+
 	}
 
 	if len(res) > 0 {

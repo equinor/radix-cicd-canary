@@ -59,6 +59,7 @@ func (o *SearchApplicationsReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -69,7 +70,7 @@ func NewSearchApplicationsOK() *SearchApplicationsOK {
 	return &SearchApplicationsOK{}
 }
 
-/* SearchApplicationsOK describes a response with status code 200, with default header values.
+/*SearchApplicationsOK handles this case with default header values.
 
 Successful operation
 */
@@ -80,6 +81,7 @@ type SearchApplicationsOK struct {
 func (o *SearchApplicationsOK) Error() string {
 	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsOK  %+v", 200, o.Payload)
 }
+
 func (o *SearchApplicationsOK) GetPayload() []*models.ApplicationSummary {
 	return o.Payload
 }
@@ -99,7 +101,7 @@ func NewSearchApplicationsUnauthorized() *SearchApplicationsUnauthorized {
 	return &SearchApplicationsUnauthorized{}
 }
 
-/* SearchApplicationsUnauthorized describes a response with status code 401, with default header values.
+/*SearchApplicationsUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -120,7 +122,7 @@ func NewSearchApplicationsForbidden() *SearchApplicationsForbidden {
 	return &SearchApplicationsForbidden{}
 }
 
-/* SearchApplicationsForbidden describes a response with status code 403, with default header values.
+/*SearchApplicationsForbidden handles this case with default header values.
 
 Forbidden
 */
@@ -141,7 +143,7 @@ func NewSearchApplicationsNotFound() *SearchApplicationsNotFound {
 	return &SearchApplicationsNotFound{}
 }
 
-/* SearchApplicationsNotFound describes a response with status code 404, with default header values.
+/*SearchApplicationsNotFound handles this case with default header values.
 
 Not found
 */
@@ -162,7 +164,7 @@ func NewSearchApplicationsConflict() *SearchApplicationsConflict {
 	return &SearchApplicationsConflict{}
 }
 
-/* SearchApplicationsConflict describes a response with status code 409, with default header values.
+/*SearchApplicationsConflict handles this case with default header values.
 
 Conflict
 */
@@ -183,7 +185,7 @@ func NewSearchApplicationsInternalServerError() *SearchApplicationsInternalServe
 	return &SearchApplicationsInternalServerError{}
 }
 
-/* SearchApplicationsInternalServerError describes a response with status code 500, with default header values.
+/*SearchApplicationsInternalServerError handles this case with default header values.
 
 Internal server error
 */

@@ -17,97 +17,79 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewGetDeploymentsParams creates a new GetDeploymentsParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetDeploymentsParams creates a new GetDeploymentsParams object
+// with the default values initialized.
 func NewGetDeploymentsParams() *GetDeploymentsParams {
+	var ()
 	return &GetDeploymentsParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetDeploymentsParamsWithTimeout creates a new GetDeploymentsParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetDeploymentsParamsWithTimeout(timeout time.Duration) *GetDeploymentsParams {
+	var ()
 	return &GetDeploymentsParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetDeploymentsParamsWithContext creates a new GetDeploymentsParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetDeploymentsParamsWithContext(ctx context.Context) *GetDeploymentsParams {
+	var ()
 	return &GetDeploymentsParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetDeploymentsParamsWithHTTPClient creates a new GetDeploymentsParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetDeploymentsParamsWithHTTPClient(client *http.Client) *GetDeploymentsParams {
+	var ()
 	return &GetDeploymentsParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetDeploymentsParams contains all the parameters to send to the API endpoint
-   for the get deployments operation.
-
-   Typically these are written to a http.Request.
+/*GetDeploymentsParams contains all the parameters to send to the API endpoint
+for the get deployments operation typically these are written to a http.Request
 */
 type GetDeploymentsParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  name of Radix application
 
-	/* AppName.
-
-	   name of Radix application
 	*/
 	AppName string
+	/*Environment
+	  environment of Radix application
 
-	/* Environment.
-
-	   environment of Radix application
 	*/
 	Environment *string
+	/*Latest
+	  indicator to allow only listing latest
 
-	/* Latest.
-
-	   indicator to allow only listing latest
 	*/
 	Latest *bool
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get deployments params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetDeploymentsParams) WithDefaults() *GetDeploymentsParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get deployments params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetDeploymentsParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get deployments params
@@ -212,6 +194,7 @@ func (o *GetDeploymentsParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -220,6 +203,7 @@ func (o *GetDeploymentsParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName
@@ -231,34 +215,32 @@ func (o *GetDeploymentsParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 
 		// query param environment
 		var qrEnvironment string
-
 		if o.Environment != nil {
 			qrEnvironment = *o.Environment
 		}
 		qEnvironment := qrEnvironment
 		if qEnvironment != "" {
-
 			if err := r.SetQueryParam("environment", qEnvironment); err != nil {
 				return err
 			}
 		}
+
 	}
 
 	if o.Latest != nil {
 
 		// query param latest
 		var qrLatest bool
-
 		if o.Latest != nil {
 			qrLatest = *o.Latest
 		}
 		qLatest := swag.FormatBool(qrLatest)
 		if qLatest != "" {
-
 			if err := r.SetQueryParam("latest", qLatest); err != nil {
 				return err
 			}
 		}
+
 	}
 
 	if len(res) > 0 {

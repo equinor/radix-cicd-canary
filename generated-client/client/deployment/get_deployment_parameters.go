@@ -16,91 +16,74 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetDeploymentParams creates a new GetDeploymentParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewGetDeploymentParams creates a new GetDeploymentParams object
+// with the default values initialized.
 func NewGetDeploymentParams() *GetDeploymentParams {
+	var ()
 	return &GetDeploymentParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetDeploymentParamsWithTimeout creates a new GetDeploymentParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewGetDeploymentParamsWithTimeout(timeout time.Duration) *GetDeploymentParams {
+	var ()
 	return &GetDeploymentParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewGetDeploymentParamsWithContext creates a new GetDeploymentParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewGetDeploymentParamsWithContext(ctx context.Context) *GetDeploymentParams {
+	var ()
 	return &GetDeploymentParams{
+
 		Context: ctx,
 	}
 }
 
 // NewGetDeploymentParamsWithHTTPClient creates a new GetDeploymentParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewGetDeploymentParamsWithHTTPClient(client *http.Client) *GetDeploymentParams {
+	var ()
 	return &GetDeploymentParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetDeploymentParams contains all the parameters to send to the API endpoint
-   for the get deployment operation.
-
-   Typically these are written to a http.Request.
+/*GetDeploymentParams contains all the parameters to send to the API endpoint
+for the get deployment operation typically these are written to a http.Request
 */
 type GetDeploymentParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  name of Radix application
 
-	/* AppName.
-
-	   name of Radix application
 	*/
 	AppName string
+	/*DeploymentName
+	  name of deployment
 
-	/* DeploymentName.
-
-	   name of deployment
 	*/
 	DeploymentName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the get deployment params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetDeploymentParams) WithDefaults() *GetDeploymentParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the get deployment params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *GetDeploymentParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get deployment params
@@ -194,6 +177,7 @@ func (o *GetDeploymentParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -202,6 +186,7 @@ func (o *GetDeploymentParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName

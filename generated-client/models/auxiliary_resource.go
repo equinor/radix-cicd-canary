@@ -37,6 +37,7 @@ func (m *AuxiliaryResource) Validate(formats strfmt.Registry) error {
 }
 
 func (m *AuxiliaryResource) validateOauth2(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Oauth2) { // not required
 		return nil
 	}
@@ -45,8 +46,6 @@ func (m *AuxiliaryResource) validateOauth2(formats strfmt.Registry) error {
 		if err := m.Oauth2.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("oauth2")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("oauth2")
 			}
 			return err
 		}
@@ -75,8 +74,6 @@ func (m *AuxiliaryResource) contextValidateOauth2(ctx context.Context, formats s
 		if err := m.Oauth2.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("oauth2")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("oauth2")
 			}
 			return err
 		}
