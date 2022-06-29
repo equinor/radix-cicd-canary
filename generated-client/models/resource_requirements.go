@@ -44,38 +44,32 @@ func (m *ResourceRequirements) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ResourceRequirements) validateLimits(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Limits) { // not required
 		return nil
 	}
 
-	if m.Limits != nil {
-		if err := m.Limits.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("limits")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("limits")
-			}
-			return err
+	if err := m.Limits.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("limits")
 		}
+		return err
 	}
 
 	return nil
 }
 
 func (m *ResourceRequirements) validateRequests(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Requests) { // not required
 		return nil
 	}
 
-	if m.Requests != nil {
-		if err := m.Requests.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("requests")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("requests")
-			}
-			return err
+	if err := m.Requests.Validate(formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("requests")
 		}
+		return err
 	}
 
 	return nil
@@ -104,8 +98,6 @@ func (m *ResourceRequirements) contextValidateLimits(ctx context.Context, format
 	if err := m.Limits.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("limits")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("limits")
 		}
 		return err
 	}
@@ -118,8 +110,6 @@ func (m *ResourceRequirements) contextValidateRequests(ctx context.Context, form
 	if err := m.Requests.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("requests")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("requests")
 		}
 		return err
 	}

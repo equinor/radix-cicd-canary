@@ -41,6 +41,7 @@ func (o *GetPrivateImageHubsReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -51,7 +52,7 @@ func NewGetPrivateImageHubsOK() *GetPrivateImageHubsOK {
 	return &GetPrivateImageHubsOK{}
 }
 
-/* GetPrivateImageHubsOK describes a response with status code 200, with default header values.
+/*GetPrivateImageHubsOK handles this case with default header values.
 
 Successful operation
 */
@@ -62,6 +63,7 @@ type GetPrivateImageHubsOK struct {
 func (o *GetPrivateImageHubsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/privateimagehubs][%d] getPrivateImageHubsOK  %+v", 200, o.Payload)
 }
+
 func (o *GetPrivateImageHubsOK) GetPayload() []*models.ImageHubSecret {
 	return o.Payload
 }
@@ -81,7 +83,7 @@ func NewGetPrivateImageHubsUnauthorized() *GetPrivateImageHubsUnauthorized {
 	return &GetPrivateImageHubsUnauthorized{}
 }
 
-/* GetPrivateImageHubsUnauthorized describes a response with status code 401, with default header values.
+/*GetPrivateImageHubsUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -102,7 +104,7 @@ func NewGetPrivateImageHubsNotFound() *GetPrivateImageHubsNotFound {
 	return &GetPrivateImageHubsNotFound{}
 }
 
-/* GetPrivateImageHubsNotFound describes a response with status code 404, with default header values.
+/*GetPrivateImageHubsNotFound handles this case with default header values.
 
 Not found
 */

@@ -25,20 +25,29 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-// ClientOption is the option for Client methods
-type ClientOption func(*runtime.ClientOperation)
-
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobOK, error)
+	GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error)
 
-	GetApplicationJobLogs(params *GetApplicationJobLogsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobLogsOK, error)
+	GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error)
 
-	GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobsOK, error)
+	GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepLogsOK, error)
 
-	GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepScanOutputOK, error)
+	GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepScanOutputOK, error)
 
-	StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationJobNoContent, error)
+	GetTektonPipelineRun(params *GetTektonPipelineRunParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunOK, error)
+
+	GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskOK, error)
+
+	GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTaskStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepLogsOK, error)
+
+	GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskStepsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepsOK, error)
+
+	GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTasksOK, error)
+
+	GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunsOK, error)
+
+	StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -46,12 +55,13 @@ type ClientService interface {
 /*
   GetApplicationJob gets the detail of a given pipeline job for a given application
 */
-func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobOK, error) {
+func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetApplicationJobParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getApplicationJob",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}",
@@ -63,12 +73,7 @@ func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo run
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -83,53 +88,15 @@ func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo run
 }
 
 /*
-  GetApplicationJobLogs gets a pipeline logs by combining different steps jobs logs
-*/
-func (a *Client) GetApplicationJobLogs(params *GetApplicationJobLogsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobLogsOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetApplicationJobLogsParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "getApplicationJobLogs",
-		Method:             "GET",
-		PathPattern:        "/applications/{appName}/jobs/{jobName}/logs",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &GetApplicationJobLogsReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*GetApplicationJobLogsOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getApplicationJobLogs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
   GetApplicationJobs gets the summary of jobs for a given application
 */
-func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobsOK, error) {
+func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetApplicationJobsParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getApplicationJobs",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs",
@@ -141,12 +108,7 @@ func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -161,14 +123,50 @@ func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo r
 }
 
 /*
+  GetPipelineJobStepLogs gets logs of a pipeline job step
+*/
+func (a *Client) GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepLogsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetPipelineJobStepLogsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getPipelineJobStepLogs",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/logs/{stepName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetPipelineJobStepLogsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetPipelineJobStepLogsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getPipelineJobStepLogs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   GetPipelineJobStepScanOutput gets list of vulnerabilities found by the scan step
 */
-func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepScanOutputOK, error) {
+func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepScanOutputOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPipelineJobStepScanOutputParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "getPipelineJobStepScanOutput",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/steps/{stepName}/output/scan",
@@ -180,12 +178,7 @@ func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutp
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -200,14 +193,225 @@ func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutp
 }
 
 /*
+  GetTektonPipelineRun gets a pipeline run for a pipeline job
+*/
+func (a *Client) GetTektonPipelineRun(params *GetTektonPipelineRunParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetTektonPipelineRunParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getTektonPipelineRun",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetTektonPipelineRunReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetTektonPipelineRunOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getTektonPipelineRun: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetTektonPipelineRunTask gets list of pipeline run task of a pipeline job
+*/
+func (a *Client) GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetTektonPipelineRunTaskParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getTektonPipelineRunTask",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetTektonPipelineRunTaskReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetTektonPipelineRunTaskOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getTektonPipelineRunTask: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetTektonPipelineRunTaskStepLogs gets logs of pipeline runs for a pipeline job
+*/
+func (a *Client) GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTaskStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepLogsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetTektonPipelineRunTaskStepLogsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getTektonPipelineRunTaskStepLogs",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}/logs/{stepName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetTektonPipelineRunTaskStepLogsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetTektonPipelineRunTaskStepLogsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getTektonPipelineRunTaskStepLogs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetTektonPipelineRunTaskSteps gets list of steps for a pipeline run task of a pipeline job
+*/
+func (a *Client) GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskStepsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetTektonPipelineRunTaskStepsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getTektonPipelineRunTaskSteps",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}/steps",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetTektonPipelineRunTaskStepsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetTektonPipelineRunTaskStepsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getTektonPipelineRunTaskSteps: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetTektonPipelineRunTasks gets list of pipeline run tasks of a pipeline job
+*/
+func (a *Client) GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTasksOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetTektonPipelineRunTasksParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getTektonPipelineRunTasks",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetTektonPipelineRunTasksReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetTektonPipelineRunTasksOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getTektonPipelineRunTasks: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  GetTektonPipelineRuns gets list of pipeline runs for a pipeline job
+*/
+func (a *Client) GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetTektonPipelineRunsParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "getTektonPipelineRuns",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetTektonPipelineRunsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetTektonPipelineRunsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getTektonPipelineRuns: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   StopApplicationJob stops job
 */
-func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationJobNoContent, error) {
+func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStopApplicationJobParams()
 	}
-	op := &runtime.ClientOperation{
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
 		ID:                 "stopApplicationJob",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/stop",
@@ -219,12 +423,7 @@ func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
+	})
 	if err != nil {
 		return nil, err
 	}

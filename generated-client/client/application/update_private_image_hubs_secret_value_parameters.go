@@ -18,97 +18,79 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewUpdatePrivateImageHubsSecretValueParams creates a new UpdatePrivateImageHubsSecretValueParams object,
-// with the default timeout for this client.
-//
-// Default values are not hydrated, since defaults are normally applied by the API server side.
-//
-// To enforce default values in parameter, use SetDefaults or WithDefaults.
+// NewUpdatePrivateImageHubsSecretValueParams creates a new UpdatePrivateImageHubsSecretValueParams object
+// with the default values initialized.
 func NewUpdatePrivateImageHubsSecretValueParams() *UpdatePrivateImageHubsSecretValueParams {
+	var ()
 	return &UpdatePrivateImageHubsSecretValueParams{
+
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewUpdatePrivateImageHubsSecretValueParamsWithTimeout creates a new UpdatePrivateImageHubsSecretValueParams object
-// with the ability to set a timeout on a request.
+// with the default values initialized, and the ability to set a timeout on a request
 func NewUpdatePrivateImageHubsSecretValueParamsWithTimeout(timeout time.Duration) *UpdatePrivateImageHubsSecretValueParams {
+	var ()
 	return &UpdatePrivateImageHubsSecretValueParams{
+
 		timeout: timeout,
 	}
 }
 
 // NewUpdatePrivateImageHubsSecretValueParamsWithContext creates a new UpdatePrivateImageHubsSecretValueParams object
-// with the ability to set a context for a request.
+// with the default values initialized, and the ability to set a context for a request
 func NewUpdatePrivateImageHubsSecretValueParamsWithContext(ctx context.Context) *UpdatePrivateImageHubsSecretValueParams {
+	var ()
 	return &UpdatePrivateImageHubsSecretValueParams{
+
 		Context: ctx,
 	}
 }
 
 // NewUpdatePrivateImageHubsSecretValueParamsWithHTTPClient creates a new UpdatePrivateImageHubsSecretValueParams object
-// with the ability to set a custom HTTPClient for a request.
+// with the default values initialized, and the ability to set a custom HTTPClient for a request
 func NewUpdatePrivateImageHubsSecretValueParamsWithHTTPClient(client *http.Client) *UpdatePrivateImageHubsSecretValueParams {
+	var ()
 	return &UpdatePrivateImageHubsSecretValueParams{
 		HTTPClient: client,
 	}
 }
 
-/* UpdatePrivateImageHubsSecretValueParams contains all the parameters to send to the API endpoint
-   for the update private image hubs secret value operation.
-
-   Typically these are written to a http.Request.
+/*UpdatePrivateImageHubsSecretValueParams contains all the parameters to send to the API endpoint
+for the update private image hubs secret value operation typically these are written to a http.Request
 */
 type UpdatePrivateImageHubsSecretValueParams struct {
 
-	/* ImpersonateGroup.
+	/*ImpersonateGroup
+	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 
-	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
+	/*ImpersonateUser
+	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
-	/* ImpersonateUser.
-
-	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
+	/*AppName
+	  Name of application
 
-	/* AppName.
-
-	   Name of application
 	*/
 	AppName string
+	/*ImageHubSecret
+	  New secret value
 
-	/* ImageHubSecret.
-
-	   New secret value
 	*/
 	ImageHubSecret *models.SecretParameters
+	/*ServerName
+	  server name to update
 
-	/* ServerName.
-
-	   server name to update
 	*/
 	ServerName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
-}
-
-// WithDefaults hydrates default values in the update private image hubs secret value params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *UpdatePrivateImageHubsSecretValueParams) WithDefaults() *UpdatePrivateImageHubsSecretValueParams {
-	o.SetDefaults()
-	return o
-}
-
-// SetDefaults hydrates default values in the update private image hubs secret value params (not the query body).
-//
-// All values with no default are reset to their zero value.
-func (o *UpdatePrivateImageHubsSecretValueParams) SetDefaults() {
-	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the update private image hubs secret value params
@@ -213,6 +195,7 @@ func (o *UpdatePrivateImageHubsSecretValueParams) WriteToRequest(r runtime.Clien
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
+
 	}
 
 	if o.ImpersonateUser != nil {
@@ -221,12 +204,14 @@ func (o *UpdatePrivateImageHubsSecretValueParams) WriteToRequest(r runtime.Clien
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
+
 	}
 
 	// path param appName
 	if err := r.SetPathParam("appName", o.AppName); err != nil {
 		return err
 	}
+
 	if o.ImageHubSecret != nil {
 		if err := r.SetBodyParam(o.ImageHubSecret); err != nil {
 			return err

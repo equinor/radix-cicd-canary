@@ -55,6 +55,7 @@ func (m *JobScheduleDescription) Validate(formats strfmt.Registry) error {
 }
 
 func (m *JobScheduleDescription) validateNode(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Node) { // not required
 		return nil
 	}
@@ -63,8 +64,6 @@ func (m *JobScheduleDescription) validateNode(formats strfmt.Registry) error {
 		if err := m.Node.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("node")
 			}
 			return err
 		}
@@ -74,6 +73,7 @@ func (m *JobScheduleDescription) validateNode(formats strfmt.Registry) error {
 }
 
 func (m *JobScheduleDescription) validateResources(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Resources) { // not required
 		return nil
 	}
@@ -82,8 +82,6 @@ func (m *JobScheduleDescription) validateResources(formats strfmt.Registry) erro
 		if err := m.Resources.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
 			}
 			return err
 		}
@@ -116,8 +114,6 @@ func (m *JobScheduleDescription) contextValidateNode(ctx context.Context, format
 		if err := m.Node.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("node")
 			}
 			return err
 		}
@@ -132,8 +128,6 @@ func (m *JobScheduleDescription) contextValidateResources(ctx context.Context, f
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
 			}
 			return err
 		}

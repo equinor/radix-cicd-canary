@@ -33,6 +33,7 @@ func (o *ReplicaLogReader) ReadResponse(response runtime.ClientResponse, consume
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -43,7 +44,7 @@ func NewReplicaLogOK() *ReplicaLogOK {
 	return &ReplicaLogOK{}
 }
 
-/* ReplicaLogOK describes a response with status code 200, with default header values.
+/*ReplicaLogOK handles this case with default header values.
 
 pod log
 */
@@ -54,6 +55,7 @@ type ReplicaLogOK struct {
 func (o *ReplicaLogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/replicas/{podName}/logs][%d] replicaLogOK  %+v", 200, o.Payload)
 }
+
 func (o *ReplicaLogOK) GetPayload() string {
 	return o.Payload
 }
@@ -73,7 +75,7 @@ func NewReplicaLogNotFound() *ReplicaLogNotFound {
 	return &ReplicaLogNotFound{}
 }
 
-/* ReplicaLogNotFound describes a response with status code 404, with default header values.
+/*ReplicaLogNotFound handles this case with default header values.
 
 Not found
 */

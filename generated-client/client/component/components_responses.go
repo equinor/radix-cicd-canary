@@ -35,6 +35,7 @@ func (o *ComponentsReader) ReadResponse(response runtime.ClientResponse, consume
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -45,7 +46,7 @@ func NewComponentsOK() *ComponentsOK {
 	return &ComponentsOK{}
 }
 
-/* ComponentsOK describes a response with status code 200, with default header values.
+/*ComponentsOK handles this case with default header values.
 
 pod log
 */
@@ -56,6 +57,7 @@ type ComponentsOK struct {
 func (o *ComponentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components][%d] componentsOK  %+v", 200, o.Payload)
 }
+
 func (o *ComponentsOK) GetPayload() []*models.Component {
 	return o.Payload
 }
@@ -75,7 +77,7 @@ func NewComponentsNotFound() *ComponentsNotFound {
 	return &ComponentsNotFound{}
 }
 
-/* ComponentsNotFound describes a response with status code 404, with default header values.
+/*ComponentsNotFound handles this case with default header values.
 
 Not found
 */

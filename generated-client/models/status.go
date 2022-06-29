@@ -50,6 +50,7 @@ func (m *Status) Validate(formats strfmt.Registry) error {
 }
 
 func (m *Status) validateReason(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Reason) { // not required
 		return nil
 	}
@@ -57,8 +58,6 @@ func (m *Status) validateReason(formats strfmt.Registry) error {
 	if err := m.Reason.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("reason")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("reason")
 		}
 		return err
 	}
@@ -85,8 +84,6 @@ func (m *Status) contextValidateReason(ctx context.Context, formats strfmt.Regis
 	if err := m.Reason.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("reason")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("reason")
 		}
 		return err
 	}

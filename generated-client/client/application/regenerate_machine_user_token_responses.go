@@ -59,6 +59,7 @@ func (o *RegenerateMachineUserTokenReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -69,7 +70,7 @@ func NewRegenerateMachineUserTokenOK() *RegenerateMachineUserTokenOK {
 	return &RegenerateMachineUserTokenOK{}
 }
 
-/* RegenerateMachineUserTokenOK describes a response with status code 200, with default header values.
+/*RegenerateMachineUserTokenOK handles this case with default header values.
 
 Successful regenerate machine-user token
 */
@@ -80,6 +81,7 @@ type RegenerateMachineUserTokenOK struct {
 func (o *RegenerateMachineUserTokenOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/regenerate-machine-user-token][%d] regenerateMachineUserTokenOK  %+v", 200, o.Payload)
 }
+
 func (o *RegenerateMachineUserTokenOK) GetPayload() *models.MachineUser {
 	return o.Payload
 }
@@ -101,7 +103,7 @@ func NewRegenerateMachineUserTokenUnauthorized() *RegenerateMachineUserTokenUnau
 	return &RegenerateMachineUserTokenUnauthorized{}
 }
 
-/* RegenerateMachineUserTokenUnauthorized describes a response with status code 401, with default header values.
+/*RegenerateMachineUserTokenUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -122,7 +124,7 @@ func NewRegenerateMachineUserTokenForbidden() *RegenerateMachineUserTokenForbidd
 	return &RegenerateMachineUserTokenForbidden{}
 }
 
-/* RegenerateMachineUserTokenForbidden describes a response with status code 403, with default header values.
+/*RegenerateMachineUserTokenForbidden handles this case with default header values.
 
 Forbidden
 */
@@ -143,7 +145,7 @@ func NewRegenerateMachineUserTokenNotFound() *RegenerateMachineUserTokenNotFound
 	return &RegenerateMachineUserTokenNotFound{}
 }
 
-/* RegenerateMachineUserTokenNotFound describes a response with status code 404, with default header values.
+/*RegenerateMachineUserTokenNotFound handles this case with default header values.
 
 Not found
 */
@@ -164,7 +166,7 @@ func NewRegenerateMachineUserTokenConflict() *RegenerateMachineUserTokenConflict
 	return &RegenerateMachineUserTokenConflict{}
 }
 
-/* RegenerateMachineUserTokenConflict describes a response with status code 409, with default header values.
+/*RegenerateMachineUserTokenConflict handles this case with default header values.
 
 Conflict
 */
@@ -185,7 +187,7 @@ func NewRegenerateMachineUserTokenInternalServerError() *RegenerateMachineUserTo
 	return &RegenerateMachineUserTokenInternalServerError{}
 }
 
-/* RegenerateMachineUserTokenInternalServerError describes a response with status code 500, with default header values.
+/*RegenerateMachineUserTokenInternalServerError handles this case with default header values.
 
 Internal server error
 */

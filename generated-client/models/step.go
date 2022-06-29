@@ -98,6 +98,7 @@ func (m *Step) validateStatusEnum(path, location string, value string) error {
 }
 
 func (m *Step) validateStatus(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -111,6 +112,7 @@ func (m *Step) validateStatus(formats strfmt.Registry) error {
 }
 
 func (m *Step) validateScan(formats strfmt.Registry) error {
+
 	if swag.IsZero(m.Scan) { // not required
 		return nil
 	}
@@ -119,8 +121,6 @@ func (m *Step) validateScan(formats strfmt.Registry) error {
 		if err := m.Scan.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("scan")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scan")
 			}
 			return err
 		}
@@ -149,8 +149,6 @@ func (m *Step) contextValidateScan(ctx context.Context, formats strfmt.Registry)
 		if err := m.Scan.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("scan")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scan")
 			}
 			return err
 		}

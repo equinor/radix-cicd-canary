@@ -59,6 +59,7 @@ func (o *UpdateApplicationAlertingConfigReader) ReadResponse(response runtime.Cl
 			return nil, err
 		}
 		return nil, result
+
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -69,7 +70,7 @@ func NewUpdateApplicationAlertingConfigOK() *UpdateApplicationAlertingConfigOK {
 	return &UpdateApplicationAlertingConfigOK{}
 }
 
-/* UpdateApplicationAlertingConfigOK describes a response with status code 200, with default header values.
+/*UpdateApplicationAlertingConfigOK handles this case with default header values.
 
 Successful alerts config update
 */
@@ -80,6 +81,7 @@ type UpdateApplicationAlertingConfigOK struct {
 func (o *UpdateApplicationAlertingConfigOK) Error() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigOK  %+v", 200, o.Payload)
 }
+
 func (o *UpdateApplicationAlertingConfigOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -101,7 +103,7 @@ func NewUpdateApplicationAlertingConfigBadRequest() *UpdateApplicationAlertingCo
 	return &UpdateApplicationAlertingConfigBadRequest{}
 }
 
-/* UpdateApplicationAlertingConfigBadRequest describes a response with status code 400, with default header values.
+/*UpdateApplicationAlertingConfigBadRequest handles this case with default header values.
 
 Invalid configuration
 */
@@ -122,7 +124,7 @@ func NewUpdateApplicationAlertingConfigUnauthorized() *UpdateApplicationAlerting
 	return &UpdateApplicationAlertingConfigUnauthorized{}
 }
 
-/* UpdateApplicationAlertingConfigUnauthorized describes a response with status code 401, with default header values.
+/*UpdateApplicationAlertingConfigUnauthorized handles this case with default header values.
 
 Unauthorized
 */
@@ -143,7 +145,7 @@ func NewUpdateApplicationAlertingConfigForbidden() *UpdateApplicationAlertingCon
 	return &UpdateApplicationAlertingConfigForbidden{}
 }
 
-/* UpdateApplicationAlertingConfigForbidden describes a response with status code 403, with default header values.
+/*UpdateApplicationAlertingConfigForbidden handles this case with default header values.
 
 Forbidden
 */
@@ -164,7 +166,7 @@ func NewUpdateApplicationAlertingConfigNotFound() *UpdateApplicationAlertingConf
 	return &UpdateApplicationAlertingConfigNotFound{}
 }
 
-/* UpdateApplicationAlertingConfigNotFound describes a response with status code 404, with default header values.
+/*UpdateApplicationAlertingConfigNotFound handles this case with default header values.
 
 Not found
 */
@@ -185,7 +187,7 @@ func NewUpdateApplicationAlertingConfigInternalServerError() *UpdateApplicationA
 	return &UpdateApplicationAlertingConfigInternalServerError{}
 }
 
-/* UpdateApplicationAlertingConfigInternalServerError describes a response with status code 500, with default header values.
+/*UpdateApplicationAlertingConfigInternalServerError handles this case with default header values.
 
 Internal server error
 */
