@@ -104,7 +104,7 @@ func CheckResponse(resp *http.Response) (bool, error) {
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-		log.Debug("Response code: 200")
+		log.Debugf("Response code: %d", resp.StatusCode)
 		return true, nil
 	}
 
