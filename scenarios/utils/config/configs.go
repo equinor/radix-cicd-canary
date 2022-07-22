@@ -1,5 +1,11 @@
 package config
 
+// TODO: Add test for build-deploy for a specific commitId.
+// Before user story https://dev.azure.com/Equinor/Radix/_workitems/edit/106471, the AppXCommitId didn't have any effect on the build-deploy jobs
+// To keep consistent behavioru between dev and prod clusters in a transition period until the user story is release to prod
+// we have to use "" as commit Id.
+// When functionality in the user story is released to all clusters, we must add a test to verify that the commit id is actually used by the pipeline job(s)
+
 const (
 	App1Name                         = "canarycicd-test1"
 	App1Repository                   = "https://github.com/equinor/radix-canarycicd-test-1"
@@ -12,7 +18,7 @@ const (
 	App2Owner                        = "a-user@equinor.com"
 	App2Creator                      = "a-user@equinor.com"
 	App2BranchToBuildFrom            = "master"
-	App2CommitID                     = "580f3ae3c0c23503a7cd02a8b60a5dec49279d0f"
+	App2CommitID                     = "" //"580f3ae3c0c23503a7cd02a8b60a5dec49279d0f"
 	App2Repository                   = "https://github.com/equinor/radix-canarycicd-test-2"
 	App2SSHRepository                = "git@github.com:equinor/radix-canarycicd-test-2.git"
 	App2SharedSecret                 = "a sportless strobic spinach"
@@ -28,7 +34,7 @@ const (
 	App3Owner                        = "a-user@equinor.com"
 	App3Creator                      = "a-user@equinor.com"
 	App3BranchToBuildFrom            = "master"
-	App3CommitID                     = "580f3ae3c0c23503a7cd02a8b60a5dec49279d0f"
+	App3CommitID                     = "" // "580f3ae3c0c23503a7cd02a8b60a5dec49279d0f"
 	App3Repository                   = "https://github.com/equinor/radix-canarycicd-test-3"
 	App3SSHRepository                = "git@github.com:equinor/radix-canarycicd-test-3.git"
 	App3SharedSecret                 = "a sportless strobic spinach"
@@ -39,8 +45,8 @@ const (
 	App4Name                         = "canarycicd-test4"
 	App4Repository                   = "https://github.com/equinor/radix-canarycicd-test-4"
 	App4SSHRepository                = "git@github.com:equinor/radix-canarycicd-test-4.git"
-	App4CommitID                     = "02fdd66c44bad6dcbb887186e1a2a2bc9ee075f4"
-	App4NewCommitID                  = "97f71362819b3505087dfe56b5624f88aeebf6cb"
+	App4CommitID                     = "" //"02fdd66c44bad6dcbb887186e1a2a2bc9ee075f4"
+	App4NewCommitID                  = "" //"97f71362819b3505087dfe56b5624f88aeebf6cb"
 	App4SharedSecret                 = "AnySharedSecret"
 	App4Owner                        = "a-user@equinor.com"
 	App4Creator                      = "a-user@equinor.com"
