@@ -25,29 +25,32 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error)
+	GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobOK, error)
 
-	GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error)
+	GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobsOK, error)
 
-	GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepLogsOK, error)
+	GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepLogsOK, error)
 
-	GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepScanOutputOK, error)
+	GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepScanOutputOK, error)
 
-	GetTektonPipelineRun(params *GetTektonPipelineRunParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunOK, error)
+	GetTektonPipelineRun(params *GetTektonPipelineRunParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunOK, error)
 
-	GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskOK, error)
+	GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTaskOK, error)
 
-	GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTaskStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepLogsOK, error)
+	GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTaskStepLogsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTaskStepLogsOK, error)
 
-	GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskStepsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepsOK, error)
+	GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskStepsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTaskStepsOK, error)
 
-	GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTasksOK, error)
+	GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTasksOK, error)
 
-	GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunsOK, error)
+	GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunsOK, error)
 
-	StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error)
+	StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationJobNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -55,13 +58,12 @@ type ClientService interface {
 /*
   GetApplicationJob gets the detail of a given pipeline job for a given application
 */
-func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobOK, error) {
+func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetApplicationJobParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getApplicationJob",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}",
@@ -73,7 +75,12 @@ func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo run
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -90,13 +97,12 @@ func (a *Client) GetApplicationJob(params *GetApplicationJobParams, authInfo run
 /*
   GetApplicationJobs gets the summary of jobs for a given application
 */
-func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetApplicationJobsOK, error) {
+func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationJobsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetApplicationJobsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getApplicationJobs",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs",
@@ -108,7 +114,12 @@ func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -125,13 +136,12 @@ func (a *Client) GetApplicationJobs(params *GetApplicationJobsParams, authInfo r
 /*
   GetPipelineJobStepLogs gets logs of a pipeline job step
 */
-func (a *Client) GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepLogsOK, error) {
+func (a *Client) GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepLogsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPipelineJobStepLogsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getPipelineJobStepLogs",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/logs/{stepName}",
@@ -143,7 +153,12 @@ func (a *Client) GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, au
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -160,13 +175,12 @@ func (a *Client) GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, au
 /*
   GetPipelineJobStepScanOutput gets list of vulnerabilities found by the scan step
 */
-func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter) (*GetPipelineJobStepScanOutputOK, error) {
+func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepScanOutputOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetPipelineJobStepScanOutputParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getPipelineJobStepScanOutput",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/steps/{stepName}/output/scan",
@@ -178,7 +192,12 @@ func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutp
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -195,13 +214,12 @@ func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutp
 /*
   GetTektonPipelineRun gets a pipeline run for a pipeline job
 */
-func (a *Client) GetTektonPipelineRun(params *GetTektonPipelineRunParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunOK, error) {
+func (a *Client) GetTektonPipelineRun(params *GetTektonPipelineRunParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTektonPipelineRunParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTektonPipelineRun",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}",
@@ -213,7 +231,12 @@ func (a *Client) GetTektonPipelineRun(params *GetTektonPipelineRunParams, authIn
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -230,13 +253,12 @@ func (a *Client) GetTektonPipelineRun(params *GetTektonPipelineRunParams, authIn
 /*
   GetTektonPipelineRunTask gets list of pipeline run task of a pipeline job
 */
-func (a *Client) GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskOK, error) {
+func (a *Client) GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTaskOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTektonPipelineRunTaskParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTektonPipelineRunTask",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}",
@@ -248,7 +270,12 @@ func (a *Client) GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -265,13 +292,12 @@ func (a *Client) GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams
 /*
   GetTektonPipelineRunTaskStepLogs gets logs of pipeline runs for a pipeline job
 */
-func (a *Client) GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTaskStepLogsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepLogsOK, error) {
+func (a *Client) GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTaskStepLogsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTaskStepLogsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTektonPipelineRunTaskStepLogsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTektonPipelineRunTaskStepLogs",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}/logs/{stepName}",
@@ -283,7 +309,12 @@ func (a *Client) GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTa
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -300,13 +331,12 @@ func (a *Client) GetTektonPipelineRunTaskStepLogs(params *GetTektonPipelineRunTa
 /*
   GetTektonPipelineRunTaskSteps gets list of steps for a pipeline run task of a pipeline job
 */
-func (a *Client) GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskStepsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTaskStepsOK, error) {
+func (a *Client) GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskStepsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTaskStepsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTektonPipelineRunTaskStepsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTektonPipelineRunTaskSteps",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}/steps",
@@ -318,7 +348,12 @@ func (a *Client) GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskS
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -335,13 +370,12 @@ func (a *Client) GetTektonPipelineRunTaskSteps(params *GetTektonPipelineRunTaskS
 /*
   GetTektonPipelineRunTasks gets list of pipeline run tasks of a pipeline job
 */
-func (a *Client) GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunTasksOK, error) {
+func (a *Client) GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTasksOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTektonPipelineRunTasksParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTektonPipelineRunTasks",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks",
@@ -353,7 +387,12 @@ func (a *Client) GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksPara
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -370,13 +409,12 @@ func (a *Client) GetTektonPipelineRunTasks(params *GetTektonPipelineRunTasksPara
 /*
   GetTektonPipelineRuns gets list of pipeline runs for a pipeline job
 */
-func (a *Client) GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, authInfo runtime.ClientAuthInfoWriter) (*GetTektonPipelineRunsOK, error) {
+func (a *Client) GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetTektonPipelineRunsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getTektonPipelineRuns",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/pipelineruns",
@@ -388,7 +426,12 @@ func (a *Client) GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, auth
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -405,13 +448,12 @@ func (a *Client) GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, auth
 /*
   StopApplicationJob stops job
 */
-func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter) (*StopApplicationJobNoContent, error) {
+func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationJobNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewStopApplicationJobParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "stopApplicationJob",
 		Method:             "POST",
 		PathPattern:        "/applications/{appName}/jobs/{jobName}/stop",
@@ -423,7 +465,12 @@ func (a *Client) StopApplicationJob(params *StopApplicationJobParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

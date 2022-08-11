@@ -74,7 +74,6 @@ func (m *ReplicaSummary) validateName(formats strfmt.Registry) error {
 }
 
 func (m *ReplicaSummary) validateReplicaStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ReplicaStatus) { // not required
 		return nil
 	}
@@ -83,6 +82,8 @@ func (m *ReplicaSummary) validateReplicaStatus(formats strfmt.Registry) error {
 		if err := m.ReplicaStatus.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replicaStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("replicaStatus")
 			}
 			return err
 		}
@@ -111,6 +112,8 @@ func (m *ReplicaSummary) contextValidateReplicaStatus(ctx context.Context, forma
 		if err := m.ReplicaStatus.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replicaStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("replicaStatus")
 			}
 			return err
 		}

@@ -25,9 +25,12 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetBuildStatus(params *GetBuildStatusParams, authInfo runtime.ClientAuthInfoWriter) (*GetBuildStatusOK, error)
+	GetBuildStatus(params *GetBuildStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBuildStatusOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -35,13 +38,12 @@ type ClientService interface {
 /*
   GetBuildStatus shows the application build status
 */
-func (a *Client) GetBuildStatus(params *GetBuildStatusParams, authInfo runtime.ClientAuthInfoWriter) (*GetBuildStatusOK, error) {
+func (a *Client) GetBuildStatus(params *GetBuildStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBuildStatusOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetBuildStatusParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getBuildStatus",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/buildstatus",
@@ -53,7 +55,12 @@ func (a *Client) GetBuildStatus(params *GetBuildStatusParams, authInfo runtime.C
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

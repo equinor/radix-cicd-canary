@@ -37,7 +37,7 @@ type Component struct {
 	ReplicaList []*ReplicaSummary `json:"replicaList"`
 
 	// Array of pod names
-	// Example: server-78fc8857c4-hm76l,server-78fc8857c4-asfa2
+	// Example: ["server-78fc8857c4-hm76l","server-78fc8857c4-asfa2"]
 	Replicas []string `json:"replicas"`
 
 	// ScheduledJobPayloadPath defines the payload path, where payload for Job Scheduler will be mapped as a file. From radixconfig.yaml
@@ -49,7 +49,7 @@ type Component struct {
 	SchedulerPort int32 `json:"schedulerPort,omitempty"`
 
 	// Component secret names. From radixconfig.yaml
-	// Example: DB_CON,A_SECRET
+	// Example: ["DB_CON","A_SECRET"]
 	Secrets []string `json:"secrets"`
 
 	// Status of the component
@@ -128,7 +128,6 @@ func (m *Component) validateName(formats strfmt.Registry) error {
 }
 
 func (m *Component) validatePorts(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Ports) { // not required
 		return nil
 	}
@@ -142,6 +141,8 @@ func (m *Component) validatePorts(formats strfmt.Registry) error {
 			if err := m.Ports[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -153,7 +154,6 @@ func (m *Component) validatePorts(formats strfmt.Registry) error {
 }
 
 func (m *Component) validateReplicaList(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ReplicaList) { // not required
 		return nil
 	}
@@ -167,6 +167,8 @@ func (m *Component) validateReplicaList(formats strfmt.Registry) error {
 			if err := m.ReplicaList[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -187,7 +189,6 @@ func (m *Component) validateType(formats strfmt.Registry) error {
 }
 
 func (m *Component) validateHorizontalScalingSummary(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.HorizontalScalingSummary) { // not required
 		return nil
 	}
@@ -196,6 +197,8 @@ func (m *Component) validateHorizontalScalingSummary(formats strfmt.Registry) er
 		if err := m.HorizontalScalingSummary.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("horizontalScalingSummary")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("horizontalScalingSummary")
 			}
 			return err
 		}
@@ -205,7 +208,6 @@ func (m *Component) validateHorizontalScalingSummary(formats strfmt.Registry) er
 }
 
 func (m *Component) validateOauth2(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Oauth2) { // not required
 		return nil
 	}
@@ -214,6 +216,8 @@ func (m *Component) validateOauth2(formats strfmt.Registry) error {
 		if err := m.Oauth2.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("oauth2")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("oauth2")
 			}
 			return err
 		}
@@ -256,6 +260,8 @@ func (m *Component) contextValidatePorts(ctx context.Context, formats strfmt.Reg
 			if err := m.Ports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -274,6 +280,8 @@ func (m *Component) contextValidateReplicaList(ctx context.Context, formats strf
 			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -290,6 +298,8 @@ func (m *Component) contextValidateHorizontalScalingSummary(ctx context.Context,
 		if err := m.HorizontalScalingSummary.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("horizontalScalingSummary")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("horizontalScalingSummary")
 			}
 			return err
 		}
@@ -304,6 +314,8 @@ func (m *Component) contextValidateOauth2(ctx context.Context, formats strfmt.Re
 		if err := m.Oauth2.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("oauth2")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("oauth2")
 			}
 			return err
 		}

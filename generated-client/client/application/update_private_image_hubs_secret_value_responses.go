@@ -50,7 +50,6 @@ func (o *UpdatePrivateImageHubsSecretValueReader) ReadResponse(response runtime.
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -61,7 +60,7 @@ func NewUpdatePrivateImageHubsSecretValueOK() *UpdatePrivateImageHubsSecretValue
 	return &UpdatePrivateImageHubsSecretValueOK{}
 }
 
-/*UpdatePrivateImageHubsSecretValueOK handles this case with default header values.
+/* UpdatePrivateImageHubsSecretValueOK describes a response with status code 200, with default header values.
 
 success
 */
@@ -82,7 +81,7 @@ func NewUpdatePrivateImageHubsSecretValueBadRequest() *UpdatePrivateImageHubsSec
 	return &UpdatePrivateImageHubsSecretValueBadRequest{}
 }
 
-/*UpdatePrivateImageHubsSecretValueBadRequest handles this case with default header values.
+/* UpdatePrivateImageHubsSecretValueBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
@@ -103,7 +102,7 @@ func NewUpdatePrivateImageHubsSecretValueUnauthorized() *UpdatePrivateImageHubsS
 	return &UpdatePrivateImageHubsSecretValueUnauthorized{}
 }
 
-/*UpdatePrivateImageHubsSecretValueUnauthorized handles this case with default header values.
+/* UpdatePrivateImageHubsSecretValueUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -124,7 +123,7 @@ func NewUpdatePrivateImageHubsSecretValueNotFound() *UpdatePrivateImageHubsSecre
 	return &UpdatePrivateImageHubsSecretValueNotFound{}
 }
 
-/*UpdatePrivateImageHubsSecretValueNotFound handles this case with default header values.
+/* UpdatePrivateImageHubsSecretValueNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -145,7 +144,7 @@ func NewUpdatePrivateImageHubsSecretValueConflict() *UpdatePrivateImageHubsSecre
 	return &UpdatePrivateImageHubsSecretValueConflict{}
 }
 
-/*UpdatePrivateImageHubsSecretValueConflict handles this case with default header values.
+/* UpdatePrivateImageHubsSecretValueConflict describes a response with status code 409, with default header values.
 
 Conflict
 */

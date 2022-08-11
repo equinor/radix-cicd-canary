@@ -48,6 +48,8 @@ func (m *ReceiverConfig) validateSlackConfig(formats strfmt.Registry) error {
 		if err := m.SlackConfig.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("slackConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("slackConfig")
 			}
 			return err
 		}
@@ -76,6 +78,8 @@ func (m *ReceiverConfig) contextValidateSlackConfig(ctx context.Context, formats
 		if err := m.SlackConfig.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("slackConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("slackConfig")
 			}
 			return err
 		}

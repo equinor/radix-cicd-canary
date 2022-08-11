@@ -1,28 +1,24 @@
 package alias
 
 import (
-	"fmt"
+	"errors"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
 )
-
-var logger *log.Entry
 
 // DefaultResponding Checks if default alias of application is responding
 func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
-
 	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return application.TryGetPublicDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 
 	if !ok {
-		return false, fmt.Errorf("Public domain name of alias is empty")
+		return false, errors.New("public domain name of alias is empty")
 	}
 
 	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -30,7 +26,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, fmt.Errorf("Canonical domain name of alias is empty")
+		return false, errors.New("canonical domain name of alias is empty")
 	}
 
 	if application.IsRunningInActiveCluster(publicDomainName.(string), canonicalDomainName.(string)) {
@@ -39,7 +35,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 		})
 
 		if !ok {
-			return false, fmt.Errorf("Public alias is not defined")
+			return false, errors.New("public alias is not defined")
 		}
 	}
 

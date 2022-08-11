@@ -35,7 +35,6 @@ func (o *TriggerPipelinePromoteReader) ReadResponse(response runtime.ClientRespo
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -46,7 +45,7 @@ func NewTriggerPipelinePromoteOK() *TriggerPipelinePromoteOK {
 	return &TriggerPipelinePromoteOK{}
 }
 
-/*TriggerPipelinePromoteOK handles this case with default header values.
+/* TriggerPipelinePromoteOK describes a response with status code 200, with default header values.
 
 Successful trigger pipeline
 */
@@ -57,7 +56,6 @@ type TriggerPipelinePromoteOK struct {
 func (o *TriggerPipelinePromoteOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/promote][%d] triggerPipelinePromoteOK  %+v", 200, o.Payload)
 }
-
 func (o *TriggerPipelinePromoteOK) GetPayload() *models.JobSummary {
 	return o.Payload
 }
@@ -79,7 +77,7 @@ func NewTriggerPipelinePromoteNotFound() *TriggerPipelinePromoteNotFound {
 	return &TriggerPipelinePromoteNotFound{}
 }
 
-/*TriggerPipelinePromoteNotFound handles this case with default header values.
+/* TriggerPipelinePromoteNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

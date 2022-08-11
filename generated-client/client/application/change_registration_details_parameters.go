@@ -18,74 +18,91 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewChangeRegistrationDetailsParams creates a new ChangeRegistrationDetailsParams object
-// with the default values initialized.
+// NewChangeRegistrationDetailsParams creates a new ChangeRegistrationDetailsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewChangeRegistrationDetailsParams() *ChangeRegistrationDetailsParams {
-	var ()
 	return &ChangeRegistrationDetailsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewChangeRegistrationDetailsParamsWithTimeout creates a new ChangeRegistrationDetailsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewChangeRegistrationDetailsParamsWithTimeout(timeout time.Duration) *ChangeRegistrationDetailsParams {
-	var ()
 	return &ChangeRegistrationDetailsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewChangeRegistrationDetailsParamsWithContext creates a new ChangeRegistrationDetailsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewChangeRegistrationDetailsParamsWithContext(ctx context.Context) *ChangeRegistrationDetailsParams {
-	var ()
 	return &ChangeRegistrationDetailsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewChangeRegistrationDetailsParamsWithHTTPClient creates a new ChangeRegistrationDetailsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewChangeRegistrationDetailsParamsWithHTTPClient(client *http.Client) *ChangeRegistrationDetailsParams {
-	var ()
 	return &ChangeRegistrationDetailsParams{
 		HTTPClient: client,
 	}
 }
 
-/*ChangeRegistrationDetailsParams contains all the parameters to send to the API endpoint
-for the change registration details operation typically these are written to a http.Request
+/* ChangeRegistrationDetailsParams contains all the parameters to send to the API endpoint
+   for the change registration details operation.
+
+   Typically these are written to a http.Request.
 */
 type ChangeRegistrationDetailsParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
-	/*ApplicationRegistration
-	  Application to register
 
+	/* ApplicationRegistration.
+
+	   Application to register
 	*/
 	ApplicationRegistration *models.ApplicationRegistration
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the change registration details params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ChangeRegistrationDetailsParams) WithDefaults() *ChangeRegistrationDetailsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the change registration details params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ChangeRegistrationDetailsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the change registration details params
@@ -179,7 +196,6 @@ func (o *ChangeRegistrationDetailsParams) WriteToRequest(r runtime.ClientRequest
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -188,14 +204,12 @@ func (o *ChangeRegistrationDetailsParams) WriteToRequest(r runtime.ClientRequest
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName
 	if err := r.SetPathParam("appName", o.AppName); err != nil {
 		return err
 	}
-
 	if o.ApplicationRegistration != nil {
 		if err := r.SetBodyParam(o.ApplicationRegistration); err != nil {
 			return err

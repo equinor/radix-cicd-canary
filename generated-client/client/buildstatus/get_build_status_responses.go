@@ -32,7 +32,6 @@ func (o *GetBuildStatusReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -43,7 +42,7 @@ func NewGetBuildStatusOK() *GetBuildStatusOK {
 	return &GetBuildStatusOK{}
 }
 
-/*GetBuildStatusOK handles this case with default header values.
+/* GetBuildStatusOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -64,7 +63,7 @@ func NewGetBuildStatusInternalServerError() *GetBuildStatusInternalServerError {
 	return &GetBuildStatusInternalServerError{}
 }
 
-/*GetBuildStatusInternalServerError handles this case with default header values.
+/* GetBuildStatusInternalServerError describes a response with status code 500, with default header values.
 
 Internal Server Error
 */

@@ -35,7 +35,6 @@ func (o *GetJobReader) ReadResponse(response runtime.ClientResponse, consumer ru
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -46,7 +45,7 @@ func NewGetJobOK() *GetJobOK {
 	return &GetJobOK{}
 }
 
-/*GetJobOK handles this case with default header values.
+/* GetJobOK describes a response with status code 200, with default header values.
 
 scheduled job
 */
@@ -57,7 +56,6 @@ type GetJobOK struct {
 func (o *GetJobOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] getJobOK  %+v", 200, o.Payload)
 }
-
 func (o *GetJobOK) GetPayload() *models.ScheduledJobSummary {
 	return o.Payload
 }
@@ -79,7 +77,7 @@ func NewGetJobNotFound() *GetJobNotFound {
 	return &GetJobNotFound{}
 }
 
-/*GetJobNotFound handles this case with default header values.
+/* GetJobNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

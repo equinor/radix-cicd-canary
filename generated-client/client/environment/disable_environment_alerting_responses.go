@@ -59,7 +59,6 @@ func (o *DisableEnvironmentAlertingReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -70,7 +69,7 @@ func NewDisableEnvironmentAlertingOK() *DisableEnvironmentAlertingOK {
 	return &DisableEnvironmentAlertingOK{}
 }
 
-/*DisableEnvironmentAlertingOK handles this case with default header values.
+/* DisableEnvironmentAlertingOK describes a response with status code 200, with default header values.
 
 Successful disable alerting
 */
@@ -81,7 +80,6 @@ type DisableEnvironmentAlertingOK struct {
 func (o *DisableEnvironmentAlertingOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/disable][%d] disableEnvironmentAlertingOK  %+v", 200, o.Payload)
 }
-
 func (o *DisableEnvironmentAlertingOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -103,7 +101,7 @@ func NewDisableEnvironmentAlertingBadRequest() *DisableEnvironmentAlertingBadReq
 	return &DisableEnvironmentAlertingBadRequest{}
 }
 
-/*DisableEnvironmentAlertingBadRequest handles this case with default header values.
+/* DisableEnvironmentAlertingBadRequest describes a response with status code 400, with default header values.
 
 Alerting already enabled
 */
@@ -124,7 +122,7 @@ func NewDisableEnvironmentAlertingUnauthorized() *DisableEnvironmentAlertingUnau
 	return &DisableEnvironmentAlertingUnauthorized{}
 }
 
-/*DisableEnvironmentAlertingUnauthorized handles this case with default header values.
+/* DisableEnvironmentAlertingUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -145,7 +143,7 @@ func NewDisableEnvironmentAlertingForbidden() *DisableEnvironmentAlertingForbidd
 	return &DisableEnvironmentAlertingForbidden{}
 }
 
-/*DisableEnvironmentAlertingForbidden handles this case with default header values.
+/* DisableEnvironmentAlertingForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
@@ -166,7 +164,7 @@ func NewDisableEnvironmentAlertingNotFound() *DisableEnvironmentAlertingNotFound
 	return &DisableEnvironmentAlertingNotFound{}
 }
 
-/*DisableEnvironmentAlertingNotFound handles this case with default header values.
+/* DisableEnvironmentAlertingNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -187,7 +185,7 @@ func NewDisableEnvironmentAlertingInternalServerError() *DisableEnvironmentAlert
 	return &DisableEnvironmentAlertingInternalServerError{}
 }
 
-/*DisableEnvironmentAlertingInternalServerError handles this case with default header values.
+/* DisableEnvironmentAlertingInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */

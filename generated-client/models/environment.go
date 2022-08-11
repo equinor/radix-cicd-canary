@@ -74,7 +74,6 @@ func (m *Environment) Validate(formats strfmt.Registry) error {
 }
 
 func (m *Environment) validateDeployments(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Deployments) { // not required
 		return nil
 	}
@@ -88,6 +87,8 @@ func (m *Environment) validateDeployments(formats strfmt.Registry) error {
 			if err := m.Deployments[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -99,7 +100,6 @@ func (m *Environment) validateDeployments(formats strfmt.Registry) error {
 }
 
 func (m *Environment) validateSecrets(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Secrets) { // not required
 		return nil
 	}
@@ -113,6 +113,8 @@ func (m *Environment) validateSecrets(formats strfmt.Registry) error {
 			if err := m.Secrets[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("secrets" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("secrets" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -156,7 +158,6 @@ func (m *Environment) validateStatusEnum(path, location string, value string) er
 }
 
 func (m *Environment) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -170,7 +171,6 @@ func (m *Environment) validateStatus(formats strfmt.Registry) error {
 }
 
 func (m *Environment) validateActiveDeployment(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ActiveDeployment) { // not required
 		return nil
 	}
@@ -179,6 +179,8 @@ func (m *Environment) validateActiveDeployment(formats strfmt.Registry) error {
 		if err := m.ActiveDeployment.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("activeDeployment")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("activeDeployment")
 			}
 			return err
 		}
@@ -217,6 +219,8 @@ func (m *Environment) contextValidateDeployments(ctx context.Context, formats st
 			if err := m.Deployments[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -235,6 +239,8 @@ func (m *Environment) contextValidateSecrets(ctx context.Context, formats strfmt
 			if err := m.Secrets[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("secrets" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("secrets" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -251,6 +257,8 @@ func (m *Environment) contextValidateActiveDeployment(ctx context.Context, forma
 		if err := m.ActiveDeployment.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("activeDeployment")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("activeDeployment")
 			}
 			return err
 		}

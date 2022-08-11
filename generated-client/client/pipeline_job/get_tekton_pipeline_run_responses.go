@@ -41,7 +41,6 @@ func (o *GetTektonPipelineRunReader) ReadResponse(response runtime.ClientRespons
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -52,7 +51,7 @@ func NewGetTektonPipelineRunOK() *GetTektonPipelineRunOK {
 	return &GetTektonPipelineRunOK{}
 }
 
-/*GetTektonPipelineRunOK handles this case with default header values.
+/* GetTektonPipelineRunOK describes a response with status code 200, with default header values.
 
 List of Pipeline Runs
 */
@@ -63,7 +62,6 @@ type GetTektonPipelineRunOK struct {
 func (o *GetTektonPipelineRunOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}][%d] getTektonPipelineRunOK  %+v", 200, o.Payload)
 }
-
 func (o *GetTektonPipelineRunOK) GetPayload() *models.PipelineRun {
 	return o.Payload
 }
@@ -85,7 +83,7 @@ func NewGetTektonPipelineRunUnauthorized() *GetTektonPipelineRunUnauthorized {
 	return &GetTektonPipelineRunUnauthorized{}
 }
 
-/*GetTektonPipelineRunUnauthorized handles this case with default header values.
+/* GetTektonPipelineRunUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -106,7 +104,7 @@ func NewGetTektonPipelineRunNotFound() *GetTektonPipelineRunNotFound {
 	return &GetTektonPipelineRunNotFound{}
 }
 
-/*GetTektonPipelineRunNotFound handles this case with default header values.
+/* GetTektonPipelineRunNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

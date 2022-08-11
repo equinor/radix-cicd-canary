@@ -60,7 +60,6 @@ func (m *EnvVar) validateName(formats strfmt.Registry) error {
 }
 
 func (m *EnvVar) validateMetadata(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Metadata) { // not required
 		return nil
 	}
@@ -69,6 +68,8 @@ func (m *EnvVar) validateMetadata(formats strfmt.Registry) error {
 		if err := m.Metadata.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("metadata")
 			}
 			return err
 		}
@@ -97,6 +98,8 @@ func (m *EnvVar) contextValidateMetadata(ctx context.Context, formats strfmt.Reg
 		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("metadata")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("metadata")
 			}
 			return err
 		}

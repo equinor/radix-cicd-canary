@@ -72,7 +72,6 @@ func (m *Application) Validate(formats strfmt.Registry) error {
 }
 
 func (m *Application) validateEnvironments(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Environments) { // not required
 		return nil
 	}
@@ -86,6 +85,8 @@ func (m *Application) validateEnvironments(formats strfmt.Registry) error {
 			if err := m.Environments[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("environments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("environments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -97,7 +98,6 @@ func (m *Application) validateEnvironments(formats strfmt.Registry) error {
 }
 
 func (m *Application) validateJobs(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Jobs) { // not required
 		return nil
 	}
@@ -111,6 +111,8 @@ func (m *Application) validateJobs(formats strfmt.Registry) error {
 			if err := m.Jobs[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("jobs" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -122,7 +124,6 @@ func (m *Application) validateJobs(formats strfmt.Registry) error {
 }
 
 func (m *Application) validateAppAlias(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.AppAlias) { // not required
 		return nil
 	}
@@ -131,6 +132,8 @@ func (m *Application) validateAppAlias(formats strfmt.Registry) error {
 		if err := m.AppAlias.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("appAlias")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("appAlias")
 			}
 			return err
 		}
@@ -140,7 +143,6 @@ func (m *Application) validateAppAlias(formats strfmt.Registry) error {
 }
 
 func (m *Application) validateRegistration(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Registration) { // not required
 		return nil
 	}
@@ -149,6 +151,8 @@ func (m *Application) validateRegistration(formats strfmt.Registry) error {
 		if err := m.Registration.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("registration")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("registration")
 			}
 			return err
 		}
@@ -191,6 +195,8 @@ func (m *Application) contextValidateEnvironments(ctx context.Context, formats s
 			if err := m.Environments[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("environments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("environments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -209,6 +215,8 @@ func (m *Application) contextValidateJobs(ctx context.Context, formats strfmt.Re
 			if err := m.Jobs[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobs" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("jobs" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -225,6 +233,8 @@ func (m *Application) contextValidateAppAlias(ctx context.Context, formats strfm
 		if err := m.AppAlias.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("appAlias")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("appAlias")
 			}
 			return err
 		}
@@ -239,6 +249,8 @@ func (m *Application) contextValidateRegistration(ctx context.Context, formats s
 		if err := m.Registration.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("registration")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("registration")
 			}
 			return err
 		}
