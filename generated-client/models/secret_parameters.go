@@ -56,7 +56,6 @@ func (m *SecretParameters) validateSecretValue(formats strfmt.Registry) error {
 }
 
 func (m *SecretParameters) validateType(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Type) { // not required
 		return nil
 	}
@@ -64,6 +63,8 @@ func (m *SecretParameters) validateType(formats strfmt.Registry) error {
 	if err := m.Type.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("type")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("type")
 		}
 		return err
 	}
@@ -90,6 +91,8 @@ func (m *SecretParameters) contextValidateType(ctx context.Context, formats strf
 	if err := m.Type.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("type")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("type")
 		}
 		return err
 	}

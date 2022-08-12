@@ -18,69 +18,85 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewSearchApplicationsParams creates a new SearchApplicationsParams object
-// with the default values initialized.
+// NewSearchApplicationsParams creates a new SearchApplicationsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewSearchApplicationsParams() *SearchApplicationsParams {
-	var ()
 	return &SearchApplicationsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewSearchApplicationsParamsWithTimeout creates a new SearchApplicationsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewSearchApplicationsParamsWithTimeout(timeout time.Duration) *SearchApplicationsParams {
-	var ()
 	return &SearchApplicationsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewSearchApplicationsParamsWithContext creates a new SearchApplicationsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewSearchApplicationsParamsWithContext(ctx context.Context) *SearchApplicationsParams {
-	var ()
 	return &SearchApplicationsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewSearchApplicationsParamsWithHTTPClient creates a new SearchApplicationsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewSearchApplicationsParamsWithHTTPClient(client *http.Client) *SearchApplicationsParams {
-	var ()
 	return &SearchApplicationsParams{
 		HTTPClient: client,
 	}
 }
 
-/*SearchApplicationsParams contains all the parameters to send to the API endpoint
-for the search applications operation typically these are written to a http.Request
+/* SearchApplicationsParams contains all the parameters to send to the API endpoint
+   for the search applications operation.
+
+   Typically these are written to a http.Request.
 */
 type SearchApplicationsParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*ApplicationSearch
-	  List of application names to search for
 
+	/* ApplicationSearch.
+
+	   List of application names to search for
 	*/
 	ApplicationSearch *models.ApplicationsSearchRequest
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the search applications params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SearchApplicationsParams) WithDefaults() *SearchApplicationsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the search applications params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *SearchApplicationsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the search applications params
@@ -163,7 +179,6 @@ func (o *SearchApplicationsParams) WriteToRequest(r runtime.ClientRequest, reg s
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -172,9 +187,7 @@ func (o *SearchApplicationsParams) WriteToRequest(r runtime.ClientRequest, reg s
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
-
 	if o.ApplicationSearch != nil {
 		if err := r.SetBodyParam(o.ApplicationSearch); err != nil {
 			return err

@@ -25,9 +25,9 @@ type ReplicaStatus struct {
 	// Failing = Container in Waiting state and the reason is anything else but ContainerCreating
 	// Running = Container in Running state
 	// Terminated = Container in Terminated state
-	// Example: Pending, Failing, Running, Terminated, Starting
+	// Example: Running
 	// Required: true
-	// Enum: [Pending Failing Running Terminated]
+	// Enum: [Pending Failing Running Terminated Starting]
 	Status *string `json:"status"`
 }
 
@@ -49,7 +49,7 @@ var replicaStatusTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["Pending","Failing","Running","Terminated"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Pending","Failing","Running","Terminated","Starting"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -70,6 +70,9 @@ const (
 
 	// ReplicaStatusStatusTerminated captures enum value "Terminated"
 	ReplicaStatusStatusTerminated string = "Terminated"
+
+	// ReplicaStatusStatusStarting captures enum value "Starting"
+	ReplicaStatusStatusStarting string = "Starting"
 )
 
 // prop value enum

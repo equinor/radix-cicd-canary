@@ -16,79 +16,97 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetTektonPipelineRunParams creates a new GetTektonPipelineRunParams object
-// with the default values initialized.
+// NewGetTektonPipelineRunParams creates a new GetTektonPipelineRunParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetTektonPipelineRunParams() *GetTektonPipelineRunParams {
-	var ()
 	return &GetTektonPipelineRunParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetTektonPipelineRunParamsWithTimeout creates a new GetTektonPipelineRunParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetTektonPipelineRunParamsWithTimeout(timeout time.Duration) *GetTektonPipelineRunParams {
-	var ()
 	return &GetTektonPipelineRunParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetTektonPipelineRunParamsWithContext creates a new GetTektonPipelineRunParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetTektonPipelineRunParamsWithContext(ctx context.Context) *GetTektonPipelineRunParams {
-	var ()
 	return &GetTektonPipelineRunParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetTektonPipelineRunParamsWithHTTPClient creates a new GetTektonPipelineRunParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetTektonPipelineRunParamsWithHTTPClient(client *http.Client) *GetTektonPipelineRunParams {
-	var ()
 	return &GetTektonPipelineRunParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetTektonPipelineRunParams contains all the parameters to send to the API endpoint
-for the get tekton pipeline run operation typically these are written to a http.Request
+/* GetTektonPipelineRunParams contains all the parameters to send to the API endpoint
+   for the get tekton pipeline run operation.
+
+   Typically these are written to a http.Request.
 */
 type GetTektonPipelineRunParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  name of Radix application
 
+	/* AppName.
+
+	   name of Radix application
 	*/
 	AppName string
-	/*JobName
-	  Name of pipeline job
 
+	/* JobName.
+
+	   Name of pipeline job
 	*/
 	JobName string
-	/*PipelineRunName
-	  Name of pipeline run
 
+	/* PipelineRunName.
+
+	   Name of pipeline run
 	*/
 	PipelineRunName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get tekton pipeline run params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTektonPipelineRunParams) WithDefaults() *GetTektonPipelineRunParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get tekton pipeline run params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTektonPipelineRunParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get tekton pipeline run params
@@ -193,7 +211,6 @@ func (o *GetTektonPipelineRunParams) WriteToRequest(r runtime.ClientRequest, reg
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -202,7 +219,6 @@ func (o *GetTektonPipelineRunParams) WriteToRequest(r runtime.ClientRequest, reg
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName

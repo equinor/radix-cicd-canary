@@ -78,7 +78,6 @@ func (m *ScheduledJobSummary) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ScheduledJobSummary) validateReplicaList(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.ReplicaList) { // not required
 		return nil
 	}
@@ -92,6 +91,8 @@ func (m *ScheduledJobSummary) validateReplicaList(formats strfmt.Registry) error
 			if err := m.ReplicaList[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -179,6 +180,8 @@ func (m *ScheduledJobSummary) contextValidateReplicaList(ctx context.Context, fo
 			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("replicaList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

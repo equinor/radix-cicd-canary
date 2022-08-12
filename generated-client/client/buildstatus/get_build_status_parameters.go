@@ -16,81 +16,98 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetBuildStatusParams creates a new GetBuildStatusParams object
-// with the default values initialized.
+// NewGetBuildStatusParams creates a new GetBuildStatusParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetBuildStatusParams() *GetBuildStatusParams {
-	var (
-		pipelineDefault = string("build-deploy")
-	)
 	return &GetBuildStatusParams{
-		Pipeline: &pipelineDefault,
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetBuildStatusParamsWithTimeout creates a new GetBuildStatusParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetBuildStatusParamsWithTimeout(timeout time.Duration) *GetBuildStatusParams {
-	var (
-		pipelineDefault = string("build-deploy")
-	)
 	return &GetBuildStatusParams{
-		Pipeline: &pipelineDefault,
-
 		timeout: timeout,
 	}
 }
 
 // NewGetBuildStatusParamsWithContext creates a new GetBuildStatusParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetBuildStatusParamsWithContext(ctx context.Context) *GetBuildStatusParams {
-	var (
-		pipelineDefault = string("build-deploy")
-	)
 	return &GetBuildStatusParams{
-		Pipeline: &pipelineDefault,
-
 		Context: ctx,
 	}
 }
 
 // NewGetBuildStatusParamsWithHTTPClient creates a new GetBuildStatusParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetBuildStatusParamsWithHTTPClient(client *http.Client) *GetBuildStatusParams {
-	var (
-		pipelineDefault = string("build-deploy")
-	)
 	return &GetBuildStatusParams{
-		Pipeline:   &pipelineDefault,
 		HTTPClient: client,
 	}
 }
 
-/*GetBuildStatusParams contains all the parameters to send to the API endpoint
-for the get build status operation typically these are written to a http.Request
+/* GetBuildStatusParams contains all the parameters to send to the API endpoint
+   for the get build status operation.
+
+   Typically these are written to a http.Request.
 */
 type GetBuildStatusParams struct {
 
-	/*AppName
-	  name of Radix application
+	/* AppName.
 
+	   name of Radix application
 	*/
 	AppName string
-	/*EnvName
-	  name of the environment
 
+	/* EnvName.
+
+	   name of the environment
 	*/
 	EnvName string
-	/*Pipeline
-	  Type of pipeline job to get status for.
 
+	/* Pipeline.
+
+	   Type of pipeline job to get status for.
+
+	   Default: "build-deploy"
 	*/
 	Pipeline *string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get build status params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetBuildStatusParams) WithDefaults() *GetBuildStatusParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get build status params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetBuildStatusParams) SetDefaults() {
+	var (
+		pipelineDefault = string("build-deploy")
+	)
+
+	val := GetBuildStatusParams{
+		Pipeline: &pipelineDefault,
+	}
+
+	val.timeout = o.timeout
+	val.Context = o.Context
+	val.HTTPClient = o.HTTPClient
+	*o = val
 }
 
 // WithTimeout adds the timeout to the get build status params
@@ -181,16 +198,17 @@ func (o *GetBuildStatusParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 
 		// query param pipeline
 		var qrPipeline string
+
 		if o.Pipeline != nil {
 			qrPipeline = *o.Pipeline
 		}
 		qPipeline := qrPipeline
 		if qPipeline != "" {
+
 			if err := r.SetQueryParam("pipeline", qPipeline); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

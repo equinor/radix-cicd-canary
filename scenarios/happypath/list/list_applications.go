@@ -9,11 +9,6 @@ import (
 
 var logger *log.Entry
 
-type returnValue struct {
-	showApplicationsOk *apiclient.ShowApplicationsOK
-	err                error
-}
-
 // Applications Test that we are able to list applications
 func Applications(env env.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})

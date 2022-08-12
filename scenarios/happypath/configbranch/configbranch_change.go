@@ -8,7 +8,6 @@ import (
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
@@ -140,7 +139,7 @@ func waitForJobDone(env envUtil.Env, jobName string) (bool, error) {
 	return true, nil
 }
 
-func patchConfigBranch(env env.Env, newConfigBranch string) error {
+func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
 	logger.Debugf("Set ConfigBranch to %v", newConfigBranch)
 	patchRequest := models.ApplicationPatchRequest{
 		ConfigBranch: newConfigBranch,
@@ -161,7 +160,7 @@ func patchConfigBranch(env env.Env, newConfigBranch string) error {
 	return nil
 }
 
-func validateJobSteps(env env.Env, jobName string, expectedSteps []expectedStep) (bool, error) {
+func validateJobSteps(env envUtil.Env, jobName string, expectedSteps []expectedStep) (bool, error) {
 	steps := job.GetSteps(env, config.App4Name, jobName)
 
 	if steps == nil && len(steps) != len(expectedSteps) {

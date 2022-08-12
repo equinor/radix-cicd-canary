@@ -19,12 +19,12 @@ func TestStartJobBatch(t *testing.T) {
 	envUtils.SetRequiredEnvironmentVariablesForTest()
 	env := envUtils.NewEnv()
 
-	err, _ := startJobBatch(jobSchedulerBaseUrl, "passwordSentInHeaderFromCicdCanary", "someappenv")
+	_, err := startJobBatch(jobSchedulerBaseUrl, "passwordSentInHeaderFromCicdCanary", "someappenv")
 	assert.NoError(t, err)
 
-	err, _ = startJobBatch(jobSchedulerBaseUrl, "wrongPassword", "someappenv")
+	_, err = startJobBatch(jobSchedulerBaseUrl, "wrongPassword", "someappenv")
 	assert.Error(t, err)
 
-	err, _ = startJobBatch(jobSchedulerBaseUrl, env.GetNetworkPolicyCanaryPassword(), "someappenv")
+	_, err = startJobBatch(jobSchedulerBaseUrl, env.GetNetworkPolicyCanaryPassword(), "someappenv")
 	assert.Error(t, err)
 }

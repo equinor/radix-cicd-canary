@@ -25,17 +25,20 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInfoWriter) (*GetBatchOK, error)
+	GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchOK, error)
 
-	GetBatches(params *GetBatchesParams, authInfo runtime.ClientAuthInfoWriter) (*GetBatchesOK, error)
+	GetBatches(params *GetBatchesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchesOK, error)
 
-	GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetJobOK, error)
+	GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobOK, error)
 
-	GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetJobsOK, error)
+	GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobsOK, error)
 
-	JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter) (*JobLogOK, error)
+	JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*JobLogOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -43,13 +46,12 @@ type ClientService interface {
 /*
   GetBatch gets list of scheduled batches
 */
-func (a *Client) GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInfoWriter) (*GetBatchOK, error) {
+func (a *Client) GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetBatchParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getBatch",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}",
@@ -61,7 +63,12 @@ func (a *Client) GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInf
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -78,13 +85,12 @@ func (a *Client) GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInf
 /*
   GetBatches gets list of scheduled batches
 */
-func (a *Client) GetBatches(params *GetBatchesParams, authInfo runtime.ClientAuthInfoWriter) (*GetBatchesOK, error) {
+func (a *Client) GetBatches(params *GetBatchesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetBatchesParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getBatches",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches",
@@ -96,7 +102,12 @@ func (a *Client) GetBatches(params *GetBatchesParams, authInfo runtime.ClientAut
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -113,13 +124,12 @@ func (a *Client) GetBatches(params *GetBatchesParams, authInfo runtime.ClientAut
 /*
   GetJob gets list of scheduled jobs
 */
-func (a *Client) GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWriter) (*GetJobOK, error) {
+func (a *Client) GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetJobParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getJob",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}",
@@ -131,7 +141,12 @@ func (a *Client) GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWri
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -148,13 +163,12 @@ func (a *Client) GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWri
 /*
   GetJobs gets list of scheduled jobs
 */
-func (a *Client) GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoWriter) (*GetJobsOK, error) {
+func (a *Client) GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetJobsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "getJobs",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs",
@@ -166,7 +180,12 @@ func (a *Client) GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoW
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -183,13 +202,12 @@ func (a *Client) GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoW
 /*
   JobLog gets log from a scheduled job
 */
-func (a *Client) JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter) (*JobLogOK, error) {
+func (a *Client) JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*JobLogOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewJobLogParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "jobLog",
 		Method:             "GET",
 		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs",
@@ -201,7 +219,12 @@ func (a *Client) JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWri
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

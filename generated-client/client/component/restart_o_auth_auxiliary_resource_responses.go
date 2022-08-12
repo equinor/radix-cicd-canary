@@ -56,7 +56,6 @@ func (o *RestartOAuthAuxiliaryResourceReader) ReadResponse(response runtime.Clie
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -67,7 +66,7 @@ func NewRestartOAuthAuxiliaryResourceOK() *RestartOAuthAuxiliaryResourceOK {
 	return &RestartOAuthAuxiliaryResourceOK{}
 }
 
-/*RestartOAuthAuxiliaryResourceOK handles this case with default header values.
+/* RestartOAuthAuxiliaryResourceOK describes a response with status code 200, with default header values.
 
 Auxiliary resource restarted ok
 */
@@ -88,7 +87,7 @@ func NewRestartOAuthAuxiliaryResourceUnauthorized() *RestartOAuthAuxiliaryResour
 	return &RestartOAuthAuxiliaryResourceUnauthorized{}
 }
 
-/*RestartOAuthAuxiliaryResourceUnauthorized handles this case with default header values.
+/* RestartOAuthAuxiliaryResourceUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -109,7 +108,7 @@ func NewRestartOAuthAuxiliaryResourceForbidden() *RestartOAuthAuxiliaryResourceF
 	return &RestartOAuthAuxiliaryResourceForbidden{}
 }
 
-/*RestartOAuthAuxiliaryResourceForbidden handles this case with default header values.
+/* RestartOAuthAuxiliaryResourceForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
@@ -130,7 +129,7 @@ func NewRestartOAuthAuxiliaryResourceNotFound() *RestartOAuthAuxiliaryResourceNo
 	return &RestartOAuthAuxiliaryResourceNotFound{}
 }
 
-/*RestartOAuthAuxiliaryResourceNotFound handles this case with default header values.
+/* RestartOAuthAuxiliaryResourceNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -151,7 +150,7 @@ func NewRestartOAuthAuxiliaryResourceConflict() *RestartOAuthAuxiliaryResourceCo
 	return &RestartOAuthAuxiliaryResourceConflict{}
 }
 
-/*RestartOAuthAuxiliaryResourceConflict handles this case with default header values.
+/* RestartOAuthAuxiliaryResourceConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
@@ -172,7 +171,7 @@ func NewRestartOAuthAuxiliaryResourceInternalServerError() *RestartOAuthAuxiliar
 	return &RestartOAuthAuxiliaryResourceInternalServerError{}
 }
 
-/*RestartOAuthAuxiliaryResourceInternalServerError handles this case with default header values.
+/* RestartOAuthAuxiliaryResourceInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */

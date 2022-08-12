@@ -141,7 +141,6 @@ func (m *PipelineRun) validateStatusEnum(path, location string, value string) er
 }
 
 func (m *PipelineRun) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}

@@ -25,13 +25,16 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
+// ClientOption is the option for Client methods
+type ClientOption func(*runtime.ClientOperation)
+
 // ClientService is the interface for Client methods
 type ClientService interface {
-	RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*RegisterApplicationOK, error)
+	RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegisterApplicationOK, error)
 
-	SearchApplications(params *SearchApplicationsParams, authInfo runtime.ClientAuthInfoWriter) (*SearchApplicationsOK, error)
+	SearchApplications(params *SearchApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SearchApplicationsOK, error)
 
-	ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter) (*ShowApplicationsOK, error)
+	ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ShowApplicationsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -39,13 +42,12 @@ type ClientService interface {
 /*
   RegisterApplication creates an application registration
 */
-func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter) (*RegisterApplicationOK, error) {
+func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegisterApplicationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRegisterApplicationParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "registerApplication",
 		Method:             "POST",
 		PathPattern:        "/applications",
@@ -57,7 +59,12 @@ func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -74,13 +81,12 @@ func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo
 /*
   SearchApplications gets applications by name n o t e doesn t get application summary latest job environments
 */
-func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo runtime.ClientAuthInfoWriter) (*SearchApplicationsOK, error) {
+func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SearchApplicationsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewSearchApplicationsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "searchApplications",
 		Method:             "POST",
 		PathPattern:        "/applications/_search",
@@ -92,7 +98,12 @@ func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo r
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
@@ -109,13 +120,12 @@ func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo r
 /*
   ShowApplications lists the applications n o t e doesn t get application summary latest job environments
 */
-func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter) (*ShowApplicationsOK, error) {
+func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ShowApplicationsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewShowApplicationsParams()
 	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
+	op := &runtime.ClientOperation{
 		ID:                 "showApplications",
 		Method:             "GET",
 		PathPattern:        "/applications",
@@ -127,7 +137,12 @@ func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runti
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
-	})
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}

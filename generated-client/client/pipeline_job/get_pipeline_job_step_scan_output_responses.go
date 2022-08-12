@@ -41,7 +41,6 @@ func (o *GetPipelineJobStepScanOutputReader) ReadResponse(response runtime.Clien
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -52,7 +51,7 @@ func NewGetPipelineJobStepScanOutputOK() *GetPipelineJobStepScanOutputOK {
 	return &GetPipelineJobStepScanOutputOK{}
 }
 
-/*GetPipelineJobStepScanOutputOK handles this case with default header values.
+/* GetPipelineJobStepScanOutputOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -63,7 +62,6 @@ type GetPipelineJobStepScanOutputOK struct {
 func (o *GetPipelineJobStepScanOutputOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/steps/{stepName}/output/scan][%d] getPipelineJobStepScanOutputOK  %+v", 200, o.Payload)
 }
-
 func (o *GetPipelineJobStepScanOutputOK) GetPayload() []*models.Vulnerability {
 	return o.Payload
 }
@@ -83,7 +81,7 @@ func NewGetPipelineJobStepScanOutputUnauthorized() *GetPipelineJobStepScanOutput
 	return &GetPipelineJobStepScanOutputUnauthorized{}
 }
 
-/*GetPipelineJobStepScanOutputUnauthorized handles this case with default header values.
+/* GetPipelineJobStepScanOutputUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -104,7 +102,7 @@ func NewGetPipelineJobStepScanOutputNotFound() *GetPipelineJobStepScanOutputNotF
 	return &GetPipelineJobStepScanOutputNotFound{}
 }
 
-/*GetPipelineJobStepScanOutputNotFound handles this case with default header values.
+/* GetPipelineJobStepScanOutputNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

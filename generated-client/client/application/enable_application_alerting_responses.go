@@ -59,7 +59,6 @@ func (o *EnableApplicationAlertingReader) ReadResponse(response runtime.ClientRe
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -70,7 +69,7 @@ func NewEnableApplicationAlertingOK() *EnableApplicationAlertingOK {
 	return &EnableApplicationAlertingOK{}
 }
 
-/*EnableApplicationAlertingOK handles this case with default header values.
+/* EnableApplicationAlertingOK describes a response with status code 200, with default header values.
 
 Successful enable alerting
 */
@@ -81,7 +80,6 @@ type EnableApplicationAlertingOK struct {
 func (o *EnableApplicationAlertingOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingOK  %+v", 200, o.Payload)
 }
-
 func (o *EnableApplicationAlertingOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -103,7 +101,7 @@ func NewEnableApplicationAlertingBadRequest() *EnableApplicationAlertingBadReque
 	return &EnableApplicationAlertingBadRequest{}
 }
 
-/*EnableApplicationAlertingBadRequest handles this case with default header values.
+/* EnableApplicationAlertingBadRequest describes a response with status code 400, with default header values.
 
 Alerting already enabled
 */
@@ -124,7 +122,7 @@ func NewEnableApplicationAlertingUnauthorized() *EnableApplicationAlertingUnauth
 	return &EnableApplicationAlertingUnauthorized{}
 }
 
-/*EnableApplicationAlertingUnauthorized handles this case with default header values.
+/* EnableApplicationAlertingUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -145,7 +143,7 @@ func NewEnableApplicationAlertingForbidden() *EnableApplicationAlertingForbidden
 	return &EnableApplicationAlertingForbidden{}
 }
 
-/*EnableApplicationAlertingForbidden handles this case with default header values.
+/* EnableApplicationAlertingForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
@@ -166,7 +164,7 @@ func NewEnableApplicationAlertingNotFound() *EnableApplicationAlertingNotFound {
 	return &EnableApplicationAlertingNotFound{}
 }
 
-/*EnableApplicationAlertingNotFound handles this case with default header values.
+/* EnableApplicationAlertingNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -187,7 +185,7 @@ func NewEnableApplicationAlertingInternalServerError() *EnableApplicationAlertin
 	return &EnableApplicationAlertingInternalServerError{}
 }
 
-/*EnableApplicationAlertingInternalServerError handles this case with default header values.
+/* EnableApplicationAlertingInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */

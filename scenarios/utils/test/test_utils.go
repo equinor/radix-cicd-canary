@@ -43,7 +43,7 @@ func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, int
 			time.Sleep(sleepTime)
 		}
 
-		waitPeriod := time.Now().Sub(startTime)
+		waitPeriod := time.Since(startTime)
 
 		if timeout > 0 {
 			accumulatedWait = accumulatedWait + waitPeriod

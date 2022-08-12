@@ -7,7 +7,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/azure"
 	"k8s.io/client-go/rest"
-	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -17,7 +16,7 @@ func GetKubernetesClient() kubernetes.Interface {
 	return getKubernetesClientFromConfig(config)
 }
 
-func getKubernetesClientConfig() *restclient.Config {
+func getKubernetesClientConfig() *rest.Config {
 	kubeConfigPath := os.Getenv("HOME") + "/.kube/config"
 	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
 	if err != nil {
@@ -30,7 +29,7 @@ func getKubernetesClientConfig() *restclient.Config {
 	return config
 }
 
-func getKubernetesClientFromConfig(config *restclient.Config) kubernetes.Interface {
+func getKubernetesClientFromConfig(config *rest.Config) kubernetes.Interface {
 	client, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		log.Fatalf("getClusterConfig k8s client: %v", err)

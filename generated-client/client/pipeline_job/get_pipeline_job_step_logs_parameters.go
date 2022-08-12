@@ -16,94 +16,121 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetPipelineJobStepLogsParams creates a new GetPipelineJobStepLogsParams object
-// with the default values initialized.
+// NewGetPipelineJobStepLogsParams creates a new GetPipelineJobStepLogsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetPipelineJobStepLogsParams() *GetPipelineJobStepLogsParams {
-	var ()
 	return &GetPipelineJobStepLogsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetPipelineJobStepLogsParamsWithTimeout creates a new GetPipelineJobStepLogsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetPipelineJobStepLogsParamsWithTimeout(timeout time.Duration) *GetPipelineJobStepLogsParams {
-	var ()
 	return &GetPipelineJobStepLogsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetPipelineJobStepLogsParamsWithContext creates a new GetPipelineJobStepLogsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetPipelineJobStepLogsParamsWithContext(ctx context.Context) *GetPipelineJobStepLogsParams {
-	var ()
 	return &GetPipelineJobStepLogsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetPipelineJobStepLogsParamsWithHTTPClient creates a new GetPipelineJobStepLogsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetPipelineJobStepLogsParamsWithHTTPClient(client *http.Client) *GetPipelineJobStepLogsParams {
-	var ()
 	return &GetPipelineJobStepLogsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetPipelineJobStepLogsParams contains all the parameters to send to the API endpoint
-for the get pipeline job step logs operation typically these are written to a http.Request
+/* GetPipelineJobStepLogsParams contains all the parameters to send to the API endpoint
+   for the get pipeline job step logs operation.
+
+   Typically these are written to a http.Request.
 */
 type GetPipelineJobStepLogsParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  name of Radix application
 
+	/* AppName.
+
+	   name of Radix application
 	*/
 	AppName string
-	/*File
-	  Get log as a file if true
 
+	/* File.
+
+	   Get log as a file if true
+
+	   Format: boolean
 	*/
 	File *string
-	/*JobName
-	  Name of the pipeline job
 
+	/* JobName.
+
+	   Name of the pipeline job
 	*/
 	JobName string
-	/*Lines
-	  Get log lines (example 1000)
 
+	/* Lines.
+
+	   Get log lines (example 1000)
+
+	   Format: number
 	*/
 	Lines *string
-	/*SinceTime
-	  Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
 
+	/* SinceTime.
+
+	   Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
+
+	   Format: date-time
 	*/
 	SinceTime *strfmt.DateTime
-	/*StepName
-	  Name of the pipeline job step
 
+	/* StepName.
+
+	   Name of the pipeline job step
 	*/
 	StepName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get pipeline job step logs params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPipelineJobStepLogsParams) WithDefaults() *GetPipelineJobStepLogsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get pipeline job step logs params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPipelineJobStepLogsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get pipeline job step logs params
@@ -241,7 +268,6 @@ func (o *GetPipelineJobStepLogsParams) WriteToRequest(r runtime.ClientRequest, r
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -250,7 +276,6 @@ func (o *GetPipelineJobStepLogsParams) WriteToRequest(r runtime.ClientRequest, r
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName
@@ -262,16 +287,17 @@ func (o *GetPipelineJobStepLogsParams) WriteToRequest(r runtime.ClientRequest, r
 
 		// query param file
 		var qrFile string
+
 		if o.File != nil {
 			qrFile = *o.File
 		}
 		qFile := qrFile
 		if qFile != "" {
+
 			if err := r.SetQueryParam("file", qFile); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param jobName
@@ -283,32 +309,34 @@ func (o *GetPipelineJobStepLogsParams) WriteToRequest(r runtime.ClientRequest, r
 
 		// query param lines
 		var qrLines string
+
 		if o.Lines != nil {
 			qrLines = *o.Lines
 		}
 		qLines := qrLines
 		if qLines != "" {
+
 			if err := r.SetQueryParam("lines", qLines); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.SinceTime != nil {
 
 		// query param sinceTime
 		var qrSinceTime strfmt.DateTime
+
 		if o.SinceTime != nil {
 			qrSinceTime = *o.SinceTime
 		}
 		qSinceTime := qrSinceTime.String()
 		if qSinceTime != "" {
+
 			if err := r.SetQueryParam("sinceTime", qSinceTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param stepName

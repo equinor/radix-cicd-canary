@@ -13,7 +13,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const canonicalDomainNameEnvironmentVariable = "RADIX_CANONICAL_DOMAIN_NAME"
 const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 
 // Register Will register application
@@ -146,11 +145,7 @@ func getAlias(env env.Env, appName string) *string {
 
 // IsRunningInActiveCluster Check if app is running in active cluster
 func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool {
-	if strings.EqualFold(publicDomainName, canonicalDomainName) {
-		return false
-	}
-
-	return true
+	return !strings.EqualFold(publicDomainName, canonicalDomainName)
 }
 
 // TryGetPublicDomainName Waits for public domain name to be defined

@@ -91,7 +91,6 @@ func (m *ScheduledBatchSummary) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ScheduledBatchSummary) validateJobList(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.JobList) { // not required
 		return nil
 	}
@@ -105,6 +104,8 @@ func (m *ScheduledBatchSummary) validateJobList(formats strfmt.Registry) error {
 			if err := m.JobList[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("jobList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -189,7 +190,6 @@ func (m *ScheduledBatchSummary) validateTotalJobCount(formats strfmt.Registry) e
 }
 
 func (m *ScheduledBatchSummary) validateReplica(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Replica) { // not required
 		return nil
 	}
@@ -198,6 +198,8 @@ func (m *ScheduledBatchSummary) validateReplica(formats strfmt.Registry) error {
 		if err := m.Replica.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replica")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("replica")
 			}
 			return err
 		}
@@ -232,6 +234,8 @@ func (m *ScheduledBatchSummary) contextValidateJobList(ctx context.Context, form
 			if err := m.JobList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("jobList" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -248,6 +252,8 @@ func (m *ScheduledBatchSummary) contextValidateReplica(ctx context.Context, form
 		if err := m.Replica.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replica")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("replica")
 			}
 			return err
 		}

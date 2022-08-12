@@ -35,7 +35,6 @@ func (o *TriggerPipelineBuildDeployReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -46,7 +45,7 @@ func NewTriggerPipelineBuildDeployOK() *TriggerPipelineBuildDeployOK {
 	return &TriggerPipelineBuildDeployOK{}
 }
 
-/*TriggerPipelineBuildDeployOK handles this case with default header values.
+/* TriggerPipelineBuildDeployOK describes a response with status code 200, with default header values.
 
 Successful trigger pipeline
 */
@@ -57,7 +56,6 @@ type TriggerPipelineBuildDeployOK struct {
 func (o *TriggerPipelineBuildDeployOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployOK  %+v", 200, o.Payload)
 }
-
 func (o *TriggerPipelineBuildDeployOK) GetPayload() *models.JobSummary {
 	return o.Payload
 }
@@ -79,7 +77,7 @@ func NewTriggerPipelineBuildDeployNotFound() *TriggerPipelineBuildDeployNotFound
 	return &TriggerPipelineBuildDeployNotFound{}
 }
 
-/*TriggerPipelineBuildDeployNotFound handles this case with default header values.
+/* TriggerPipelineBuildDeployNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

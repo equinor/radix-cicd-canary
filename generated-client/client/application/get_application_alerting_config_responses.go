@@ -53,7 +53,6 @@ func (o *GetApplicationAlertingConfigReader) ReadResponse(response runtime.Clien
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -64,7 +63,7 @@ func NewGetApplicationAlertingConfigOK() *GetApplicationAlertingConfigOK {
 	return &GetApplicationAlertingConfigOK{}
 }
 
-/*GetApplicationAlertingConfigOK handles this case with default header values.
+/* GetApplicationAlertingConfigOK describes a response with status code 200, with default header values.
 
 Successful get alerts config
 */
@@ -75,7 +74,6 @@ type GetApplicationAlertingConfigOK struct {
 func (o *GetApplicationAlertingConfigOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/alerting][%d] getApplicationAlertingConfigOK  %+v", 200, o.Payload)
 }
-
 func (o *GetApplicationAlertingConfigOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -97,7 +95,7 @@ func NewGetApplicationAlertingConfigUnauthorized() *GetApplicationAlertingConfig
 	return &GetApplicationAlertingConfigUnauthorized{}
 }
 
-/*GetApplicationAlertingConfigUnauthorized handles this case with default header values.
+/* GetApplicationAlertingConfigUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -118,7 +116,7 @@ func NewGetApplicationAlertingConfigForbidden() *GetApplicationAlertingConfigFor
 	return &GetApplicationAlertingConfigForbidden{}
 }
 
-/*GetApplicationAlertingConfigForbidden handles this case with default header values.
+/* GetApplicationAlertingConfigForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
@@ -139,7 +137,7 @@ func NewGetApplicationAlertingConfigNotFound() *GetApplicationAlertingConfigNotF
 	return &GetApplicationAlertingConfigNotFound{}
 }
 
-/*GetApplicationAlertingConfigNotFound handles this case with default header values.
+/* GetApplicationAlertingConfigNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -160,7 +158,7 @@ func NewGetApplicationAlertingConfigInternalServerError() *GetApplicationAlertin
 	return &GetApplicationAlertingConfigInternalServerError{}
 }
 
-/*GetApplicationAlertingConfigInternalServerError handles this case with default header values.
+/* GetApplicationAlertingConfigInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */

@@ -27,6 +27,10 @@ type Secret struct {
 	// Example: Database password
 	DisplayName string `json:"displayName,omitempty"`
 
+	// ID of the secret within the Resource
+	// Example: clientId
+	ID string `json:"id,omitempty"`
+
 	// Name of the secret or its property, related to type and resource)
 	// Example: db_password
 	// Required: true
@@ -39,7 +43,7 @@ type Secret struct {
 	// Status of the secret
 	// Pending = Secret exists in Radix config, but not in cluster
 	// Consistent = Secret exists in Radix config and in cluster
-	// Orphan = Secret does not exist in Radix config, but exists in cluster
+	// NotAvailable = Secret is available in external secret configuration but not in cluster
 	// Example: Consistent
 	Status string `json:"status,omitempty"`
 
@@ -75,7 +79,6 @@ func (m *Secret) validateName(formats strfmt.Registry) error {
 }
 
 func (m *Secret) validateType(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Type) { // not required
 		return nil
 	}
@@ -83,6 +86,8 @@ func (m *Secret) validateType(formats strfmt.Registry) error {
 	if err := m.Type.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("type")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("type")
 		}
 		return err
 	}
@@ -109,6 +114,8 @@ func (m *Secret) contextValidateType(ctx context.Context, formats strfmt.Registr
 	if err := m.Type.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("type")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("type")
 		}
 		return err
 	}

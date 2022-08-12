@@ -3,6 +3,9 @@ package egresspolicy
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
@@ -10,8 +13,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/k8sjob"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
-	"io/ioutil"
-	"net/http"
 )
 
 var logger *log.Entry
@@ -26,7 +27,7 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) (bool, error) {
 	for _, appEnv := range appEnvs {
 		baseUrl := env.GetNetworkPolicyCanaryUrl(appEnv)
 		password := env.GetNetworkPolicyCanaryPassword()
-		err, batchName := startJobBatch(baseUrl, password, appEnv)
+		batchName, err := startJobBatch(baseUrl, password, appEnv)
 		if err != nil {
 			return false, err
 		} else {
@@ -58,30 +59,33 @@ func checkJobBatch(env envUtil.Env, appName, appEnv string, jobComponentName str
 	return ok
 }
 
-func startJobBatch(baseUrl string, password string, appEnv string) (error, string) {
+func startJobBatch(baseUrl string, password string, appEnv string) (string, error) {
 	jobBatchUrl := fmt.Sprintf("%s/startjobbatch", baseUrl)
 	httpClient := &http.Client{}
 	req, _ := http.NewRequest("GET", jobBatchUrl, nil)
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", password))
 	response, err := httpClient.Do(req)
 	if err != nil {
-		return err, ""
+		return "", err
 	}
 	if response.StatusCode != 200 {
-		return fmt.Errorf("got non-200 OK from %s", jobBatchUrl), ""
+		return "", fmt.Errorf("got non-200 OK from %s", jobBatchUrl)
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
 	var batchStatus models.BatchStatus
 	unMarshalErr := json.Unmarshal(body, &batchStatus)
 	if unMarshalErr != nil {
-		return unMarshalErr, ""
+		return "", unMarshalErr
 	}
 	if batchStatus.BatchName == "" {
 		err = fmt.Errorf("no batchName attribute in job batch creation response. appEnv %s", appEnv)
-		return err, ""
+		return "", err
 	}
-	return nil, batchStatus.BatchName
+	return batchStatus.BatchName, nil
 }
 
 // StartAndCheckJobBatchSuccess is a function after a call to Lookup succeeds

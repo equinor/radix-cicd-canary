@@ -8,15 +8,10 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
-	log "github.com/sirupsen/logrus"
 )
-
-var logger *log.Entry
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
 func Set(env envUtil.Env, suiteName string) (bool, error) {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
-
 	// Due to a timing bug in Config Syncer (https://github.com/kubeops/config-syncer) that can happen
 	// when a new namespace is created and at the same time a secret that must be synced to the namespace is updated,
 	// the old "cached" secret from the nsSyncer overwrites the secret created by the secret informer's OnUpdate.
@@ -26,7 +21,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 
 	err := privateimagehub.SetPassword(env, config.App3Name)
 	if err != nil {
-		return false, fmt.Errorf("Failed to set private image hub password. %v", err)
+		return false, fmt.Errorf("failed to set private image hub password. %v", err)
 	}
 
 	return true, nil

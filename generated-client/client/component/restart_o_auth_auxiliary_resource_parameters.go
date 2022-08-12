@@ -16,79 +16,97 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewRestartOAuthAuxiliaryResourceParams creates a new RestartOAuthAuxiliaryResourceParams object
-// with the default values initialized.
+// NewRestartOAuthAuxiliaryResourceParams creates a new RestartOAuthAuxiliaryResourceParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewRestartOAuthAuxiliaryResourceParams() *RestartOAuthAuxiliaryResourceParams {
-	var ()
 	return &RestartOAuthAuxiliaryResourceParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewRestartOAuthAuxiliaryResourceParamsWithTimeout creates a new RestartOAuthAuxiliaryResourceParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewRestartOAuthAuxiliaryResourceParamsWithTimeout(timeout time.Duration) *RestartOAuthAuxiliaryResourceParams {
-	var ()
 	return &RestartOAuthAuxiliaryResourceParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewRestartOAuthAuxiliaryResourceParamsWithContext creates a new RestartOAuthAuxiliaryResourceParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewRestartOAuthAuxiliaryResourceParamsWithContext(ctx context.Context) *RestartOAuthAuxiliaryResourceParams {
-	var ()
 	return &RestartOAuthAuxiliaryResourceParams{
-
 		Context: ctx,
 	}
 }
 
 // NewRestartOAuthAuxiliaryResourceParamsWithHTTPClient creates a new RestartOAuthAuxiliaryResourceParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewRestartOAuthAuxiliaryResourceParamsWithHTTPClient(client *http.Client) *RestartOAuthAuxiliaryResourceParams {
-	var ()
 	return &RestartOAuthAuxiliaryResourceParams{
 		HTTPClient: client,
 	}
 }
 
-/*RestartOAuthAuxiliaryResourceParams contains all the parameters to send to the API endpoint
-for the restart o auth auxiliary resource operation typically these are written to a http.Request
+/* RestartOAuthAuxiliaryResourceParams contains all the parameters to send to the API endpoint
+   for the restart o auth auxiliary resource operation.
+
+   Typically these are written to a http.Request.
 */
 type RestartOAuthAuxiliaryResourceParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
-	/*ComponentName
-	  Name of component
 
+	/* ComponentName.
+
+	   Name of component
 	*/
 	ComponentName string
-	/*EnvName
-	  Name of environment
 
+	/* EnvName.
+
+	   Name of environment
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the restart o auth auxiliary resource params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RestartOAuthAuxiliaryResourceParams) WithDefaults() *RestartOAuthAuxiliaryResourceParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the restart o auth auxiliary resource params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RestartOAuthAuxiliaryResourceParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the restart o auth auxiliary resource params
@@ -193,7 +211,6 @@ func (o *RestartOAuthAuxiliaryResourceParams) WriteToRequest(r runtime.ClientReq
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -202,7 +219,6 @@ func (o *RestartOAuthAuxiliaryResourceParams) WriteToRequest(r runtime.ClientReq
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName
