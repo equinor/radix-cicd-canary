@@ -8,7 +8,6 @@ package models
 import (
 	"context"
 	"encoding/json"
-	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -42,7 +41,7 @@ type JobSummary struct {
 	Ended string `json:"ended,omitempty"`
 
 	// Environments the job deployed to
-	// Example: dev,qa
+	// Example: ["dev","qa"]
 	Environments []string `json:"environments"`
 
 	// Name of the job
@@ -64,7 +63,7 @@ type JobSummary struct {
 	Status string `json:"status,omitempty"`
 
 	// List of RadixJobStepScanOutput for a job
-	StepSummaryScans []*RadixJobStepScanOutput `json:"stepSummaryScans"`
+	StepSummaryScans []interface{} `json:"stepSummaryScans"`
 
 	// TriggeredBy user that triggered the job. If through webhook = sender.login. If through api - usertoken.upn
 	// Example: a_user@equinor.com
@@ -80,10 +79,6 @@ func (m *JobSummary) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateStatus(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateStepSummaryScans(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -107,8 +102,8 @@ func init() {
 
 const (
 
-	// JobSummaryPipelineBuildDeploy captures enum value "build-deploy"
-	JobSummaryPipelineBuildDeploy string = "build-deploy"
+	// JobSummaryPipelineBuildDashDeploy captures enum value "build-deploy"
+	JobSummaryPipelineBuildDashDeploy string = "build-deploy"
 
 	// JobSummaryPipelineBuild captures enum value " build"
 	JobSummaryPipelineBuild string = " build"
@@ -123,7 +118,6 @@ func (m *JobSummary) validatePipelineEnum(path, location string, value string) e
 }
 
 func (m *JobSummary) validatePipeline(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Pipeline) { // not required
 		return nil
 	}
@@ -178,7 +172,6 @@ func (m *JobSummary) validateStatusEnum(path, location string, value string) err
 }
 
 func (m *JobSummary) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -191,60 +184,8 @@ func (m *JobSummary) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *JobSummary) validateStepSummaryScans(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.StepSummaryScans) { // not required
-		return nil
-	}
-
-	for i := 0; i < len(m.StepSummaryScans); i++ {
-		if swag.IsZero(m.StepSummaryScans[i]) { // not required
-			continue
-		}
-
-		if m.StepSummaryScans[i] != nil {
-			if err := m.StepSummaryScans[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	return nil
-}
-
-// ContextValidate validate this job summary based on the context it is used
+// ContextValidate validates this job summary based on context it is used
 func (m *JobSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateStepSummaryScans(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *JobSummary) contextValidateStepSummaryScans(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.StepSummaryScans); i++ {
-
-		if m.StepSummaryScans[i] != nil {
-			if err := m.StepSummaryScans[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("stepSummaryScans" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
 	return nil
 }
 

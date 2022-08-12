@@ -38,7 +38,6 @@ func (o *DeleteApplicationReader) ReadResponse(response runtime.ClientResponse, 
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -49,7 +48,7 @@ func NewDeleteApplicationOK() *DeleteApplicationOK {
 	return &DeleteApplicationOK{}
 }
 
-/*DeleteApplicationOK handles this case with default header values.
+/* DeleteApplicationOK describes a response with status code 200, with default header values.
 
 Application deleted ok
 */
@@ -70,7 +69,7 @@ func NewDeleteApplicationUnauthorized() *DeleteApplicationUnauthorized {
 	return &DeleteApplicationUnauthorized{}
 }
 
-/*DeleteApplicationUnauthorized handles this case with default header values.
+/* DeleteApplicationUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -91,7 +90,7 @@ func NewDeleteApplicationNotFound() *DeleteApplicationNotFound {
 	return &DeleteApplicationNotFound{}
 }
 
-/*DeleteApplicationNotFound handles this case with default header values.
+/* DeleteApplicationNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

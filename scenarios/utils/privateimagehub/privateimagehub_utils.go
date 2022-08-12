@@ -27,7 +27,7 @@ func verifyStatus(env envUtil.Env, appName, expectStatus string) error {
 	imageHub := imageHubs[0]
 
 	if imageHub.Status != expectStatus {
-		return fmt.Errorf("Private image hub status is %s, expected %s", imageHub.Status, expectStatus)
+		return fmt.Errorf("private image hub status is %s, expected %s", imageHub.Status, expectStatus)
 	}
 	return nil
 }

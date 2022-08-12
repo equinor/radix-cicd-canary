@@ -16,84 +16,103 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetTektonPipelineRunTaskStepsParams creates a new GetTektonPipelineRunTaskStepsParams object
-// with the default values initialized.
+// NewGetTektonPipelineRunTaskStepsParams creates a new GetTektonPipelineRunTaskStepsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetTektonPipelineRunTaskStepsParams() *GetTektonPipelineRunTaskStepsParams {
-	var ()
 	return &GetTektonPipelineRunTaskStepsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetTektonPipelineRunTaskStepsParamsWithTimeout creates a new GetTektonPipelineRunTaskStepsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetTektonPipelineRunTaskStepsParamsWithTimeout(timeout time.Duration) *GetTektonPipelineRunTaskStepsParams {
-	var ()
 	return &GetTektonPipelineRunTaskStepsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetTektonPipelineRunTaskStepsParamsWithContext creates a new GetTektonPipelineRunTaskStepsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetTektonPipelineRunTaskStepsParamsWithContext(ctx context.Context) *GetTektonPipelineRunTaskStepsParams {
-	var ()
 	return &GetTektonPipelineRunTaskStepsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetTektonPipelineRunTaskStepsParamsWithHTTPClient creates a new GetTektonPipelineRunTaskStepsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetTektonPipelineRunTaskStepsParamsWithHTTPClient(client *http.Client) *GetTektonPipelineRunTaskStepsParams {
-	var ()
 	return &GetTektonPipelineRunTaskStepsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetTektonPipelineRunTaskStepsParams contains all the parameters to send to the API endpoint
-for the get tekton pipeline run task steps operation typically these are written to a http.Request
+/* GetTektonPipelineRunTaskStepsParams contains all the parameters to send to the API endpoint
+   for the get tekton pipeline run task steps operation.
+
+   Typically these are written to a http.Request.
 */
 type GetTektonPipelineRunTaskStepsParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  name of Radix application
 
+	/* AppName.
+
+	   name of Radix application
 	*/
 	AppName string
-	/*JobName
-	  Name of pipeline job
 
+	/* JobName.
+
+	   Name of pipeline job
 	*/
 	JobName string
-	/*PipelineRunName
-	  Name of pipeline run
 
+	/* PipelineRunName.
+
+	   Name of pipeline run
 	*/
 	PipelineRunName string
-	/*TaskName
-	  Name of pipeline run task
 
+	/* TaskName.
+
+	   Name of pipeline run task
 	*/
 	TaskName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get tekton pipeline run task steps params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTektonPipelineRunTaskStepsParams) WithDefaults() *GetTektonPipelineRunTaskStepsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get tekton pipeline run task steps params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetTektonPipelineRunTaskStepsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get tekton pipeline run task steps params
@@ -209,7 +228,6 @@ func (o *GetTektonPipelineRunTaskStepsParams) WriteToRequest(r runtime.ClientReq
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -218,7 +236,6 @@ func (o *GetTektonPipelineRunTaskStepsParams) WriteToRequest(r runtime.ClientReq
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName

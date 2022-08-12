@@ -11,7 +11,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // Event Event holds information about Kubernetes events
@@ -33,8 +32,7 @@ type Event struct {
 
 	// The time (ISO8601) at which the event was last recorded
 	// Example: 2020-11-05T13:25:07.000Z
-	// Format: date-time
-	LastTimestamp strfmt.DateTime `json:"lastTimestamp,omitempty"`
+	LastTimestamp interface{} `json:"lastTimestamp,omitempty"`
 
 	// A human-readable description of the status of this event
 	// Example: 'Readiness probe failed: dial tcp 10.40.1.5:3003: connect: connection refused'
@@ -56,10 +54,6 @@ type Event struct {
 func (m *Event) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateLastTimestamp(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.validateInvolvedObjectState(formats); err != nil {
 		res = append(res, err)
 	}
@@ -70,21 +64,7 @@ func (m *Event) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Event) validateLastTimestamp(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.LastTimestamp) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("lastTimestamp", "body", "date-time", m.LastTimestamp.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (m *Event) validateInvolvedObjectState(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.InvolvedObjectState) { // not required
 		return nil
 	}
@@ -93,6 +73,8 @@ func (m *Event) validateInvolvedObjectState(formats strfmt.Registry) error {
 		if err := m.InvolvedObjectState.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("involvedObjectState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("involvedObjectState")
 			}
 			return err
 		}
@@ -121,6 +103,8 @@ func (m *Event) contextValidateInvolvedObjectState(ctx context.Context, formats 
 		if err := m.InvolvedObjectState.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("involvedObjectState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("involvedObjectState")
 			}
 			return err
 		}

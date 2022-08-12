@@ -100,7 +100,6 @@ func (m *Job) Validate(formats strfmt.Registry) error {
 }
 
 func (m *Job) validateComponents(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Components) { // not required
 		return nil
 	}
@@ -114,6 +113,8 @@ func (m *Job) validateComponents(formats strfmt.Registry) error {
 			if err := m.Components[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -125,7 +126,6 @@ func (m *Job) validateComponents(formats strfmt.Registry) error {
 }
 
 func (m *Job) validateDeployments(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Deployments) { // not required
 		return nil
 	}
@@ -139,6 +139,8 @@ func (m *Job) validateDeployments(formats strfmt.Registry) error {
 			if err := m.Deployments[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -163,8 +165,8 @@ func init() {
 
 const (
 
-	// JobPipelineBuildDeploy captures enum value "build-deploy"
-	JobPipelineBuildDeploy string = "build-deploy"
+	// JobPipelineBuildDashDeploy captures enum value "build-deploy"
+	JobPipelineBuildDashDeploy string = "build-deploy"
 )
 
 // prop value enum
@@ -176,7 +178,6 @@ func (m *Job) validatePipelineEnum(path, location string, value string) error {
 }
 
 func (m *Job) validatePipeline(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Pipeline) { // not required
 		return nil
 	}
@@ -231,7 +232,6 @@ func (m *Job) validateStatusEnum(path, location string, value string) error {
 }
 
 func (m *Job) validateStatus(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -245,7 +245,6 @@ func (m *Job) validateStatus(formats strfmt.Registry) error {
 }
 
 func (m *Job) validateSteps(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.Steps) { // not required
 		return nil
 	}
@@ -259,6 +258,8 @@ func (m *Job) validateSteps(formats strfmt.Registry) error {
 			if err := m.Steps[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("steps" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("steps" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -299,6 +300,8 @@ func (m *Job) contextValidateComponents(ctx context.Context, formats strfmt.Regi
 			if err := m.Components[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -317,6 +320,8 @@ func (m *Job) contextValidateDeployments(ctx context.Context, formats strfmt.Reg
 			if err := m.Deployments[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -335,6 +340,8 @@ func (m *Job) contextValidateSteps(ctx context.Context, formats strfmt.Registry)
 			if err := m.Steps[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("steps" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("steps" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

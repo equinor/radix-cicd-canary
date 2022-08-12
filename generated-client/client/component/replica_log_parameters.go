@@ -16,99 +16,127 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewReplicaLogParams creates a new ReplicaLogParams object
-// with the default values initialized.
+// NewReplicaLogParams creates a new ReplicaLogParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewReplicaLogParams() *ReplicaLogParams {
-	var ()
 	return &ReplicaLogParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewReplicaLogParamsWithTimeout creates a new ReplicaLogParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewReplicaLogParamsWithTimeout(timeout time.Duration) *ReplicaLogParams {
-	var ()
 	return &ReplicaLogParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewReplicaLogParamsWithContext creates a new ReplicaLogParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewReplicaLogParamsWithContext(ctx context.Context) *ReplicaLogParams {
-	var ()
 	return &ReplicaLogParams{
-
 		Context: ctx,
 	}
 }
 
 // NewReplicaLogParamsWithHTTPClient creates a new ReplicaLogParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewReplicaLogParamsWithHTTPClient(client *http.Client) *ReplicaLogParams {
-	var ()
 	return &ReplicaLogParams{
 		HTTPClient: client,
 	}
 }
 
-/*ReplicaLogParams contains all the parameters to send to the API endpoint
-for the replica log operation typically these are written to a http.Request
+/* ReplicaLogParams contains all the parameters to send to the API endpoint
+   for the replica log operation.
+
+   Typically these are written to a http.Request.
 */
 type ReplicaLogParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
-	/*ComponentName
-	  Name of component
 
+	/* ComponentName.
+
+	   Name of component
 	*/
 	ComponentName string
-	/*EnvName
-	  Name of environment
 
+	/* EnvName.
+
+	   Name of environment
 	*/
 	EnvName string
-	/*File
-	  Get log as a file if true
 
+	/* File.
+
+	   Get log as a file if true
+
+	   Format: boolean
 	*/
 	File *string
-	/*Lines
-	  Get log lines (example 1000)
 
+	/* Lines.
+
+	   Get log lines (example 1000)
+
+	   Format: number
 	*/
 	Lines *string
-	/*PodName
-	  Name of pod
 
+	/* PodName.
+
+	   Name of pod
 	*/
 	PodName string
-	/*SinceTime
-	  Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
 
+	/* SinceTime.
+
+	   Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
+
+	   Format: date-time
 	*/
 	SinceTime *strfmt.DateTime
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the replica log params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ReplicaLogParams) WithDefaults() *ReplicaLogParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the replica log params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *ReplicaLogParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the replica log params
@@ -257,7 +285,6 @@ func (o *ReplicaLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -266,7 +293,6 @@ func (o *ReplicaLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName
@@ -288,32 +314,34 @@ func (o *ReplicaLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 
 		// query param file
 		var qrFile string
+
 		if o.File != nil {
 			qrFile = *o.File
 		}
 		qFile := qrFile
 		if qFile != "" {
+
 			if err := r.SetQueryParam("file", qFile); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if o.Lines != nil {
 
 		// query param lines
 		var qrLines string
+
 		if o.Lines != nil {
 			qrLines = *o.Lines
 		}
 		qLines := qrLines
 		if qLines != "" {
+
 			if err := r.SetQueryParam("lines", qLines); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	// path param podName
@@ -325,16 +353,17 @@ func (o *ReplicaLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 
 		// query param sinceTime
 		var qrSinceTime strfmt.DateTime
+
 		if o.SinceTime != nil {
 			qrSinceTime = *o.SinceTime
 		}
 		qSinceTime := qrSinceTime.String()
 		if qSinceTime != "" {
+
 			if err := r.SetQueryParam("sinceTime", qSinceTime); err != nil {
 				return err
 			}
 		}
-
 	}
 
 	if len(res) > 0 {

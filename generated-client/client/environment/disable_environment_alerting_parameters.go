@@ -16,74 +16,91 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewDisableEnvironmentAlertingParams creates a new DisableEnvironmentAlertingParams object
-// with the default values initialized.
+// NewDisableEnvironmentAlertingParams creates a new DisableEnvironmentAlertingParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewDisableEnvironmentAlertingParams() *DisableEnvironmentAlertingParams {
-	var ()
 	return &DisableEnvironmentAlertingParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewDisableEnvironmentAlertingParamsWithTimeout creates a new DisableEnvironmentAlertingParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewDisableEnvironmentAlertingParamsWithTimeout(timeout time.Duration) *DisableEnvironmentAlertingParams {
-	var ()
 	return &DisableEnvironmentAlertingParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewDisableEnvironmentAlertingParamsWithContext creates a new DisableEnvironmentAlertingParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewDisableEnvironmentAlertingParamsWithContext(ctx context.Context) *DisableEnvironmentAlertingParams {
-	var ()
 	return &DisableEnvironmentAlertingParams{
-
 		Context: ctx,
 	}
 }
 
 // NewDisableEnvironmentAlertingParamsWithHTTPClient creates a new DisableEnvironmentAlertingParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewDisableEnvironmentAlertingParamsWithHTTPClient(client *http.Client) *DisableEnvironmentAlertingParams {
-	var ()
 	return &DisableEnvironmentAlertingParams{
 		HTTPClient: client,
 	}
 }
 
-/*DisableEnvironmentAlertingParams contains all the parameters to send to the API endpoint
-for the disable environment alerting operation typically these are written to a http.Request
+/* DisableEnvironmentAlertingParams contains all the parameters to send to the API endpoint
+   for the disable environment alerting operation.
+
+   Typically these are written to a http.Request.
 */
 type DisableEnvironmentAlertingParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
-	/*EnvName
-	  Name of environment
 
+	/* EnvName.
+
+	   Name of environment
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the disable environment alerting params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DisableEnvironmentAlertingParams) WithDefaults() *DisableEnvironmentAlertingParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the disable environment alerting params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *DisableEnvironmentAlertingParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the disable environment alerting params
@@ -177,7 +194,6 @@ func (o *DisableEnvironmentAlertingParams) WriteToRequest(r runtime.ClientReques
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -186,7 +202,6 @@ func (o *DisableEnvironmentAlertingParams) WriteToRequest(r runtime.ClientReques
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName

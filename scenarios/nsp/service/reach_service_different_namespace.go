@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -23,7 +24,7 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 	_, err := client.Get(url)
 	if err == nil {
 		// Failing test
-		return false, errors.New("No error was returned when attempting to access service")
+		return false, errors.New("no error was returned when attempting to access service")
 	}
 
 	// Successful

@@ -16,69 +16,85 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetPrivateImageHubsParams creates a new GetPrivateImageHubsParams object
-// with the default values initialized.
+// NewGetPrivateImageHubsParams creates a new GetPrivateImageHubsParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetPrivateImageHubsParams() *GetPrivateImageHubsParams {
-	var ()
 	return &GetPrivateImageHubsParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetPrivateImageHubsParamsWithTimeout creates a new GetPrivateImageHubsParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetPrivateImageHubsParamsWithTimeout(timeout time.Duration) *GetPrivateImageHubsParams {
-	var ()
 	return &GetPrivateImageHubsParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetPrivateImageHubsParamsWithContext creates a new GetPrivateImageHubsParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetPrivateImageHubsParamsWithContext(ctx context.Context) *GetPrivateImageHubsParams {
-	var ()
 	return &GetPrivateImageHubsParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetPrivateImageHubsParamsWithHTTPClient creates a new GetPrivateImageHubsParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetPrivateImageHubsParamsWithHTTPClient(client *http.Client) *GetPrivateImageHubsParams {
-	var ()
 	return &GetPrivateImageHubsParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetPrivateImageHubsParams contains all the parameters to send to the API endpoint
-for the get private image hubs operation typically these are written to a http.Request
+/* GetPrivateImageHubsParams contains all the parameters to send to the API endpoint
+   for the get private image hubs operation.
+
+   Typically these are written to a http.Request.
 */
 type GetPrivateImageHubsParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  name of Radix application
 
+	/* AppName.
+
+	   name of Radix application
 	*/
 	AppName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get private image hubs params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPrivateImageHubsParams) WithDefaults() *GetPrivateImageHubsParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get private image hubs params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetPrivateImageHubsParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get private image hubs params
@@ -161,7 +177,6 @@ func (o *GetPrivateImageHubsParams) WriteToRequest(r runtime.ClientRequest, reg 
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -170,7 +185,6 @@ func (o *GetPrivateImageHubsParams) WriteToRequest(r runtime.ClientRequest, reg 
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName

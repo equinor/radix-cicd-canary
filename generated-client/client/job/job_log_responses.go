@@ -33,7 +33,6 @@ func (o *JobLogReader) ReadResponse(response runtime.ClientResponse, consumer ru
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -44,7 +43,7 @@ func NewJobLogOK() *JobLogOK {
 	return &JobLogOK{}
 }
 
-/*JobLogOK handles this case with default header values.
+/* JobLogOK describes a response with status code 200, with default header values.
 
 scheduled job log
 */
@@ -55,7 +54,6 @@ type JobLogOK struct {
 func (o *JobLogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs][%d] jobLogOK  %+v", 200, o.Payload)
 }
-
 func (o *JobLogOK) GetPayload() string {
 	return o.Payload
 }
@@ -75,7 +73,7 @@ func NewJobLogNotFound() *JobLogNotFound {
 	return &JobLogNotFound{}
 }
 
-/*JobLogNotFound handles this case with default header values.
+/* JobLogNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

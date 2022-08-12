@@ -1,8 +1,11 @@
-FROM golang:1.17-alpine as builder
+FROM golang:1.18.5-alpine3.16 as builder
 
 ENV GO111MODULE=on
 
-RUN apk update && apk add git && apk add ca-certificates curl
+RUN apk update && apk add git && apk add ca-certificates curl && \
+    apk add --no-cache gcc musl-dev
+
+RUN go install honnef.co/go/tools/cmd/staticcheck@v0.3.3
 
 WORKDIR /go/src/github.com/equinor/radix-cicd-canary/
 
@@ -10,8 +13,10 @@ WORKDIR /go/src/github.com/equinor/radix-cicd-canary/
 COPY go.mod go.sum ./
 RUN go mod download
 
-# build app
 COPY . .
+
+RUN staticcheck ./...
+
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -a -installsuffix cgo -o ./rootfs/radix-cicd-canary
 
 RUN addgroup -S -g 1000 radix-cicd-canary

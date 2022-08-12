@@ -18,74 +18,91 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 )
 
-// NewRegenerateDeployKeyParams creates a new RegenerateDeployKeyParams object
-// with the default values initialized.
+// NewRegenerateDeployKeyParams creates a new RegenerateDeployKeyParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewRegenerateDeployKeyParams() *RegenerateDeployKeyParams {
-	var ()
 	return &RegenerateDeployKeyParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewRegenerateDeployKeyParamsWithTimeout creates a new RegenerateDeployKeyParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewRegenerateDeployKeyParamsWithTimeout(timeout time.Duration) *RegenerateDeployKeyParams {
-	var ()
 	return &RegenerateDeployKeyParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewRegenerateDeployKeyParamsWithContext creates a new RegenerateDeployKeyParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewRegenerateDeployKeyParamsWithContext(ctx context.Context) *RegenerateDeployKeyParams {
-	var ()
 	return &RegenerateDeployKeyParams{
-
 		Context: ctx,
 	}
 }
 
 // NewRegenerateDeployKeyParamsWithHTTPClient creates a new RegenerateDeployKeyParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewRegenerateDeployKeyParamsWithHTTPClient(client *http.Client) *RegenerateDeployKeyParams {
-	var ()
 	return &RegenerateDeployKeyParams{
 		HTTPClient: client,
 	}
 }
 
-/*RegenerateDeployKeyParams contains all the parameters to send to the API endpoint
-for the regenerate deploy key operation typically these are written to a http.Request
+/* RegenerateDeployKeyParams contains all the parameters to send to the API endpoint
+   for the regenerate deploy key operation.
+
+   Typically these are written to a http.Request.
 */
 type RegenerateDeployKeyParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  name of application
 
+	/* AppName.
+
+	   name of application
 	*/
 	AppName string
-	/*RegenerateDeployKeyAndSecretData
-	  Regenerate deploy key and secret data
 
+	/* RegenerateDeployKeyAndSecretData.
+
+	   Regenerate deploy key and secret data
 	*/
 	RegenerateDeployKeyAndSecretData *models.RegenerateDeployKeyAndSecretData
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the regenerate deploy key params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RegenerateDeployKeyParams) WithDefaults() *RegenerateDeployKeyParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the regenerate deploy key params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *RegenerateDeployKeyParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the regenerate deploy key params
@@ -179,7 +196,6 @@ func (o *RegenerateDeployKeyParams) WriteToRequest(r runtime.ClientRequest, reg 
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -188,14 +204,12 @@ func (o *RegenerateDeployKeyParams) WriteToRequest(r runtime.ClientRequest, reg 
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName
 	if err := r.SetPathParam("appName", o.AppName); err != nil {
 		return err
 	}
-
 	if o.RegenerateDeployKeyAndSecretData != nil {
 		if err := r.SetBodyParam(o.RegenerateDeployKeyAndSecretData); err != nil {
 			return err

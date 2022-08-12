@@ -63,7 +63,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 	logger.Infof("Second job was triggered")
 
-	ok, jobSummary = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return job.IsListedWithStatus(env, config.App2Name, "Queued")
 	})
 
@@ -140,7 +140,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 		return false, nil
 	}
 
-	ok, jobSummary = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return job.IsListedWithStatus(env, config.App2Name, "Stopped")
 	})
 

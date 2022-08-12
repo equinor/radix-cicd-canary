@@ -51,7 +51,6 @@ func (o *GetOAuthPodLogReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -62,7 +61,7 @@ func NewGetOAuthPodLogOK() *GetOAuthPodLogOK {
 	return &GetOAuthPodLogOK{}
 }
 
-/*GetOAuthPodLogOK handles this case with default header values.
+/* GetOAuthPodLogOK describes a response with status code 200, with default header values.
 
 pod log
 */
@@ -73,7 +72,6 @@ type GetOAuthPodLogOK struct {
 func (o *GetOAuthPodLogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogOK  %+v", 200, o.Payload)
 }
-
 func (o *GetOAuthPodLogOK) GetPayload() string {
 	return o.Payload
 }
@@ -93,7 +91,7 @@ func NewGetOAuthPodLogUnauthorized() *GetOAuthPodLogUnauthorized {
 	return &GetOAuthPodLogUnauthorized{}
 }
 
-/*GetOAuthPodLogUnauthorized handles this case with default header values.
+/* GetOAuthPodLogUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -114,7 +112,7 @@ func NewGetOAuthPodLogForbidden() *GetOAuthPodLogForbidden {
 	return &GetOAuthPodLogForbidden{}
 }
 
-/*GetOAuthPodLogForbidden handles this case with default header values.
+/* GetOAuthPodLogForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
@@ -135,7 +133,7 @@ func NewGetOAuthPodLogNotFound() *GetOAuthPodLogNotFound {
 	return &GetOAuthPodLogNotFound{}
 }
 
-/*GetOAuthPodLogNotFound handles this case with default header values.
+/* GetOAuthPodLogNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -156,7 +154,7 @@ func NewGetOAuthPodLogInternalServerError() *GetOAuthPodLogInternalServerError {
 	return &GetOAuthPodLogInternalServerError{}
 }
 
-/*GetOAuthPodLogInternalServerError handles this case with default header values.
+/* GetOAuthPodLogInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */

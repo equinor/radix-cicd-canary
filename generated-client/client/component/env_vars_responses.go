@@ -35,7 +35,6 @@ func (o *EnvVarsReader) ReadResponse(response runtime.ClientResponse, consumer r
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -46,7 +45,7 @@ func NewEnvVarsOK() *EnvVarsOK {
 	return &EnvVarsOK{}
 }
 
-/*EnvVarsOK handles this case with default header values.
+/* EnvVarsOK describes a response with status code 200, with default header values.
 
 environment variables
 */
@@ -57,7 +56,6 @@ type EnvVarsOK struct {
 func (o *EnvVarsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] envVarsOK  %+v", 200, o.Payload)
 }
-
 func (o *EnvVarsOK) GetPayload() []*models.EnvVar {
 	return o.Payload
 }
@@ -77,7 +75,7 @@ func NewEnvVarsNotFound() *EnvVarsNotFound {
 	return &EnvVarsNotFound{}
 }
 
-/*EnvVarsNotFound handles this case with default header values.
+/* EnvVarsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

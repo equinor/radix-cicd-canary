@@ -63,6 +63,8 @@ func (m *UpdateAlertingConfig) validateAlerts(formats strfmt.Registry) error {
 	if err := m.Alerts.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("alerts")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("alerts")
 		}
 		return err
 	}
@@ -72,11 +74,19 @@ func (m *UpdateAlertingConfig) validateAlerts(formats strfmt.Registry) error {
 
 func (m *UpdateAlertingConfig) validateReceiverSecrets(formats strfmt.Registry) error {
 
-	if err := m.ReceiverSecrets.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("receiverSecrets")
-		}
+	if err := validate.Required("receiverSecrets", "body", m.ReceiverSecrets); err != nil {
 		return err
+	}
+
+	if m.ReceiverSecrets != nil {
+		if err := m.ReceiverSecrets.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("receiverSecrets")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("receiverSecrets")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -84,11 +94,19 @@ func (m *UpdateAlertingConfig) validateReceiverSecrets(formats strfmt.Registry) 
 
 func (m *UpdateAlertingConfig) validateReceivers(formats strfmt.Registry) error {
 
-	if err := m.Receivers.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("receivers")
-		}
+	if err := validate.Required("receivers", "body", m.Receivers); err != nil {
 		return err
+	}
+
+	if m.Receivers != nil {
+		if err := m.Receivers.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("receivers")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("receivers")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -121,6 +139,8 @@ func (m *UpdateAlertingConfig) contextValidateAlerts(ctx context.Context, format
 	if err := m.Alerts.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("alerts")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("alerts")
 		}
 		return err
 	}
@@ -133,6 +153,8 @@ func (m *UpdateAlertingConfig) contextValidateReceiverSecrets(ctx context.Contex
 	if err := m.ReceiverSecrets.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("receiverSecrets")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("receiverSecrets")
 		}
 		return err
 	}
@@ -145,6 +167,8 @@ func (m *UpdateAlertingConfig) contextValidateReceivers(ctx context.Context, for
 	if err := m.Receivers.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("receivers")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("receivers")
 		}
 		return err
 	}

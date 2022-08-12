@@ -59,7 +59,6 @@ func (o *GetApplicationReader) ReadResponse(response runtime.ClientResponse, con
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -70,7 +69,7 @@ func NewGetApplicationOK() *GetApplicationOK {
 	return &GetApplicationOK{}
 }
 
-/*GetApplicationOK handles this case with default header values.
+/* GetApplicationOK describes a response with status code 200, with default header values.
 
 Successful get application
 */
@@ -81,7 +80,6 @@ type GetApplicationOK struct {
 func (o *GetApplicationOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationOK  %+v", 200, o.Payload)
 }
-
 func (o *GetApplicationOK) GetPayload() *models.Application {
 	return o.Payload
 }
@@ -103,7 +101,7 @@ func NewGetApplicationUnauthorized() *GetApplicationUnauthorized {
 	return &GetApplicationUnauthorized{}
 }
 
-/*GetApplicationUnauthorized handles this case with default header values.
+/* GetApplicationUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -124,7 +122,7 @@ func NewGetApplicationForbidden() *GetApplicationForbidden {
 	return &GetApplicationForbidden{}
 }
 
-/*GetApplicationForbidden handles this case with default header values.
+/* GetApplicationForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
@@ -145,7 +143,7 @@ func NewGetApplicationNotFound() *GetApplicationNotFound {
 	return &GetApplicationNotFound{}
 }
 
-/*GetApplicationNotFound handles this case with default header values.
+/* GetApplicationNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -166,7 +164,7 @@ func NewGetApplicationConflict() *GetApplicationConflict {
 	return &GetApplicationConflict{}
 }
 
-/*GetApplicationConflict handles this case with default header values.
+/* GetApplicationConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
@@ -187,7 +185,7 @@ func NewGetApplicationInternalServerError() *GetApplicationInternalServerError {
 	return &GetApplicationInternalServerError{}
 }
 
-/*GetApplicationInternalServerError handles this case with default header values.
+/* GetApplicationInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */

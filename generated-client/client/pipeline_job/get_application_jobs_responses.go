@@ -41,7 +41,6 @@ func (o *GetApplicationJobsReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -52,7 +51,7 @@ func NewGetApplicationJobsOK() *GetApplicationJobsOK {
 	return &GetApplicationJobsOK{}
 }
 
-/*GetApplicationJobsOK handles this case with default header values.
+/* GetApplicationJobsOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -63,7 +62,6 @@ type GetApplicationJobsOK struct {
 func (o *GetApplicationJobsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs][%d] getApplicationJobsOK  %+v", 200, o.Payload)
 }
-
 func (o *GetApplicationJobsOK) GetPayload() []*models.JobSummary {
 	return o.Payload
 }
@@ -83,7 +81,7 @@ func NewGetApplicationJobsUnauthorized() *GetApplicationJobsUnauthorized {
 	return &GetApplicationJobsUnauthorized{}
 }
 
-/*GetApplicationJobsUnauthorized handles this case with default header values.
+/* GetApplicationJobsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -104,7 +102,7 @@ func NewGetApplicationJobsNotFound() *GetApplicationJobsNotFound {
 	return &GetApplicationJobsNotFound{}
 }
 
-/*GetApplicationJobsNotFound handles this case with default header values.
+/* GetApplicationJobsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

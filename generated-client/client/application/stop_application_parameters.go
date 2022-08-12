@@ -16,69 +16,85 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewStopApplicationParams creates a new StopApplicationParams object
-// with the default values initialized.
+// NewStopApplicationParams creates a new StopApplicationParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewStopApplicationParams() *StopApplicationParams {
-	var ()
 	return &StopApplicationParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewStopApplicationParamsWithTimeout creates a new StopApplicationParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewStopApplicationParamsWithTimeout(timeout time.Duration) *StopApplicationParams {
-	var ()
 	return &StopApplicationParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewStopApplicationParamsWithContext creates a new StopApplicationParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewStopApplicationParamsWithContext(ctx context.Context) *StopApplicationParams {
-	var ()
 	return &StopApplicationParams{
-
 		Context: ctx,
 	}
 }
 
 // NewStopApplicationParamsWithHTTPClient creates a new StopApplicationParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewStopApplicationParamsWithHTTPClient(client *http.Client) *StopApplicationParams {
-	var ()
 	return &StopApplicationParams{
 		HTTPClient: client,
 	}
 }
 
-/*StopApplicationParams contains all the parameters to send to the API endpoint
-for the stop application operation typically these are written to a http.Request
+/* StopApplicationParams contains all the parameters to send to the API endpoint
+   for the stop application operation.
+
+   Typically these are written to a http.Request.
 */
 type StopApplicationParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  Name of application
 
+	/* AppName.
+
+	   Name of application
 	*/
 	AppName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the stop application params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StopApplicationParams) WithDefaults() *StopApplicationParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the stop application params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *StopApplicationParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the stop application params
@@ -161,7 +177,6 @@ func (o *StopApplicationParams) WriteToRequest(r runtime.ClientRequest, reg strf
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -170,7 +185,6 @@ func (o *StopApplicationParams) WriteToRequest(r runtime.ClientRequest, reg strf
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName

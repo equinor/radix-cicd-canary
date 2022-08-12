@@ -56,7 +56,6 @@ func (o *IsDeployKeyValidReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -67,7 +66,7 @@ func NewIsDeployKeyValidOK() *IsDeployKeyValidOK {
 	return &IsDeployKeyValidOK{}
 }
 
-/*IsDeployKeyValidOK handles this case with default header values.
+/* IsDeployKeyValidOK describes a response with status code 200, with default header values.
 
 Deploy key is valid
 */
@@ -88,7 +87,7 @@ func NewIsDeployKeyValidUnauthorized() *IsDeployKeyValidUnauthorized {
 	return &IsDeployKeyValidUnauthorized{}
 }
 
-/*IsDeployKeyValidUnauthorized handles this case with default header values.
+/* IsDeployKeyValidUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -109,7 +108,7 @@ func NewIsDeployKeyValidForbidden() *IsDeployKeyValidForbidden {
 	return &IsDeployKeyValidForbidden{}
 }
 
-/*IsDeployKeyValidForbidden handles this case with default header values.
+/* IsDeployKeyValidForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
@@ -130,7 +129,7 @@ func NewIsDeployKeyValidNotFound() *IsDeployKeyValidNotFound {
 	return &IsDeployKeyValidNotFound{}
 }
 
-/*IsDeployKeyValidNotFound handles this case with default header values.
+/* IsDeployKeyValidNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -151,7 +150,7 @@ func NewIsDeployKeyValidConflict() *IsDeployKeyValidConflict {
 	return &IsDeployKeyValidConflict{}
 }
 
-/*IsDeployKeyValidConflict handles this case with default header values.
+/* IsDeployKeyValidConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
@@ -172,7 +171,7 @@ func NewIsDeployKeyValidInternalServerError() *IsDeployKeyValidInternalServerErr
 	return &IsDeployKeyValidInternalServerError{}
 }
 
-/*IsDeployKeyValidInternalServerError handles this case with default header values.
+/* IsDeployKeyValidInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */

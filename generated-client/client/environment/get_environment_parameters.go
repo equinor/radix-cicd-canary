@@ -16,74 +16,91 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewGetEnvironmentParams creates a new GetEnvironmentParams object
-// with the default values initialized.
+// NewGetEnvironmentParams creates a new GetEnvironmentParams object,
+// with the default timeout for this client.
+//
+// Default values are not hydrated, since defaults are normally applied by the API server side.
+//
+// To enforce default values in parameter, use SetDefaults or WithDefaults.
 func NewGetEnvironmentParams() *GetEnvironmentParams {
-	var ()
 	return &GetEnvironmentParams{
-
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewGetEnvironmentParamsWithTimeout creates a new GetEnvironmentParams object
-// with the default values initialized, and the ability to set a timeout on a request
+// with the ability to set a timeout on a request.
 func NewGetEnvironmentParamsWithTimeout(timeout time.Duration) *GetEnvironmentParams {
-	var ()
 	return &GetEnvironmentParams{
-
 		timeout: timeout,
 	}
 }
 
 // NewGetEnvironmentParamsWithContext creates a new GetEnvironmentParams object
-// with the default values initialized, and the ability to set a context for a request
+// with the ability to set a context for a request.
 func NewGetEnvironmentParamsWithContext(ctx context.Context) *GetEnvironmentParams {
-	var ()
 	return &GetEnvironmentParams{
-
 		Context: ctx,
 	}
 }
 
 // NewGetEnvironmentParamsWithHTTPClient creates a new GetEnvironmentParams object
-// with the default values initialized, and the ability to set a custom HTTPClient for a request
+// with the ability to set a custom HTTPClient for a request.
 func NewGetEnvironmentParamsWithHTTPClient(client *http.Client) *GetEnvironmentParams {
-	var ()
 	return &GetEnvironmentParams{
 		HTTPClient: client,
 	}
 }
 
-/*GetEnvironmentParams contains all the parameters to send to the API endpoint
-for the get environment operation typically these are written to a http.Request
+/* GetEnvironmentParams contains all the parameters to send to the API endpoint
+   for the get environment operation.
+
+   Typically these are written to a http.Request.
 */
 type GetEnvironmentParams struct {
 
-	/*ImpersonateGroup
-	  Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
+	/* ImpersonateGroup.
 
+	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
 	ImpersonateGroup *string
-	/*ImpersonateUser
-	  Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 
+	/* ImpersonateUser.
+
+	   Works only with custom setup of cluster. Allow impersonation of test users (Required if Impersonate-Group is set)
 	*/
 	ImpersonateUser *string
-	/*AppName
-	  name of Radix application
 
+	/* AppName.
+
+	   name of Radix application
 	*/
 	AppName string
-	/*EnvName
-	  name of environment
 
+	/* EnvName.
+
+	   name of environment
 	*/
 	EnvName string
 
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
+}
+
+// WithDefaults hydrates default values in the get environment params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetEnvironmentParams) WithDefaults() *GetEnvironmentParams {
+	o.SetDefaults()
+	return o
+}
+
+// SetDefaults hydrates default values in the get environment params (not the query body).
+//
+// All values with no default are reset to their zero value.
+func (o *GetEnvironmentParams) SetDefaults() {
+	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the get environment params
@@ -177,7 +194,6 @@ func (o *GetEnvironmentParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
 			return err
 		}
-
 	}
 
 	if o.ImpersonateUser != nil {
@@ -186,7 +202,6 @@ func (o *GetEnvironmentParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		if err := r.SetHeaderParam("Impersonate-User", *o.ImpersonateUser); err != nil {
 			return err
 		}
-
 	}
 
 	// path param appName

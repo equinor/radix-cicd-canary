@@ -41,7 +41,6 @@ func (o *RegenerateDeployKeyReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -52,7 +51,7 @@ func NewRegenerateDeployKeyOK() *RegenerateDeployKeyOK {
 	return &RegenerateDeployKeyOK{}
 }
 
-/*RegenerateDeployKeyOK handles this case with default header values.
+/* RegenerateDeployKeyOK describes a response with status code 200, with default header values.
 
 Successful regenerate machine-user token
 */
@@ -63,7 +62,6 @@ type RegenerateDeployKeyOK struct {
 func (o *RegenerateDeployKeyOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyOK  %+v", 200, o.Payload)
 }
-
 func (o *RegenerateDeployKeyOK) GetPayload() *models.DeployKeyAndSecret {
 	return o.Payload
 }
@@ -85,7 +83,7 @@ func NewRegenerateDeployKeyUnauthorized() *RegenerateDeployKeyUnauthorized {
 	return &RegenerateDeployKeyUnauthorized{}
 }
 
-/*RegenerateDeployKeyUnauthorized handles this case with default header values.
+/* RegenerateDeployKeyUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -106,7 +104,7 @@ func NewRegenerateDeployKeyNotFound() *RegenerateDeployKeyNotFound {
 	return &RegenerateDeployKeyNotFound{}
 }
 
-/*RegenerateDeployKeyNotFound handles this case with default header values.
+/* RegenerateDeployKeyNotFound describes a response with status code 404, with default header values.
 
 Not found
 */

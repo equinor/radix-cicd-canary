@@ -41,7 +41,6 @@ func (m *ApplicationSummary) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ApplicationSummary) validateLatestJob(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.LatestJob) { // not required
 		return nil
 	}
@@ -50,6 +49,8 @@ func (m *ApplicationSummary) validateLatestJob(formats strfmt.Registry) error {
 		if err := m.LatestJob.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("latestJob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("latestJob")
 			}
 			return err
 		}
@@ -78,6 +79,8 @@ func (m *ApplicationSummary) contextValidateLatestJob(ctx context.Context, forma
 		if err := m.LatestJob.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("latestJob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("latestJob")
 			}
 			return err
 		}

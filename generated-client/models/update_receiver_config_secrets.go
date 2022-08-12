@@ -37,7 +37,6 @@ func (m *UpdateReceiverConfigSecrets) Validate(formats strfmt.Registry) error {
 }
 
 func (m *UpdateReceiverConfigSecrets) validateSlackConfig(formats strfmt.Registry) error {
-
 	if swag.IsZero(m.SlackConfig) { // not required
 		return nil
 	}
@@ -46,6 +45,8 @@ func (m *UpdateReceiverConfigSecrets) validateSlackConfig(formats strfmt.Registr
 		if err := m.SlackConfig.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("slackConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("slackConfig")
 			}
 			return err
 		}
@@ -74,6 +75,8 @@ func (m *UpdateReceiverConfigSecrets) contextValidateSlackConfig(ctx context.Con
 		if err := m.SlackConfig.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("slackConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("slackConfig")
 			}
 			return err
 		}

@@ -38,7 +38,6 @@ func (o *RestartEnvironmentReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return nil, result
-
 	default:
 		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
 	}
@@ -49,7 +48,7 @@ func NewRestartEnvironmentOK() *RestartEnvironmentOK {
 	return &RestartEnvironmentOK{}
 }
 
-/*RestartEnvironmentOK handles this case with default header values.
+/* RestartEnvironmentOK describes a response with status code 200, with default header values.
 
 Environment started ok
 */
@@ -70,7 +69,7 @@ func NewRestartEnvironmentUnauthorized() *RestartEnvironmentUnauthorized {
 	return &RestartEnvironmentUnauthorized{}
 }
 
-/*RestartEnvironmentUnauthorized handles this case with default header values.
+/* RestartEnvironmentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
@@ -91,7 +90,7 @@ func NewRestartEnvironmentNotFound() *RestartEnvironmentNotFound {
 	return &RestartEnvironmentNotFound{}
 }
 
-/*RestartEnvironmentNotFound handles this case with default header values.
+/* RestartEnvironmentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
