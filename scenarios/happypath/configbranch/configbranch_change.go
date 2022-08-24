@@ -56,7 +56,6 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 		{name: "clone", components: []string{}},
 		{name: "build-www", components: []string{"www"}},
 		{name: "run-pipelines", components: []string{}},
-		{name: "scan-www", components: []string{"www"}},
 	}
 
 	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
@@ -96,7 +95,6 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 		{name: "clone", components: []string{}},
 		{name: "build-www2", components: []string{"www2"}},
 		{name: "run-pipelines", components: []string{}},
-		{name: "scan-www2", components: []string{"www2"}},
 	}
 
 	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
@@ -163,8 +161,8 @@ func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
 func validateJobSteps(env envUtil.Env, jobName string, expectedSteps []expectedStep) (bool, error) {
 	steps := job.GetSteps(env, config.App4Name, jobName)
 
-	if steps == nil && len(steps) != len(expectedSteps) {
-		return false, fmt.Errorf("pipeline steps was not as expected")
+	if len(steps) != len(expectedSteps) {
+		return false, fmt.Errorf("number of pipeline steps was not as expected")
 	}
 
 	for index, step := range steps {
