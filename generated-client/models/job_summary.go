@@ -62,9 +62,6 @@ type JobSummary struct {
 	// Enum: [Waiting Running Succeeded Stopping Stopped Failed]
 	Status string `json:"status,omitempty"`
 
-	// List of RadixJobStepScanOutput for a job
-	StepSummaryScans []interface{} `json:"stepSummaryScans"`
-
 	// TriggeredBy user that triggered the job. If through webhook = sender.login. If through api - usertoken.upn
 	// Example: a_user@equinor.com
 	TriggeredBy string `json:"triggeredBy,omitempty"`

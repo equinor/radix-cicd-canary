@@ -40,6 +40,14 @@ type DeploymentSummary struct {
 	// Required: true
 	Environment *string `json:"environment"`
 
+	// GitCommitHash the hash of the git commit from which radixconfig.yaml was parsed
+	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
+	GitCommitHash string `json:"gitCommitHash,omitempty"`
+
+	// GitTags the git tags that the git commit hash points to
+	// Example: \"v1.22.1 v1.22.3\
+	GitTags string `json:"gitTags,omitempty"`
+
 	// Name the unique name of the Radix application deployment
 	// Example: radix-canary-golang-tzbqi
 	// Required: true
