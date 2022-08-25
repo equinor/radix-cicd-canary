@@ -36,8 +36,6 @@ type ClientService interface {
 
 	GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepLogsOK, error)
 
-	GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepScanOutputOK, error)
-
 	GetTektonPipelineRun(params *GetTektonPipelineRunParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunOK, error)
 
 	GetTektonPipelineRunTask(params *GetTektonPipelineRunTaskParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunTaskOK, error)
@@ -169,45 +167,6 @@ func (a *Client) GetPipelineJobStepLogs(params *GetPipelineJobStepLogsParams, au
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getPipelineJobStepLogs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-  GetPipelineJobStepScanOutput gets list of vulnerabilities found by the scan step
-*/
-func (a *Client) GetPipelineJobStepScanOutput(params *GetPipelineJobStepScanOutputParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPipelineJobStepScanOutputOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewGetPipelineJobStepScanOutputParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "getPipelineJobStepScanOutput",
-		Method:             "GET",
-		PathPattern:        "/applications/{appName}/jobs/{jobName}/steps/{stepName}/output/scan",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &GetPipelineJobStepScanOutputReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*GetPipelineJobStepScanOutputOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for getPipelineJobStepScanOutput: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

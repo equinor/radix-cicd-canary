@@ -39,9 +39,6 @@ type Step struct {
 	// Example: Waiting
 	// Enum: [Waiting Running Succeeded Failed]
 	Status string `json:"status,omitempty"`
-
-	// scan
-	Scan *VulnerabilityScan `json:"scan,omitempty"`
 }
 
 // Validate validates this step
@@ -49,10 +46,6 @@ func (m *Step) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateStatus(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateScan(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -110,52 +103,8 @@ func (m *Step) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Step) validateScan(formats strfmt.Registry) error {
-	if swag.IsZero(m.Scan) { // not required
-		return nil
-	}
-
-	if m.Scan != nil {
-		if err := m.Scan.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scan")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scan")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this step based on the context it is used
+// ContextValidate validates this step based on context it is used
 func (m *Step) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateScan(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *Step) contextValidateScan(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Scan != nil {
-		if err := m.Scan.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scan")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scan")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 

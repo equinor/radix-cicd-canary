@@ -19,6 +19,27 @@ import (
 // swagger:model AzureKeyVaultSecretVersion
 type AzureKeyVaultSecretVersion struct {
 
+	// BatchCreated which uses the secret
+	// Example: 2006-01-02T15:04:05Z
+	BatchCreated string `json:"batchCreated,omitempty"`
+
+	// BatchName which uses the secret
+	// Example: batch-abc
+	BatchName string `json:"batchName,omitempty"`
+
+	// JobCreated which uses the secret
+	// Example: 2006-01-02T15:04:05Z
+	JobCreated string `json:"jobCreated,omitempty"`
+
+	// JobName which uses the secret
+	// Example: job-abc
+	JobName string `json:"jobName,omitempty"`
+
+	// ReplicaCreated which uses the secret
+	// Example: 2006-01-02T15:04:05Z
+	// Required: true
+	ReplicaCreated *string `json:"replicaCreated"`
+
 	// ReplicaName which uses the secret
 	// Example: abcdf
 	// Required: true
@@ -34,6 +55,10 @@ type AzureKeyVaultSecretVersion struct {
 func (m *AzureKeyVaultSecretVersion) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateReplicaCreated(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateReplicaName(formats); err != nil {
 		res = append(res, err)
 	}
@@ -45,6 +70,15 @@ func (m *AzureKeyVaultSecretVersion) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *AzureKeyVaultSecretVersion) validateReplicaCreated(formats strfmt.Registry) error {
+
+	if err := validate.Required("replicaCreated", "body", m.ReplicaCreated); err != nil {
+		return err
+	}
+
 	return nil
 }
 
