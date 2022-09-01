@@ -12,6 +12,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Deployment Deployment describe an deployment
@@ -37,9 +38,22 @@ type Deployment struct {
 	// Example: prod
 	Environment string `json:"environment,omitempty"`
 
+	// GitCommitHash the hash of the git commit from which radixconfig.yaml was parsed
+	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
+	GitCommitHash string `json:"gitCommitHash,omitempty"`
+
+	// GitTags the git tags that the git commit hash points to
+	// Example: \"v1.22.1 v1.22.3\
+	GitTags string `json:"gitTags,omitempty"`
+
 	// Name the unique name of the Radix application deployment
 	// Example: radix-canary-golang-tzbqi
 	Name string `json:"name,omitempty"`
+
+	// Repository the GitHub repository that the deployment was built from
+	// Example: https://github.com/equinor/radix-canary-golang
+	// Required: true
+	Repository *string `json:"repository"`
 }
 
 // Validate validates this deployment
@@ -47,6 +61,10 @@ func (m *Deployment) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateComponents(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRepository(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,6 +95,15 @@ func (m *Deployment) validateComponents(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *Deployment) validateRepository(formats strfmt.Registry) error {
+
+	if err := validate.Required("repository", "body", m.Repository); err != nil {
+		return err
 	}
 
 	return nil

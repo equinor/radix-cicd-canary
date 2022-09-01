@@ -95,11 +95,10 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 		{name: "build-app", components: []string{"app"}},
 		{name: "build-redis", components: []string{"redis"}},
 		{name: "run-pipelines", components: []string{}},
-		{name: "scan-app", components: []string{"app"}},
-		{name: "scan-redis", components: []string{"redis"}}}
+	}
 
-	if steps == nil && len(steps) != len(expectedSteps) {
-		logger.Error("Pipeline steps was not as expected")
+	if len(steps) != len(expectedSteps) {
+		logger.Error("Number of pipeline steps was not as expected")
 		return false, nil
 	}
 
