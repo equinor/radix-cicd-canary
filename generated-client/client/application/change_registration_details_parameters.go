@@ -81,9 +81,9 @@ type ChangeRegistrationDetailsParams struct {
 
 	/* ApplicationRegistration.
 
-	   Application to register
+	   request for Application to change
 	*/
-	ApplicationRegistration *models.ApplicationRegistration
+	ApplicationRegistration *models.ApplicationRegistrationRequest
 
 	timeout    time.Duration
 	Context    context.Context
@@ -172,13 +172,13 @@ func (o *ChangeRegistrationDetailsParams) SetAppName(appName string) {
 }
 
 // WithApplicationRegistration adds the applicationRegistration to the change registration details params
-func (o *ChangeRegistrationDetailsParams) WithApplicationRegistration(applicationRegistration *models.ApplicationRegistration) *ChangeRegistrationDetailsParams {
+func (o *ChangeRegistrationDetailsParams) WithApplicationRegistration(applicationRegistration *models.ApplicationRegistrationRequest) *ChangeRegistrationDetailsParams {
 	o.SetApplicationRegistration(applicationRegistration)
 	return o
 }
 
 // SetApplicationRegistration adds the applicationRegistration to the change registration details params
-func (o *ChangeRegistrationDetailsParams) SetApplicationRegistration(applicationRegistration *models.ApplicationRegistration) {
+func (o *ChangeRegistrationDetailsParams) SetApplicationRegistration(applicationRegistration *models.ApplicationRegistrationRequest) {
 	o.ApplicationRegistration = applicationRegistration
 }
 

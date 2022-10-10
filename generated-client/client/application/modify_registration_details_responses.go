@@ -65,22 +65,22 @@ func NewModifyRegistrationDetailsOK() *ModifyRegistrationDetailsOK {
 
 /* ModifyRegistrationDetailsOK describes a response with status code 200, with default header values.
 
-Successful at modifying registration details
+Modifying registration operation details
 */
 type ModifyRegistrationDetailsOK struct {
-	Payload *models.ApplicationRegistration
+	Payload *models.ApplicationRegistrationUpsertResponse
 }
 
 func (o *ModifyRegistrationDetailsOK) Error() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}][%d] modifyRegistrationDetailsOK  %+v", 200, o.Payload)
 }
-func (o *ModifyRegistrationDetailsOK) GetPayload() *models.ApplicationRegistration {
+func (o *ModifyRegistrationDetailsOK) GetPayload() *models.ApplicationRegistrationUpsertResponse {
 	return o.Payload
 }
 
 func (o *ModifyRegistrationDetailsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ApplicationRegistration)
+	o.Payload = new(models.ApplicationRegistrationUpsertResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

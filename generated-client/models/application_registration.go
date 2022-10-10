@@ -27,11 +27,16 @@ type ApplicationRegistration struct {
 	// Required: true
 	ConfigBranch *string `json:"configBranch"`
 
+	// ConfigurationItem is an identifier for an entity in a configuration management solution such as a CMDB.
+	// ITIL defines a CI as any component that needs to be managed in order to deliver an IT Service
+	// Ref: https://en.wikipedia.org/wiki/Configuration_item
+	ConfigurationItem string `json:"configurationItem,omitempty"`
+
 	// Owner of the application (email). Can be a single person or a shared group email
 	// Required: true
 	Creator *string `json:"creator"`
 
-	// MachineUser is on/off toggler of machine user for the application
+	// MachineUser is on/off toggle of machine user for the application
 	MachineUser bool `json:"machineUser,omitempty"`
 
 	// Name the unique name of the Radix application
@@ -50,6 +55,9 @@ type ApplicationRegistration struct {
 	// PublicKey the public part of the deploy key set or returned
 	// after successful application
 	PublicKey string `json:"publicKey,omitempty"`
+
+	// radixconfig.yaml file name and path, starting from the GitHub repository root (without leading slash)
+	RadixConfigFullName string `json:"radixConfigFullName,omitempty"`
 
 	// Repository the github repository
 	// Example: https://github.com/equinor/radix-canary-golang

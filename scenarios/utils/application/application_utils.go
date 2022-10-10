@@ -19,17 +19,19 @@ const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
 func Register(env env.Env, appName, appRepo, appSharedSecret, appOwner, appCreator, publicKey, privateKey string, wbs string, configBranch string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
-	bodyParameters := models.ApplicationRegistration{
-		Name:         &appName,
-		Repository:   &appRepo,
-		SharedSecret: &appSharedSecret,
-		Owner:        &appOwner,
-		Creator:      &appCreator,
-		AdGroups:     nil,
-		PublicKey:    publicKey,
-		PrivateKey:   privateKey,
-		WBS:          wbs,
-		ConfigBranch: &configBranch,
+	bodyParameters := models.ApplicationRegistrationRequest{
+		ApplicationRegistration: &models.ApplicationRegistration{
+			Name:         &appName,
+			Repository:   &appRepo,
+			SharedSecret: &appSharedSecret,
+			Owner:        &appOwner,
+			Creator:      &appCreator,
+			AdGroups:     nil,
+			PublicKey:    publicKey,
+			PrivateKey:   privateKey,
+			WBS:          wbs,
+			ConfigBranch: &configBranch,
+		},
 	}
 
 	params := apiclient.NewRegisterApplicationParams().
@@ -64,7 +66,7 @@ func Delete(env env.Env, appName string) (bool, error) {
 	return err == nil, err
 }
 
-// Deploy Deploys application
+//Deploy Deploy application
 func Deploy(env env.Env, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()

@@ -78,8 +78,10 @@ func hasProperAccess(env env.Env, properAccess bool) bool {
 }
 
 func patchAdGroup(env env.Env, adGroup string) error {
-	patchRequest := models.ApplicationPatchRequest{
-		AdGroups: []string{adGroup},
+	patchRequest := models.ApplicationRegistrationPatchRequest{
+		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
+			AdGroups: []string{adGroup},
+		},
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().

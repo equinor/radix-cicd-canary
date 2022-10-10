@@ -32,5 +32,5 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error)
 		return false, nil
 	}
 
-	return registerApplicationOK.Payload.PublicKey != "", err
+	return registerApplicationOK.Payload.ApplicationRegistration.PublicKey != "", err
 }

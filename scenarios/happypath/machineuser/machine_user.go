@@ -21,7 +21,10 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 
 	// Enable machine user
 	enabled := true
-	patchMachineUser(env, enabled)
+	err := patchMachineUser(env, enabled)
+	if err != nil {
+		return false, err
+	}
 
 	ok, machineUserToken := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return getMachineUserToken(env)
@@ -50,7 +53,10 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	// Disable machine user
-	patchMachineUser(env, !enabled)
+	err = patchMachineUser(env, !enabled)
+	if err != nil {
+		return false, err
+	}
 
 	// Token should no longer have access
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -88,8 +94,10 @@ func getMachineUserToken(env envUtil.Env) (bool, *string) {
 
 func patchMachineUser(env envUtil.Env, enabled bool) error {
 	log.Debugf("Set MachineUser to %v", enabled)
-	patchRequest := models.ApplicationPatchRequest{
-		MachineUser: &enabled,
+	patchRequest := models.ApplicationRegistrationPatchRequest{
+		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
+			MachineUser: &enabled,
+		},
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().

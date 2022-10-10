@@ -139,8 +139,10 @@ func waitForJobDone(env envUtil.Env, jobName string) (bool, error) {
 
 func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
 	logger.Debugf("Set ConfigBranch to %v", newConfigBranch)
-	patchRequest := models.ApplicationPatchRequest{
-		ConfigBranch: newConfigBranch,
+	patchRequest := models.ApplicationRegistrationPatchRequest{
+		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
+			ConfigBranch: newConfigBranch,
+		},
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().

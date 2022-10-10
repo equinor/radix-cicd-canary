@@ -81,9 +81,9 @@ type ModifyRegistrationDetailsParams struct {
 
 	/* PatchRequest.
 
-	   Application to patch
+	   Request for Application to patch
 	*/
-	PatchRequest *models.ApplicationPatchRequest
+	PatchRequest *models.ApplicationRegistrationPatchRequest
 
 	timeout    time.Duration
 	Context    context.Context
@@ -172,13 +172,13 @@ func (o *ModifyRegistrationDetailsParams) SetAppName(appName string) {
 }
 
 // WithPatchRequest adds the patchRequest to the modify registration details params
-func (o *ModifyRegistrationDetailsParams) WithPatchRequest(patchRequest *models.ApplicationPatchRequest) *ModifyRegistrationDetailsParams {
+func (o *ModifyRegistrationDetailsParams) WithPatchRequest(patchRequest *models.ApplicationRegistrationPatchRequest) *ModifyRegistrationDetailsParams {
 	o.SetPatchRequest(patchRequest)
 	return o
 }
 
 // SetPatchRequest adds the patchRequest to the modify registration details params
-func (o *ModifyRegistrationDetailsParams) SetPatchRequest(patchRequest *models.ApplicationPatchRequest) {
+func (o *ModifyRegistrationDetailsParams) SetPatchRequest(patchRequest *models.ApplicationRegistrationPatchRequest) {
 	o.PatchRequest = patchRequest
 }
 
