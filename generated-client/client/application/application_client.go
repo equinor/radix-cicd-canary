@@ -238,7 +238,7 @@ func (a *Client) EnableApplicationAlerting(params *EnableApplicationAlertingPara
 }
 
 /*
-  GetApplication gets the application application by name
+  GetApplication gets the application by name
 */
 func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationOK, error) {
 	// TODO: Validate the params before sending

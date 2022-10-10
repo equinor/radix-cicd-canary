@@ -23,6 +23,9 @@ type ApplicationsSearchRequest struct {
 	// Example: ["app1","app2"]
 	// Required: true
 	Names []string `json:"names"`
+
+	// include fields
+	IncludeFields *ApplicationSearchIncludeFields `json:"includeFields,omitempty"`
 }
 
 // Validate validates this applications search request
@@ -30,6 +33,10 @@ func (m *ApplicationsSearchRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateNames(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateIncludeFields(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -48,8 +55,52 @@ func (m *ApplicationsSearchRequest) validateNames(formats strfmt.Registry) error
 	return nil
 }
 
-// ContextValidate validates this applications search request based on context it is used
+func (m *ApplicationsSearchRequest) validateIncludeFields(formats strfmt.Registry) error {
+	if swag.IsZero(m.IncludeFields) { // not required
+		return nil
+	}
+
+	if m.IncludeFields != nil {
+		if err := m.IncludeFields.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("includeFields")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("includeFields")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this applications search request based on the context it is used
 func (m *ApplicationsSearchRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateIncludeFields(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ApplicationsSearchRequest) contextValidateIncludeFields(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.IncludeFields != nil {
+		if err := m.IncludeFields.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("includeFields")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("includeFields")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

@@ -418,9 +418,9 @@ func getSuiteList() []string {
 	// return empty list if no values (Split would return [""])
 	if len(suiteList) == 0 {
 		return make([]string, 0)
-	} else {
-		return strings.Split(suiteList, ":")
 	}
+	split := strings.Split(suiteList, ":")
+	return split
 }
 
 func getIsBlacklist() bool {
