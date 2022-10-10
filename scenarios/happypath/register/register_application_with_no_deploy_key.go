@@ -13,12 +13,11 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error)
 	appName := config.App1Name
 	appRepo := config.App1Repository
 	appSharedSecret := config.App1SharedSecret
-	appOwner := config.App1Owner
 	appCreator := config.App1Creator
-	appWbs := config.App1Wbs
 	appConfigBranch := config.App1ConfigBranch
+	appConfigurationItem := config.App1ConfigurationItem
 
-	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, "", "", appWbs, appConfigBranch)
+	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
 	if err != nil {
 		logger.Errorf("%v", err)
 		return false, err

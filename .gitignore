@@ -17,3 +17,4 @@ bin/
 rootfs/
 .vscode/
 .idea
+.dccache
