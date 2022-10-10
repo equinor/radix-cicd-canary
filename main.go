@@ -46,7 +46,7 @@ func main() {
 
 	log.Info("Started suites. Start metrics service.")
 	http.Handle("/metrics", promhttp.Handler())
-	err := http.ListenAndServe(":5001", nil)
+	err := http.ListenAndServe(":5000", nil)
 	if err != nil {
 		log.Error(err)
 		return
