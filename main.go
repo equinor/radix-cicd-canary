@@ -3,11 +3,10 @@ package main
 import (
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
-	"net/http"
-	"time"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/nsp"
 	nsplong "github.com/equinor/radix-cicd-canary/scenarios/nsp-long"
+	"net/http"
+	"time"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -47,7 +46,11 @@ func main() {
 
 	log.Info("Started suites. Start metrics service.")
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":5000", nil)
+	err := http.ListenAndServe(":5000", nil)
+	if err != nil {
+		log.Error(err)
+		return
+	}
 	log.Info("Complete.")
 }
 

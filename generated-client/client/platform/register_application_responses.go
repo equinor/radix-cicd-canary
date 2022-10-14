@@ -59,22 +59,22 @@ func NewRegisterApplicationOK() *RegisterApplicationOK {
 
 /* RegisterApplicationOK describes a response with status code 200, with default header values.
 
-Successful application registration
+Application registration operation details
 */
 type RegisterApplicationOK struct {
-	Payload *models.ApplicationRegistration
+	Payload *models.ApplicationRegistrationUpsertResponse
 }
 
 func (o *RegisterApplicationOK) Error() string {
 	return fmt.Sprintf("[POST /applications][%d] registerApplicationOK  %+v", 200, o.Payload)
 }
-func (o *RegisterApplicationOK) GetPayload() *models.ApplicationRegistration {
+func (o *RegisterApplicationOK) GetPayload() *models.ApplicationRegistrationUpsertResponse {
 	return o.Payload
 }
 
 func (o *RegisterApplicationOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ApplicationRegistration)
+	o.Payload = new(models.ApplicationRegistrationUpsertResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

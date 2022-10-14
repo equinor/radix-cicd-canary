@@ -75,9 +75,9 @@ type RegisterApplicationParams struct {
 
 	/* ApplicationRegistration.
 
-	   Application to register
+	   Request for an Application to register
 	*/
-	ApplicationRegistration *models.ApplicationRegistration
+	ApplicationRegistration *models.ApplicationRegistrationRequest
 
 	timeout    time.Duration
 	Context    context.Context
@@ -155,13 +155,13 @@ func (o *RegisterApplicationParams) SetImpersonateUser(impersonateUser *string) 
 }
 
 // WithApplicationRegistration adds the applicationRegistration to the register application params
-func (o *RegisterApplicationParams) WithApplicationRegistration(applicationRegistration *models.ApplicationRegistration) *RegisterApplicationParams {
+func (o *RegisterApplicationParams) WithApplicationRegistration(applicationRegistration *models.ApplicationRegistrationRequest) *RegisterApplicationParams {
 	o.SetApplicationRegistration(applicationRegistration)
 	return o
 }
 
 // SetApplicationRegistration adds the applicationRegistration to the register application params
-func (o *RegisterApplicationParams) SetApplicationRegistration(applicationRegistration *models.ApplicationRegistration) {
+func (o *RegisterApplicationParams) SetApplicationRegistration(applicationRegistration *models.ApplicationRegistrationRequest) {
 	o.ApplicationRegistration = applicationRegistration
 }
 
