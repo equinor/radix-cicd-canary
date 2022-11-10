@@ -19,11 +19,10 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	appRepo := config.App3Repository
 	appSharedSecret := config.App3SharedSecret
 	appCreator := config.App3Creator
-	appOwner := config.App3Owner
-	appWbs := config.App3Wbs
+	appConfigurationItem := config.App3ConfigurationItem
 	appConfigBranch := config.App3ConfigBranch
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKeyCanary3(), env.GetPrivateKeyCanary3(), appWbs, appConfigBranch)
+	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKeyCanary3(), env.GetPrivateKeyCanary3(), appConfigBranch, appConfigurationItem)
 	if err != nil {
 		logger.Errorf("%v", err)
 		return false, err

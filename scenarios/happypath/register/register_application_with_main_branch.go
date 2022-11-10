@@ -18,12 +18,11 @@ func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) (bool, e
 	appName := config.App4Name
 	appRepo := config.App4Repository
 	appSharedSecret := config.App4SharedSecret
-	appOwner := config.App4Owner
 	appCreator := config.App4Creator
-	appWbs := config.App4Wbs
 	appConfigBranch := config.App4ConfigBranch
+	appConfigurationItem := config.App4ConfigurationItem
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, appOwner, env.GetPublicKeyCanary4(), env.GetPrivateKeyCanary4(), appWbs, appConfigBranch)
+	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKeyCanary4(), env.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem)
 	if err != nil {
 		return false, errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
