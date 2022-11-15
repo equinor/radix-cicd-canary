@@ -12,7 +12,7 @@ import (
 var logger *log.Entry
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(env env.Env, suiteName string) (bool, error) {
+func Reach(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	client := httpUtils.GetHTTPDefaultClient()
@@ -23,11 +23,11 @@ func Reach(env env.Env, suiteName string) (bool, error) {
 	_, err := client.Get(url)
 	if err == nil {
 		// Successful test
-		return true, nil
+		return nil
 	}
 
 	// Failed test
-	return false, err
+	return err
 }
 
 // Success is a function after a call to Reach succeeds

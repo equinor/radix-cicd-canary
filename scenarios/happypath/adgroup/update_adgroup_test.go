@@ -19,7 +19,6 @@ func TestUpdateAdGroup(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := Update(environmentVariables, suiteName)
+	err := Update(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

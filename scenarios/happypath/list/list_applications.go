@@ -10,7 +10,7 @@ import (
 var logger *log.Entry
 
 // Applications Test that we are able to list applications
-func Applications(env env.Env, suiteName string) (bool, error) {
+func Applications(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	impersonateUser := env.GetImpersonateUser()
@@ -31,5 +31,5 @@ func Applications(env env.Env, suiteName string) (bool, error) {
 		}
 	}
 
-	return err == nil && len(showAppOk.Payload) > 0, err
+	return err
 }

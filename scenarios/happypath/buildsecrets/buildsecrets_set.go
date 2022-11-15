@@ -18,13 +18,13 @@ import (
 var logger *log.Entry
 
 // Set Tests that we are able to successfully set build secrets
-func Set(env envUtil.Env, suiteName string) (bool, error) {
+func Set(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build to apply RA with build secrets
-	ok, err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
-	if !ok {
-		return false, err
+	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	if err != nil {
+		return err
 	}
 
 	logger.Info("Job was triggered to apply RA")
@@ -34,7 +34,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Failed")
 	})
 	if !ok {
-		return false, fmt.Errorf("could not get listed job for application %s status \"%s\" - exiting", config.App2Name, "Failed")
+		return fmt.Errorf("could not get listed job for application %s status \"%s\" - exiting", config.App2Name, "Failed")
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -46,7 +46,7 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 		"radix-pipeline"}
 
 	if len(job.Steps) != len(expectedSteps) {
-		return false, fmt.Errorf("job should not contain any build step")
+		return fmt.Errorf("job should not contain any build step")
 	}
 
 	// First job failed, due to missing build secrets, as expected in test
@@ -56,17 +56,17 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, fmt.Errorf("failed buildSecretsAreListedWithStatus expected Pending")
+		return fmt.Errorf("failed buildSecretsAreListedWithStatus expected Pending")
 	}
 
 	ok, err = setSecret(env, build.Secret1, build.Secret1Value)
 	if !ok {
-		return false, err
+		return err
 	}
 
 	ok, err = setSecret(env, build.Secret2, build.Secret2Value)
 	if !ok {
-		return false, err
+		return err
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -74,10 +74,10 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, fmt.Errorf("failed buildSecretsAreListedWithStatus expected Consistent")
+		return fmt.Errorf("failed buildSecretsAreListedWithStatus expected Consistent")
 	}
 
-	return true, nil
+	return nil
 }
 
 func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) (bool, interface{}) {

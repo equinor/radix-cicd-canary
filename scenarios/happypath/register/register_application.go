@@ -15,7 +15,7 @@ var logger *log.Entry
 
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(env envUtil.Env, suiteName string) (bool, error) {
+func Application(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	appName := config.App2Name
@@ -28,7 +28,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKey(), env.GetPrivateKey(), appConfigBranch, appConfigurationItem)
 	if err != nil {
 		logger.Errorf("%v", err)
-		return false, err
+		return err
 	}
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -36,8 +36,8 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("failed to get update details on registered application %s", appName))
+		return errors.New(fmt.Sprintf("failed to get update details on registered application %s", appName))
 	}
 
-	return true, nil
+	return nil
 }

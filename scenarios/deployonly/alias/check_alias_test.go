@@ -19,7 +19,6 @@ func TestDefaultAliasResponding(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := DefaultResponding(environmentVariables, suiteName)
+	err := DefaultResponding(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

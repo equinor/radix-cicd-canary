@@ -16,7 +16,7 @@ const (
 )
 
 // ReachRadixSite tests that canary golang endpoint can be reached from networkpolicy canary with policy that allows it
-func ReachRadixSite(env env.Env, suiteName string) (bool, error) {
+func ReachRadixSite(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appEnv := "allowradix"
 	reachRadixSiteUrl := getReachRadixSiteUrl(env, appEnv)
@@ -25,13 +25,13 @@ func ReachRadixSite(env env.Env, suiteName string) (bool, error) {
 	}
 	_, err := client.Get(reachRadixSiteUrl)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
 }
 
 // NotReachRadixSite tests that canary golang endpoint can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachRadixSite(env env.Env, suiteName string) (bool, error) {
+func NotReachRadixSite(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appEnv := "egressrulestopublicdns"
 	reachRadixSiteUrl := getReachRadixSiteUrl(env, appEnv)
@@ -40,13 +40,13 @@ func NotReachRadixSite(env env.Env, suiteName string) (bool, error) {
 	}
 	res, err := client.Get(reachRadixSiteUrl)
 	if err == nil && res.StatusCode == 200 {
-		return false, fmt.Errorf("request to %s from canary should have been blocked by network policy", env.GetGolangCanaryUrl())
+		return fmt.Errorf("request to %s from canary should have been blocked by network policy", env.GetGolangCanaryUrl())
 	}
-	return true, nil
+	return nil
 }
 
 // NotReachExternalSite tests that a list of external websites can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachExternalSite(env env.Env, suiteName string) (bool, error) {
+func NotReachExternalSite(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
@@ -61,9 +61,9 @@ func NotReachExternalSite(env env.Env, suiteName string) (bool, error) {
 		}
 	}
 	if len(errs) > 0 {
-		return false, errors.Concat(errs)
+		return errors.Concat(errs)
 	}
-	return true, nil
+	return nil
 }
 
 func getReachRadixSiteUrl(env env.Env, appEnv string) string {

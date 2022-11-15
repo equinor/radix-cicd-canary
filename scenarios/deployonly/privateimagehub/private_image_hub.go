@@ -11,7 +11,7 @@ import (
 )
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
-func Set(env envUtil.Env, suiteName string) (bool, error) {
+func Set(env envUtil.Env, suiteName string) error {
 	// Due to a timing bug in Config Syncer (https://github.com/kubeops/config-syncer) that can happen
 	// when a new namespace is created and at the same time a secret that must be synced to the namespace is updated,
 	// the old "cached" secret from the nsSyncer overwrites the secret created by the secret informer's OnUpdate.
@@ -21,8 +21,8 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 
 	err := privateimagehub.SetPassword(env, config.App3Name)
 	if err != nil {
-		return false, fmt.Errorf("failed to set private image hub password. %v", err)
+		return fmt.Errorf("failed to set private image hub password. %v", err)
 	}
 
-	return true, nil
+	return nil
 }

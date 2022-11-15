@@ -10,7 +10,7 @@ import (
 )
 
 // Fn Prototype of a test function
-type Fn func(env env.Env, suiteName string) (success bool, err error)
+type Fn func(env env.Env, suiteName string) error
 
 // ResultFn Prototype of result of a test function (success or fail)
 type ResultFn func(testName string)
@@ -135,8 +135,8 @@ func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 	start := time.Now()
 	log.Debugf("Running test \"%s\"", testToRun.Name)
 
-	success, err := testToRun.Test(env, suiteName)
-	if !success || err != nil {
+	err := testToRun.Test(env, suiteName)
+	if err != nil {
 		testToRun.FailFn(testToRun.Name)
 		log.Errorf("Error calling %s: %v", testToRun.Name, err)
 	} else {
@@ -149,5 +149,5 @@ func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 
 	metrics.AddTestDuration(testToRun.Name, elapsed)
 	log.Infof("Elapsed time: %v", elapsed)
-	return success
+	return err == nil
 }

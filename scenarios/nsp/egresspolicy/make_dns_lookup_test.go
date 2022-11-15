@@ -19,16 +19,14 @@ func TestLookupInternalDNS(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := LookupInternalDNS(environmentVariables, suiteName)
+	err := LookupInternalDNS(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }
 
 func TestLookupPublicDNS(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := LookupPublicDNS(environmentVariables, suiteName)
+	err := LookupPublicDNS(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"errors"
 	"fmt"
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
@@ -12,18 +13,18 @@ import (
 var logger *log.Entry
 
 // LookupInternalDNS tests that we are able to make lookups to internal DNS
-func LookupInternalDNS(env env.Env, suiteName string) (bool, error) {
+func LookupInternalDNS(env env.Env, suiteName string) error {
 	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(internalDnsUrl, suiteName)
 }
 
 // LookupPublicDNS tests that we are able to make lookups to public DNS
-func LookupPublicDNS(env env.Env, suiteName string) (bool, error) {
+func LookupPublicDNS(env env.Env, suiteName string) error {
 	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(publicDnsUrl, suiteName)
 }
 
-func lookupDns(dnsUrl string, suiteName string) (bool, error) {
+func lookupDns(dnsUrl string, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	client := httpUtils.GetHTTPDefaultClient()
@@ -32,9 +33,12 @@ func lookupDns(dnsUrl string, suiteName string) (bool, error) {
 	dnsResponse, dnsErr := client.Get(dnsUrl)
 
 	if dnsErr != nil {
-		return false, dnsErr
+		return dnsErr
 	}
-	return dnsResponse.StatusCode == 200, nil
+	if dnsResponse.StatusCode != 200 {
+		return errors.New(fmt.Sprintf("expected nsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode))
+	}
+	return nil
 }
 
 // InternalDnsSuccess is a function after a call to Lookup succeeds

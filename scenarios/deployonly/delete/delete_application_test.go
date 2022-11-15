@@ -19,7 +19,6 @@ func TestDeleteApplications(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := Applications(environmentVariables, suiteName)
+	err := Applications(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

@@ -19,14 +19,14 @@ import (
 var logger *log.Entry
 
 // Create Tests that machine user is created properly
-func Create(env envUtil.Env, suiteName string) (bool, error) {
+func Create(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Enable machine user
 	const enabled = true
 	err := patchMachineUser(env, enabled)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	ok, machineUserToken := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -34,7 +34,7 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New("cannot get machine token")
+		return errors.New("cannot get machine token")
 	}
 
 	token := machineUserToken.(*string)
@@ -43,19 +43,19 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New("does not have expected access with machine token")
+		return errors.New("does not have expected access with machine token")
 	}
 
 	// Should only have access to its own application
 	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
 	if hasAccessToOtherApplication {
-		return false, errors.New(fmt.Sprintf("has not expected access to another application \"%s\"", config.App1Name))
+		return errors.New(fmt.Sprintf("has not expected access to another application \"%s\"", config.App1Name))
 	}
 
 	// Disable machine user
 	err = patchMachineUser(env, !enabled)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Token should no longer have access
@@ -64,10 +64,10 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New("has not expected access with machine token")
+		return errors.New("has not expected access with machine token")
 	}
 	log.Debug("MachineUser was set and un-set properly")
-	return true, nil
+	return nil
 }
 
 func getMachineUserToken(env envUtil.Env) (bool, *string) {

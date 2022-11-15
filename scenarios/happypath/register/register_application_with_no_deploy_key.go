@@ -12,7 +12,7 @@ import (
 
 // ApplicationWithNoDeployKey Tests that we are able to register application
 // with no deploy key and that deploy key is generated
-func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error) {
+func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) error {
 	appName := config.App1Name
 	appRepo := config.App1Repository
 	appSharedSecret := config.App1SharedSecret
@@ -20,10 +20,10 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error)
 	appConfigBranch := config.App1ConfigBranch
 	appConfigurationItem := config.App1ConfigurationItem
 
-	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
+	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
 	if err != nil {
 		logger.Errorf("%v", err)
-		return false, err
+		return err
 	}
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -31,8 +31,8 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error)
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("failed to get details of registered application %s", config.App2Name))
+		return errors.New(fmt.Sprintf("failed to get details of registered application %s", config.App2Name))
 	}
 
-	return registerApplicationOK.Payload.ApplicationRegistration.PublicKey != "", err
+	return nil
 }

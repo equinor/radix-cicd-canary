@@ -33,13 +33,13 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully build an application
-func Application(env envUtil.Env, suiteName string) (bool, error) {
+func Application(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	ok, err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
-	if !ok {
-		return false, err
+	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	if err != nil {
+		return err
 	}
 	logger.Infof("First job was triggered")
 
@@ -49,7 +49,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
+		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -58,9 +58,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
 	time.Sleep(1 * time.Second)
-	ok, err = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
-	if !ok {
-		return false, err
+	err = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	if err != nil {
+		return err
 	}
 	logger.Infof("Second job was triggered")
 
@@ -69,7 +69,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Queued"))
+		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Queued"))
 	}
 
 	logger.Info("Second job was queued")
@@ -78,10 +78,10 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("job was possible failed, Status %s", status))
+		return errors.New(fmt.Sprintf("job was possible failed, Status %s", status))
 	}
 	if status.(string) != "Succeeded" {
-		return false, errors.New(fmt.Sprintf("expected job status was Success, but got %s", status))
+		return errors.New(fmt.Sprintf("expected job status was Success, but got %s", status))
 	}
 
 	logger.Info("First job was completed")
@@ -94,20 +94,19 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 		{name: "clone", components: []string{}},
 		{name: "build-app", components: []string{"app"}},
 		{name: "build-redis", components: []string{"redis"}},
-		{name: "run-pipelines", components: []string{}},
 	}
 
 	if len(steps) != len(expectedSteps) {
-		return false, errors.New("number of pipeline steps was not as expected")
+		return errors.New("number of pipeline steps was not as expected")
 	}
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return false, errors.New(fmt.Sprintf("Expeced step %s, but got %s", expectedSteps[index].name, step.Name))
+			return errors.New(fmt.Sprintf("Expeced step %s, but got %s", expectedSteps[index].name, step.Name))
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return false, errors.New(fmt.Sprintf("Expeced components %s, but got %s", expectedSteps[index].components, step.Components))
+			return errors.New(fmt.Sprintf("Expeced components %s, but got %s", expectedSteps[index].components, step.Components))
 		}
 	}
 
@@ -115,7 +114,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	//Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	//https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
-		return false, errors.New("build secrets are not contained in build log")
+		return errors.New("build secrets are not contained in build log")
 	}
 
 	ok, jobSummary = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -123,7 +122,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
+		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
 	}
 
 	// Stop job and verify that it has been stopped
@@ -131,7 +130,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	logger.Infof("Second job name: %s", jobName)
 	ok = job.Stop(env, config.App2Name, jobName)
 	if !ok {
-		return false, errors.New(fmt.Sprintf("stopping if the job failed"))
+		return errors.New(fmt.Sprintf("stopping if the job failed"))
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -139,9 +138,9 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Stopped"))
+		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Stopped"))
 	}
 
 	logger.Info("Second job was stopped")
-	return true, nil
+	return nil
 }

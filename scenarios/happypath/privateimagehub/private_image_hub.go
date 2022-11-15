@@ -14,12 +14,12 @@ import (
 var logger *log.Entry
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
-func Set(env envUtil.Env, suiteName string) (bool, error) {
+func Set(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	err := privateimagehub.PasswordNotSet(env, config.App2Name)
 	if err != nil {
-		return false, err
+		return err
 	}
 	logger.Infof("SUCCESS: private image hub is not set")
 
@@ -31,13 +31,13 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 		return true, nil
 	})
 	if !ok {
-		return false, fmt.Errorf("%s component is running before private image hub password was se. %s", config.App2ComponentPrivateImageHubName, errorMessage)
+		return fmt.Errorf("%s component is running before private image hub password was se. %s", config.App2ComponentPrivateImageHubName, errorMessage)
 	}
 	logger.Infof("SUCCESS: container is not loaded")
 
 	err = privateimagehub.SetPassword(env, config.App2Name)
 	if err != nil {
-		return false, fmt.Errorf("failed to set private image hub password. %v", err)
+		return fmt.Errorf("failed to set private image hub password. %v", err)
 	}
 	logger.Infof("SUCCESS: set private image hub password")
 
@@ -50,16 +50,16 @@ func Set(env envUtil.Env, suiteName string) (bool, error) {
 	})
 	logger.Infof("SUCCESS: container is loaded")
 	if !ok {
-		return false, fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, errorMessage)
+		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, errorMessage)
 	}
 
 	err = privateimagehub.PasswordSet(env, config.App2Name)
 	if err != nil {
-		return false, err
+		return err
 	}
 	logger.Infof("SUCCESS: private image hub is verified set")
 
-	return true, nil
+	return nil
 }
 
 func podNotLoaded(env envUtil.Env) string {

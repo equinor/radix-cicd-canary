@@ -17,7 +17,6 @@ func TestRegisterApplicationWithNoDeployKey(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := ApplicationWithNoDeployKey(environmentVariables, suiteName)
+	err := ApplicationWithNoDeployKey(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

@@ -19,16 +19,14 @@ func TestPromoteDeploymentToAnotherEnvironment(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := DeploymentToAnotherEnvironment(environmentVariables, suiteName)
+	err := DeploymentToAnotherEnvironment(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }
 
 func TestPromoteDeploymentWithinEnvironment(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := DeploymentWithinEnvironment(environmentVariables, suiteName)
+	err := DeploymentWithinEnvironment(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

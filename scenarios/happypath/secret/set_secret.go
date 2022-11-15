@@ -13,7 +13,7 @@ import (
 var logger *log.Entry
 
 // Set Test that we are able to set secret
-func Set(env env.Env, suiteName string) (bool, error) {
+func Set(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	test.WaitForCheckFuncOrTimeout(env, isDeploymentConsistent)
@@ -41,7 +41,7 @@ func Set(env env.Env, suiteName string) (bool, error) {
 		logger.Errorf("Error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
 	}
 
-	return err == nil, err
+	return err
 }
 
 func isDeploymentConsistent(env env.Env) (bool, interface{}) {

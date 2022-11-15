@@ -9,7 +9,7 @@ import (
 
 // Access Checks that we are not able to enter any application we should not
 // have access to
-func Access(env env.Env, suiteName string) (bool, error) {
+func Access(env env.Env, suiteName string) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -22,7 +22,7 @@ func Access(env env.Env, suiteName string) (bool, error) {
 	client := httpUtils.GetApplicationClient(env)
 
 	_, err := client.GetApplication(params, clientBearerToken)
-	return givesAccessError(err), nil
+	return err
 }
 
 func givesAccessError(err error) bool {

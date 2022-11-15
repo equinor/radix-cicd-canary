@@ -19,6 +19,6 @@ func TestUnauthorizedAccess(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, _ := Access(environmentVariables, suiteName)
-	assert.True(t, ok)
+	err := Access(environmentVariables, suiteName)
+	assert.NoError(t, err)
 }

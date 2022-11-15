@@ -19,7 +19,6 @@ func TestSetSecret(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := Set(environmentVariables, suiteName)
+	err := Set(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

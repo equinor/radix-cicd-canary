@@ -24,25 +24,25 @@ const (
 var logger *log.Entry
 
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
-func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) (bool, error) {
+func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, envToDeployFrom)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Assert that we no deployments within environment
 	deploymentsInEnvironment, err := getDeployments(env, envToDeployTo)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
 	promoteJobName, err := promote(env, deploymentToPromote, envToDeployFrom, envToDeployTo)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Get job
@@ -52,14 +52,18 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) (bool, er
 	if ok && status.(string) == "Succeeded" {
 		deploymentsInEnvironment, err := getDeployments(env, envToDeployTo)
 		if err != nil {
-			return false, err
+			return err
 		}
 
 		numDeploymentsAfter := len(deploymentsInEnvironment)
-		return (numDeploymentsAfter - numDeploymentsBefore) == 1, nil
+		newDeploymentCount := numDeploymentsAfter - numDeploymentsBefore
+		if newDeploymentCount != 1 {
+			return errors.New(fmt.Sprintf("expected new deployment is 1, but it is %d", newDeploymentCount))
+		}
+		return nil
 	}
 
-	return false, errors.New(fmt.Sprintf("expected status Success, but got %s", status))
+	return errors.New(fmt.Sprintf("expected status Success, but got %s", status))
 }
 
 func getLastDeployment(env envUtil.Env, environment string) (*models.DeploymentSummary, error) {

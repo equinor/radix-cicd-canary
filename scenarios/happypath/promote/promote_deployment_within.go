@@ -14,25 +14,25 @@ import (
 const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
-func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) (bool, error) {
+func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, environmentToPromoteWithin)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Assert that we no deployments within environment
 	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
 	promoteJobName, err := promote(env, deploymentToPromote, environmentToPromoteWithin, environmentToPromoteWithin)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Get job
@@ -45,11 +45,11 @@ func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) (bool, error
 		})
 
 		if doneCheck && ok.(bool) {
-			return true, nil
+			return nil
 		}
 	}
 
-	return false, errors.New(fmt.Sprintf("expected status Success, but got %s", status))
+	return errors.New(fmt.Sprintf("expected status Success, but got %s", status))
 }
 
 func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) (bool, interface{}) {

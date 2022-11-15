@@ -1,39 +1,20 @@
 package delete
 
 import (
-	"fmt"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	commonErrors "github.com/equinor/radix-common/utils/errors"
 )
 
 // Applications Tests that we are able to delete applications
-func Applications(env env.Env, suiteName string) (bool, error) {
-	isAllSuccess := true
-	var allErrors error
-	var errorMessages string
-	success, err := application.Delete(env, config.App1Name)
-	if !success {
-		isAllSuccess = false
-		errorMessages += fmt.Sprintf("%s\n", err.Error())
+func Applications(env env.Env, suiteName string) error {
+	var errs []error
+	for _, appName := range []string{config.App1Name, config.App2Name, config.App4Name} {
+		err := application.Delete(env, appName)
+		if err != nil {
+			errs = append(errs, err)
+		}
 	}
-
-	success, err = application.Delete(env, config.App2Name)
-	if !success {
-		isAllSuccess = false
-		errorMessages += fmt.Sprintf("%s\n", err.Error())
-	}
-
-	success, err = application.Delete(env, config.App4Name)
-	if !success {
-		isAllSuccess = false
-		errorMessages += fmt.Sprintf("%s\n", err.Error())
-	}
-
-	if !isAllSuccess {
-		allErrors = fmt.Errorf("Errors:\n%s", errorMessages)
-	}
-
-	return isAllSuccess, allErrors
+	return commonErrors.Concat(errs)
 }

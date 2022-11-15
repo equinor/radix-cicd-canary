@@ -45,7 +45,7 @@ func Register(env env.Env, appName, appRepo, appSharedSecret, appCreator, public
 }
 
 // Delete Deletes application
-func Delete(env env.Env, appName string) (bool, error) {
+func Delete(env env.Env, appName string) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -62,7 +62,7 @@ func Delete(env env.Env, appName string) (bool, error) {
 		log.Errorf("Error calling DeleteApplication for application %s: %v", appName, err)
 	}
 
-	return err == nil, err
+	return err
 }
 
 // Deploy Deploy application

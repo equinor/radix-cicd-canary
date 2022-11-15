@@ -7,6 +7,6 @@ import (
 )
 
 // Applications Tests that we are able to delete applications
-func Applications(env env.Env, suiteName string) (bool, error) {
+func Applications(env env.Env, suiteName string) error {
 	return application.Delete(env, config.App3Name)
 }

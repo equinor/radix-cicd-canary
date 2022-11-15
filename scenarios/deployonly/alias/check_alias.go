@@ -12,13 +12,13 @@ import (
 )
 
 // DefaultResponding Checks if default alias of application is responding
-func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
+func DefaultResponding(env envUtil.Env, suiteName string) error {
 	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return application.TryGetPublicDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 
 	if !ok {
-		return false, errors.New("public domain name of alias is empty")
+		return errors.New("public domain name of alias is empty")
 	}
 
 	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -26,7 +26,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New("canonical domain name of alias is empty")
+		return errors.New("canonical domain name of alias is empty")
 	}
 
 	if application.IsRunningInActiveCluster(publicDomainName.(string), canonicalDomainName.(string)) {
@@ -35,7 +35,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 		})
 
 		if !ok {
-			return false, errors.New("public alias is not defined")
+			return errors.New("public alias is not defined")
 		}
 	}
 
@@ -43,5 +43,5 @@ func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
 		schema := "https"
 		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName.(string)), http.GetUrl(schema, publicDomainName.(string)))
 	})
-	return ok, nil
+	return nil
 }

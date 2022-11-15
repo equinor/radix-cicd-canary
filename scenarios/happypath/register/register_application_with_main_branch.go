@@ -13,7 +13,7 @@ import (
 
 // ApplicationWithMainConfigBranch Tests that we are able to register application
 // with no deploy key and that deploy key is generated
-func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) (bool, error) {
+func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appName := config.App4Name
 	appRepo := config.App4Repository
@@ -24,7 +24,7 @@ func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) (bool, e
 
 	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKeyCanary4(), env.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem)
 	if err != nil {
-		return false, errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
+		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -32,8 +32,8 @@ func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) (bool, e
 	})
 
 	if !ok {
-		return false, fmt.Errorf("application %s is not defined", appName)
+		return fmt.Errorf("application %s is not defined", appName)
 	}
 
-	return true, nil
+	return nil
 }

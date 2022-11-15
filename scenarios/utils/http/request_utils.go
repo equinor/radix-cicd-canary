@@ -63,7 +63,7 @@ func CreateRequest(env env.Env, url, method string, parameters interface{}) *htt
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string) (bool, error) {
+func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string) error {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -83,40 +83,40 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return false, errors.WithMessage(err,
+		return errors.WithMessage(err,
 			fmt.Sprintf("error trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
-	if ok, err := CheckResponse(resp); !ok {
-		return false, errors.WithMessage(err,
+	if err := CheckResponse(resp); err != nil {
+		return errors.WithMessage(err,
 			fmt.Sprintf("error checking webhook response for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
-	return true, nil
+	return nil
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response) (bool, error) {
+func CheckResponse(resp *http.Response) error {
 	defer resp.Body.Close()
 	_, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return false, errors.WithMessage(err, "error reading response body")
+		return errors.WithMessage(err, "error reading response body")
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
 		log.Debugf("Response code: %d", resp.StatusCode)
-		return true, nil
+		return nil
 	}
 
-	return false, fmt.Errorf("response status code is %d", resp.StatusCode)
+	return fmt.Errorf("response status code is %d", resp.StatusCode)
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
-func CheckUrl(url string) (bool, error) {
+func CheckUrl(url string) error {
 	log.Debugf("Sending request to %s", url)
 	response, err := http.Get(url)
 	if err != nil {
-		return false, err
+		return err
 	}
 	return CheckResponse(response)
 }

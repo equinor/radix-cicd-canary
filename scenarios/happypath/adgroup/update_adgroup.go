@@ -22,35 +22,35 @@ const (
 var logger *log.Entry
 
 // Update Tests that updates to ad group locks down an application
-func Update(env env.Env, suiteName string) (bool, error) {
+func Update(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, hasAccess)
 	if !ok {
-		return false, errors.New(fmt.Sprintf("failed to get update details of the suite %s", suiteName))
+		return errors.New(fmt.Sprintf("failed to get update details of the suite %s", suiteName))
 	}
 
 	err := patchAdGroup(env, adGroupWithNoAccess)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, hasNoAccess)
 	if !ok {
-		return false, errors.New("failed to get patchAdGroup update details")
+		return errors.New("failed to get patchAdGroup update details")
 	}
 
 	err = patchAdGroup(env, env.GetImpersonateGroup())
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, hasAccess)
 	if !ok {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }
 
 func hasNoAccess(env env.Env) (bool, interface{}) {

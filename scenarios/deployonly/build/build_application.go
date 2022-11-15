@@ -21,13 +21,13 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully build an application
-func Application(env envUtil.Env, suiteName string) (bool, error) {
+func Application(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	ok, err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
-	if !ok {
-		return false, errors.New(fmt.Sprintf("failed to push webhook push for App3, error %v", err))
+	err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
+	if err != nil {
+		return errors.New(fmt.Sprintf("failed to push webhook push for App3, error %v", err))
 	}
 
 	// Get job
@@ -36,7 +36,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -49,8 +49,8 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if steps == nil && len(steps) != len(expectedSteps) {
-		return false, errors.New("pipeline steps was not as expected")
+		return errors.New("pipeline steps was not as expected")
 	}
 
-	return true, nil
+	return nil
 }

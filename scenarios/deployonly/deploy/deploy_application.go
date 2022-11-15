@@ -23,7 +23,7 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
-func Application(env envUtil.Env, suiteName string) (bool, error) {
+func Application(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	appName := config.App3Name
@@ -33,7 +33,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	_, err := application.Deploy(env, appName, toEnvironment)
 	if err != nil {
 		logger.Errorf("Error calling Deploy for application %s:  %v", appName, err)
-		return false, err
+		return err
 	}
 
 	// Get job
@@ -41,7 +41,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 		return job.IsListedWithStatus(env, config.App3Name, "Succeeded")
 	})
 	if !ok {
-		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -55,18 +55,18 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if steps == nil && len(steps) != len(expectedSteps) {
-		return false, errors.New("pipeline steps was not as expected")
+		return errors.New("pipeline steps was not as expected")
 	}
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return false, errors.New(fmt.Sprintf("Expected step %s, but got %s", expectedSteps[index].name, step.Name))
+			return errors.New(fmt.Sprintf("Expected step %s, but got %s", expectedSteps[index].name, step.Name))
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return false, errors.New(fmt.Sprintf("Expected components %s, but got %s", expectedSteps[index].components, step.Components))
+			return errors.New(fmt.Sprintf("Expected components %s, but got %s", expectedSteps[index].components, step.Components))
 		}
 	}
 
-	return true, nil
+	return nil
 }

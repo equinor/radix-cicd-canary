@@ -19,7 +19,6 @@ func TestChange(t *testing.T) {
 	env.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := env.NewEnv()
 
-	ok, err := Change(environmentVariables, suiteName)
+	err := Change(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

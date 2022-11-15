@@ -18,7 +18,7 @@ import (
 var logger *log.Entry
 
 // StartAndCheckJobBatch starts a job batch and confirms that jobs were created
-func StartAndCheckJobBatch(env envUtil.Env, suiteName string) (bool, error) {
+func StartAndCheckJobBatch(env envUtil.Env, suiteName string) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	jobComponentName := env.GetNetworkPolicyCanaryJobComponentName()
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
@@ -29,7 +29,7 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) (bool, error) {
 		password := env.GetNetworkPolicyCanaryPassword()
 		batchName, err := startJobBatch(baseUrl, password, appEnv)
 		if err != nil {
-			return false, err
+			return err
 		} else {
 			batchNames = append(batchNames, batchName)
 		}
@@ -40,11 +40,11 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) (bool, error) {
 		batchName := batchNames[i]
 		batchWasRun := checkJobBatch(env, env.GetNetworkPolicyCanaryAppName(), appEnv, jobComponentName, batchName)
 		if !batchWasRun {
-			return false, fmt.Errorf("could not find batch job %s after running it", batchName)
+			return fmt.Errorf("could not find batch job %s after running it", batchName)
 		}
 	}
 
-	return true, nil
+	return nil
 }
 
 func checkJobBatch(env envUtil.Env, appName, appEnv string, jobComponentName string, batchName string) bool {

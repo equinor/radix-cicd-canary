@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -23,28 +23,28 @@ type expectedStep struct {
 	components []string
 }
 
-// Change Tests that radixconfig is read from the branch defined as configBanch
-func Change(env envUtil.Env, suiteName string) (bool, error) {
+// Change Tests that radixconfig is read from the branch defined as configBranch
+func Change(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger first build via web hook
-	ok, err := httpUtils.TriggerWebhookPush(env, config.App4ConfigBranch, config.App4CommitID, config.App4SSHRepository, config.App4SharedSecret)
-	if !ok {
-		return false, err
+	err := httpUtils.TriggerWebhookPush(env, config.App4ConfigBranch, config.App4CommitID, config.App4SSHRepository, config.App4SharedSecret)
+	if err != nil {
+		return err
 	}
 
 	logger.Infof("First job was triggered")
 	jobSummary, err := waitForJobRunning(env)
 
 	if err != nil {
-		return false, errors.WithMessage(err, fmt.Sprintf("first job for application %s", config.App4Name))
+		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", config.App4Name))
 	}
 
 	jobName := jobSummary.Name
 	logger.Infof("First job name: %s", jobName)
 
-	if ok, err = waitForJobDone(env, jobName); !ok {
-		return false, errors.WithMessage(err, fmt.Sprintf("first job for application %s", config.App4Name))
+	if err = waitForJobDone(env, jobName); err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", config.App4Name))
 	}
 
 	logger.Info("First job was completed")
@@ -59,31 +59,31 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
-		return false, err
+		return err
 	}
 
 	// Change config branch, trigger second webhook and verify job
 	if err := patchConfigBranch(env, config.App4NewConfigBranch); err != nil {
-		return false, err
+		return err
 	}
 
-	ok, err = httpUtils.TriggerWebhookPush(env, config.App4NewConfigBranch, config.App4NewCommitID, config.App4SSHRepository, config.App4SharedSecret)
-	if !ok {
-		return false, err
+	err = httpUtils.TriggerWebhookPush(env, config.App4NewConfigBranch, config.App4NewCommitID, config.App4SSHRepository, config.App4SharedSecret)
+	if err != nil {
+		return err
 	}
 
 	logger.Infof("Second job was triggered")
 	jobSummary, err = waitForJobRunning(env)
 
 	if err != nil {
-		return false, errors.WithMessage(err, fmt.Sprintf("second job for application %s", config.App4Name))
+		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", config.App4Name))
 	}
 
 	jobName = jobSummary.Name
 	logger.Infof("Second job name: %s", jobName)
 
-	if ok, err = waitForJobDone(env, jobName); !ok {
-		return false, errors.WithMessage(err, fmt.Sprintf("second job for application %s", config.App4Name))
+	if err = waitForJobDone(env, jobName); err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", config.App4Name))
 	}
 
 	logger.Info("Second job was completed")
@@ -98,10 +98,10 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }
 
 func waitForJobRunning(env envUtil.Env) (*models.JobSummary, error) {
@@ -122,19 +122,19 @@ func waitForJobRunning(env envUtil.Env) (*models.JobSummary, error) {
 	return nil, fmt.Errorf("could not unmarshal jobSummary")
 }
 
-func waitForJobDone(env envUtil.Env, jobName string) (bool, error) {
+func waitForJobDone(env envUtil.Env, jobName string) error {
 	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
 		return job.IsDone(env, config.App4Name, jobName)
 	})
 
 	if !ok {
-		return false, fmt.Errorf("job %s did not complete within the specified timeout period", jobName)
+		return fmt.Errorf("job %s did not complete within the specified timeout period", jobName)
 	}
 	if status.(string) != "Succeeded" {
-		return false, fmt.Errorf("job %s completed with status %s", jobName, status)
+		return fmt.Errorf("job %s completed with status %s", jobName, status)
 	}
 
-	return true, nil
+	return nil
 }
 
 func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
