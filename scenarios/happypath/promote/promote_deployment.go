@@ -1,6 +1,9 @@
 package promote
 
 import (
+	"errors"
+	"fmt"
+
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
@@ -56,7 +59,7 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) (bool, er
 		return (numDeploymentsAfter - numDeploymentsBefore) == 1, nil
 	}
 
-	return false, nil
+	return false, errors.New(fmt.Sprintf("expected status Success, but got %s", status))
 }
 
 func getLastDeployment(env envUtil.Env, environment string) (*models.DeploymentSummary, error) {

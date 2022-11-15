@@ -1,6 +1,9 @@
 package machineuser
 
 import (
+	"errors"
+	"fmt"
+
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
@@ -20,7 +23,7 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Enable machine user
-	enabled := true
+	const enabled = true
 	err := patchMachineUser(env, enabled)
 	if err != nil {
 		return false, err
@@ -31,8 +34,7 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Error("Cannot get machine token")
-		return false, nil
+		return false, errors.New("cannot get machine token")
 	}
 
 	token := machineUserToken.(*string)
@@ -41,15 +43,13 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Error("Does not have expected access with machine token")
-		return false, nil
+		return false, errors.New("does not have expected access with machine token")
 	}
 
 	// Should only have access to its own application
 	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
 	if hasAccessToOtherApplication {
-		log.Debugf("Has not expected access to another application \"%s\"", config.App1Name)
-		return false, nil
+		return false, errors.New(fmt.Sprintf("has not expected access to another application \"%s\"", config.App1Name))
 	}
 
 	// Disable machine user
@@ -64,8 +64,7 @@ func Create(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Error("Has not expected access with machine token")
-		return false, nil
+		return false, errors.New("has not expected access with machine token")
 	}
 	log.Debug("MachineUser was set and un-set properly")
 	return true, nil

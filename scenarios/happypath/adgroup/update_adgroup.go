@@ -1,6 +1,9 @@
 package adgroup
 
 import (
+	"errors"
+	"fmt"
+
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
@@ -13,7 +16,6 @@ import (
 )
 
 const (
-	pipelineName        = "build"
 	adGroupWithNoAccess = "12345678-9012-3456-7890-123456789012"
 )
 
@@ -25,7 +27,7 @@ func Update(env env.Env, suiteName string) (bool, error) {
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, hasAccess)
 	if !ok {
-		return false, nil
+		return false, errors.New(fmt.Sprintf("failed to get update details of the suite %s", suiteName))
 	}
 
 	err := patchAdGroup(env, adGroupWithNoAccess)
@@ -35,7 +37,7 @@ func Update(env env.Env, suiteName string) (bool, error) {
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, hasNoAccess)
 	if !ok {
-		return false, nil
+		return false, errors.New("failed to get patchAdGroup update details")
 	}
 
 	err = patchAdGroup(env, env.GetImpersonateGroup())

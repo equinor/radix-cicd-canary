@@ -1,10 +1,12 @@
 package build
 
 import (
+	"errors"
+	"fmt"
 	"strings"
 	"time"
 
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -47,8 +49,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running")
-		return false, nil
+		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -68,8 +69,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Queued")
-		return false, nil
+		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Queued"))
 	}
 
 	logger.Info("Second job was queued")
@@ -78,10 +78,10 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		return false, nil
+		return false, errors.New(fmt.Sprintf("job was possible failed, Status %s", status))
 	}
 	if status.(string) != "Succeeded" {
-		return false, nil
+		return false, errors.New(fmt.Sprintf("expected job status was Success, but got %s", status))
 	}
 
 	logger.Info("First job was completed")
@@ -98,19 +98,16 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if len(steps) != len(expectedSteps) {
-		logger.Error("Number of pipeline steps was not as expected")
-		return false, nil
+		return false, errors.New("number of pipeline steps was not as expected")
 	}
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			logger.Errorf("Expeced step %s, but got %s", expectedSteps[index].name, step.Name)
-			return false, nil
+			return false, errors.New(fmt.Sprintf("Expeced step %s, but got %s", expectedSteps[index].name, step.Name))
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			logger.Errorf("Expeced components %s, but got %s", expectedSteps[index].components, step.Components)
-			return false, nil
+			return false, errors.New(fmt.Sprintf("Expeced components %s, but got %s", expectedSteps[index].components, step.Components))
 		}
 	}
 
@@ -118,8 +115,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	//Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	//https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
-		logger.Error("Build secrets are not contained in build log")
-		return false, nil
+		return false, errors.New("build secrets are not contained in build log")
 	}
 
 	ok, jobSummary = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -127,8 +123,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running")
-		return false, nil
+		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
 	}
 
 	// Stop job and verify that it has been stopped
@@ -136,7 +131,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	logger.Infof("Second job name: %s", jobName)
 	ok = job.Stop(env, config.App2Name, jobName)
 	if !ok {
-		return false, nil
+		return false, errors.New(fmt.Sprintf("stopping if the job failed"))
 	}
 
 	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
@@ -144,8 +139,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Stopped")
-		return false, nil
+		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Stopped"))
 	}
 
 	logger.Info("Second job was stopped")

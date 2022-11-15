@@ -1,7 +1,10 @@
 package build
 
 import (
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"errors"
+	"fmt"
+
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -24,7 +27,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	// Trigger build via web hook
 	ok, err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
 	if !ok {
-		return false, err
+		return false, errors.New(fmt.Sprintf("failed to push webhook push for App3, error %v", err))
 	}
 
 	// Get job
@@ -33,8 +36,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	})
 
 	if !ok {
-		log.Debugf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded")
-		return false, nil
+		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -47,8 +49,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if steps == nil && len(steps) != len(expectedSteps) {
-		logger.Error("Pipeline steps was not as expected")
-		return false, nil
+		return false, errors.New("pipeline steps was not as expected")
 	}
 
 	return true, nil

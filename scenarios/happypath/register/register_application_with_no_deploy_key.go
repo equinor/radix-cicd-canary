@@ -1,6 +1,9 @@
 package register
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -28,7 +31,7 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error)
 	})
 
 	if !ok {
-		return false, nil
+		return false, errors.New(fmt.Sprintf("failed to get details of registered application %s", config.App2Name))
 	}
 
 	return registerApplicationOK.Payload.ApplicationRegistration.PublicKey != "", err

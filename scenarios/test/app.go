@@ -136,7 +136,7 @@ func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 	log.Debugf("Running test \"%s\"", testToRun.Name)
 
 	success, err := testToRun.Test(env, suiteName)
-	if !success {
+	if !success || err != nil {
 		testToRun.FailFn(testToRun.Name)
 		log.Errorf("Error calling %s: %v", testToRun.Name, err)
 	} else {

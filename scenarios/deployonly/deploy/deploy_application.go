@@ -1,9 +1,11 @@
 package deploy
 
 import (
+	"errors"
+	"fmt"
 	"strings"
 
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -39,8 +41,7 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 		return job.IsListedWithStatus(env, config.App3Name, "Succeeded")
 	})
 	if !ok {
-		log.Errorf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded")
-		return false, nil
+		return false, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
 	}
 
 	jobName := (jobSummary.(*models.JobSummary)).Name
@@ -54,19 +55,16 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if steps == nil && len(steps) != len(expectedSteps) {
-		logger.Error("Pipeline steps was not as expected")
-		return false, nil
+		return false, errors.New("pipeline steps was not as expected")
 	}
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			logger.Errorf("Expected step %s, but got %s", expectedSteps[index].name, step.Name)
-			return false, nil
+			return false, errors.New(fmt.Sprintf("Expected step %s, but got %s", expectedSteps[index].name, step.Name))
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			logger.Errorf("Expected components %s, but got %s", expectedSteps[index].components, step.Components)
-			return false, nil
+			return false, errors.New(fmt.Sprintf("Expected components %s, but got %s", expectedSteps[index].components, step.Components))
 		}
 	}
 

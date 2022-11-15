@@ -1,6 +1,9 @@
 package promote
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
@@ -46,7 +49,7 @@ func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) (bool, error
 		}
 	}
 
-	return false, nil
+	return false, errors.New(fmt.Sprintf("expected status Success, but got %s", status))
 }
 
 func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) (bool, interface{}) {
