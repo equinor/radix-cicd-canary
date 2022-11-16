@@ -38,7 +38,10 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) error {
 	for i := 0; i < len(appEnvs); i++ {
 		appEnv := appEnvs[i]
 		batchName := batchNames[i]
-		batchWasRun := checkJobBatch(env, env.GetNetworkPolicyCanaryAppName(), appEnv, jobComponentName, batchName)
+		batchWasRun, err := checkJobBatch(env, env.GetNetworkPolicyCanaryAppName(), appEnv, jobComponentName, batchName)
+		if err != nil {
+			return err
+		}
 		if !batchWasRun {
 			return fmt.Errorf("could not find batch job %s after running it", batchName)
 		}
@@ -47,16 +50,15 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) error {
 	return nil
 }
 
-func checkJobBatch(env envUtil.Env, appName, appEnv string, jobComponentName string, batchName string) bool {
+func checkJobBatch(env envUtil.Env, appName, appEnv string, jobComponentName string, batchName string) (bool, error) {
 
-	ok, _ := test.WaitForCheckFuncOrTimeout(
+	jobExists, err := test.WaitForCheckFuncOrTimeout(
 		env,
-		func(env envUtil.Env) (bool, interface{}) {
+		func(env envUtil.Env) (bool, error) {
 			return k8sjob.IsListedWithStatus(env, appName, appEnv, jobComponentName, batchName, "Succeeded")
 		},
 	)
-
-	return ok
+	return jobExists, err
 }
 
 func startJobBatch(baseUrl string, password string, appEnv string) (string, error) {

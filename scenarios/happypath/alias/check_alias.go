@@ -1,8 +1,6 @@
 package alias
 
 import (
-	"errors"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -12,35 +10,35 @@ import (
 
 // DefaultResponding Checks if default alias of application is responding
 func DefaultResponding(env envUtil.Env, suiteName string) error {
-	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	publicDomainName, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return application.TryGetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
 	})
 
-	if !ok {
-		return errors.New("public domain name of alias is empty")
+	if err != nil {
+		return err
 	}
 
-	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	canonicalDomainName, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return application.TryGetCanonicalDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
 	})
 
-	if !ok {
-		return errors.New("canonical domain name of alias is empty")
+	if err != nil {
+		return err
 	}
 
-	if application.IsRunningInActiveCluster(publicDomainName.(string), canonicalDomainName.(string)) {
-		ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-			return application.IsAliasDefined(env, config.App2Name)
+	if application.IsRunningInActiveCluster(publicDomainName, canonicalDomainName) {
+		_, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+			return false, application.IsAliasDefined(env, config.App2Name)
 		})
 
-		if !ok {
-			return errors.New("public alias is not defined")
+		if err != nil {
+			return err
 		}
 	}
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
 		schema := "https"
-		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName.(string)), http.GetUrl(schema, publicDomainName.(string)))
+		return false, application.AreResponding(env, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
 	})
-	return nil
+	return err
 }

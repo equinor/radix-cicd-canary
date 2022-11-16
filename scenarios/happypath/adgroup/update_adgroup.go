@@ -21,7 +21,7 @@ const (
 
 var logger *log.Entry
 
-// Update Tests that updates to ad group locks down an application
+// Update Tests that updates to AD group locks down an application
 func Update(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
@@ -53,11 +53,11 @@ func Update(env env.Env, suiteName string) error {
 	return nil
 }
 
-func hasNoAccess(env env.Env) (bool, interface{}) {
+func hasNoAccess(env env.Env) (bool, error) {
 	return hasProperAccess(env, false), nil
 }
 
-func hasAccess(env env.Env) (bool, interface{}) {
+func hasAccess(env env.Env) (bool, error) {
 	return hasProperAccess(env, true), nil
 }
 

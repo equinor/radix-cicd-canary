@@ -10,10 +10,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
 )
-
-var logger *log.Entry
 
 type expectedStep struct {
 	name       string
@@ -22,7 +19,6 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully build an application
 func Application(env envUtil.Env, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
 	err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
@@ -31,15 +27,22 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return job.IsListedWithStatus(env, config.App3Name, "Succeeded")
+	jobSummary, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
+		jobSummary, err := job.IsListedWithStatus(env, config.App3Name, "Succeeded")
+		if err != nil {
+			return nil, err
+		}
+		if jobSummary == nil {
+			return nil, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+		}
+		return jobSummary, err
 	})
 
-	if !ok {
-		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+	if err != nil {
+		return err
 	}
 
-	jobName := (jobSummary.(*models.JobSummary)).Name
+	jobName := jobSummary.Name
 	steps := job.GetSteps(env, config.App3Name, jobName)
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},

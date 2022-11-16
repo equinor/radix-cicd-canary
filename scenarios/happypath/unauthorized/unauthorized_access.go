@@ -24,12 +24,3 @@ func Access(env env.Env, suiteName string) error {
 	_, err := client.GetApplication(params, clientBearerToken)
 	return err
 }
-
-func givesAccessError(err error) bool {
-	switch err.(type) {
-	case *application.GetApplicationForbidden:
-		return true
-	}
-
-	return false
-}

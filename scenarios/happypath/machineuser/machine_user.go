@@ -29,17 +29,17 @@ func Create(env envUtil.Env, suiteName string) error {
 		return err
 	}
 
-	ok, machineUserToken := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	machineUserToken, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*string, error) {
 		return getMachineUserToken(env)
 	})
 
-	if !ok {
-		return errors.New("cannot get machine token")
+	if err != nil {
+		return err
 	}
 
-	token := machineUserToken.(*string)
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return hasAccess(env, *token)
+	token := machineUserToken
+	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+		return hasAccess(env, *token), nil
 	})
 
 	if !ok {
@@ -59,8 +59,8 @@ func Create(env envUtil.Env, suiteName string) error {
 	}
 
 	// Token should no longer have access
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return hasNoAccess(env, *token)
+	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+		return hasNoAccess(env, *token), nil
 	})
 
 	if !ok {
@@ -70,7 +70,7 @@ func Create(env envUtil.Env, suiteName string) error {
 	return nil
 }
 
-func getMachineUserToken(env envUtil.Env) (bool, *string) {
+func getMachineUserToken(env envUtil.Env) (*string, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -84,11 +84,10 @@ func getMachineUserToken(env envUtil.Env) (bool, *string) {
 
 	tokenResponse, err := client.RegenerateMachineUserToken(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Cannot regenerate machine token: %s", err)
-		return false, nil
+		return nil, errors.New(fmt.Sprintf("cannot regenerate machine token: %v", err))
 	}
 
-	return true, tokenResponse.Payload.Token
+	return tokenResponse.Payload.Token, nil
 }
 
 func patchMachineUser(env envUtil.Env, enabled bool) error {
@@ -114,12 +113,12 @@ func patchMachineUser(env envUtil.Env, enabled bool) error {
 	return nil
 }
 
-func hasNoAccess(env envUtil.Env, machineUserToken string) (bool, interface{}) {
-	return hasProperAccess(env, machineUserToken, false), nil
+func hasNoAccess(env envUtil.Env, machineUserToken string) bool {
+	return hasProperAccess(env, machineUserToken, false)
 }
 
-func hasAccess(env envUtil.Env, machineUserToken string) (bool, interface{}) {
-	return hasProperAccess(env, machineUserToken, true), nil
+func hasAccess(env envUtil.Env, machineUserToken string) bool {
+	return hasProperAccess(env, machineUserToken, true)
 }
 
 func hasProperAccess(env envUtil.Env, machineUserToken string, properAccess bool) bool {

@@ -1,6 +1,8 @@
 package application
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -87,14 +89,12 @@ func Deploy(env env.Env, appName, toEnvironment string) (*applicationclient.Trig
 }
 
 // IsDefined Checks if application is defined
-func IsDefined(env env.Env, appName string) (bool, interface{}) {
+func IsDefined(env env.Env, appName string) error {
 	_, err := Get(env, appName)
 	if err == nil {
-		return true, nil
+		return nil
 	}
-
-	log.Infof("Application %s is not defined", appName)
-	return false, nil
+	return errors.New(fmt.Sprintf("application %s is not defined", appName))
 }
 
 // Get gets an application by appName
@@ -114,15 +114,15 @@ func Get(env env.Env, appName string) (*models.Application, error) {
 }
 
 // IsAliasDefined Checks if app alias is defined
-func IsAliasDefined(env env.Env, appName string) (bool, interface{}) {
+func IsAliasDefined(env env.Env, appName string) error {
 	appAlias := getAlias(env, appName)
 	if appAlias != nil {
 		log.Infof("App alias is defined %s. Now we can try to hit it to see if it responds", *appAlias)
-		return true, *appAlias
+		return nil
 	}
 
 	log.Info("App alias is not yet defined")
-	return false, nil
+	return errors.New("public alias is not defined")
 }
 
 func getAlias(env env.Env, appName string) *string {
@@ -150,22 +150,22 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 }
 
 // TryGetPublicDomainName Waits for public domain name to be defined
-func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName string) (string, error) {
 	publicDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
-		return false, nil
+		return "", errors.New("public domain name of alias is empty")
 	}
-	return true, publicDomainName
+	return publicDomainName, nil
 }
 
 // TryGetCanonicalDomainName Waits for canonical domain name to be defined
-func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
+func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentName string) (string, error) {
 	canonicalDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if canonicalDomainName == "" {
-		return false, nil
+		return "", errors.New("canonical domain name of alias is empty")
 	}
 
-	return true, canonicalDomainName
+	return canonicalDomainName, nil
 }
 
 func getEnvVariable(env env.Env, appName, envName, forComponentName, variableName string) string {
@@ -196,26 +196,26 @@ func getEnvVariable(env env.Env, appName, envName, forComponentName, variableNam
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(env env.Env, urls ...string) (bool, interface{}) {
+func AreResponding(env env.Env, urls ...string) error {
 	for _, url := range urls {
-		ok, _ := IsResponding(env, url)
-		if !ok {
-			return false, nil
+		responded := IsResponding(env, url)
+		if !responded {
+			return errors.New("not all endpoints respond")
 		}
 	}
 
-	return true, nil
+	return nil
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(env env.Env, url string) (bool, interface{}) {
+func IsResponding(env env.Env, url string) bool {
 	req := httpUtils.CreateRequest(env, url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 
 	if err == nil && resp.StatusCode == 200 {
 		log.Info("App alias responded ok")
-		return true, nil
+		return true
 	}
 
 	if err != nil {
@@ -231,5 +231,5 @@ func IsResponding(env env.Env, url string) (bool, interface{}) {
 	}
 
 	log.Infof("Alias '%s' is still not responding", url)
-	return false, nil
+	return false
 }

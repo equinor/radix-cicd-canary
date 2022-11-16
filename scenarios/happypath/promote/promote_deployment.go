@@ -16,7 +16,6 @@ import (
 )
 
 const (
-	pipelineName    = "promote"
 	envToDeployFrom = "qa"
 	envToDeployTo   = "dev"
 )
@@ -46,10 +45,10 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
 	}
 
 	// Get job
-	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	status, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return job.IsDone(env, config.App2Name, promoteJobName)
 	})
-	if ok && status.(string) == "Succeeded" {
+	if err != nil && status == "Succeeded" {
 		deploymentsInEnvironment, err := getDeployments(env, envToDeployTo)
 		if err != nil {
 			return err

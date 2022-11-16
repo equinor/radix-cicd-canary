@@ -1,25 +1,20 @@
 package test
 
 import (
+	"errors"
 	"time"
 
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 )
 
 // CheckFn The prototype function for any check function
-type CheckFn func(env envUtil.Env, args []string) (bool, interface{})
+type CheckFn[T any] func(env envUtil.Env, args []string) (T, error)
 
 // CheckFnNew The prototype function for any check function
-type CheckFnNew func(env envUtil.Env) (bool, interface{})
-
-// WaitForCheckFunc Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFunc(env envUtil.Env, checkFunc CheckFn) (bool, interface{}) {
-	fn := func(env envUtil.Env) (bool, interface{}) { return checkFunc(env, []string{}) }
-	return WaitForCheckFuncOrTimeout(env, fn)
-}
+type CheckFnNew[T any] func(env envUtil.Env) (T, error)
 
 // WaitForCheckFuncOrTimeout Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, interface{}) {
+func WaitForCheckFuncOrTimeout[T any](env envUtil.Env, checkFunc CheckFnNew[T]) (T, error) {
 	timeout := env.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := env.GetSleepIntervalBetweenCheckFunc()
 	firstSleepBetweenCheckFunc := time.Second
@@ -27,9 +22,9 @@ func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, int
 
 	for {
 		startTime := time.Now()
-		success, obj := checkFunc(env)
-		if success {
-			return true, obj
+		obj, err := checkFunc(env)
+		if err == nil {
+			return obj, nil
 		}
 
 		// should accumulatedWait include sleep?
@@ -48,7 +43,7 @@ func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFnNew) (bool, int
 		if timeout > 0 {
 			accumulatedWait = accumulatedWait + waitPeriod
 			if accumulatedWait > timeout {
-				return false, nil
+				return nil, errors.New("timeout exceeded")
 			}
 		}
 

@@ -44,7 +44,7 @@ func Set(env env.Env, suiteName string) error {
 	return err
 }
 
-func isDeploymentConsistent(env env.Env) (bool, interface{}) {
+func isDeploymentConsistent(env env.Env) (bool, error) {
 	environmentDetails := getEnvironmentDetails(env)
 	if environmentDetails != nil &&
 		environmentDetails.ActiveDeployment != nil &&

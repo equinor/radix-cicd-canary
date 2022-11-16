@@ -1,6 +1,7 @@
 package buildsecrets
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -30,14 +31,14 @@ func Set(env envUtil.Env, suiteName string) error {
 	logger.Info("Job was triggered to apply RA")
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	jobSummary, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Failed")
 	})
-	if !ok {
-		return fmt.Errorf("could not get listed job for application %s status \"%s\" - exiting", config.App2Name, "Failed")
+	if err != nil {
+		return err
 	}
 
-	jobName := (jobSummary.(*models.JobSummary)).Name
+	jobName := jobSummary.Name
 	job := job.Get(env, config.App2Name, jobName)
 
 	expectedSteps := []string{
@@ -51,36 +52,31 @@ func Set(env envUtil.Env, suiteName string) error {
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return buildSecretsAreListedWithStatus(env, "Pending")
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+		return false, buildSecretsAreListedWithStatus(env, "Pending")
 	})
 
-	if !ok {
-		return fmt.Errorf("failed buildSecretsAreListedWithStatus expected Pending")
-	}
-
-	ok, err = setSecret(env, build.Secret1, build.Secret1Value)
-	if !ok {
+	if err != nil {
 		return err
 	}
 
-	ok, err = setSecret(env, build.Secret2, build.Secret2Value)
-	if !ok {
+	err = setSecret(env, build.Secret1, build.Secret1Value)
+	if err != nil {
 		return err
 	}
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return buildSecretsAreListedWithStatus(env, "Consistent")
-	})
-
-	if !ok {
-		return fmt.Errorf("failed buildSecretsAreListedWithStatus expected Consistent")
+	err = setSecret(env, build.Secret2, build.Secret2Value)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+		return false, buildSecretsAreListedWithStatus(env, "Consistent")
+	})
+	return err
 }
 
-func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) (bool, interface{}) {
+func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -97,15 +93,15 @@ func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) (bo
 			strings.EqualFold(buildsecrets.Payload[0].Status, expectedStatus) &&
 			strings.EqualFold(*buildsecrets.Payload[1].Name, build.Secret2) &&
 			strings.EqualFold(buildsecrets.Payload[1].Status, expectedStatus) {
-			return true, nil
+			return nil
 		}
 	}
 
 	logger.Info("Build secrets are not listed yet")
-	return false, nil
+	return errors.New(fmt.Sprintf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus))
 }
 
-func setSecret(env envUtil.Env, secretName, secretValue string) (bool, error) {
+func setSecret(env envUtil.Env, secretName, secretValue string) error {
 	log.Debugf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
@@ -126,8 +122,8 @@ func setSecret(env envUtil.Env, secretName, secretValue string) (bool, error) {
 
 	_, err := client.UpdateBuildSecretsSecretValue(params, clientBearerToken)
 	if err != nil {
-		return false, fmt.Errorf("failed to set secret %s. Error: %v", secretName, err)
+		return fmt.Errorf("failed to set secret %s. Error: %v", secretName, err)
 	}
 
-	return true, nil
+	return nil
 }

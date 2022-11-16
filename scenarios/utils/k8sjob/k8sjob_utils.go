@@ -1,14 +1,16 @@
 package k8sjob
 
 import (
+	"errors"
+	"fmt"
+
 	jobClient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	log "github.com/sirupsen/logrus"
 )
 
 // IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponentName string, batchName string, expectedStatus string) (bool, interface{}) {
+func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponentName string, batchName string, expectedStatus string) (bool, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 	params := jobClient.NewGetBatchesParams().
@@ -24,8 +26,7 @@ func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponent
 	batches, err := client.GetBatches(params, clientBearerToken)
 
 	if err != nil {
-		log.Errorf("Error calling GetBatches for application %s in environment %s: %v", appName, appEnv, err)
-		return false, nil
+		return false, errors.New(fmt.Sprintf("Error calling GetBatches for application %s in environment %s: %v", appName, appEnv, err))
 	}
 
 	for _, batchSummary := range batches.Payload {

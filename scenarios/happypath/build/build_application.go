@@ -44,15 +44,15 @@ func Application(env envUtil.Env, suiteName string) error {
 	logger.Infof("First job was triggered")
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	jobSummary, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Running")
 	})
 
-	if !ok {
-		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
+	if err != nil {
+		return err
 	}
 
-	jobName := (jobSummary.(*models.JobSummary)).Name
+	jobName := jobSummary.Name
 	logger.Infof("First job name: %s", jobName)
 
 	// Another build should cause second job to queue up
@@ -64,24 +64,21 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 	logger.Infof("Second job was triggered")
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Queued")
 	})
 
-	if !ok {
-		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Queued"))
+	if err != nil {
+		return err
 	}
 
 	logger.Info("Second job was queued")
-	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return job.IsDone(env, config.App2Name, jobName)
 	})
 
-	if !ok {
-		return errors.New(fmt.Sprintf("job was possible failed, Status %s", status))
-	}
-	if status.(string) != "Succeeded" {
-		return errors.New(fmt.Sprintf("expected job status was Success, but got %s", status))
+	if err != nil {
+		return err
 	}
 
 	logger.Info("First job was completed")
@@ -117,28 +114,28 @@ func Application(env envUtil.Env, suiteName string) error {
 		return errors.New("build secrets are not contained in build log")
 	}
 
-	ok, jobSummary = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	jobSummary, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Running")
 	})
 
-	if !ok {
-		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Running"))
+	if err != nil {
+		return err
 	}
 
 	// Stop job and verify that it has been stopped
-	jobName = (jobSummary.(*models.JobSummary)).Name
+	jobName = jobSummary.Name
 	logger.Infof("Second job name: %s", jobName)
-	ok = job.Stop(env, config.App2Name, jobName)
-	if !ok {
-		return errors.New(fmt.Sprintf("stopping if the job failed"))
+	err = job.Stop(env, config.App2Name, jobName)
+	if err != nil {
+		return err
 	}
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Stopped")
 	})
 
-	if !ok {
-		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App2Name, "Stopped"))
+	if err != nil {
+		return err
 	}
 
 	logger.Info("Second job was stopped")

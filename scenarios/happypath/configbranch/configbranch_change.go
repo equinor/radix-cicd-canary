@@ -107,33 +107,22 @@ func Change(env envUtil.Env, suiteName string) error {
 func waitForJobRunning(env envUtil.Env) (*models.JobSummary, error) {
 	status := "Running"
 
-	ok, obj := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App4Name, status)
 	})
-
-	if !ok {
-		return nil, fmt.Errorf("could not get job with status %s", status)
-	}
-
-	if jobSummary, ok := obj.(*models.JobSummary); ok {
-		return jobSummary, nil
-	}
-
-	return nil, fmt.Errorf("could not unmarshal jobSummary")
 }
 
 func waitForJobDone(env envUtil.Env, jobName string) error {
-	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	status, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return job.IsDone(env, config.App4Name, jobName)
 	})
 
-	if !ok {
-		return fmt.Errorf("job %s did not complete within the specified timeout period", jobName)
+	if err != nil {
+		return err
 	}
-	if status.(string) != "Succeeded" {
+	if status != "Succeeded" {
 		return fmt.Errorf("job %s completed with status %s", jobName, status)
 	}
-
 	return nil
 }
 

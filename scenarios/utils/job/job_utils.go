@@ -1,6 +1,9 @@
 package job
 
 import (
+	"errors"
+	"fmt"
+
 	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -9,7 +12,7 @@ import (
 )
 
 // IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(env env.Env, appName, expectedStatus string) (bool, interface{}) {
+func IsListedWithStatus(env env.Env, appName, expectedStatus string) (*models.JobSummary, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -22,24 +25,23 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string) (bool, inte
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling GetApplicationJobs for application %s: %v", appName, err)
-		return false, nil
+		return nil, errors.New(fmt.Sprintf("Error calling GetApplicationJobs for application %s: %v", appName, err))
 	}
 	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
 		log.Debugf("GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
-		return false, nil
+		return nil, nil
 	}
 	if applicationJobs.Payload[0].Status != expectedStatus {
 		log.Debugf("GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
 			appName, expectedStatus, applicationJobs.Payload[0].Status)
-		return false, nil
+		return nil, nil
 	}
 	log.Debugf("GetApplicationJobs for application %s received expected status \"%s\"", appName, expectedStatus)
-	return true, applicationJobs.Payload[0]
+	return applicationJobs.Payload[0], nil
 }
 
 // Stop Stops a job
-func Stop(env env.Env, appName, jobName string) bool {
+func Stop(env env.Env, appName, jobName string) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -54,23 +56,22 @@ func Stop(env env.Env, appName, jobName string) bool {
 
 	jobStopped, err := client.StopApplicationJob(params, clientBearerToken)
 	if err == nil && jobStopped != nil {
-		return true
+		return nil
 	}
 
-	log.Infof("Failed stopping job %s. Error: %v", jobName, err)
-	return false
+	return errors.New(fmt.Sprintf("stopping if the job %s failed. Error: %v", jobName, err))
 }
 
 // IsDone Checks if job is done
-func IsDone(env env.Env, appName, jobName string) (bool, interface{}) {
+func IsDone(env env.Env, appName, jobName string) (string, error) {
 	jobStatus := GetStatus(env, appName, jobName)
 	if jobStatus == "Succeeded" || jobStatus == "Failed" {
 		log.Debugf("Job is done with status: %s", jobStatus)
-		return true, jobStatus
+		return jobStatus, nil
 	}
 
 	log.Debug("Job is not done yet")
-	return false, nil
+	return "", errors.New(fmt.Sprintf("job was possible failed, Status %s", jobStatus))
 }
 
 // GetStatus Gets status of job

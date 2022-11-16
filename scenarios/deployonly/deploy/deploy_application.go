@@ -37,14 +37,21 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return job.IsListedWithStatus(env, config.App3Name, "Succeeded")
+	jobSummary, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
+		jobSummary, err := job.IsListedWithStatus(env, config.App3Name, "Succeeded")
+		if err != nil {
+			return nil, err
+		}
+		if jobSummary == nil {
+			return nil, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+		}
+		return jobSummary, err
 	})
-	if !ok {
-		return errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+	if err != nil {
+		return err
 	}
 
-	jobName := (jobSummary.(*models.JobSummary)).Name
+	jobName := jobSummary.Name
 	steps := job.GetSteps(env, config.App3Name, jobName)
 
 	expectedSteps := []expectedStep{

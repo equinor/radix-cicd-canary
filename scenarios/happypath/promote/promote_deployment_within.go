@@ -36,37 +36,31 @@ func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) error {
 	}
 
 	// Get job
-	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	status, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return job.IsDone(env, config.App2Name, promoteJobName)
 	})
-	if ok && status.(string) == "Succeeded" {
-		doneCheck, ok := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-			return isNewDeploymentExist(env, numDeploymentsBefore)
-		})
-
-		if doneCheck && ok.(bool) {
-			return nil
-		}
+	if err != nil {
+		return err
 	}
-
-	return errors.New(fmt.Sprintf("expected status Success, but got %s", status))
+	if status != "Succeeded" {
+		return errors.New(fmt.Sprintf("expected status Success, but got %s", status))
+	}
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+		return false, isNewDeploymentExist(env, numDeploymentsBefore)
+	})
+	return err
 }
 
-func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) (bool, interface{}) {
+func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) error {
 	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
 	if err != nil {
-		logger.Errorf("Error: %v", err)
-		return true, false
+		return err
 	}
 
-	if err != nil {
-		logger.Errorf("Error: %v", err)
-		return true, false
-	}
 	numDeploymentsAfter := len(deploymentsInEnvironment)
 	if (numDeploymentsAfter - numDeploymentsBefore) == 1 {
-		return true, true
+		return nil
 	}
 
-	return false, nil
+	return errors.New(fmt.Sprintf("new expected deployment does not exist"))
 }

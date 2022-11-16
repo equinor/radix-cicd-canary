@@ -1,6 +1,7 @@
 package privateimagehub
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/environment"
@@ -23,15 +24,11 @@ func Set(env envUtil.Env, suiteName string) error {
 	}
 	logger.Infof("SUCCESS: private image hub is not set")
 
-	ok, errorMessage := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		errorMessage := podNotLoaded(env)
-		if len(errorMessage) > 0 {
-			return false, err
-		}
-		return true, nil
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+		return false, podNotLoaded(env)
 	})
-	if !ok {
-		return fmt.Errorf("%s component is running before private image hub password was se. %s", config.App2ComponentPrivateImageHubName, errorMessage)
+	if err != nil {
+		return fmt.Errorf("%s component is running before private image hub password was set. %v", config.App2ComponentPrivateImageHubName, err)
 	}
 	logger.Infof("SUCCESS: container is not loaded")
 
@@ -41,16 +38,12 @@ func Set(env envUtil.Env, suiteName string) error {
 	}
 	logger.Infof("SUCCESS: set private image hub password")
 
-	ok, errorMessage = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		errorMessage := podLoaded(env)
-		if len(errorMessage) > 0 {
-			return false, errorMessage
-		}
-		return true, nil
+	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+		return false, podLoaded(env)
 	})
 	logger.Infof("SUCCESS: container is loaded")
-	if !ok {
-		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, errorMessage)
+	if err != nil {
+		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, err.Error())
 	}
 
 	err = privateimagehub.PasswordSet(env, config.App2Name)
@@ -62,23 +55,23 @@ func Set(env envUtil.Env, suiteName string) error {
 	return nil
 }
 
-func podNotLoaded(env envUtil.Env) string {
+func podNotLoaded(env envUtil.Env) error {
 	return verifyPrivateImageHubPodStatus(env, "Failing")
 }
 
-func podLoaded(env envUtil.Env) string {
+func podLoaded(env envUtil.Env) error {
 	return verifyPrivateImageHubPodStatus(env, "Running")
 }
 
-func verifyPrivateImageHubPodStatus(env envUtil.Env, expectedStatus string) string {
+func verifyPrivateImageHubPodStatus(env envUtil.Env, expectedStatus string) error {
 	actualStatus, err := getPrivateImageHubComponentStatus(env)
 	if err != nil {
-		return err.Error()
+		return err
 	} else if actualStatus != expectedStatus {
 		logger.Debugf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
-		return fmt.Sprintf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
+		return errors.New(fmt.Sprintf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus))
 	}
-	return ""
+	return nil
 }
 
 func getPrivateImageHubComponentStatus(env envUtil.Env) (string, error) {
