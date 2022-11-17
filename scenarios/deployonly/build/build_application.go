@@ -23,7 +23,7 @@ func Application(env envUtil.Env, suiteName string) error {
 	// Trigger build via web hook
 	err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
 	if err != nil {
-		return errors.New(fmt.Sprintf("failed to push webhook push for App3, error %v", err))
+		return fmt.Errorf("failed to push webhook push for App3, error %v", err)
 	}
 
 	// Get job
@@ -33,7 +33,7 @@ func Application(env envUtil.Env, suiteName string) error {
 			return nil, err
 		}
 		if jobSummary == nil {
-			return nil, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+			return nil, fmt.Errorf("could not get listed job for application %s status \"%s\" - exiting", config.App3Name, "Succeeded")
 		}
 		return jobSummary, err
 	})

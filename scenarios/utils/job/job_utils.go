@@ -1,7 +1,6 @@
 package job
 
 import (
-	"errors"
 	"fmt"
 
 	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
@@ -25,16 +24,16 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string) (*models.Jo
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("Error calling GetApplicationJobs for application %s: %v", appName, err))
+		return nil, fmt.Errorf("error calling GetApplicationJobs for application %s: %v", appName, err)
 	}
 	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
-		return nil, errors.New(fmt.Sprintf("GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName))
+		return nil, fmt.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
 	}
 	if applicationJobs.Payload[0].Status != expectedStatus {
-		return nil, errors.New(fmt.Sprintf("GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
-			appName, expectedStatus, applicationJobs.Payload[0].Status))
+		return nil, fmt.Errorf("method GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
+			appName, expectedStatus, applicationJobs.Payload[0].Status)
 	}
-	log.Debugf("GetApplicationJobs for application %s received expected status \"%s\"", appName, expectedStatus)
+	log.Debugf("method GetApplicationJobs for application %s received expected status \"%s\"", appName, expectedStatus)
 	return applicationJobs.Payload[0], nil
 }
 
@@ -57,7 +56,7 @@ func Stop(env env.Env, appName, jobName string) error {
 		return nil
 	}
 
-	return errors.New(fmt.Sprintf("stopping if the job %s failed. Error: %v", jobName, err))
+	return fmt.Errorf("stopping if the job %s failed. Error: %v", jobName, err)
 }
 
 // IsDone Checks if job is done
@@ -69,7 +68,7 @@ func IsDone(env env.Env, appName, jobName string) (string, error) {
 	}
 
 	log.Debug("Job is not done yet")
-	return "", errors.New(fmt.Sprintf("job was possible failed, Status %s", jobStatus))
+	return "", fmt.Errorf("job was possible failed, Status %s", jobStatus)
 }
 
 // GetStatus Gets status of job

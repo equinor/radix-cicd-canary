@@ -49,7 +49,7 @@ func Create(env envUtil.Env, suiteName string) error {
 	// Should only have access to its own application
 	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
 	if hasAccessToOtherApplication {
-		return errors.New(fmt.Sprintf("has not expected access to another application \"%s\"", config.App1Name))
+		return fmt.Errorf("has not expected access to another application \"%s\"", config.App1Name)
 	}
 
 	// Disable machine user
@@ -84,7 +84,7 @@ func getMachineUserToken(env envUtil.Env) (*string, error) {
 
 	tokenResponse, err := client.RegenerateMachineUserToken(params, clientBearerToken)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("cannot regenerate machine token: %v", err))
+		return nil, fmt.Errorf("cannot regenerate machine token: %v", err)
 	}
 
 	return tokenResponse.Payload.Token, nil

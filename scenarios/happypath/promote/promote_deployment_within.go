@@ -1,7 +1,6 @@
 package promote
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -43,7 +42,7 @@ func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) error {
 		return err
 	}
 	if status != "Succeeded" {
-		return errors.New(fmt.Sprintf("expected status Success, but got %s", status))
+		return fmt.Errorf("expected status Success, but got %s", status)
 	}
 	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
 		return false, isNewDeploymentExist(env, numDeploymentsBefore)
@@ -62,5 +61,5 @@ func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) error {
 		return nil
 	}
 
-	return errors.New(fmt.Sprintf("new expected deployment does not exist"))
+	return fmt.Errorf("new expected deployment does not exist")
 }

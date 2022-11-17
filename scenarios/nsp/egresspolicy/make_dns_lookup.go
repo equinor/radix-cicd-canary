@@ -1,7 +1,6 @@
 package egresspolicy
 
 import (
-	"errors"
 	"fmt"
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
@@ -36,7 +35,7 @@ func lookupDns(dnsUrl string, suiteName string) error {
 		return dnsErr
 	}
 	if dnsResponse.StatusCode != 200 {
-		return errors.New(fmt.Sprintf("expected nsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode))
+		return fmt.Errorf("expected nsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode)
 	}
 	return nil
 }

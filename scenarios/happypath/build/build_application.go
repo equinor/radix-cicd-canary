@@ -99,11 +99,11 @@ func Application(env envUtil.Env, suiteName string) error {
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return errors.New(fmt.Sprintf("Expeced step %s, but got %s", expectedSteps[index].name, step.Name))
+			return fmt.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return errors.New(fmt.Sprintf("Expeced components %s, but got %s", expectedSteps[index].components, step.Components))
+			return fmt.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
 		}
 	}
 

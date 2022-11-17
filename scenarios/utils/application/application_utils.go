@@ -94,7 +94,7 @@ func IsDefined(env env.Env, appName string) error {
 	if err == nil {
 		return nil
 	}
-	return errors.New(fmt.Sprintf("application %s is not defined", appName))
+	return fmt.Errorf("application %s is not defined", appName)
 }
 
 // Get gets an application by appName

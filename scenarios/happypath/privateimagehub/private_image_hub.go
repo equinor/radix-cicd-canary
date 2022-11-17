@@ -1,7 +1,6 @@
 package privateimagehub
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/environment"
@@ -69,7 +68,7 @@ func verifyPrivateImageHubPodStatus(env envUtil.Env, expectedStatus string) erro
 		return err
 	}
 	if actualStatus != expectedStatus {
-		return errors.New(fmt.Sprintf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus))
+		return fmt.Errorf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
 	}
 	return nil
 }

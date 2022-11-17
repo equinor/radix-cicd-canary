@@ -43,7 +43,7 @@ func Application(env envUtil.Env, suiteName string) error {
 			return nil, err
 		}
 		if jobSummary == nil {
-			return nil, errors.New(fmt.Sprintf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded"))
+			return nil, fmt.Errorf("could not get listed job for application %s status \"%s\" - exiting", config.App3Name, "Succeeded")
 		}
 		return jobSummary, err
 	})
@@ -67,11 +67,11 @@ func Application(env envUtil.Env, suiteName string) error {
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return errors.New(fmt.Sprintf("Expected step %s, but got %s", expectedSteps[index].name, step.Name))
+			return fmt.Errorf("expected step %s, but got %s", expectedSteps[index].name, step.Name)
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return errors.New(fmt.Sprintf("Expected components %s, but got %s", expectedSteps[index].components, step.Components))
+			return fmt.Errorf("expected components %s, but got %s", expectedSteps[index].components, step.Components)
 		}
 	}
 

@@ -1,7 +1,6 @@
 package buildsecrets
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -98,7 +97,7 @@ func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) err
 	}
 
 	logger.Info("Build secrets are not listed yet")
-	return errors.New(fmt.Sprintf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus))
+	return fmt.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
 }
 
 func setSecret(env envUtil.Env, secretName, secretValue string) error {

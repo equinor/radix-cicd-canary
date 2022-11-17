@@ -1,7 +1,6 @@
 package promote
 
 import (
-	"errors"
 	"fmt"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -37,6 +36,7 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
 	if err != nil {
 		return err
 	}
+	logger.Debug("no deployments within environment")
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
 	promoteJobName, err := promote(env, deploymentToPromote, envToDeployFrom, envToDeployTo)
@@ -57,12 +57,12 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
 		numDeploymentsAfter := len(deploymentsInEnvironment)
 		newDeploymentCount := numDeploymentsAfter - numDeploymentsBefore
 		if newDeploymentCount != 1 {
-			return errors.New(fmt.Sprintf("expected new deployment is 1, but it is %d", newDeploymentCount))
+			return fmt.Errorf("expected new deployment is 1, but it is %d", newDeploymentCount)
 		}
 		return nil
 	}
 
-	return errors.New(fmt.Sprintf("expected status Success, but got %s", status))
+	return fmt.Errorf("expected status Success, but got %s", status)
 }
 
 func getLastDeployment(env envUtil.Env, environment string) (*models.DeploymentSummary, error) {

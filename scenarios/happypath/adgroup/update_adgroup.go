@@ -27,7 +27,7 @@ func Update(env env.Env, suiteName string) error {
 
 	ok, _ := test.WaitForCheckFuncOrTimeout(env, hasAccess)
 	if !ok {
-		return errors.New(fmt.Sprintf("failed to get update details of the suite %s", suiteName))
+		return fmt.Errorf("failed to get update details of the suite %s", suiteName)
 	}
 
 	err := patchAdGroup(env, adGroupWithNoAccess)
