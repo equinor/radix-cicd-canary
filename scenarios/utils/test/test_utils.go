@@ -43,7 +43,7 @@ func WaitForCheckFuncOrTimeout[T any](env envUtil.Env, checkFunc CheckFnNew[T]) 
 		if timeout > 0 {
 			accumulatedWait = accumulatedWait + waitPeriod
 			if accumulatedWait > timeout {
-				return nil, errors.New("timeout exceeded")
+				return obj, errors.New("timeout exceeded")
 			}
 		}
 

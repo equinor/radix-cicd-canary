@@ -22,5 +22,13 @@ func Access(env env.Env, suiteName string) error {
 	client := httpUtils.GetApplicationClient(env)
 
 	_, err := client.GetApplication(params, clientBearerToken)
+	return givesAccessError(err)
+}
+
+func givesAccessError(err error) error {
+	switch err.(type) {
+	case *application.GetApplicationForbidden:
+		return nil
+	}
 	return err
 }

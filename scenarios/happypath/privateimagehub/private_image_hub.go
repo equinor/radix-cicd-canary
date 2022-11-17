@@ -41,10 +41,10 @@ func Set(env envUtil.Env, suiteName string) error {
 	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
 		return false, podLoaded(env)
 	})
-	logger.Infof("SUCCESS: container is loaded")
 	if err != nil {
 		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, err.Error())
 	}
+	logger.Infof("SUCCESS: container is loaded with updated image hub password")
 
 	err = privateimagehub.PasswordSet(env, config.App2Name)
 	if err != nil {
@@ -67,8 +67,8 @@ func verifyPrivateImageHubPodStatus(env envUtil.Env, expectedStatus string) erro
 	actualStatus, err := getPrivateImageHubComponentStatus(env)
 	if err != nil {
 		return err
-	} else if actualStatus != expectedStatus {
-		logger.Debugf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus)
+	}
+	if actualStatus != expectedStatus {
 		return errors.New(fmt.Sprintf("expected status %s on component %s - was %s", expectedStatus, config.App2ComponentPrivateImageHubName, actualStatus))
 	}
 	return nil

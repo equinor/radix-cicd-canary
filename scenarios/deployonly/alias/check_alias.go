@@ -19,7 +19,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) error {
 	}
 
 	canonicalDomainName, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return application.TryGetCanonicalDomainName[string](env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
+		return application.TryGetCanonicalDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 	if err != nil {
 		return err

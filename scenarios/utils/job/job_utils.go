@@ -28,13 +28,11 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string) (*models.Jo
 		return nil, errors.New(fmt.Sprintf("Error calling GetApplicationJobs for application %s: %v", appName, err))
 	}
 	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
-		log.Debugf("GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
-		return nil, nil
+		return nil, errors.New(fmt.Sprintf("GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName))
 	}
 	if applicationJobs.Payload[0].Status != expectedStatus {
-		log.Debugf("GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
-			appName, expectedStatus, applicationJobs.Payload[0].Status)
-		return nil, nil
+		return nil, errors.New(fmt.Sprintf("GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
+			appName, expectedStatus, applicationJobs.Payload[0].Status))
 	}
 	log.Debugf("GetApplicationJobs for application %s received expected status \"%s\"", appName, expectedStatus)
 	return applicationJobs.Payload[0], nil
