@@ -7,7 +7,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	"github.com/equinor/radix-common/utils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -61,18 +60,17 @@ func Stop(env env.Env, appName, jobName string) error {
 }
 
 // IsDone Checks if job is done
-func IsDone(appName, jobName string, env env.Env, expectedStatuses ...string) error {
+func IsDone(appName, jobName string, env env.Env) (string, error) {
 	jobStatus, err := GetStatus(env, appName, jobName)
 	if err != nil {
-		return err
+		return "", err
 	}
-	if utils.ContainsString(expectedStatuses, jobStatus) {
+	if jobStatus == "Succeeded" || jobStatus == "Failed" {
 		log.Debugf("Job is done with status: %s", jobStatus)
-		return nil
+		return jobStatus, nil
 	}
-
 	log.Debug("Job is not done yet")
-	return fmt.Errorf("job was possible failed, Status %s", jobStatus)
+	return "", fmt.Errorf("job was possible failed, Status %s", jobStatus)
 }
 
 // GetStatus Gets status of job

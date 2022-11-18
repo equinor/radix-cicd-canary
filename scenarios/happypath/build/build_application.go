@@ -74,14 +74,15 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	logger.Info("Second job was queued")
-	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return job.IsDone(config.App2Name, jobName, env, "Succeeded", "Failed")
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
+		return job.IsDone(config.App2Name, jobName, env)
 	})
-
 	if err != nil {
 		return err
 	}
-
+	if jobStatus != "Succeeded" {
+		return fmt.Errorf("expected job status was Success, but got %s", jobStatus)
+	}
 	logger.Info("First job was completed")
 	steps := job.GetSteps(env, config.App2Name, jobName)
 

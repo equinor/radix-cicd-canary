@@ -5,7 +5,7 @@ import (
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -45,21 +45,24 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
 	}
 
 	// Get job
-	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return job.IsDone(config.App2Name, promoteJobName, env, "Succeeded")
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
+		return job.IsDone(config.App2Name, promoteJobName, env)
 	})
 	if err != nil {
-		deploymentsInEnvironment, err := getDeployments(env, envToDeployTo)
-		if err != nil {
-			return err
-		}
+		return err
+	}
+	if jobStatus != "Succeeded" {
+		return fmt.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
+	}
+	deploymentsInEnvironment, err = getDeployments(env, envToDeployTo)
+	if err != nil {
+		return err
+	}
 
-		numDeploymentsAfter := len(deploymentsInEnvironment)
-		newDeploymentCount := numDeploymentsAfter - numDeploymentsBefore
-		if newDeploymentCount != 1 {
-			return fmt.Errorf("expected new deployment is 1, but it is %d", newDeploymentCount)
-		}
-		return nil
+	numDeploymentsAfter := len(deploymentsInEnvironment)
+	newDeploymentCount := numDeploymentsAfter - numDeploymentsBefore
+	if newDeploymentCount != 1 {
+		return fmt.Errorf("new expected deployment does not exist")
 	}
 	return nil
 }

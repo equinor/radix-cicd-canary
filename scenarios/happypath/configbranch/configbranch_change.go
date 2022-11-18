@@ -113,9 +113,16 @@ func waitForJobRunning(env envUtil.Env) (*models.JobSummary, error) {
 }
 
 func waitForJobDone(env envUtil.Env, jobName string) error {
-	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return job.IsDone(config.App4Name, jobName, env, "Succeeded")
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
+		return job.IsDone(config.App4Name, jobName, env)
 	})
+	if err != nil {
+		return err
+	}
+	if jobStatus != "Succeeded" {
+		return fmt.Errorf("job %s completed with status %s", jobName, jobStatus)
+	}
+	return nil
 }
 
 func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
