@@ -44,7 +44,7 @@ func Application(env envUtil.Env, suiteName string) error {
 	logger.Infof("First job was triggered")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Running")
 	})
 
@@ -64,8 +64,9 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 	logger.Infof("Second job was triggered")
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Queued")
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		_, err := job.IsListedWithStatus(env, config.App2Name, "Queued")
+		return err
 	})
 
 	if err != nil {
@@ -73,8 +74,8 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	logger.Info("Second job was queued")
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return job.IsDone(env, config.App2Name, jobName)
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return job.IsDone(config.App2Name, jobName, env, "Succeeded", "Failed")
 	})
 
 	if err != nil {
@@ -114,7 +115,7 @@ func Application(env envUtil.Env, suiteName string) error {
 		return errors.New("build secrets are not contained in build log")
 	}
 
-	jobSummary, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
+	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Running")
 	})
 
@@ -130,10 +131,10 @@ func Application(env envUtil.Env, suiteName string) error {
 		return err
 	}
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Stopped")
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		_, err := job.IsListedWithStatus(env, config.App2Name, "Stopped")
+		return err
 	})
-
 	if err != nil {
 		return err
 	}

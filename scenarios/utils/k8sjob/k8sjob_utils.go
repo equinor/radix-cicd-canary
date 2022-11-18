@@ -9,7 +9,7 @@ import (
 )
 
 // IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponentName string, batchName string, expectedStatus string) (bool, error) {
+func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponentName string, batchName string, expectedStatus string) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 	params := jobClient.NewGetBatchesParams().
@@ -25,14 +25,14 @@ func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponent
 	batches, err := client.GetBatches(params, clientBearerToken)
 
 	if err != nil {
-		return false, fmt.Errorf("error calling GetBatches for application %s in environment %s: %v", appName, appEnv, err)
+		return fmt.Errorf("error calling GetBatches for application %s in environment %s: %v", appName, appEnv, err)
 	}
 
 	for _, batchSummary := range batches.Payload {
 		if *batchSummary.Name == batchName && *batchSummary.Status == expectedStatus {
-			return true, nil
+			return nil
 		}
 	}
 
-	return false, nil
+	return fmt.Errorf("could not find batch job %s with expected atatus %s after running it", batchName, expectedStatus)
 }

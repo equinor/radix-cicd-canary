@@ -30,7 +30,7 @@ func Set(env envUtil.Env, suiteName string) error {
 	logger.Info("Job was triggered to apply RA")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App2Name, "Failed")
 	})
 	if err != nil {
@@ -38,7 +38,7 @@ func Set(env envUtil.Env, suiteName string) error {
 	}
 
 	jobName := jobSummary.Name
-	job := job.Get(env, config.App2Name, jobName)
+	job, _ := job.Get(env, config.App2Name, jobName)
 
 	expectedSteps := []string{
 		"clone-config",
@@ -51,8 +51,8 @@ func Set(env envUtil.Env, suiteName string) error {
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return false, buildSecretsAreListedWithStatus(env, "Pending")
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return buildSecretsAreListedWithStatus(env, "Pending")
 	})
 
 	if err != nil {
@@ -69,10 +69,9 @@ func Set(env envUtil.Env, suiteName string) error {
 		return err
 	}
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return false, buildSecretsAreListedWithStatus(env, "Consistent")
+	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return buildSecretsAreListedWithStatus(env, "Consistent")
 	})
-	return err
 }
 
 func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) error {

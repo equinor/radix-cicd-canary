@@ -7,6 +7,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/equinor/radix-common/utils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -60,30 +61,35 @@ func Stop(env env.Env, appName, jobName string) error {
 }
 
 // IsDone Checks if job is done
-func IsDone(env env.Env, appName, jobName string) (string, error) {
-	jobStatus := GetStatus(env, appName, jobName)
-	if jobStatus == "Succeeded" || jobStatus == "Failed" {
+func IsDone(appName, jobName string, env env.Env, expectedStatuses ...string) error {
+	jobStatus, err := GetStatus(env, appName, jobName)
+	if err != nil {
+		return err
+	}
+	if utils.ContainsString(expectedStatuses, jobStatus) {
 		log.Debugf("Job is done with status: %s", jobStatus)
-		return jobStatus, nil
+		return nil
 	}
 
 	log.Debug("Job is not done yet")
-	return "", fmt.Errorf("job was possible failed, Status %s", jobStatus)
+	return fmt.Errorf("job was possible failed, Status %s", jobStatus)
 }
 
 // GetStatus Gets status of job
-func GetStatus(env env.Env, appName, jobName string) string {
-	job := Get(env, appName, jobName)
-	if job != nil {
-		return job.Status
+func GetStatus(env env.Env, appName, jobName string) (string, error) {
+	job, err := Get(env, appName, jobName)
+	if err != nil {
+		return "", err
 	}
-
+	if job != nil {
+		return job.Status, nil
+	}
 	log.Debug("Job was not listed yet")
-	return ""
+	return "", fmt.Errorf("job does not exist")
 }
 
 // Get gets job from job name
-func Get(env env.Env, appName, jobName string) *models.Job {
+func Get(env env.Env, appName, jobName string) (*models.Job, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -97,11 +103,13 @@ func Get(env env.Env, appName, jobName string) *models.Job {
 	client := httpUtils.GetJobClient(env)
 
 	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
-	if err == nil && applicationJob.Payload != nil {
-		return applicationJob.Payload
+	if err != nil {
+		return nil, err
 	}
-
-	return nil
+	if applicationJob.Payload != nil {
+		return applicationJob.Payload, nil
+	}
+	return nil, fmt.Errorf("failed to ge job")
 }
 
 // GetSteps gets job from job name

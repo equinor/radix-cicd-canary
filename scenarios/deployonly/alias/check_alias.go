@@ -11,14 +11,14 @@ import (
 
 // DefaultResponding Checks if default alias of application is responding
 func DefaultResponding(env envUtil.Env, suiteName string) error {
-	publicDomainName, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
+	publicDomainName, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return application.TryGetPublicDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 	if err != nil {
 		return err
 	}
 
-	canonicalDomainName, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
+	canonicalDomainName, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
 		return application.TryGetCanonicalDomainName(env, config.App3Name, config.App3EnvironmentName, config.App3Component1Name)
 	})
 	if err != nil {
@@ -26,17 +26,17 @@ func DefaultResponding(env envUtil.Env, suiteName string) error {
 	}
 
 	if application.IsRunningInActiveCluster(publicDomainName, canonicalDomainName) {
-		_, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
-			return false, application.IsAliasDefined(env, config.App3Name)
+		err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+			return application.IsAliasDefined(env, config.App3Name)
 		})
 		if err != nil {
 			return err
 		}
 	}
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		schema := "https"
-		return false, application.AreResponding(env, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
+		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
 	})
 
 	return err

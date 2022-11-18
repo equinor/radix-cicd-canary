@@ -37,7 +37,7 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		jobSummary, err := job.IsListedWithStatus(env, config.App3Name, "Succeeded")
 		if err != nil {
 			return nil, err

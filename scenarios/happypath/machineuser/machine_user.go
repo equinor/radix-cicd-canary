@@ -29,7 +29,7 @@ func Create(env envUtil.Env, suiteName string) error {
 		return err
 	}
 
-	machineUserToken, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*string, error) {
+	machineUserToken, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*string, error) {
 		return getMachineUserToken(env)
 	})
 
@@ -38,7 +38,7 @@ func Create(env envUtil.Env, suiteName string) error {
 	}
 
 	token := machineUserToken
-	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+	ok, _ := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
 		return hasAccess(env, *token), nil
 	})
 
@@ -59,7 +59,7 @@ func Create(env envUtil.Env, suiteName string) error {
 	}
 
 	// Token should no longer have access
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
+	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
 		return hasNoAccess(env, *token), nil
 	})
 

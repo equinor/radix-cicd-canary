@@ -25,7 +25,7 @@ var logger *log.Entry
 func Update(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	ok, _ := test.WaitForCheckFuncOrTimeout(env, hasAccess)
+	ok, _ := test.WaitForCheckFuncWithValueOrTimeout(env, hasAccess)
 	if !ok {
 		return fmt.Errorf("failed to get update details of the suite %s", suiteName)
 	}
@@ -35,7 +35,7 @@ func Update(env env.Env, suiteName string) error {
 		return err
 	}
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, hasNoAccess)
+	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, hasNoAccess)
 	if !ok {
 		return errors.New("failed to get patchAdGroup update details")
 	}
@@ -45,7 +45,7 @@ func Update(env env.Env, suiteName string) error {
 		return err
 	}
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, hasAccess)
+	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, hasAccess)
 	if !ok {
 		return err
 	}

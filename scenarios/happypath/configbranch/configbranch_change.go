@@ -107,23 +107,15 @@ func Change(env envUtil.Env, suiteName string) error {
 func waitForJobRunning(env envUtil.Env) (*models.JobSummary, error) {
 	status := "Running"
 
-	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
+	return test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
 		return job.IsListedWithStatus(env, config.App4Name, status)
 	})
 }
 
 func waitForJobDone(env envUtil.Env, jobName string) error {
-	status, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return job.IsDone(env, config.App4Name, jobName)
+	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return job.IsDone(config.App4Name, jobName, env, "Succeeded")
 	})
-
-	if err != nil {
-		return err
-	}
-	if status != "Succeeded" {
-		return fmt.Errorf("job %s completed with status %s", jobName, status)
-	}
-	return nil
 }
 
 func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {

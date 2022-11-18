@@ -27,8 +27,7 @@ func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) error {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return false, application.IsDefined(env, appName)
+	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return application.IsDefined(env, appName)
 	})
-	return err
 }

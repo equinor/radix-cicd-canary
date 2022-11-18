@@ -23,8 +23,7 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) error {
 		return err
 	}
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return false, application.IsDefined(env, config.App2Name)
+	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return application.IsDefined(env, config.App2Name)
 	})
-	return err
 }

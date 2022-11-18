@@ -1,6 +1,7 @@
 package secret
 
 import (
+	"fmt"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -44,17 +45,16 @@ func Set(env env.Env, suiteName string) error {
 	return err
 }
 
-func isDeploymentConsistent(env env.Env) (bool, error) {
+func isDeploymentConsistent(env env.Env) error {
 	environmentDetails := getEnvironmentDetails(env)
 	if environmentDetails != nil &&
 		environmentDetails.ActiveDeployment != nil &&
 		environmentDetails.Status != "" &&
 		len(environmentDetails.Secrets) > 0 {
 		logger.Info("Deployment is consistent. We can set the secret.")
-		return true, nil
+		return nil
 	}
-
-	return false, nil
+	return fmt.Errorf("deployment is not consistent")
 }
 
 func getEnvironmentDetails(env env.Env) *models.Environment {

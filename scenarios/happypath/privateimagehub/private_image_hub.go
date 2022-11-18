@@ -23,8 +23,8 @@ func Set(env envUtil.Env, suiteName string) error {
 	}
 	logger.Infof("SUCCESS: private image hub is not set")
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return false, podNotLoaded(env)
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return podNotLoaded(env)
 	})
 	if err != nil {
 		return fmt.Errorf("%s component is running before private image hub password was set. %v", config.App2ComponentPrivateImageHubName, err)
@@ -37,8 +37,8 @@ func Set(env envUtil.Env, suiteName string) error {
 	}
 	logger.Infof("SUCCESS: set private image hub password")
 
-	_, err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return false, podLoaded(env)
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return podLoaded(env)
 	})
 	if err != nil {
 		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, err.Error())

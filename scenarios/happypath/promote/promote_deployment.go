@@ -45,10 +45,10 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
 	}
 
 	// Get job
-	status, err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return job.IsDone(env, config.App2Name, promoteJobName)
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return job.IsDone(config.App2Name, promoteJobName, env, "Succeeded")
 	})
-	if err != nil && status == "Succeeded" {
+	if err != nil {
 		deploymentsInEnvironment, err := getDeployments(env, envToDeployTo)
 		if err != nil {
 			return err
@@ -61,8 +61,7 @@ func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
 		}
 		return nil
 	}
-
-	return fmt.Errorf("expected status Success, but got %s", status)
+	return nil
 }
 
 func getLastDeployment(env envUtil.Env, environment string) (*models.DeploymentSummary, error) {
