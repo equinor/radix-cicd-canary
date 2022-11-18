@@ -30,10 +30,10 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string) (*models.Jo
 		return nil, fmt.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
 	}
 	if applicationJobs.Payload[0].Status != expectedStatus {
-		return nil, fmt.Errorf("method GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
+		return nil, fmt.Errorf("method GetApplicationJobs for application %s expected status '%s', but it received '%s'",
 			appName, expectedStatus, applicationJobs.Payload[0].Status)
 	}
-	log.Debugf("method GetApplicationJobs for application %s received expected status \"%s\"", appName, expectedStatus)
+	log.Debugf("method GetApplicationJobs for application %s received expected status '%s'", appName, expectedStatus)
 	return applicationJobs.Payload[0], nil
 }
 

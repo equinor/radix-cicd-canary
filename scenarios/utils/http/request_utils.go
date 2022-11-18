@@ -79,17 +79,17 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature-256", crypto.SHA256HMAC([]byte(sharedSecret), payload))
 
-	log.Debugf("Trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit)
+	log.Debugf("Trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 
 	resp, err := client.Do(req)
 	if err != nil {
 		return errors.WithMessage(err,
-			fmt.Sprintf("error trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
+			fmt.Sprintf("error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
 	if err := CheckResponse(resp); err != nil {
 		return errors.WithMessage(err,
-			fmt.Sprintf("error checking webhook response for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
+			fmt.Sprintf("error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
 	return nil

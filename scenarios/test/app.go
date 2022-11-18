@@ -78,7 +78,7 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 	suiteName := suite.Name
 	setupFailed := false
 	start := time.Now()
-	log.Debugf("Setting-up suite \"%s\"", suiteName)
+	log.Debugf("Setting-up suite '%s'", suiteName)
 
 	for _, setup := range suite.Setup {
 		log.Info(setup.Description)
@@ -133,7 +133,7 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 
 func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 	start := time.Now()
-	log.Debugf("Running test \"%s\"", testToRun.Name)
+	log.Debugf("Running test '%s'", testToRun.Name)
 
 	err := testToRun.Test(env, suiteName)
 	if err != nil {

@@ -33,7 +33,7 @@ func Application(env envUtil.Env, suiteName string) error {
 			return nil, err
 		}
 		if jobSummary == nil {
-			return nil, fmt.Errorf("could not get listed job for application %s status \"%s\" - exiting", config.App3Name, "Succeeded")
+			return nil, fmt.Errorf("could not get listed job for application %s status '%s' - exiting", config.App3Name, "Succeeded")
 		}
 		return jobSummary, err
 	})

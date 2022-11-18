@@ -49,7 +49,7 @@ func Create(env envUtil.Env, suiteName string) error {
 	// Should only have access to its own application
 	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
 	if hasAccessToOtherApplication {
-		return fmt.Errorf("has not expected access to another application \"%s\"", config.App1Name)
+		return fmt.Errorf("has not expected access to another application '%s'", config.App1Name)
 	}
 
 	// Disable machine user
