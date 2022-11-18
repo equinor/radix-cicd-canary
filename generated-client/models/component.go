@@ -41,7 +41,7 @@ type Component struct {
 	Replicas []string `json:"replicas"`
 
 	// ScheduledJobPayloadPath defines the payload path, where payload for Job Scheduler will be mapped as a file. From radixconfig.yaml
-	// Example: \"/tmp/payload\
+	// Example: '/tmp/payload'
 	ScheduledJobPayloadPath string `json:"scheduledJobPayloadPath,omitempty"`
 
 	// SchedulerPort defines the port number that a Job Scheduler is exposed internally in environment
