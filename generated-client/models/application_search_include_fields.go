@@ -17,8 +17,11 @@ import (
 // swagger:model ApplicationSearchIncludeFields
 type ApplicationSearchIncludeFields struct {
 
-	// job summary
-	JobSummary bool `json:"jobSummary,omitempty"`
+	// environment active components
+	EnvironmentActiveComponents bool `json:"environmentActiveComponents,omitempty"`
+
+	// latest job summary
+	LatestJobSummary bool `json:"latestJobSummary,omitempty"`
 }
 
 // Validate validates this application search include fields

@@ -33,7 +33,7 @@ type ScheduledBatchSummary struct {
 	JobList []*ScheduledJobSummary `json:"jobList"`
 
 	// Message of a status, if any, of the job
-	// Example: 'Error occurred'
+	// Example: \"Error occurred\
 	Message string `json:"message,omitempty"`
 
 	// Name of the scheduled batch

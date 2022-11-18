@@ -22,7 +22,7 @@ import (
 type ScheduledJobSummary struct {
 
 	// BatchName Batch name, if any
-	// Example: 'batch-abc'
+	// Example: \"batch-abc\
 	BatchName string `json:"batchName,omitempty"`
 
 	// Created timestamp
@@ -34,11 +34,11 @@ type ScheduledJobSummary struct {
 	Ended string `json:"ended,omitempty"`
 
 	// JobId JobId, if any
-	// Example: 'job1'
+	// Example: \"job1\
 	JobID string `json:"jobId,omitempty"`
 
 	// Message of a status, if any, of the job
-	// Example: 'Error occurred'
+	// Example: \"Error occurred\
 	Message string `json:"message,omitempty"`
 
 	// Name of the scheduled job

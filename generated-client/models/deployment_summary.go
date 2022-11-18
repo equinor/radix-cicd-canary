@@ -45,7 +45,7 @@ type DeploymentSummary struct {
 	GitCommitHash string `json:"gitCommitHash,omitempty"`
 
 	// GitTags the git tags that the git commit hash points to
-	// Example: 'v1.22.1 v1.22.3'
+	// Example: \"v1.22.1 v1.22.3\
 	GitTags string `json:"gitTags,omitempty"`
 
 	// Name the unique name of the Radix application deployment
