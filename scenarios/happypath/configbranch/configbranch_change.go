@@ -28,7 +28,7 @@ func Change(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger first build via web hook
-	err := httpUtils.TriggerWebhookPush(env, config.App4ConfigBranch, config.App4CommitID, config.App4SSHRepository, config.App4SharedSecret)
+	err := httpUtils.TriggerWebhookPush(env, config.App4ConfigBranch, config.App4CommitID, config.App4SSHRepository, config.App4SharedSecret, logger)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func Change(env envUtil.Env, suiteName string) error {
 		return err
 	}
 
-	err = httpUtils.TriggerWebhookPush(env, config.App4NewConfigBranch, config.App4NewCommitID, config.App4SSHRepository, config.App4SharedSecret)
+	err = httpUtils.TriggerWebhookPush(env, config.App4NewConfigBranch, config.App4NewCommitID, config.App4SSHRepository, config.App4SharedSecret, logger)
 	if err != nil {
 		return err
 	}

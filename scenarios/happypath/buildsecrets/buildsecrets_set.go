@@ -22,7 +22,7 @@ func Set(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build to apply RA with build secrets
-	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret, logger)
 	if err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) err
 }
 
 func setSecret(env envUtil.Env, secretName, secretValue string) error {
-	log.Debugf("setSecret %s with value %s", secretName, secretValue)
+	logger.Debugf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 

@@ -78,17 +78,18 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 	suiteName := suite.Name
 	setupFailed := false
 	start := time.Now()
-	log.Debugf("Setting-up suite '%s'", suiteName)
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger.Debugf("Setting-up suite '%s'", suiteName)
 
 	for _, setup := range suite.Setup {
-		log.Info(setup.Description)
+		logger.Info(setup.Description)
 		success := runTest(env, setup, suiteName)
 		if !success {
 			setupFailed = true
-			log.Errorf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
+			logger.Errorf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
 			break
 		}
-		log.Debugf("Setup success %s", setup.Description)
+		logger.Debugf("Setup success %s", setup.Description)
 	}
 
 	end := time.Now()
@@ -100,12 +101,13 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
 	suiteName := suite.Name
 	start := time.Now()
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	for _, test := range suite.Tests {
-		log.Info(test.Description)
+		logger.Info(test.Description)
 		success := runTest(env, test, suiteName)
 		if !success {
-			log.Warnf("Test %s fail. Will escape remaining tests in suite %s", test.Name, suite.Name)
+			logger.Warnf("Test %s fail. Will escape remaining tests in the suite", test.Name)
 			break
 		}
 	}
@@ -118,13 +120,14 @@ func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
 	suiteName := suite.Name
 	start := time.Now()
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
-	log.Debugf("Running teardown tests in suite %s", suite.Name)
+	logger.Debugf("Running teardown tests in suite %s", suite.Name)
 	for _, test := range suite.Teardown {
-		log.Info(test.Description)
+		logger.Info(test.Description)
 		runTest(env, test, suiteName)
 	}
-	log.Debug("Teardown complete")
+	logger.Debug("Teardown complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -133,21 +136,23 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 
 func runTest(env env.Env, testToRun Spec, suiteName string) bool {
 	start := time.Now()
-	log.Debugf("Running test '%s'", testToRun.Name)
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
+
+	logger.Debugf("Running test '%s'", testToRun.Name)
 
 	err := testToRun.Test(env, suiteName)
 	if err != nil {
 		testToRun.FailFn(testToRun.Name)
-		log.Errorf("Error calling %s: %v", testToRun.Name, err)
+		logger.Errorf("Error calling %s: %v", testToRun.Name, err)
 	} else {
 		testToRun.SuccessFn(testToRun.Name)
-		log.Debug("Test success")
+		logger.Debug("Test success")
 	}
 
 	end := time.Now()
 	elapsed := end.Sub(start)
 
 	metrics.AddTestDuration(testToRun.Name, elapsed)
-	log.Infof("Elapsed time: %v", elapsed)
+	logger.Infof("Elapsed time: %v", elapsed)
 	return err == nil
 }

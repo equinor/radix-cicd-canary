@@ -63,7 +63,7 @@ func CreateRequest(env env.Env, url, method string, parameters interface{}) *htt
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string) error {
+func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string, logger *log.Entry) error {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -79,7 +79,7 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature-256", crypto.SHA256HMAC([]byte(sharedSecret), payload))
 
-	log.Debugf("Trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
+	logger.Debugf("Trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -87,7 +87,7 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 			fmt.Sprintf("error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
-	if err := CheckResponse(resp); err != nil {
+	if err := CheckResponse(resp, logger); err != nil {
 		return errors.WithMessage(err,
 			fmt.Sprintf("error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
@@ -96,7 +96,7 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response) error {
+func CheckResponse(resp *http.Response, logger *log.Entry) error {
 	defer resp.Body.Close()
 	_, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -104,7 +104,7 @@ func CheckResponse(resp *http.Response) error {
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-		log.Debugf("Response code: %d", resp.StatusCode)
+		logger.Debugf("Response code: %d", resp.StatusCode)
 		return nil
 	}
 
@@ -112,13 +112,13 @@ func CheckResponse(resp *http.Response) error {
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
-func CheckUrl(url string) error {
-	log.Debugf("Sending request to %s", url)
+func CheckUrl(url string, logger *log.Entry) error {
+	logger.Debugf("Sending request to %s", url)
 	response, err := http.Get(url)
 	if err != nil {
 		return err
 	}
-	return CheckResponse(response)
+	return CheckResponse(response, logger)
 }
 
 // GetClientBearerToken Gets bearer token in order to make call to API server

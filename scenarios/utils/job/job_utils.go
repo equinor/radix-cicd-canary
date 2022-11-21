@@ -61,7 +61,7 @@ func Stop(env env.Env, appName, jobName string) error {
 
 // IsDone Checks if job is done
 func IsDone(appName, jobName string, env env.Env, logger *log.Entry) (string, error) {
-	jobStatus, err := GetStatus(env, appName, jobName)
+	jobStatus, err := GetStatus(env, appName, jobName, logger)
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +74,7 @@ func IsDone(appName, jobName string, env env.Env, logger *log.Entry) (string, er
 }
 
 // GetStatus Gets status of job
-func GetStatus(env env.Env, appName, jobName string) (string, error) {
+func GetStatus(env env.Env, appName, jobName string, logger *log.Entry) (string, error) {
 	job, err := Get(env, appName, jobName)
 	if err != nil {
 		return "", err
@@ -82,7 +82,7 @@ func GetStatus(env env.Env, appName, jobName string) (string, error) {
 	if job != nil {
 		return job.Status, nil
 	}
-	log.Debug("Job was not listed yet")
+	logger.Debugf("Job %s was not listed yet", jobName)
 	return "", fmt.Errorf("job %s does not exist", jobName)
 }
 
@@ -136,7 +136,7 @@ func GetSteps(env env.Env, appName, jobName string) []*models.Step {
 }
 
 // GetLogForStep gets log for step
-func GetLogForStep(env env.Env, appName, jobName, stepName string) string {
+func GetLogForStep(env env.Env, appName, jobName, stepName string, logger *log.Entry) string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -152,7 +152,7 @@ func GetLogForStep(env env.Env, appName, jobName, stepName string) string {
 
 	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
+		logger.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
 		return ""
 	}
 	return applicationJobLogs.Payload

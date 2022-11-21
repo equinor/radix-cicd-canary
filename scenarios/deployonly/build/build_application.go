@@ -23,7 +23,7 @@ func Application(env envUtil.Env, suiteName string) error {
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
+	err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret, logger)
 	if err != nil {
 		return fmt.Errorf("failed to push webhook push for App3, error %v", err)
 	}

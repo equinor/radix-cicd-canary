@@ -17,7 +17,7 @@ func GetJobList(env env.Env, suiteName string) error {
 	var errs []error
 	for _, appEnv := range appEnvs {
 		jobListUrl := fmt.Sprintf("%s/testjobscheduler", env.GetNetworkPolicyCanaryUrl(appEnv))
-		err := httpUtils.CheckUrl(jobListUrl)
+		err := httpUtils.CheckUrl(jobListUrl, logger)
 		if err != nil {
 			errs = append(errs, err)
 		}

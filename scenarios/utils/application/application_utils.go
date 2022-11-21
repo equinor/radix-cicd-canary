@@ -116,14 +116,14 @@ func Get(env env.Env, appName string) (*models.Application, error) {
 }
 
 // IsAliasDefined Checks if app alias is defined
-func IsAliasDefined(env env.Env, appName string) error {
+func IsAliasDefined(env env.Env, appName string, logger *log.Entry) error {
 	appAlias := getAlias(env, appName)
 	if appAlias != nil {
-		log.Infof("App alias is defined %s. Now we can try to hit it to see if it responds", *appAlias)
+		logger.Infof("App alias for application %s is defined %s. Now we can try to hit it to see if it responds", appName, *appAlias)
 		return nil
 	}
 
-	log.Info("App alias is not yet defined")
+	logger.Infof("App alias for application %s is not yet defined", appName)
 	return fmt.Errorf("public alias for application %s is not defined", appName)
 }
 
@@ -197,9 +197,9 @@ func getEnvVariable(env env.Env, appName, envName, forComponentName, variableNam
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(env env.Env, urls ...string) error {
+func AreResponding(env env.Env, logger *log.Entry, urls ...string) error {
 	for _, url := range urls {
-		responded := IsResponding(env, url)
+		responded := IsResponding(env, logger, url)
 		if !responded {
 			return errors.New("not all endpoints respond")
 		}
@@ -209,28 +209,28 @@ func AreResponding(env env.Env, urls ...string) error {
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(env env.Env, url string) bool {
+func IsResponding(env env.Env, logger *log.Entry, url string) bool {
 	req := httpUtils.CreateRequest(env, url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 
 	if err == nil && resp.StatusCode == 200 {
-		log.Info("App alias responded ok")
+		logger.Info("App alias responded ok")
 		return true
 	}
 
 	if err != nil {
-		log.Debugf("Failed request to the alias '%s': %v", url, err)
+		logger.Debugf("Failed request to the alias '%s': %v", url, err)
 	}
 
 	if resp != nil {
-		log.Debugf("Request to alias '%s' returned status %v", url, resp.StatusCode)
+		logger.Debugf("Request to alias '%s' returned status %v", url, resp.StatusCode)
 	}
 
 	if err == nil && resp == nil {
-		log.Debugf("Request to alias '%s' returned no response and no err.", url)
+		logger.Debugf("Request to alias '%s' returned no response and no err.", url)
 	}
 
-	log.Infof("Alias '%s' is still not responding", url)
+	logger.Infof("Alias '%s' is still not responding", url)
 	return false
 }

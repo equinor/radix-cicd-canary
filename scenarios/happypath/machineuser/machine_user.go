@@ -65,7 +65,7 @@ func Create(env envUtil.Env, suiteName string) error {
 	if !ok {
 		return errors.New("has not expected access with machine token")
 	}
-	log.Debug("MachineUser was set and un-set properly")
+	logger.Debug("MachineUser was set and un-set properly")
 	return nil
 }
 
@@ -90,7 +90,7 @@ func getMachineUserToken(env envUtil.Env) (*string, error) {
 }
 
 func patchMachineUser(env envUtil.Env, enabled bool) error {
-	log.Debugf("Set MachineUser to %v", enabled)
+	logger.Debugf("Set MachineUser to %v", enabled)
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			MachineUser: &enabled,
@@ -108,7 +108,7 @@ func patchMachineUser(env envUtil.Env, enabled bool) error {
 	if err != nil {
 		return err
 	}
-	log.Debugf("MachineUser has been set to %v", enabled)
+	logger.Debugf("MachineUser has been set to %v", enabled)
 	return nil
 }
 

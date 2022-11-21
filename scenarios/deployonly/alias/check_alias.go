@@ -29,7 +29,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) error {
 
 	if application.IsRunningInActiveCluster(publicDomainName, canonicalDomainName) {
 		err := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-			return application.IsAliasDefined(env, config.App3Name)
+			return application.IsAliasDefined(env, config.App3Name, logger)
 		}, logger)
 		if err != nil {
 			return err
@@ -38,7 +38,7 @@ func DefaultResponding(env envUtil.Env, suiteName string) error {
 
 	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		schema := "https"
-		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
+		return application.AreResponding(env, logger, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
 	}, logger)
 
 	return err

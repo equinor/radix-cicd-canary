@@ -37,7 +37,7 @@ func Application(env envUtil.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret, logger)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func Application(env envUtil.Env, suiteName string) error {
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
 	time.Sleep(1 * time.Second)
-	err = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret)
+	err = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret, logger)
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func Application(env envUtil.Env, suiteName string) error {
 		}
 	}
 
-	stepLog := job.GetLogForStep(env, config.App2Name, jobName, "build-app")
+	stepLog := job.GetLogForStep(env, config.App2Name, jobName, "build-app", logger)
 	//Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	//https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
