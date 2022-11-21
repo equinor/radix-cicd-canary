@@ -1,6 +1,8 @@
 package register
 
 import (
+	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
@@ -17,10 +19,13 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) error {
 	appConfigBranch := config.App1ConfigBranch
 	appConfigurationItem := config.App1ConfigurationItem
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
+	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
 	if err != nil {
-		logger.Errorf("%v", err)
 		return err
+	}
+
+	if registerApplicationOK.Payload.ApplicationRegistration.PublicKey == "" {
+		return fmt.Errorf("the Public Key of the registered application %s is empty", appName)
 	}
 
 	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {

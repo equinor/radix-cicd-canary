@@ -34,5 +34,5 @@ func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponent
 		}
 	}
 
-	return fmt.Errorf("could not find batch job %s with expected atatus %s after running it", batchName, expectedStatus)
+	return fmt.Errorf("could not find batch job %s with expected status %s", batchName, expectedStatus)
 }

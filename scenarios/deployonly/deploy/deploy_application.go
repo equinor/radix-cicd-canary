@@ -12,10 +12,7 @@ import (
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
 )
-
-var logger *log.Entry
 
 type expectedStep struct {
 	name       string
@@ -24,16 +21,13 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
 func Application(env envUtil.Env, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
-
 	appName := config.App3Name
 	toEnvironment := config.App3EnvironmentName
 
 	// Trigger deploy via Radix API
 	_, err := application.Deploy(env, appName, toEnvironment)
 	if err != nil {
-		logger.Errorf("Error calling Deploy for application %s:  %v", appName, err)
-		return err
+		return fmt.Errorf("failed to deploy the application %s:  %v", appName, err)
 	}
 
 	// Get job
@@ -42,13 +36,13 @@ func Application(env envUtil.Env, suiteName string) error {
 		if err != nil {
 			return nil, err
 		}
-		if jobSummary == nil {
-			return nil, fmt.Errorf("could not get listed job for application %s status '%s' - exiting", config.App3Name, "Succeeded")
-		}
 		return jobSummary, err
 	})
 	if err != nil {
 		return err
+	}
+	if jobSummary == nil {
+		return fmt.Errorf("could not get listed job for application %s status '%s'", config.App3Name, "Succeeded")
 	}
 
 	jobName := jobSummary.Name

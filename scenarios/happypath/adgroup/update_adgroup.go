@@ -167,10 +167,8 @@ func setSecret(env env.Env) error {
 
 	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		logger.Errorf("Error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
-		return err
+		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", config.App2Name, err)
 	}
-
 	return nil
 }
 

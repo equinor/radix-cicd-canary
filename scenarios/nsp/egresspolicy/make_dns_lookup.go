@@ -35,7 +35,7 @@ func lookupDns(dnsUrl string, suiteName string) error {
 		return dnsErr
 	}
 	if dnsResponse.StatusCode != 200 {
-		return fmt.Errorf("expected nsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode)
+		return fmt.Errorf("expected dnsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode)
 	}
 	return nil
 }

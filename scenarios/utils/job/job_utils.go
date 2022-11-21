@@ -56,7 +56,7 @@ func Stop(env env.Env, appName, jobName string) error {
 		return nil
 	}
 
-	return fmt.Errorf("stopping if the job %s failed. Error: %v", jobName, err)
+	return fmt.Errorf("failed to stop job %s. Error: %w", jobName, err)
 }
 
 // IsDone Checks if job is done
@@ -70,7 +70,7 @@ func IsDone(appName, jobName string, env env.Env) (string, error) {
 		return jobStatus, nil
 	}
 	log.Debug("Job is not done yet")
-	return "", fmt.Errorf("job was possible failed, Status %s", jobStatus)
+	return "", fmt.Errorf("job %s was possible failed, Status %s", jobName, jobStatus)
 }
 
 // GetStatus Gets status of job
@@ -83,7 +83,7 @@ func GetStatus(env env.Env, appName, jobName string) (string, error) {
 		return job.Status, nil
 	}
 	log.Debug("Job was not listed yet")
-	return "", fmt.Errorf("job does not exist")
+	return "", fmt.Errorf("job %s does not exist", jobName)
 }
 
 // Get gets job from job name
@@ -107,7 +107,7 @@ func Get(env env.Env, appName, jobName string) (*models.Job, error) {
 	if applicationJob.Payload != nil {
 		return applicationJob.Payload, nil
 	}
-	return nil, fmt.Errorf("failed to ge job")
+	return nil, fmt.Errorf("failed to get job %s", jobName)
 }
 
 // GetSteps gets job from job name

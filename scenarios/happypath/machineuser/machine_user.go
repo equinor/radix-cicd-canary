@@ -37,9 +37,8 @@ func Create(env envUtil.Env, suiteName string) error {
 		return err
 	}
 
-	token := machineUserToken
 	ok, _ := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return hasAccess(env, *token), nil
+		return hasAccess(env, *machineUserToken), nil
 	})
 
 	if !ok {
@@ -47,7 +46,7 @@ func Create(env envUtil.Env, suiteName string) error {
 	}
 
 	// Should only have access to its own application
-	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
+	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *machineUserToken)
 	if hasAccessToOtherApplication {
 		return fmt.Errorf("has not expected access to another application '%s'", config.App1Name)
 	}
@@ -60,7 +59,7 @@ func Create(env envUtil.Env, suiteName string) error {
 
 	// Token should no longer have access
 	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return hasNoAccess(env, *token), nil
+		return hasNoAccess(env, *machineUserToken), nil
 	})
 
 	if !ok {
@@ -210,10 +209,8 @@ func setSecret(env envUtil.Env, machineUserToken string) error {
 
 	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		logger.Errorf("Error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
-		return err
+		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", config.App2Name, err)
 	}
-
 	return nil
 }
 

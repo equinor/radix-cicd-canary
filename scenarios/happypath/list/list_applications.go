@@ -1,6 +1,8 @@
 package list
 
 import (
+	"fmt"
+
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -31,5 +33,8 @@ func Applications(env env.Env, suiteName string) error {
 		}
 	}
 
+	if len(showAppOk.Payload) == 0 {
+		return fmt.Errorf("list of applications returned an empty list")
+	}
 	return err
 }

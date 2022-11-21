@@ -15,7 +15,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
+const (
+	publicDomainNameEnvironmentVariable  = "RADIX_PUBLIC_DOMAIN_NAME"
+	canonicalEndpointEnvironmentVariable = "RADIX_CANONICAL_DOMAIN_NAME"
+)
 
 // Register Will register application
 func Register(env env.Env, appName, appRepo, appSharedSecret, appCreator, publicKey, privateKey, configBranch, configurationItem string) (*apiclient.RegisterApplicationOK, error) {
@@ -61,10 +64,9 @@ func Delete(env env.Env, appName string) error {
 
 	_, err := client.DeleteApplication(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling DeleteApplication for application %s: %v", appName, err)
+		return fmt.Errorf("failed deleting the application %s: %v", appName, err)
 	}
-
-	return err
+	return nil
 }
 
 // Deploy Deploy application
@@ -122,7 +124,7 @@ func IsAliasDefined(env env.Env, appName string) error {
 	}
 
 	log.Info("App alias is not yet defined")
-	return errors.New("public alias is not defined")
+	return fmt.Errorf("public alias for application %s is not defined", appName)
 }
 
 func getAlias(env env.Env, appName string) *string {
@@ -153,18 +155,17 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName string) (string, error) {
 	publicDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
-		return "", errors.New("public domain name of alias is empty")
+		return "", fmt.Errorf("public domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
 	return publicDomainName, nil
 }
 
 // TryGetCanonicalDomainName Waits for canonical domain name to be defined
 func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentName string) (string, error) {
-	canonicalDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
+	canonicalDomainName := getEnvVariable(env, appName, environmentName, componentName, canonicalEndpointEnvironmentVariable)
 	if canonicalDomainName == "" {
-		return "", errors.New("canonical domain name of alias is empty")
+		return "", fmt.Errorf("canonical domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
-
 	return canonicalDomainName, nil
 }
 
