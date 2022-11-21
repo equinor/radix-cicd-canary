@@ -31,8 +31,8 @@ func Set(env envUtil.Env, suiteName string) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Failed")
-	})
+		return job.IsListedWithStatus(env, config.App2Name, "Failed", logger)
+	}, logger)
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func Set(env envUtil.Env, suiteName string) error {
 	// Set build secrets
 	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		return buildSecretsAreListedWithStatus(env, "Pending")
-	})
+	}, logger)
 
 	if err != nil {
 		return err
@@ -71,7 +71,7 @@ func Set(env envUtil.Env, suiteName string) error {
 
 	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		return buildSecretsAreListedWithStatus(env, "Consistent")
-	})
+	}, logger)
 }
 
 func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) error {

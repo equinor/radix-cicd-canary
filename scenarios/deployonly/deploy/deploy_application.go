@@ -3,6 +3,7 @@ package deploy
 import (
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"strings"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
@@ -21,6 +22,7 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
 func Application(env envUtil.Env, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 	appName := config.App3Name
 	toEnvironment := config.App3EnvironmentName
 
@@ -32,12 +34,12 @@ func Application(env envUtil.Env, suiteName string) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		jobSummary, err := job.IsListedWithStatus(env, config.App3Name, "Succeeded")
+		jobSummary, err := job.IsListedWithStatus(env, config.App3Name, "Succeeded", logger)
 		if err != nil {
 			return nil, err
 		}
 		return jobSummary, err
-	})
+	}, logger)
 	if err != nil {
 		return err
 	}

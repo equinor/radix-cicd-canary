@@ -17,7 +17,7 @@ var logger *log.Entry
 func Set(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	test.WaitForCheckFuncOrTimeout(env, isDeploymentConsistent)
+	test.WaitForCheckFuncOrTimeout(env, isDeploymentConsistent, logger)
 
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()

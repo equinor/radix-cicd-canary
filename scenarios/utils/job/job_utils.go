@@ -11,7 +11,7 @@ import (
 )
 
 // IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(env env.Env, appName, expectedStatus string) (*models.JobSummary, error) {
+func IsListedWithStatus(env env.Env, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -33,7 +33,7 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string) (*models.Jo
 		return nil, fmt.Errorf("method GetApplicationJobs for application %s expected status '%s', but it received '%s'",
 			appName, expectedStatus, applicationJobs.Payload[0].Status)
 	}
-	log.Debugf("method GetApplicationJobs for application %s received expected status '%s'", appName, expectedStatus)
+	logger.Debugf("method GetApplicationJobs for application %s received expected status '%s'", appName, expectedStatus)
 	return applicationJobs.Payload[0], nil
 }
 
@@ -56,21 +56,21 @@ func Stop(env env.Env, appName, jobName string) error {
 		return nil
 	}
 
-	return fmt.Errorf("failed to stop job %s. Error: %w", jobName, err)
+	return fmt.Errorf("failed to stop job %s for an app %s. Error: %w", jobName, appName, err)
 }
 
 // IsDone Checks if job is done
-func IsDone(appName, jobName string, env env.Env) (string, error) {
+func IsDone(appName, jobName string, env env.Env, logger *log.Entry) (string, error) {
 	jobStatus, err := GetStatus(env, appName, jobName)
 	if err != nil {
 		return "", err
 	}
 	if jobStatus == "Succeeded" || jobStatus == "Failed" {
-		log.Debugf("Job is done with status: %s", jobStatus)
+		logger.Debugf("Job %s for an app %s is done with status: %s", jobName, appName, jobStatus)
 		return jobStatus, nil
 	}
-	log.Debug("Job is not done yet")
-	return "", fmt.Errorf("job %s was possible failed, Status %s", jobName, jobStatus)
+	logger.Debugf("Job %s for an app %s is not done yet", jobName, appName)
+	return "", fmt.Errorf("job %s for an app %s was possible failed, Status %s", jobName, appName, jobStatus)
 }
 
 // GetStatus Gets status of job

@@ -45,8 +45,8 @@ func Application(env envUtil.Env, suiteName string) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Running")
-	})
+		return job.IsListedWithStatus(env, config.App2Name, "Running", logger)
+	}, logger)
 
 	if err != nil {
 		return err
@@ -65,9 +65,9 @@ func Application(env envUtil.Env, suiteName string) error {
 	logger.Infof("Second job was triggered")
 
 	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		_, err := job.IsListedWithStatus(env, config.App2Name, "Queued")
+		_, err := job.IsListedWithStatus(env, config.App2Name, "Queued", logger)
 		return err
-	})
+	}, logger)
 
 	if err != nil {
 		return err
@@ -75,8 +75,8 @@ func Application(env envUtil.Env, suiteName string) error {
 
 	logger.Info("Second job was queued")
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return job.IsDone(config.App2Name, jobName, env)
-	})
+		return job.IsDone(config.App2Name, jobName, env, logger)
+	}, logger)
 	if err != nil {
 		return err
 	}
@@ -117,8 +117,8 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Running")
-	})
+		return job.IsListedWithStatus(env, config.App2Name, "Running", logger)
+	}, logger)
 
 	if err != nil {
 		return err
@@ -133,9 +133,9 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		_, err := job.IsListedWithStatus(env, config.App2Name, "Stopped")
+		_, err := job.IsListedWithStatus(env, config.App2Name, "Stopped", logger)
 		return err
-	})
+	}, logger)
 	if err != nil {
 		return err
 	}

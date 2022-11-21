@@ -48,12 +48,9 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) error {
 }
 
 func checkJobBatch(env envUtil.Env, appName, appEnv string, jobComponentName string, batchName string) error {
-	return test.WaitForCheckFuncOrTimeout(
-		env,
-		func(env envUtil.Env) error {
-			return k8sjob.IsListedWithStatus(env, appName, appEnv, jobComponentName, batchName, "Succeeded")
-		},
-	)
+	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return k8sjob.IsListedWithStatus(env, appName, appEnv, jobComponentName, batchName, "Succeeded")
+	}, logger)
 }
 
 func startJobBatch(baseUrl string, password string, appEnv string) (string, error) {

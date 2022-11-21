@@ -2,6 +2,7 @@ package register
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -13,6 +14,7 @@ import (
 // ApplicationWithMainConfigBranch Tests that we are able to register application
 // with no deploy key and that deploy key is generated
 func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 	appName := config.App4Name
 	appRepo := config.App4Repository
 	appSharedSecret := config.App4SharedSecret
@@ -27,5 +29,5 @@ func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) error {
 
 	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		return application.IsDefined(env, appName)
-	})
+	}, logger)
 }

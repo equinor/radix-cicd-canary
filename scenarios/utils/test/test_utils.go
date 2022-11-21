@@ -6,6 +6,7 @@ import (
 	"time"
 
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	log "github.com/sirupsen/logrus"
 )
 
 // CheckFn The prototype function for any check function without return value
@@ -15,13 +16,13 @@ type CheckFn func(env envUtil.Env) error
 type CheckFnNew[T any] func(env envUtil.Env) (T, error)
 
 // WaitForCheckFuncOrTimeout Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFn) error {
-	_, err := WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (any, error) { return nil, checkFunc(env) })
+func WaitForCheckFuncOrTimeout(env envUtil.Env, checkFunc CheckFn, logger *log.Entry) error {
+	_, err := WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (any, error) { return nil, checkFunc(env) }, logger)
 	return err
 }
 
 // WaitForCheckFuncWithValueOrTimeout Call this to ensure we wait until a check is reached, or time out, returning a value
-func WaitForCheckFuncWithValueOrTimeout[T any](env envUtil.Env, checkFunc CheckFnNew[T]) (T, error) {
+func WaitForCheckFuncWithValueOrTimeout[T any](env envUtil.Env, checkFunc CheckFnNew[T], logger *log.Entry) (T, error) {
 	timeout := env.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := env.GetSleepIntervalBetweenCheckFunc()
 	firstSleepBetweenCheckFunc := time.Second
@@ -33,6 +34,7 @@ func WaitForCheckFuncWithValueOrTimeout[T any](env envUtil.Env, checkFunc CheckF
 		if checkFuncErr == nil {
 			return obj, nil
 		}
+		logger.Debugf("check function fails in WaitForCheck: %v", checkFuncErr)
 
 		// should accumulatedWait include sleep?
 		if sleepIntervalBetweenCheckFunc > 0 {

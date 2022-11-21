@@ -220,7 +220,7 @@ func IsResponding(env env.Env, url string) bool {
 	}
 
 	if err != nil {
-		log.Debugf("Request to alias '%s' returned error %v", url, err)
+		log.Debugf("Failed request to the alias '%s': %v", url, err)
 	}
 
 	if resp != nil {

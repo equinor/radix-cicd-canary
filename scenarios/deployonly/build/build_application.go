@@ -3,6 +3,7 @@ package build
 import (
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,7 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully build an application
 func Application(env envUtil.Env, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
 	err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
@@ -28,12 +30,12 @@ func Application(env envUtil.Env, suiteName string) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		jobSummary, err := job.IsListedWithStatus(env, config.App3Name, "Succeeded")
+		jobSummary, err := job.IsListedWithStatus(env, config.App3Name, "Succeeded", logger)
 		if err != nil {
 			return nil, err
 		}
 		return jobSummary, err
-	})
+	}, logger)
 
 	if err != nil {
 		return err

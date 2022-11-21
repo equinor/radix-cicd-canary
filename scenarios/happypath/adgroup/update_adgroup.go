@@ -1,7 +1,6 @@
 package adgroup
 
 import (
-	"errors"
 	"fmt"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
@@ -25,19 +24,19 @@ var logger *log.Entry
 func Update(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	ok, _ := test.WaitForCheckFuncWithValueOrTimeout(env, hasAccess)
-	if !ok {
-		return fmt.Errorf("failed to get update details of the suite %s", suiteName)
+	err := test.WaitForCheckFuncOrTimeout(env, hasAccess, logger)
+	if err != nil {
+		return fmt.Errorf("failed to get update details of the suite %s: %w", suiteName, err)
 	}
 
-	err := patchAdGroup(env, adGroupWithNoAccess)
+	err = patchAdGroup(env, adGroupWithNoAccess)
 	if err != nil {
 		return err
 	}
 
-	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, hasNoAccess)
-	if !ok {
-		return errors.New("failed to get patchAdGroup update details")
+	err = test.WaitForCheckFuncOrTimeout(env, hasNoAccess, logger)
+	if err != nil {
+		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
 
 	err = patchAdGroup(env, env.GetImpersonateGroup())
@@ -45,23 +44,23 @@ func Update(env env.Env, suiteName string) error {
 		return err
 	}
 
-	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, hasAccess)
-	if !ok {
+	err = test.WaitForCheckFuncOrTimeout(env, hasAccess, logger)
+	if err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func hasNoAccess(env env.Env) (bool, error) {
-	return hasProperAccess(env, false), nil
+func hasNoAccess(env env.Env) error {
+	return hasProperAccess(env, false)
 }
 
-func hasAccess(env env.Env) (bool, error) {
-	return hasProperAccess(env, true), nil
+func hasAccess(env env.Env) error {
+	return hasProperAccess(env, true)
 }
 
-func hasProperAccess(env env.Env, properAccess bool) bool {
+func hasProperAccess(env env.Env, properAccess bool) error {
 	_, err := getApplication(env)
 	accessToApplication := !isGetApplicationForbidden(err)
 
@@ -73,10 +72,9 @@ func hasProperAccess(env env.Env, properAccess bool) bool {
 
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
 	if !hasProperAccess {
-		logger.Info("Proper access hasn't been granted yet")
+		return fmt.Errorf("proper access hasn't been granted yet")
 	}
-
-	return hasProperAccess
+	return nil
 }
 
 func patchAdGroup(env env.Env, adGroup string) error {

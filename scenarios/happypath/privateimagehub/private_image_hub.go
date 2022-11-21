@@ -25,7 +25,7 @@ func Set(env envUtil.Env, suiteName string) error {
 
 	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		return podNotLoaded(env)
-	})
+	}, logger)
 	if err != nil {
 		return fmt.Errorf("%s component is running before private image hub password was set. %v", config.App2ComponentPrivateImageHubName, err)
 	}
@@ -39,7 +39,7 @@ func Set(env envUtil.Env, suiteName string) error {
 
 	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		return podLoaded(env)
-	})
+	}, logger)
 	if err != nil {
 		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", config.App2ComponentPrivateImageHubName, err.Error())
 	}

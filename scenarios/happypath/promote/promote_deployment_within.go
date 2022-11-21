@@ -36,8 +36,8 @@ func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) error {
 
 	// Get job
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return job.IsDone(config.App2Name, promoteJobName, env)
-	})
+		return job.IsDone(config.App2Name, promoteJobName, env, logger)
+	}, logger)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) error {
 	}
 	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
 		return isNewDeploymentExist(env, numDeploymentsBefore)
-	})
+	}, logger)
 }
 
 func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) error {

@@ -108,14 +108,14 @@ func waitForJobRunning(env envUtil.Env) (*models.JobSummary, error) {
 	status := "Running"
 
 	return test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App4Name, status)
-	})
+		return job.IsListedWithStatus(env, config.App4Name, status, logger)
+	}, logger)
 }
 
 func waitForJobDone(env envUtil.Env, jobName string) error {
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return job.IsDone(config.App4Name, jobName, env)
-	})
+		return job.IsDone(config.App4Name, jobName, env, logger)
+	}, logger)
 	if err != nil {
 		return err
 	}
