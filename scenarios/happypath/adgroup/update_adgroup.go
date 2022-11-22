@@ -1,89 +1,95 @@
 package adgroup
 
 import (
+	"errors"
 	"fmt"
-
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/go-openapi/runtime"
 	log "github.com/sirupsen/logrus"
 )
 
+type step struct {
+	logger *log.Entry
+}
+
 const (
 	adGroupWithNoAccess = "12345678-9012-3456-7890-123456789012"
 )
 
-var logger *log.Entry
-
 // Update Tests that updates to AD group locks down an application
-func Update(env env.Env, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func Update(env envUtil.Env, suiteName string) error {
+	s := &step{logger: log.WithFields(log.Fields{"Suite": suiteName})}
 
-	logger.Debugf("check that admin AD-Group has access")
-	err := test.WaitForCheckFuncOrTimeout(env, hasAccess, logger)
+	s.logger.Debugf("check that admin AD-Group has access")
+	err := test.WaitForCheckFuncOrTimeout(env, s.hasAccess, s.logger)
 	if err != nil {
 		return fmt.Errorf("failed to get update details of the suite %s: %w", suiteName, err)
 	}
-	logger.Debugf("admin AD-Grouphas access")
+	s.logger.Debugf("admin AD-Group has access")
 
-	logger.Debugf("patch an admin AD-Group without access")
+	s.logger.Debugf("patch an admin AD-Group without access")
 	err = patchAdGroup(env, adGroupWithNoAccess)
 	if err != nil {
 		return err
 	}
-	logger.Debugf("admin AD-Group is patched")
+	s.logger.Debugf("admin AD-Group is patched")
 
-	logger.Debugf("check that admin AD-Group has no access")
-	err = test.WaitForCheckFuncOrTimeout(env, hasNoAccess, logger)
+	s.logger.Debugf("check that admin AD-Group has no access")
+	err = test.WaitForCheckFuncOrTimeout(env, s.hasNoAccess, s.logger)
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
-	logger.Debugf("admin AD-Group has no access")
+	s.logger.Debugf("admin AD-Group has no access")
 
-	logger.Debugf("patch an admin AD-Group with access")
+	s.logger.Debugf("patch an admin AD-Group with access")
 	err = patchAdGroup(env, env.GetImpersonateGroup())
 	if err != nil {
 		return err
 	}
-	logger.Debugf("admin AD-Group is patched")
+	s.logger.Debugf("admin AD-Group is patched")
 
-	logger.Debugf("check that admin AD-Group has access")
-	err = test.WaitForCheckFuncOrTimeout(env, hasAccess, logger)
-	logger.Debugf("admin AD-Group has no access")
+	s.logger.Debugf("check that admin AD-Group has access")
+	err = test.WaitForCheckFuncOrTimeout(env, s.hasAccess, s.logger)
+	s.logger.Debugf("admin AD-Group has no access")
 	return err
 }
 
-func hasNoAccess(env env.Env) error {
-	return hasProperAccess(env, false)
+func (s *step) hasNoAccess(env envUtil.Env) error {
+	return s.hasProperAccess(env, false)
 }
 
-func hasAccess(env env.Env) error {
-	return hasProperAccess(env, true)
+func (s *step) hasAccess(env envUtil.Env) error {
+	return s.hasProperAccess(env, true)
 }
 
-func hasProperAccess(env env.Env, properAccess bool) error {
+func (s *step) hasProperAccess(env envUtil.Env, properAccess bool) error {
 	_, err := getApplication(env)
 	accessToApplication := !isGetApplicationForbidden(err)
 
 	err = buildApp(env)
-	accessToBuild := !isTriggerPipelineBuildForbidden(err)
+	accessToBuild := !s.isTriggerPipelineBuildForbidden(err)
 
 	err = setSecret(env)
-	accessToSecret := !isChangeComponentSecretForbidden(err)
+	accessToSecret := !s.isChangeComponentSecretForbidden(err)
+
+	s.logger.Debugf(" - accessToApplication: %v, accessToBuild: %v, accessToSecret: %v", accessToApplication, accessToBuild, accessToSecret)
 
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
+	s.logger.Debugf(" - hasProperAccess: %v", hasProperAccess)
+
 	if !hasProperAccess {
 		return fmt.Errorf("proper access hasn't been granted yet")
 	}
 	return nil
 }
 
-func patchAdGroup(env env.Env, adGroup string) error {
+func patchAdGroup(env envUtil.Env, adGroup string) error {
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			AdGroups: []string{adGroup},
@@ -105,7 +111,7 @@ func patchAdGroup(env env.Env, adGroup string) error {
 	return nil
 }
 
-func getApplication(env env.Env) (*models.Application, error) {
+func getApplication(env envUtil.Env) (*models.Application, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -125,7 +131,7 @@ func getApplication(env env.Env) (*models.Application, error) {
 	return application.Payload, nil
 }
 
-func buildApp(env env.Env) error {
+func buildApp(env envUtil.Env) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -150,7 +156,7 @@ func buildApp(env env.Env) error {
 	return nil
 }
 
-func setSecret(env env.Env) error {
+func setSecret(env envUtil.Env) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -176,12 +182,11 @@ func setSecret(env env.Env) error {
 	return nil
 }
 
-func isChangeComponentSecretForbidden(err error) bool {
-	switch err.(type) {
-	case *environmentclient.ChangeComponentSecretForbidden:
+func (s *step) isChangeComponentSecretForbidden(err error) bool {
+	if errors.Is(err, &environmentclient.ChangeComponentSecretForbidden{}) {
 		return true
 	}
-
+	s.logger.Debugf("ChangeComponentSecret error: %v", err)
 	return false
 }
 
@@ -194,17 +199,20 @@ func isGetApplicationForbidden(err error) bool {
 	return false
 }
 
-func isTriggerPipelineBuildForbidden(err error) bool {
-	return err != nil && checkErrorResponse(err, 403)
+func (s *step) isTriggerPipelineBuildForbidden(err error) bool {
+	return err != nil && s.checkErrorResponse(err, 403)
 }
 
-func checkErrorResponse(err error, expectedStatusCode int) bool {
+func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
 	apiError, ok := err.(*runtime.APIError)
 	if ok {
 		errorCode := apiError.Code
+		s.logger.Debugf("checkErrorResponse error code: %d", errorCode)
 		if errorCode == expectedStatusCode {
 			return true
 		}
+	} else {
+		s.logger.Debugf("checkErrorResponse error is not runtime.APIError")
 	}
 	return false
 }

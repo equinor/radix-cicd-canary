@@ -14,6 +14,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/promote"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/register"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/secret"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath/teardown"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/unauthorized"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 )
@@ -130,12 +131,19 @@ func TestSuite() test.Suite {
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
+			{
+				Name:        "DeleteApplications",
+				Description: "Delete applications",
+				Test:        delete.Applications,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			},
 		},
 		Teardown: []test.Spec{
 			{
 				Name:        "DeleteApplication",
 				Description: "Delete applications",
-				Test:        delete.Applications,
+				Test:        teardown.TearDown,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},

@@ -7,6 +7,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/deploy"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/register"
+	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/teardown"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 )
 
@@ -45,12 +46,19 @@ func TestSuite() test.Suite {
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
+			{
+				Name:        "DeleteApplications",
+				Description: "Delete applications",
+				Test:        delete.Applications,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			},
 		},
 		Teardown: []test.Spec{
 			{
 				Name:        "DeleteDeployOnlyApplication",
 				Description: "Delete applications",
-				Test:        delete.Applications,
+				Test:        teardown.TearDown,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},

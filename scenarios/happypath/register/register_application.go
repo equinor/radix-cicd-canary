@@ -19,7 +19,12 @@ func Application(env envUtil.Env, suiteName string) error {
 	appConfigBranch := config.App2ConfigBranch
 	appConfigurationItem := config.App2ConfigurationItem
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKey(), env.GetPrivateKey(), appConfigBranch, appConfigurationItem)
+	err := application.DeleteIfExist(env, appName, logger)
+	if err != nil {
+		return err
+	}
+
+	_, err = application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKey(), env.GetPrivateKey(), appConfigBranch, appConfigurationItem)
 	if err != nil {
 		return err
 	}

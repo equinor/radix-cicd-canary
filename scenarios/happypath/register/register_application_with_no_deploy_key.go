@@ -21,6 +21,11 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) error {
 	appConfigBranch := config.App1ConfigBranch
 	appConfigurationItem := config.App1ConfigurationItem
 
+	err := application.DeleteIfExist(env, appName, logger)
+	if err != nil {
+		return err
+	}
+
 	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
 	if err != nil {
 		return err

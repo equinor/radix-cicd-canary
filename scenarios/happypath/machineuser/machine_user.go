@@ -16,56 +16,58 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var logger *log.Entry
+type step struct {
+	logger *log.Entry
+}
 
 // Create Tests that machine user is created properly
 func Create(env envUtil.Env, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	s := &step{logger: log.WithFields(log.Fields{"Suite": suiteName})}
 
 	// Enable machine user
 	const enabled = true
-	err := patchMachineUser(env, enabled)
+	err := s.patchMachineUser(env, enabled)
 	if err != nil {
 		return err
 	}
 
 	machineUserToken, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*string, error) {
 		return getMachineUserToken(env)
-	}, logger)
+	}, s.logger)
 
 	if err != nil {
 		return err
 	}
 
 	ok, _ := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return hasAccess(env, *machineUserToken), nil
-	}, logger)
+		return s.hasAccess(env, *machineUserToken), nil
+	}, s.logger)
 
 	if !ok {
 		return errors.New("does not have expected access with machine token")
 	}
 
 	// Should only have access to its own application
-	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *machineUserToken)
+	hasAccessToOtherApplication := s.hasAccessToApplication(env, config.App1Name, *machineUserToken)
 	if hasAccessToOtherApplication {
 		return fmt.Errorf("has not expected access to another application '%s'", config.App1Name)
 	}
 
 	// Disable machine user
-	err = patchMachineUser(env, !enabled)
+	err = s.patchMachineUser(env, !enabled)
 	if err != nil {
 		return err
 	}
 
 	// Token should no longer have access
 	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return hasNoAccess(env, *machineUserToken), nil
-	}, logger)
+		return s.hasNoAccess(env, *machineUserToken), nil
+	}, s.logger)
 
 	if !ok {
 		return errors.New("has not expected access with machine token")
 	}
-	logger.Debug("MachineUser was set and un-set properly")
+	s.logger.Debug("MachineUser was set and un-set properly")
 	return nil
 }
 
@@ -89,8 +91,8 @@ func getMachineUserToken(env envUtil.Env) (*string, error) {
 	return tokenResponse.Payload.Token, nil
 }
 
-func patchMachineUser(env envUtil.Env, enabled bool) error {
-	logger.Debugf("Set MachineUser to %v", enabled)
+func (s *step) patchMachineUser(env envUtil.Env, enabled bool) error {
+	s.logger.Debugf("Set MachineUser to %v", enabled)
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			MachineUser: &enabled,
@@ -108,41 +110,43 @@ func patchMachineUser(env envUtil.Env, enabled bool) error {
 	if err != nil {
 		return err
 	}
-	logger.Debugf("MachineUser has been set to %v", enabled)
+	s.logger.Debugf("MachineUser has been set to %v", enabled)
 	return nil
 }
 
-func hasNoAccess(env envUtil.Env, machineUserToken string) bool {
-	return hasProperAccess(env, machineUserToken, false)
+func (s *step) hasNoAccess(env envUtil.Env, machineUserToken string) bool {
+	return s.hasProperAccess(env, machineUserToken, false)
 }
 
-func hasAccess(env envUtil.Env, machineUserToken string) bool {
-	return hasProperAccess(env, machineUserToken, true)
+func (s *step) hasAccess(env envUtil.Env, machineUserToken string) bool {
+	return s.hasProperAccess(env, machineUserToken, true)
 }
 
-func hasProperAccess(env envUtil.Env, machineUserToken string, properAccess bool) bool {
-	accessToApplication := hasAccessToApplication(env, config.App2Name, machineUserToken)
+func (s *step) hasProperAccess(env envUtil.Env, machineUserToken string, properAccess bool) bool {
+	accessToApplication := s.hasAccessToApplication(env, config.App2Name, machineUserToken)
 
 	err := buildApp(env, machineUserToken)
 	accessToBuild := !isTriggerPipelineBuildUnauthorized(err)
 
 	err = setSecret(env, machineUserToken)
-	accessToSecret := !isSetSecretUnauthorizedError(err)
+	accessToSecret := !s.isSetSecretUnauthorizedError(err)
 
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
+	s.logger.Debugf(" - accessToApplication: %v, accessToBuild: %v, accessToSecret: %v", accessToApplication, accessToBuild, accessToSecret)
 	if !hasProperAccess {
-		logger.Info("Proper access hasn't been granted yet")
+		s.logger.Info("Proper access hasn't been granted yet")
 	}
+	s.logger.Debugf(" - hasProperAccess: %v", hasProperAccess)
 
 	return hasProperAccess
 }
 
-func hasAccessToApplication(env envUtil.Env, appName, machineUserToken string) bool {
+func (s *step) hasAccessToApplication(env envUtil.Env, appName, machineUserToken string) bool {
 	_, err := getApplication(env, appName, machineUserToken)
-	return !isGetApplicationUnauthorized(err) && !isGetApplicationForbidden(err)
+	return !s.isGetApplicationUnauthorized(err) && !isGetApplicationForbidden(err)
 }
 
-func isGetApplicationUnauthorized(err error) bool {
+func (s *step) isGetApplicationUnauthorized(err error) bool {
 	if _, ok := err.(*apiclient.GetApplicationUnauthorized); ok {
 		return true
 	}
@@ -150,11 +154,11 @@ func isGetApplicationUnauthorized(err error) bool {
 	return false
 }
 
-func isSetSecretUnauthorizedError(err error) bool {
-	if _, ok := err.(*environmentclient.ChangeComponentSecretUnauthorized); ok {
+func (s *step) isSetSecretUnauthorizedError(err error) bool {
+	if errors.Is(err, &environmentclient.ChangeComponentSecretUnauthorized{}) {
 		return true
 	}
-
+	s.logger.Debugf("SetSecretUnauthorized error: %v", err)
 	return false
 }
 

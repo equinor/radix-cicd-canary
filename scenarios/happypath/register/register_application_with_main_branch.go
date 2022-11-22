@@ -22,7 +22,12 @@ func ApplicationWithMainConfigBranch(env envUtil.Env, suiteName string) error {
 	appConfigBranch := config.App4ConfigBranch
 	appConfigurationItem := config.App4ConfigurationItem
 
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKeyCanary4(), env.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem)
+	err := application.DeleteIfExist(env, appName, logger)
+	if err != nil {
+		return err
+	}
+
+	_, err = application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKeyCanary4(), env.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem)
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}

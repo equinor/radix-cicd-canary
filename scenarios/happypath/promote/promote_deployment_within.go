@@ -14,7 +14,7 @@ const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
 func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, environmentToPromoteWithin)

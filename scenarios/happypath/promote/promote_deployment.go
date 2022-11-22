@@ -19,11 +19,9 @@ const (
 	envToDeployTo   = "dev"
 )
 
-var logger *log.Entry
-
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
 func DeploymentToAnotherEnvironment(env envUtil.Env, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(env, envToDeployFrom)

@@ -11,11 +11,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var logger *log.Entry
-
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
 func Set(env envUtil.Env, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	err := privateimagehub.PasswordNotSet(env, config.App2Name)
 	if err != nil {

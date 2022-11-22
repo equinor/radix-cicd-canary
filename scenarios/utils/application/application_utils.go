@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -10,9 +11,13 @@ import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
 const (
@@ -21,7 +26,7 @@ const (
 )
 
 // Register Will register application
-func Register(env env.Env, appName, appRepo, appSharedSecret, appCreator, publicKey, privateKey, configBranch, configurationItem string) (*apiclient.RegisterApplicationOK, error) {
+func Register(env envUtil.Env, appName, appRepo, appSharedSecret, appCreator, publicKey, privateKey, configBranch, configurationItem string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 	bodyParameters := models.ApplicationRegistrationRequest{
@@ -49,16 +54,31 @@ func Register(env env.Env, appName, appRepo, appSharedSecret, appCreator, public
 	return client.RegisterApplication(params, clientBearerToken)
 }
 
-// Delete Deletes application
-func Delete(env env.Env, appName string) error {
+// DeleteByImpersonatedUser Deletes an application by the impersonated user
+func DeleteByImpersonatedUser(env envUtil.Env, appName string, logger *log.Entry) error {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
+	logger.Debugf("delete an application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(appName)
 
+	return delete(env, appName, params)
+}
+
+// DeleteByServiceAccount an application by the service account
+func DeleteByServiceAccount(env envUtil.Env, appName string, logger *log.Entry) error {
+	logger.Debugf("delete an application %s by the service account", appName)
+
+	params := applicationclient.NewDeleteApplicationParams().
+		WithAppName(appName)
+
+	return delete(env, appName, params)
+}
+
+func delete(env envUtil.Env, appName string, params *applicationclient.DeleteApplicationParams) error {
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetApplicationClient(env)
 
@@ -70,7 +90,7 @@ func Delete(env env.Env, appName string) error {
 }
 
 // Deploy Deploy application
-func Deploy(env env.Env, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
+func Deploy(env envUtil.Env, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -91,7 +111,7 @@ func Deploy(env env.Env, appName, toEnvironment string) (*applicationclient.Trig
 }
 
 // IsDefined Checks if application is defined
-func IsDefined(env env.Env, appName string) error {
+func IsDefined(env envUtil.Env, appName string) error {
 	_, err := Get(env, appName)
 	if err == nil {
 		return nil
@@ -99,8 +119,33 @@ func IsDefined(env env.Env, appName string) error {
 	return fmt.Errorf("application %s is not defined", appName)
 }
 
+func appNamespacesDoNotExist(env envUtil.Env, appName string) error {
+	nsList, err := kubeUtils.GetKubernetesClient().CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{
+		LabelSelector: labels.Set{"radix-app": appName}.String(),
+	})
+	if err != nil {
+		return err
+	}
+	if len(nsList.Items) > 0 {
+		return fmt.Errorf("there are %d namespaces for the application %s", len(nsList.Items), appName)
+	}
+	return nil
+}
+
+// DeleteIfExist Delete application if it exists
+func DeleteIfExist(env envUtil.Env, appName string, logger *log.Entry) error {
+	err := IsDefined(env, appName)
+	if err != nil {
+		return nil
+	}
+	DeleteByServiceAccount(env, appName, logger)
+	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return appNamespacesDoNotExist(env, appName)
+	}, logger)
+}
+
 // Get gets an application by appName
-func Get(env env.Env, appName string) (*models.Application, error) {
+func Get(env envUtil.Env, appName string) (*models.Application, error) {
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
 		WithImpersonateUser(env.GetImpersonateUserPointer()).
@@ -116,7 +161,7 @@ func Get(env env.Env, appName string) (*models.Application, error) {
 }
 
 // IsAliasDefined Checks if app alias is defined
-func IsAliasDefined(env env.Env, appName string, logger *log.Entry) error {
+func IsAliasDefined(env envUtil.Env, appName string, logger *log.Entry) error {
 	appAlias := getAlias(env, appName)
 	if appAlias != nil {
 		logger.Infof("App alias for application %s is defined %s. Now we can try to hit it to see if it responds", appName, *appAlias)
@@ -127,7 +172,7 @@ func IsAliasDefined(env env.Env, appName string, logger *log.Entry) error {
 	return fmt.Errorf("public alias for application %s is not defined", appName)
 }
 
-func getAlias(env env.Env, appName string) *string {
+func getAlias(env envUtil.Env, appName string) *string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -152,7 +197,7 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 }
 
 // TryGetPublicDomainName Waits for public domain name to be defined
-func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName string) (string, error) {
+func TryGetPublicDomainName(env envUtil.Env, appName, environmentName, componentName string) (string, error) {
 	publicDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
 		return "", fmt.Errorf("public domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
@@ -161,7 +206,7 @@ func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName
 }
 
 // TryGetCanonicalDomainName Waits for canonical domain name to be defined
-func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentName string) (string, error) {
+func TryGetCanonicalDomainName(env envUtil.Env, appName, environmentName, componentName string) (string, error) {
 	canonicalDomainName := getEnvVariable(env, appName, environmentName, componentName, canonicalEndpointEnvironmentVariable)
 	if canonicalDomainName == "" {
 		return "", fmt.Errorf("canonical domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
@@ -169,7 +214,7 @@ func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentN
 	return canonicalDomainName, nil
 }
 
-func getEnvVariable(env env.Env, appName, envName, forComponentName, variableName string) string {
+func getEnvVariable(env envUtil.Env, appName, envName, forComponentName, variableName string) string {
 	impersonateUser := env.GetImpersonateUser()
 	impersonateGroup := env.GetImpersonateGroup()
 
@@ -197,7 +242,7 @@ func getEnvVariable(env env.Env, appName, envName, forComponentName, variableNam
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(env env.Env, logger *log.Entry, urls ...string) error {
+func AreResponding(env envUtil.Env, logger *log.Entry, urls ...string) error {
 	for _, url := range urls {
 		responded := IsResponding(env, logger, url)
 		if !responded {
@@ -209,7 +254,7 @@ func AreResponding(env env.Env, logger *log.Entry, urls ...string) error {
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(env env.Env, logger *log.Entry, url string) bool {
+func IsResponding(env envUtil.Env, logger *log.Entry, url string) bool {
 	req := httpUtils.CreateRequest(env, url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
