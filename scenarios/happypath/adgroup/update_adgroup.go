@@ -24,32 +24,38 @@ var logger *log.Entry
 func Update(env env.Env, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
+	logger.Debugf("check that admin AD-Group has access")
 	err := test.WaitForCheckFuncOrTimeout(env, hasAccess, logger)
 	if err != nil {
 		return fmt.Errorf("failed to get update details of the suite %s: %w", suiteName, err)
 	}
+	logger.Debugf("admin AD-Grouphas access")
 
+	logger.Debugf("patch an admin AD-Group without access")
 	err = patchAdGroup(env, adGroupWithNoAccess)
 	if err != nil {
 		return err
 	}
+	logger.Debugf("admin AD-Group is patched")
 
+	logger.Debugf("check that admin AD-Group has no access")
 	err = test.WaitForCheckFuncOrTimeout(env, hasNoAccess, logger)
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
+	logger.Debugf("admin AD-Group has no access")
 
+	logger.Debugf("patch an admin AD-Group with access")
 	err = patchAdGroup(env, env.GetImpersonateGroup())
 	if err != nil {
 		return err
 	}
+	logger.Debugf("admin AD-Group is patched")
 
+	logger.Debugf("check that admin AD-Group has access")
 	err = test.WaitForCheckFuncOrTimeout(env, hasAccess, logger)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	logger.Debugf("admin AD-Group has no access")
+	return err
 }
 
 func hasNoAccess(env env.Env) error {
