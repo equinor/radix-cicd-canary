@@ -2,12 +2,13 @@ package register
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // ApplicationWithNoDeployKey Tests that we are able to register application
@@ -28,7 +29,7 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) error {
 
 	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
 	if err != nil {
-		return err
+		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
 	if registerApplicationOK.Payload.ApplicationRegistration.PublicKey == "" {
@@ -36,6 +37,6 @@ func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) error {
 	}
 
 	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return application.IsDefined(env, config.App2Name)
+		return application.IsDefined(env, appName)
 	}, logger)
 }

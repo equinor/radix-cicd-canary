@@ -1,10 +1,13 @@
 package register
 
 import (
+	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -26,10 +29,10 @@ func Application(env envUtil.Env, suiteName string) error {
 
 	_, err = application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKey(), env.GetPrivateKey(), appConfigBranch, appConfigurationItem)
 	if err != nil {
-		return err
+		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
 	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return application.IsDefined(env, config.App2Name)
+		return application.IsDefined(env, appName)
 	}, logger)
 }

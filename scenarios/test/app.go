@@ -107,7 +107,7 @@ func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 		logger.Info(test.Description)
 		success := runTest(env, test, suiteName)
 		if !success {
-			logger.Warnf("Test %s fail. Will escape remaining tests in the suite", test.Name)
+			logger.Warnf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
 			break
 		}
 	}

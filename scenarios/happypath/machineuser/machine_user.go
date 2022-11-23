@@ -24,13 +24,15 @@ type step struct {
 func Create(env envUtil.Env, suiteName string) error {
 	s := &step{logger: log.WithFields(log.Fields{"Suite": suiteName})}
 
-	// Enable machine user
+	s.logger.Debugf("patch to enable machine user")
 	const enabled = true
 	err := s.patchMachineUser(env, enabled)
 	if err != nil {
 		return err
 	}
+	s.logger.Debugf("patches")
 
+	s.logger.Debugf("get machine user token")
 	machineUserToken, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*string, error) {
 		return getMachineUserToken(env)
 	}, s.logger)
@@ -38,13 +40,15 @@ func Create(env envUtil.Env, suiteName string) error {
 	if err != nil {
 		return err
 	}
+	s.logger.Debugf("machine user token is given")
 
-	ok, _ := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return s.hasAccess(env, *machineUserToken), nil
+	s.logger.Debugf("check machine user token has access")
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return s.hasAccess(env, *machineUserToken)
 	}, s.logger)
 
-	if !ok {
-		return errors.New("does not have expected access with machine token")
+	if err != nil {
+		return fmt.Errorf("does not have expected access with machine token. %w", err)
 	}
 
 	// Should only have access to its own application
@@ -60,12 +64,13 @@ func Create(env envUtil.Env, suiteName string) error {
 	}
 
 	// Token should no longer have access
-	ok, _ = test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (bool, error) {
-		return s.hasNoAccess(env, *machineUserToken), nil
+	s.logger.Debugf("check machine user token has no access")
+	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
+		return s.hasNoAccess(env, *machineUserToken)
 	}, s.logger)
 
-	if !ok {
-		return errors.New("has not expected access with machine token")
+	if err != nil {
+		return fmt.Errorf("has not expected access with machine token. %w", err)
 	}
 	s.logger.Debug("MachineUser was set and un-set properly")
 	return nil
@@ -114,43 +119,54 @@ func (s *step) patchMachineUser(env envUtil.Env, enabled bool) error {
 	return nil
 }
 
-func (s *step) hasNoAccess(env envUtil.Env, machineUserToken string) bool {
+func (s *step) hasNoAccess(env envUtil.Env, machineUserToken string) error {
 	return s.hasProperAccess(env, machineUserToken, false)
 }
 
-func (s *step) hasAccess(env envUtil.Env, machineUserToken string) bool {
+func (s *step) hasAccess(env envUtil.Env, machineUserToken string) error {
 	return s.hasProperAccess(env, machineUserToken, true)
 }
 
-func (s *step) hasProperAccess(env envUtil.Env, machineUserToken string, properAccess bool) bool {
+func (s *step) hasProperAccess(env envUtil.Env, machineUserToken string, properAccess bool) error {
+	s.logger.Debugf("check hasProperAccess: %v", properAccess)
 	accessToApplication := s.hasAccessToApplication(env, config.App2Name, machineUserToken)
 
 	err := buildApp(env, machineUserToken)
-	accessToBuild := !isTriggerPipelineBuildUnauthorized(err)
+	s.logger.Debugf("err from buildApp: %v", err)
+	accessToBuild := !s.isTriggerPipelineBuildUnauthorized(err)
 
 	err = setSecret(env, machineUserToken)
+	s.logger.Debugf("err from setSecret: %v", err)
 	accessToSecret := !s.isSetSecretUnauthorizedError(err)
 
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
 	s.logger.Debugf(" - accessToApplication: %v, accessToBuild: %v, accessToSecret: %v", accessToApplication, accessToBuild, accessToSecret)
-	if !hasProperAccess {
-		s.logger.Info("Proper access hasn't been granted yet")
-	}
 	s.logger.Debugf(" - hasProperAccess: %v", hasProperAccess)
-
-	return hasProperAccess
+	if !hasProperAccess {
+		return fmt.Errorf("proper access hasn't been granted yet")
+	}
+	return nil
 }
 
 func (s *step) hasAccessToApplication(env envUtil.Env, appName, machineUserToken string) bool {
+	s.logger.Debugf("get application with machine user token")
 	_, err := getApplication(env, appName, machineUserToken)
-	return !s.isGetApplicationUnauthorized(err) && !isGetApplicationForbidden(err)
+	if err != nil {
+		s.logger.Debugf("got an err %v", err)
+	}
+	isGetApplicationUnauthorized := s.isGetApplicationUnauthorized(err)
+	getApplicationForbidden := s.isGetApplicationForbidden(err)
+	s.logger.Debugf("isGetApplicationUnauthorized: %v, getApplicationForbidden: %v", isGetApplicationUnauthorized, getApplicationForbidden)
+	hasAccess := !isGetApplicationUnauthorized && !getApplicationForbidden
+	s.logger.Debugf("hasAccessToApplication: %v", hasAccess)
+	return hasAccess
 }
 
 func (s *step) isGetApplicationUnauthorized(err error) bool {
-	if _, ok := err.(*apiclient.GetApplicationUnauthorized); ok {
+	if errors.Is(err, &apiclient.GetApplicationUnauthorized{}) {
 		return true
 	}
-
+	s.logger.Debugf("GetApplicationUnauthorized err: %v", err)
 	return false
 }
 
@@ -158,7 +174,7 @@ func (s *step) isSetSecretUnauthorizedError(err error) bool {
 	if errors.Is(err, &environmentclient.ChangeComponentSecretUnauthorized{}) {
 		return true
 	}
-	s.logger.Debugf("SetSecretUnauthorized error: %v", err)
+	s.logger.Debugf("SetSecretUnauthorized err: %v", err)
 	return false
 }
 
@@ -213,31 +229,33 @@ func setSecret(env envUtil.Env, machineUserToken string) error {
 
 	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", config.App2Name, err)
+		return fmt.Errorf("failed calling ChangeComponentSecret for application %s: %w", config.App2Name, err)
 	}
 	return nil
 }
 
-func isTriggerPipelineBuildUnauthorized(err error) bool {
-	return err != nil && checkErrorResponse(err, 401)
+func (s *step) isTriggerPipelineBuildUnauthorized(err error) bool {
+	return err != nil && s.checkErrorResponse(err, 401)
 }
 
-func isGetApplicationForbidden(err error) bool {
-	switch err.(type) {
-	case *apiclient.GetApplicationForbidden:
+func (s *step) isGetApplicationForbidden(err error) bool {
+	if errors.Is(err, &apiclient.GetApplicationForbidden{}) {
 		return true
 	}
-
+	s.logger.Debugf("expected err apiclient.GetApplicationForbidden but got: %v", err)
 	return false
 }
 
-func checkErrorResponse(err error, expectedStatusCode int) bool {
+func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
 	apiError, ok := err.(*runtime.APIError)
 	if ok {
 		errorCode := apiError.Code
+		s.logger.Debugf("checkErrorResponse err code: %d, expected err code: %d", errorCode, expectedStatusCode)
 		if errorCode == expectedStatusCode {
 			return true
 		}
+	} else {
+		s.logger.Debugf("checkErrorResponse err is not runtime.APIError")
 	}
 	return false
 }
