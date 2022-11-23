@@ -55,7 +55,7 @@ func Change(env envUtil.Env, suiteName string) error {
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www", components: []string{"www"}},
-		{name: "run-pipelines", components: []string{}},
+		//{name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
 	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
@@ -94,7 +94,7 @@ func Change(env envUtil.Env, suiteName string) error {
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www2", components: []string{"www2"}},
-		{name: "run-pipelines", components: []string{}},
+		//{name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
 	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
