@@ -186,7 +186,7 @@ func (s *step) isChangeComponentSecretForbidden(err error) bool {
 	if errors.Is(err, &environmentclient.ChangeComponentSecretForbidden{}) {
 		return true
 	}
-	s.logger.Debugf("ChangeComponentSecret error: %v", err)
+	s.logger.Debugf("ChangeComponentSecret err: %v", err)
 	return false
 }
 
@@ -207,12 +207,12 @@ func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
 	apiError, ok := err.(*runtime.APIError)
 	if ok {
 		errorCode := apiError.Code
-		s.logger.Debugf("checkErrorResponse error code: %d", errorCode)
+		s.logger.Debugf("checkErrorResponse err code: %d", errorCode)
 		if errorCode == expectedStatusCode {
 			return true
 		}
 	} else {
-		s.logger.Debugf("checkErrorResponse error is not runtime.APIError")
+		s.logger.Debugf("checkErrorResponse err is not runtime.APIError")
 	}
 	return false
 }

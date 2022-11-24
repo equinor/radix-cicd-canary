@@ -65,20 +65,24 @@ func DeleteByImpersonatedUser(env envUtil.Env, appName string, logger *log.Entry
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(appName)
 
-	return delete(env, appName, params)
+	return deleteApplication(env, appName, params)
 }
 
 // DeleteByServiceAccount an application by the service account
 func DeleteByServiceAccount(env envUtil.Env, appName string, logger *log.Entry) error {
+	err := IsDefined(env, appName)
+	if err != nil {
+		return err
+	}
 	logger.Debugf("delete an application %s by the service account", appName)
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithAppName(appName)
 
-	return delete(env, appName, params)
+	return deleteApplication(env, appName, params)
 }
 
-func delete(env envUtil.Env, appName string, params *applicationclient.DeleteApplicationParams) error {
+func deleteApplication(env envUtil.Env, appName string, params *applicationclient.DeleteApplicationParams) error {
 	clientBearerToken := httpUtils.GetClientBearerToken(env)
 	client := httpUtils.GetApplicationClient(env)
 
@@ -119,7 +123,7 @@ func IsDefined(env envUtil.Env, appName string) error {
 	return fmt.Errorf("application %s is not defined", appName)
 }
 
-func appNamespacesDoNotExist(env envUtil.Env, appName string) error {
+func appNamespacesDoNotExist(appName string) error {
 	nsList, err := kubeUtils.GetKubernetesClient().CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{
 		LabelSelector: labels.Set{"radix-app": appName}.String(),
 	})
@@ -134,13 +138,12 @@ func appNamespacesDoNotExist(env envUtil.Env, appName string) error {
 
 // DeleteIfExist Delete application if it exists
 func DeleteIfExist(env envUtil.Env, appName string, logger *log.Entry) error {
-	err := IsDefined(env, appName)
+	err := DeleteByServiceAccount(env, appName, logger)
 	if err != nil {
 		return nil
 	}
-	DeleteByServiceAccount(env, appName, logger)
 	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return appNamespacesDoNotExist(env, appName)
+		return appNamespacesDoNotExist(appName)
 	}, logger)
 }
 
