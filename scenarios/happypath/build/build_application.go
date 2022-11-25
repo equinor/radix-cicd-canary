@@ -9,7 +9,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -33,19 +33,19 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully build an application
-func Application(env envUtil.Env, suiteName string) error {
+func Application(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret, logger)
+	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
 	if err != nil {
 		return err
 	}
 	logger.Infof("First job was triggered")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Running", logger)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
+		return job.IsListedWithStatus(cfg, defaults.App2Name, "Running", logger)
 	}, logger)
 
 	if err != nil {
@@ -58,14 +58,14 @@ func Application(env envUtil.Env, suiteName string) error {
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
 	time.Sleep(1 * time.Second)
-	err = httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret, logger)
+	err = httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
 	if err != nil {
 		return err
 	}
 	logger.Infof("Second job was triggered")
 
-	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		_, err := job.IsListedWithStatus(env, config.App2Name, "Queued", logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		_, err := job.IsListedWithStatus(cfg, defaults.App2Name, "Queued", logger)
 		return err
 	}, logger)
 
@@ -74,8 +74,8 @@ func Application(env envUtil.Env, suiteName string) error {
 	}
 
 	logger.Info("Second job was queued")
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (string, error) {
-		return job.IsDone(config.App2Name, jobName, env, logger)
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
+		return job.IsDone(cfg, defaults.App2Name, jobName, logger)
 	}, logger)
 	if err != nil {
 		return err
@@ -84,7 +84,7 @@ func Application(env envUtil.Env, suiteName string) error {
 		return fmt.Errorf("expected job status was Success, but got %s", jobStatus)
 	}
 	logger.Info("First job was completed")
-	steps := job.GetSteps(env, config.App2Name, jobName)
+	steps := job.GetSteps(cfg, defaults.App2Name, jobName)
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -109,15 +109,15 @@ func Application(env envUtil.Env, suiteName string) error {
 		}
 	}
 
-	stepLog := job.GetLogForStep(env, config.App2Name, jobName, "build-app", logger)
+	stepLog := job.GetLogForStep(cfg, defaults.App2Name, jobName, "build-app", logger)
 	//Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	//https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
 		return errors.New("build secrets are not contained in build log")
 	}
 
-	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Running", logger)
+	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
+		return job.IsListedWithStatus(cfg, defaults.App2Name, "Running", logger)
 	}, logger)
 
 	if err != nil {
@@ -127,13 +127,13 @@ func Application(env envUtil.Env, suiteName string) error {
 	// Stop job and verify that it has been stopped
 	jobName = jobSummary.Name
 	logger.Infof("Second job name: %s", jobName)
-	err = job.Stop(env, config.App2Name, jobName)
+	err = job.Stop(cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		_, err := job.IsListedWithStatus(env, config.App2Name, "Stopped", logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		_, err := job.IsListedWithStatus(cfg, defaults.App2Name, "Stopped", logger)
 		return err
 	}, logger)
 	if err != nil {

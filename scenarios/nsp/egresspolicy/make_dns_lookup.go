@@ -2,9 +2,10 @@ package egresspolicy
 
 import (
 	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,14 +13,14 @@ import (
 var logger *log.Entry
 
 // LookupInternalDNS tests that we are able to make lookups to internal DNS
-func LookupInternalDNS(env env.Env, suiteName string) error {
-	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
+func LookupInternalDNS(cfg config.Config, suiteName string) error {
+	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(internalDnsUrl, suiteName)
 }
 
 // LookupPublicDNS tests that we are able to make lookups to public DNS
-func LookupPublicDNS(env env.Env, suiteName string) error {
-	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
+func LookupPublicDNS(cfg config.Config, suiteName string) error {
+	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(publicDnsUrl, suiteName)
 }
 

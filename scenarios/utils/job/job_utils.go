@@ -5,22 +5,22 @@ import (
 
 	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
 
 // IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(env env.Env, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func IsListedWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := pipelineJobClient.NewGetApplicationJobsParams().
 		WithAppName(appName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
 	if err != nil {
@@ -38,12 +38,12 @@ func IsListedWithStatus(env env.Env, appName, expectedStatus string, logger *log
 }
 
 // Stop Stops a job
-func Stop(env env.Env, appName, jobName string) error {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func Stop(cfg config.Config, appName, jobName string) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	params := pipelineJobClient.NewStopApplicationJobParams().
 		WithAppName(appName).
@@ -60,8 +60,8 @@ func Stop(env env.Env, appName, jobName string) error {
 }
 
 // IsDone Checks if job is done
-func IsDone(appName, jobName string, env env.Env, logger *log.Entry) (string, error) {
-	jobStatus, err := GetStatus(env, appName, jobName, logger)
+func IsDone(cfg config.Config, appName, jobName string, logger *log.Entry) (string, error) {
+	jobStatus, err := GetStatus(cfg, appName, jobName, logger)
 	if err != nil {
 		return "", err
 	}
@@ -74,8 +74,8 @@ func IsDone(appName, jobName string, env env.Env, logger *log.Entry) (string, er
 }
 
 // GetStatus Gets status of job
-func GetStatus(env env.Env, appName, jobName string, logger *log.Entry) (string, error) {
-	job, err := Get(env, appName, jobName)
+func GetStatus(cfg config.Config, appName, jobName string, logger *log.Entry) (string, error) {
+	job, err := Get(cfg, appName, jobName)
 	if err != nil {
 		return "", err
 	}
@@ -87,9 +87,9 @@ func GetStatus(env env.Env, appName, jobName string, logger *log.Entry) (string,
 }
 
 // Get gets job from job name
-func Get(env env.Env, appName, jobName string) (*models.Job, error) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func Get(cfg config.Config, appName, jobName string) (*models.Job, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
@@ -97,8 +97,8 @@ func Get(env env.Env, appName, jobName string) (*models.Job, error) {
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
 	if err != nil {
@@ -111,9 +111,9 @@ func Get(env env.Env, appName, jobName string) (*models.Job, error) {
 }
 
 // GetSteps gets job from job name
-func GetSteps(env env.Env, appName, jobName string) []*models.Step {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
@@ -121,8 +121,8 @@ func GetSteps(env env.Env, appName, jobName string) []*models.Step {
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
 	if err == nil &&
@@ -136,9 +136,9 @@ func GetSteps(env env.Env, appName, jobName string) []*models.Step {
 }
 
 // GetLogForStep gets log for step
-func GetLogForStep(env env.Env, appName, jobName, stepName string, logger *log.Entry) string {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func GetLogForStep(cfg config.Config, appName, jobName, stepName string, logger *log.Entry) string {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := pipelineJobClient.NewGetPipelineJobStepLogsParams().
 		WithAppName(appName).
@@ -147,8 +147,8 @@ func GetLogForStep(env env.Env, appName, jobName, stepName string, logger *log.E
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, clientBearerToken)
 	if err != nil {

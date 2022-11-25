@@ -3,7 +3,7 @@ package egresspolicy
 import (
 	"testing"
 
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,16 +16,16 @@ Also running the test may fail, because it may time out.
 Its best use is when debugging a single test
 */
 func TestLookupInternalDNS(t *testing.T) {
-	env.SetRequiredEnvironmentVariablesForTest()
-	environmentVariables := env.NewEnv()
+	config.SetRequiredEnvironmentVariablesForTest()
+	environmentVariables := config.NewConfig()
 
 	err := LookupInternalDNS(environmentVariables, suiteName)
 	assert.NoError(t, err)
 }
 
 func TestLookupPublicDNS(t *testing.T) {
-	env.SetRequiredEnvironmentVariablesForTest()
-	environmentVariables := env.NewEnv()
+	config.SetRequiredEnvironmentVariablesForTest()
+	environmentVariables := config.NewConfig()
 
 	err := LookupPublicDNS(environmentVariables, suiteName)
 	assert.NoError(t, err)

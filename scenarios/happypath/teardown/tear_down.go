@@ -3,15 +3,15 @@ package teardown
 import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	log "github.com/sirupsen/logrus"
 )
 
 // TearDown Deletes applications
-func TearDown(env env.Env, suiteName string) error {
+func TearDown(cfg config.Config, suiteName string) error {
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
-	for _, appName := range []string{config.App1Name, config.App2Name, config.App4Name} {
-		err := application.DeleteByServiceAccount(env, appName, logger)
+	for _, appName := range []string{defaults.App1Name, defaults.App2Name, defaults.App4Name} {
+		err := application.DeleteByServiceAccount(cfg, appName, logger)
 		if err != nil {
 			logger.Debug(err)
 		}

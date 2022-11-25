@@ -3,7 +3,7 @@ package egresspolicy
 import (
 	"testing"
 
-	envUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	envUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +17,7 @@ Its best use is when debugging a single test
 */
 func TestStartJobBatch(t *testing.T) {
 	envUtils.SetRequiredEnvironmentVariablesForTest()
-	env := envUtils.NewEnv()
+	cfg := envUtils.NewConfig()
 
 	_, err := startJobBatch(jobSchedulerBaseUrl, "passwordSentInHeaderFromCicdCanary", "someappenv")
 	assert.NoError(t, err)
@@ -25,6 +25,6 @@ func TestStartJobBatch(t *testing.T) {
 	_, err = startJobBatch(jobSchedulerBaseUrl, "wrongPassword", "someappenv")
 	assert.Error(t, err)
 
-	_, err = startJobBatch(jobSchedulerBaseUrl, env.GetNetworkPolicyCanaryPassword(), "someappenv")
+	_, err = startJobBatch(jobSchedulerBaseUrl, cfg.GetNetworkPolicyCanaryPassword(), "someappenv")
 	assert.Error(t, err)
 }

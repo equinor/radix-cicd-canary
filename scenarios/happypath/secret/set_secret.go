@@ -2,10 +2,11 @@ package secret
 
 import (
 	"fmt"
+
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	models "github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
@@ -14,38 +15,41 @@ import (
 var logger *log.Entry
 
 // Set Test that we are able to set secret
-func Set(env env.Env, suiteName string) error {
+func Set(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	test.WaitForCheckFuncOrTimeout(env, isDeploymentConsistent, logger)
+	err := test.WaitForCheckFuncOrTimeout(cfg, isDeploymentConsistent, logger)
+	if err != nil {
+		return err
+	}
 
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := environmentclient.NewChangeComponentSecretParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
-		WithAppName(config.App2Name).
-		WithEnvName(config.App2EnvironmentName).
-		WithComponentName(config.App2Component2Name).
-		WithSecretName(config.App2SecretName).
+		WithAppName(defaults.App2Name).
+		WithEnvName(defaults.App2EnvironmentName).
+		WithComponentName(defaults.App2Component2Name).
+		WithSecretName(defaults.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: stringPtr(config.App2SecretValue),
+				SecretValue: stringPtr(defaults.App2SecretValue),
 			})
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetEnvironmentClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetEnvironmentClient(cfg)
 
-	_, err := client.ChangeComponentSecret(params, clientBearerToken)
+	_, err = client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
+		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %v", defaults.App2Name, err)
 	}
 	return nil
 }
 
-func isDeploymentConsistent(env env.Env) error {
-	environmentDetails := getEnvironmentDetails(env)
+func isDeploymentConsistent(cfg config.Config) error {
+	environmentDetails := getEnvironmentDetails(cfg)
 	if environmentDetails != nil &&
 		environmentDetails.ActiveDeployment != nil &&
 		environmentDetails.Status != "" &&
@@ -56,17 +60,17 @@ func isDeploymentConsistent(env env.Env) error {
 	return fmt.Errorf("deployment is not consistent")
 }
 
-func getEnvironmentDetails(env env.Env) *models.Environment {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func getEnvironmentDetails(cfg config.Config) *models.Environment {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := environmentclient.NewGetEnvironmentParams().
-		WithAppName(config.App2Name).
-		WithEnvName(config.App2EnvironmentName).
+		WithAppName(defaults.App2Name).
+		WithEnvName(defaults.App2EnvironmentName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetEnvironmentClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetEnvironmentClient(cfg)
 
 	environmentDetails, err := client.GetEnvironment(params, clientBearerToken)
 	if err == nil && environmentDetails.Payload != nil {

@@ -1,4 +1,4 @@
-package env
+package config
 
 import (
 	"context"
@@ -46,8 +46,8 @@ const (
 	envUseLocalGitHubWebHookApi               = "USE_LOCAL_GITHUB_WEBHOOK_API"
 )
 
-// Env Holds all the environment variables
-type Env struct {
+// Config Holds all the environment variables
+type Config struct {
 	bearerToken                         string
 	impersonateUser                     string
 	impersonateGroup                    string
@@ -76,9 +76,9 @@ type Env struct {
 	golangCanaryUrl                     string
 }
 
-// NewEnv Constructor
-func NewEnv() Env {
-	return Env{
+// NewConfig Constructor
+func NewConfig() Config {
+	return Config{
 		getBearerToken(),
 		getImpersonateUser(),
 		getImpersonateGroup(),
@@ -109,112 +109,112 @@ func NewEnv() Env {
 }
 
 // GetBearerToken get bearer token either from token file or environment variable
-func (env Env) GetBearerToken() string {
-	return env.bearerToken
+func (cfg Config) GetBearerToken() string {
+	return cfg.bearerToken
 }
 
 // GetImpersonateUser get impersonate user from config map
-func (env Env) GetImpersonateUser() string {
-	return env.impersonateUser
+func (cfg Config) GetImpersonateUser() string {
+	return cfg.impersonateUser
 }
 
 // GetImpersonateUserPointer get impersonate user from config map
-func (env Env) GetImpersonateUserPointer() *string {
-	return &env.impersonateUser
+func (cfg Config) GetImpersonateUserPointer() *string {
+	return &cfg.impersonateUser
 }
 
 // GetImpersonateGroup get impersonate group from config map
-func (env Env) GetImpersonateGroup() string {
-	return env.impersonateGroup
+func (cfg Config) GetImpersonateGroup() string {
+	return cfg.impersonateGroup
 }
 
 // GetImpersonateGroupPointer get impersonate group from config map
-func (env Env) GetImpersonateGroupPointer() *string {
-	return &env.impersonateGroup
+func (cfg Config) GetImpersonateGroupPointer() *string {
+	return &cfg.impersonateGroup
 }
 
 // GetClusterFQDN get Radix cluster FQDN from config map
-func (env Env) GetClusterFQDN() string {
-	return env.clusterFQDN
+func (cfg Config) GetClusterFQDN() string {
+	return cfg.clusterFQDN
 }
 
 // GetPublicKey get public deploy key from config map
-func (env Env) GetPublicKey() string {
-	return env.publicKey
+func (cfg Config) GetPublicKey() string {
+	return cfg.publicKey
 }
 
 // GetPrivateKey get private deploy key from config map
-func (env Env) GetPrivateKey() string {
-	return env.privateKey
+func (cfg Config) GetPrivateKey() string {
+	return cfg.privateKey
 }
 
 // GetPublicKeyCanary3 get public deploy key from config map
-func (env Env) GetPublicKeyCanary3() string {
-	return env.publicKeyCanary3
+func (cfg Config) GetPublicKeyCanary3() string {
+	return cfg.publicKeyCanary3
 }
 
 // GetPrivateKeyCanary3 get private deploy key from config map
-func (env Env) GetPrivateKeyCanary3() string {
-	return env.privateKeyCanary3
+func (cfg Config) GetPrivateKeyCanary3() string {
+	return cfg.privateKeyCanary3
 }
 
 // GetPublicKeyCanary4 get public deploy key from config map
-func (env Env) GetPublicKeyCanary4() string {
-	return env.publicKeyCanary4
+func (cfg Config) GetPublicKeyCanary4() string {
+	return cfg.publicKeyCanary4
 }
 
 // GetPrivateKeyCanary4 get private deploy key from config map
-func (env Env) GetPrivateKeyCanary4() string {
-	return env.privateKeyCanary4
+func (cfg Config) GetPrivateKeyCanary4() string {
+	return cfg.privateKeyCanary4
 }
 
 // GetPrivateImageHubPassword get private image hub password
-func (env Env) GetPrivateImageHubPassword() string {
+func (cfg Config) GetPrivateImageHubPassword() string {
 	return getConfigFromMap(privateImageHubPasswordConfig)
 }
 
 // GetNetworkPolicyCanaryPassword get networkpolicy-canary HTTP password from environment
-func (env Env) GetNetworkPolicyCanaryPassword() string {
-	return env.networkPolicyCanaryPassword
+func (cfg Config) GetNetworkPolicyCanaryPassword() string {
+	return cfg.networkPolicyCanaryPassword
 }
 
 // GetTimeoutOfTest Get the time it should take before a test should time out from config map
-func (env Env) GetTimeoutOfTest() time.Duration {
-	return env.timeoutOfTest
+func (cfg Config) GetTimeoutOfTest() time.Duration {
+	return cfg.timeoutOfTest
 }
 
 // GetSleepIntervalBetweenCheckFunc Gets the sleep inteval between two checks from config map
-func (env Env) GetSleepIntervalBetweenCheckFunc() time.Duration {
-	return env.sleepIntervalBetweenCheckFunc
+func (cfg Config) GetSleepIntervalBetweenCheckFunc() time.Duration {
+	return cfg.sleepIntervalBetweenCheckFunc
 }
 
 // GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs from config map
-func (env Env) GetSleepIntervalBetweenTestRuns() time.Duration {
-	return env.sleepIntervalBetweenTestRuns
+func (cfg Config) GetSleepIntervalBetweenTestRuns() time.Duration {
+	return cfg.sleepIntervalBetweenTestRuns
 }
 
 // GetNSPSleepInterval Gets the sleep inteval between NSP test runs from config map
-func (env Env) GetNSPSleepInterval() time.Duration {
-	return env.nspSleepInterval
+func (cfg Config) GetNSPSleepInterval() time.Duration {
+	return cfg.nspSleepInterval
 }
 
 // GetNSPLongSleepInterval Gets the sleep inteval between NSPLong test runs from config map
-func (env Env) GetNSPLongSleepInterval() time.Duration {
-	return env.nspLongSleepInterval
+func (cfg Config) GetNSPLongSleepInterval() time.Duration {
+	return cfg.nspLongSleepInterval
 }
 
 // GetSuiteList Gets a filter list for which suites to run
-func (env Env) GetSuiteList() []string {
-	return env.suiteList
+func (cfg Config) GetSuiteList() []string {
+	return cfg.suiteList
 }
 
 // GetSuiteListIsBlacklist Gets whether suiteList is considered a blacklist
-func (env Env) GetSuiteListIsBlacklist() bool {
-	return env.suiteListIsBlacklist
+func (cfg Config) GetSuiteListIsBlacklist() bool {
+	return cfg.suiteListIsBlacklist
 }
 
 // GetLogLevel Gets log level
-func (env Env) GetLogLevel() log.Level {
+func (cfg Config) GetLogLevel() log.Level {
 	switch {
 	case isDebugLogLevel():
 		return log.DebugLevel
@@ -227,40 +227,40 @@ func (env Env) GetLogLevel() log.Level {
 	}
 }
 
-func (env Env) GetRadixAPIURL() string {
+func (cfg Config) GetRadixAPIURL() string {
 	if useLocalRadixApi() {
 		return "localhost:3002"
 	} else {
-		return fmt.Sprintf("%s.%s", env.getRadixAPIPrefix(), env.GetClusterFQDN())
+		return fmt.Sprintf("%s.%s", cfg.getRadixAPIPrefix(), cfg.GetClusterFQDN())
 	}
 }
 
-func (env Env) GetGitHubWebHookAPIURL() string {
+func (cfg Config) GetGitHubWebHookAPIURL() string {
 	if useLocalGitHubWebHookApi() {
 		return "http://localhost:3001"
 	} else {
-		return fmt.Sprintf("https://%s.%s", env.getWebHookPrefix(), env.GetClusterFQDN())
+		return fmt.Sprintf("https://%s.%s", cfg.getWebHookPrefix(), cfg.GetClusterFQDN())
 	}
 }
 
-func (env Env) GetNetworkPolicyCanaryUrl(appEnv string) string {
-	canaryURLPrefix := fmt.Sprintf("https://web-%s-%s", env.GetNetworkPolicyCanaryAppName(), appEnv)
-	return fmt.Sprintf("%s.%s", canaryURLPrefix, env.GetClusterFQDN())
+func (cfg Config) GetNetworkPolicyCanaryUrl(appEnv string) string {
+	canaryURLPrefix := fmt.Sprintf("https://web-%s-%s", cfg.GetNetworkPolicyCanaryAppName(), appEnv)
+	return fmt.Sprintf("%s.%s", canaryURLPrefix, cfg.GetClusterFQDN())
 }
 
-func (env Env) GetGolangCanaryUrl() string {
-	return env.golangCanaryUrl
+func (cfg Config) GetGolangCanaryUrl() string {
+	return cfg.golangCanaryUrl
 }
 
-func (env Env) GetNetworkPolicyCanaryAppName() string {
-	return env.networkPolicyCanaryAppName
+func (cfg Config) GetNetworkPolicyCanaryAppName() string {
+	return cfg.networkPolicyCanaryAppName
 }
 
-func (env Env) GetNetworkPolicyCanaryJobComponentName() string {
-	return env.networkPolicyCanaryJobComponentName
+func (cfg Config) GetNetworkPolicyCanaryJobComponentName() string {
+	return cfg.networkPolicyCanaryJobComponentName
 }
 
-func (env Env) GetRadixAPISchemes() []string {
+func (cfg Config) GetRadixAPISchemes() []string {
 	if useLocalRadixApi() {
 		return []string{"http"}
 	} else {
@@ -427,12 +427,12 @@ func getIsBlacklist() bool {
 	return envVarIsTrueOrYes(strings.ToLower(os.Getenv(envVarIsBlacklist)))
 }
 
-func (env Env) getRadixAPIPrefix() string {
-	return env.radixAPIPrefix
+func (cfg Config) getRadixAPIPrefix() string {
+	return cfg.radixAPIPrefix
 }
 
-func (env Env) getWebHookPrefix() string {
-	return env.webhookPrefix
+func (cfg Config) getWebHookPrefix() string {
+	return cfg.webhookPrefix
 }
 
 func isDebugLogLevel() bool {

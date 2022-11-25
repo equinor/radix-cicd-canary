@@ -3,11 +3,12 @@ package adgroup
 import (
 	"errors"
 	"fmt"
+
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/go-openapi/runtime"
@@ -23,59 +24,59 @@ const (
 )
 
 // Update Tests that updates to AD group locks down an application
-func Update(env envUtil.Env, suiteName string) error {
+func Update(cfg config.Config, suiteName string) error {
 	s := &step{logger: log.WithFields(log.Fields{"Suite": suiteName})}
 
 	s.logger.Debugf("check that admin AD-Group has access")
-	err := test.WaitForCheckFuncOrTimeout(env, s.hasAccess, s.logger)
+	err := test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
 	if err != nil {
 		return fmt.Errorf("failed to get update details of the suite %s: %w", suiteName, err)
 	}
 	s.logger.Debugf("admin AD-Group has access")
 
 	s.logger.Debugf("patch an admin AD-Group without access")
-	err = patchAdGroup(env, adGroupWithNoAccess)
+	err = patchAdGroup(cfg, adGroupWithNoAccess)
 	if err != nil {
 		return err
 	}
 	s.logger.Debugf("admin AD-Group is patched")
 
 	s.logger.Debugf("check that admin AD-Group has no access")
-	err = test.WaitForCheckFuncOrTimeout(env, s.hasNoAccess, s.logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasNoAccess, s.logger)
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
 	s.logger.Debugf("admin AD-Group has no access")
 
 	s.logger.Debugf("patch an admin AD-Group with access")
-	err = patchAdGroup(env, env.GetImpersonateGroup())
+	err = patchAdGroup(cfg, cfg.GetImpersonateGroup())
 	if err != nil {
 		return err
 	}
 	s.logger.Debugf("admin AD-Group is patched")
 
 	s.logger.Debugf("check that admin AD-Group has access")
-	err = test.WaitForCheckFuncOrTimeout(env, s.hasAccess, s.logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
 	s.logger.Debugf("admin AD-Group has no access")
 	return err
 }
 
-func (s *step) hasNoAccess(env envUtil.Env) error {
-	return s.hasProperAccess(env, false)
+func (s *step) hasNoAccess(cfg config.Config) error {
+	return s.hasProperAccess(cfg, false)
 }
 
-func (s *step) hasAccess(env envUtil.Env) error {
-	return s.hasProperAccess(env, true)
+func (s *step) hasAccess(cfg config.Config) error {
+	return s.hasProperAccess(cfg, true)
 }
 
-func (s *step) hasProperAccess(env envUtil.Env, properAccess bool) error {
-	_, err := getApplication(env)
+func (s *step) hasProperAccess(cfg config.Config, properAccess bool) error {
+	_, err := getApplication(cfg)
 	accessToApplication := !isGetApplicationForbidden(err)
 
-	err = buildApp(env)
+	err = buildApp(cfg)
 	accessToBuild := !s.isTriggerPipelineBuildForbidden(err)
 
-	err = setSecret(env)
+	err = setSecret(cfg)
 	accessToSecret := !s.isChangeComponentSecretForbidden(err)
 
 	s.logger.Debugf(" - accessToApplication: %v, accessToBuild: %v, accessToSecret: %v", accessToApplication, accessToBuild, accessToSecret)
@@ -89,7 +90,7 @@ func (s *step) hasProperAccess(env envUtil.Env, properAccess bool) error {
 	return nil
 }
 
-func patchAdGroup(env envUtil.Env, adGroup string) error {
+func patchAdGroup(cfg config.Config, adGroup string) error {
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			AdGroups: []string{adGroup},
@@ -97,11 +98,11 @@ func patchAdGroup(env envUtil.Env, adGroup string) error {
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().
-		WithAppName(config.App2Name).
+		WithAppName(defaults.App2Name).
 		WithPatchRequest(&patchRequest)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	_, err := client.ModifyRegistrationDetails(params, clientBearerToken)
 	if err != nil {
@@ -111,17 +112,17 @@ func patchAdGroup(env envUtil.Env, adGroup string) error {
 	return nil
 }
 
-func getApplication(env envUtil.Env) (*models.Application, error) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func getApplication(cfg config.Config) (*models.Application, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := apiclient.NewGetApplicationParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
-		WithAppName(config.App2Name)
+		WithAppName(defaults.App2Name)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	application, err := client.GetApplication(params, clientBearerToken)
 	if err != nil {
@@ -131,22 +132,22 @@ func getApplication(env envUtil.Env) (*models.Application, error) {
 	return application.Payload, nil
 }
 
-func buildApp(env envUtil.Env) error {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func buildApp(cfg config.Config) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	bodyParameters := models.PipelineParametersBuild{
-		Branch: config.App2BranchToBuildFrom,
+		Branch: defaults.App2BranchToBuildFrom,
 	}
 
 	params := apiclient.NewTriggerPipelineBuildParams().
-		WithAppName(config.App2Name).
+		WithAppName(defaults.App2Name).
 		WithPipelineParametersBuild(&bodyParameters).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	_, err := client.TriggerPipelineBuild(params, clientBearerToken)
 	if err != nil {
@@ -156,28 +157,28 @@ func buildApp(env envUtil.Env) error {
 	return nil
 }
 
-func setSecret(env envUtil.Env) error {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func setSecret(cfg config.Config) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := environmentclient.NewChangeComponentSecretParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
-		WithAppName(config.App2Name).
-		WithEnvName(config.App2EnvironmentName).
-		WithComponentName(config.App2Component2Name).
-		WithSecretName(config.App2SecretName).
+		WithAppName(defaults.App2Name).
+		WithEnvName(defaults.App2EnvironmentName).
+		WithComponentName(defaults.App2Component2Name).
+		WithSecretName(defaults.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: stringPtr(config.App2SecretValue),
+				SecretValue: stringPtr(defaults.App2SecretValue),
 			})
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetEnvironmentClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetEnvironmentClient(cfg)
 
 	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", config.App2Name, err)
+		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", defaults.App2Name, err)
 	}
 	return nil
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/k8sjob"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
@@ -18,15 +18,15 @@ import (
 var logger *log.Entry
 
 // StartAndCheckJobBatch starts a job batch and confirms that jobs were created
-func StartAndCheckJobBatch(env envUtil.Env, suiteName string) error {
+func StartAndCheckJobBatch(cfg config.Config, suiteName string) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
-	jobComponentName := env.GetNetworkPolicyCanaryJobComponentName()
+	jobComponentName := cfg.GetNetworkPolicyCanaryJobComponentName()
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	var batchNames []string
 	for _, appEnv := range appEnvs {
-		baseUrl := env.GetNetworkPolicyCanaryUrl(appEnv)
-		password := env.GetNetworkPolicyCanaryPassword()
+		baseUrl := cfg.GetNetworkPolicyCanaryUrl(appEnv)
+		password := cfg.GetNetworkPolicyCanaryPassword()
 		batchName, err := startJobBatch(baseUrl, password, appEnv)
 		if err != nil {
 			return err
@@ -38,7 +38,7 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) error {
 	for i := 0; i < len(appEnvs); i++ {
 		appEnv := appEnvs[i]
 		batchName := batchNames[i]
-		err := checkJobBatch(env, env.GetNetworkPolicyCanaryAppName(), appEnv, jobComponentName, batchName)
+		err := checkJobBatch(cfg, cfg.GetNetworkPolicyCanaryAppName(), appEnv, jobComponentName, batchName)
 		if err != nil {
 			return err
 		}
@@ -47,9 +47,9 @@ func StartAndCheckJobBatch(env envUtil.Env, suiteName string) error {
 	return nil
 }
 
-func checkJobBatch(env envUtil.Env, appName, appEnv string, jobComponentName string, batchName string) error {
-	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return k8sjob.IsListedWithStatus(env, appName, appEnv, jobComponentName, batchName, "Succeeded")
+func checkJobBatch(cfg config.Config, appName, appEnv string, jobComponentName string, batchName string) error {
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return k8sjob.IsListedWithStatus(cfg, appName, appEnv, jobComponentName, batchName, "Succeeded")
 	}, logger)
 }
 

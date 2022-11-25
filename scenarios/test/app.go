@@ -4,13 +4,12 @@ import (
 	"time"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
-
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	log "github.com/sirupsen/logrus"
 )
 
 // Fn Prototype of a test function
-type Fn func(env env.Env, suiteName string) error
+type Fn func(cfg config.Config, suiteName string) error
 
 // ResultFn Prototype of result of a test function (success or fail)
 type ResultFn func(testName string)
@@ -34,13 +33,13 @@ type Spec struct {
 
 // Runner Instance
 type Runner struct {
-	env env.Env
+	cfg config.Config
 }
 
 // NewRunner Constructor
-func NewRunner(env env.Env) Runner {
+func NewRunner(cfg config.Config) Runner {
 	return Runner{
-		env,
+		cfg,
 	}
 }
 
@@ -51,7 +50,7 @@ func (runner Runner) Run(suites ...Suite) {
 
 	// Run all suite setup
 	for _, suite := range suites {
-		setupFailed = runSuiteSetup(runner.env, suite, scenarioDuration)
+		setupFailed = runSuiteSetup(runner.cfg, suite, scenarioDuration)
 		if setupFailed {
 			break
 		}
@@ -59,13 +58,13 @@ func (runner Runner) Run(suites ...Suite) {
 
 	if !setupFailed {
 		for _, suite := range suites {
-			runSuiteTests(runner.env, suite, scenarioDuration)
+			runSuiteTests(runner.cfg, suite, scenarioDuration)
 		}
 	}
 
 	// Run all suite teardown
 	for _, suite := range suites {
-		runSuiteTeardown(runner.env, suite, scenarioDuration)
+		runSuiteTeardown(runner.cfg, suite, scenarioDuration)
 	}
 
 	for scenario, elapsed := range scenarioDuration {
@@ -74,7 +73,7 @@ func (runner Runner) Run(suites ...Suite) {
 	}
 }
 
-func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) bool {
+func runSuiteSetup(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) bool {
 	suiteName := suite.Name
 	setupFailed := false
 	start := time.Now()
@@ -83,10 +82,10 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 
 	for _, setup := range suite.Setup {
 		logger.Info(setup.Description)
-		success := runTest(env, setup, suiteName)
+		success := runTest(cfg, setup, suiteName)
 		if !success {
 			setupFailed = true
-			logger.Errorf("Setup %s fail in suite %s. Will escape tests, and just run teardowns", setup.Name, suite.Name)
+			logger.Errorf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
 			break
 		}
 		logger.Debugf("Setup success %s", setup.Description)
@@ -98,14 +97,14 @@ func runSuiteSetup(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 	return setupFailed
 }
 
-func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
+func runSuiteTests(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
 	suiteName := suite.Name
 	start := time.Now()
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	for _, test := range suite.Tests {
 		logger.Info(test.Description)
-		success := runTest(env, test, suiteName)
+		success := runTest(cfg, test, suiteName)
 		if !success {
 			logger.Warnf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
 			break
@@ -117,7 +116,7 @@ func runSuiteTests(env env.Env, suite Suite, scenarioDuration map[string]time.Du
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time.Duration) {
+func runSuiteTeardown(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
 	suiteName := suite.Name
 	start := time.Now()
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
@@ -125,7 +124,7 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 	logger.Debugf("Running teardown tests in suite %s", suite.Name)
 	for _, test := range suite.Teardown {
 		logger.Info(test.Description)
-		runTest(env, test, suiteName)
+		runTest(cfg, test, suiteName)
 	}
 	logger.Debug("Teardown complete")
 
@@ -134,13 +133,13 @@ func runSuiteTeardown(env env.Env, suite Suite, scenarioDuration map[string]time
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runTest(env env.Env, testToRun Spec, suiteName string) bool {
+func runTest(cfg config.Config, testToRun Spec, suiteName string) bool {
 	start := time.Now()
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	logger.Debugf("Running test '%s'", testToRun.Name)
 
-	err := testToRun.Test(env, suiteName)
+	err := testToRun.Test(cfg, suiteName)
 	if err != nil {
 		testToRun.FailFn(testToRun.Name)
 		logger.Errorf("Error calling %s: %v", testToRun.Name, err)

@@ -5,7 +5,7 @@ import (
 
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
@@ -13,7 +13,7 @@ import (
 var logger *log.Entry
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(env env.Env, suiteName string) error {
+func Reach(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	client := httpUtils.GetHTTPDefaultClient()

@@ -4,14 +4,14 @@ import (
 	"fmt"
 
 	jobClient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 )
 
 // IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponentName string, batchName string, expectedStatus string) error {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func IsListedWithStatus(cfg config.Config, appName string, appEnv string, jobComponentName string, batchName string, expectedStatus string) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 	params := jobClient.NewGetBatchesParams().
 		WithJobComponentName(jobComponentName).
 		WithAppName(appName).
@@ -19,8 +19,8 @@ func IsListedWithStatus(env env.Env, appName string, appEnv string, jobComponent
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetK8sJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetK8sJobClient(cfg)
 
 	batches, err := client.GetBatches(params, clientBearerToken)
 

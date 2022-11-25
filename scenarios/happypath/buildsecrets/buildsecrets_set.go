@@ -8,7 +8,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -18,11 +18,11 @@ import (
 var logger *log.Entry
 
 // Set Tests that we are able to successfully set build secrets
-func Set(env envUtil.Env, suiteName string) error {
+func Set(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build to apply RA with build secrets
-	err := httpUtils.TriggerWebhookPush(env, config.App2BranchToBuildFrom, config.App2CommitID, config.App2SSHRepository, config.App2SharedSecret, logger)
+	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
 	if err != nil {
 		return err
 	}
@@ -30,15 +30,15 @@ func Set(env envUtil.Env, suiteName string) error {
 	logger.Info("Job was triggered to apply RA")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(env, func(env envUtil.Env) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(env, config.App2Name, "Failed", logger)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
+		return job.IsListedWithStatus(cfg, defaults.App2Name, "Failed", logger)
 	}, logger)
 	if err != nil {
 		return err
 	}
 
 	jobName := jobSummary.Name
-	job, _ := job.Get(env, config.App2Name, jobName)
+	job, _ := job.Get(cfg, defaults.App2Name, jobName)
 
 	expectedSteps := []string{
 		"clone-config",
@@ -51,46 +51,46 @@ func Set(env envUtil.Env, suiteName string) error {
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	err = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return buildSecretsAreListedWithStatus(env, "Pending")
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return buildSecretsAreListedWithStatus(cfg, "Pending")
 	}, logger)
 
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(env, build.Secret1, build.Secret1Value)
+	err = setSecret(cfg, build.Secret1, build.Secret1Value)
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(env, build.Secret2, build.Secret2Value)
+	err = setSecret(cfg, build.Secret2, build.Secret2Value)
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) error {
-		return buildSecretsAreListedWithStatus(env, "Consistent")
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return buildSecretsAreListedWithStatus(cfg, "Consistent")
 	}, logger)
 }
 
-func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) error {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := applicationClient.NewGetBuildSecretsParams().
-		WithAppName(config.App2Name).
+		WithAppName(defaults.App2Name).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
-	buildsecrets, err := client.GetBuildSecrets(params, clientBearerToken)
-	if err == nil && buildsecrets.Payload != nil && len(buildsecrets.Payload) == 2 {
-		if strings.EqualFold(*buildsecrets.Payload[0].Name, build.Secret1) &&
-			strings.EqualFold(buildsecrets.Payload[0].Status, expectedStatus) &&
-			strings.EqualFold(*buildsecrets.Payload[1].Name, build.Secret2) &&
-			strings.EqualFold(buildsecrets.Payload[1].Status, expectedStatus) {
+	buildSecrets, err := client.GetBuildSecrets(params, clientBearerToken)
+	if err == nil && buildSecrets.Payload != nil && len(buildSecrets.Payload) == 2 {
+		if strings.EqualFold(*buildSecrets.Payload[0].Name, build.Secret1) &&
+			strings.EqualFold(buildSecrets.Payload[0].Status, expectedStatus) &&
+			strings.EqualFold(*buildSecrets.Payload[1].Name, build.Secret2) &&
+			strings.EqualFold(buildSecrets.Payload[1].Status, expectedStatus) {
 			return nil
 		}
 	}
@@ -99,24 +99,24 @@ func buildSecretsAreListedWithStatus(env envUtil.Env, expectedStatus string) err
 	return fmt.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
 }
 
-func setSecret(env envUtil.Env, secretName, secretValue string) error {
+func setSecret(cfg config.Config, secretName, secretValue string) error {
 	logger.Debugf("setSecret %s with value %s", secretName, secretValue)
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	secretParameters := models.SecretParameters{
 		SecretValue: &secretValue,
 	}
 
 	params := applicationClient.NewUpdateBuildSecretsSecretValueParams().
-		WithAppName(config.App2Name).
+		WithAppName(defaults.App2Name).
 		WithSecretName(secretName).
 		WithSecretValue(&secretParameters).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	_, err := client.UpdateBuildSecretsSecretValue(params, clientBearerToken)
 	if err != nil {

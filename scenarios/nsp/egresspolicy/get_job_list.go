@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-common/utils/errors"
 	log "github.com/sirupsen/logrus"
 )
 
 // GetJobList tests that we are able to retrieve job list from job scheduler
-func GetJobList(env env.Env, suiteName string) error {
+func GetJobList(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {
-		jobListUrl := fmt.Sprintf("%s/testjobscheduler", env.GetNetworkPolicyCanaryUrl(appEnv))
+		jobListUrl := fmt.Sprintf("%s/testjobscheduler", cfg.GetNetworkPolicyCanaryUrl(appEnv))
 		err := httpUtils.CheckUrl(jobListUrl, logger)
 		if err != nil {
 			errs = append(errs, err)
