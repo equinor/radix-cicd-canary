@@ -1,6 +1,9 @@
 package application
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -8,17 +11,24 @@ import (
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
-const publicDomainNameEnvironmentVariable = "RADIX_PUBLIC_DOMAIN_NAME"
+const (
+	publicDomainNameEnvironmentVariable  = "RADIX_PUBLIC_DOMAIN_NAME"
+	canonicalEndpointEnvironmentVariable = "RADIX_CANONICAL_DOMAIN_NAME"
+)
 
 // Register Will register application
-func Register(env env.Env, appName, appRepo, appSharedSecret, appCreator, publicKey, privateKey, configBranch, configurationItem string) (*apiclient.RegisterApplicationOK, error) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, publicKey, privateKey, configBranch, configurationItem string) (*apiclient.RegisterApplicationOK, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 	bodyParameters := models.ApplicationRegistrationRequest{
 		ApplicationRegistration: &models.ApplicationRegistration{
 			Name:              &appName,
@@ -38,37 +48,55 @@ func Register(env env.Env, appName, appRepo, appSharedSecret, appCreator, public
 		WithImpersonateGroup(&impersonateGroup).
 		WithApplicationRegistration(&bodyParameters)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetPlatformClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetPlatformClient(cfg)
 
 	return client.RegisterApplication(params, clientBearerToken)
 }
 
-// Delete Deletes application
-func Delete(env env.Env, appName string) (bool, error) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+// DeleteByImpersonatedUser Deletes an application by the impersonated user
+func DeleteByImpersonatedUser(cfg config.Config, appName string, logger *log.Entry) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
+	logger.Debugf("delete an application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(appName)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	return deleteApplication(cfg, appName, params)
+}
+
+// DeleteByServiceAccount an application by the service account
+func DeleteByServiceAccount(cfg config.Config, appName string, logger *log.Entry) error {
+	err := IsDefined(cfg, appName)
+	if err != nil {
+		return err
+	}
+	logger.Debugf("delete an application %s by the service account", appName)
+
+	params := applicationclient.NewDeleteApplicationParams().
+		WithAppName(appName)
+
+	return deleteApplication(cfg, appName, params)
+}
+
+func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	_, err := client.DeleteApplication(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling DeleteApplication for application %s: %v", appName, err)
+		return fmt.Errorf("failed deleting the application %s: %v", appName, err)
 	}
-
-	return err == nil, err
+	return nil
 }
 
 // Deploy Deploy application
-func Deploy(env env.Env, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func Deploy(cfg config.Config, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	bodyParameters := models.PipelineParametersDeploy{
 		ToEnvironment: toEnvironment,
@@ -80,31 +108,53 @@ func Deploy(env env.Env, appName, toEnvironment string) (*applicationclient.Trig
 		WithAppName(appName).
 		WithPipelineParametersDeploy(&bodyParameters)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	return client.TriggerPipelineDeploy(params, clientBearerToken)
 }
 
 // IsDefined Checks if application is defined
-func IsDefined(env env.Env, appName string) (bool, interface{}) {
-	_, err := Get(env, appName)
+func IsDefined(cfg config.Config, appName string) error {
+	_, err := Get(cfg, appName)
 	if err == nil {
-		return true, nil
+		return nil
 	}
+	return fmt.Errorf("application %s is not defined", appName)
+}
 
-	log.Infof("Application %s is not defined", appName)
-	return false, nil
+func appNamespacesDoNotExist(appName string) error {
+	nsList, err := kubeUtils.GetKubernetesClient().CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{
+		LabelSelector: labels.Set{"radix-app": appName}.String(),
+	})
+	if err != nil {
+		return err
+	}
+	if len(nsList.Items) > 0 {
+		return fmt.Errorf("there are %d namespaces for the application %s", len(nsList.Items), appName)
+	}
+	return nil
+}
+
+// DeleteIfExist Delete application if it exists
+func DeleteIfExist(cfg config.Config, appName string, logger *log.Entry) error {
+	err := DeleteByServiceAccount(cfg, appName, logger)
+	if err != nil {
+		return nil
+	}
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return appNamespacesDoNotExist(appName)
+	}, logger)
 }
 
 // Get gets an application by appName
-func Get(env env.Env, appName string) (*models.Application, error) {
+func Get(cfg config.Config, appName string) (*models.Application, error) {
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
-		WithImpersonateUser(env.GetImpersonateUserPointer()).
-		WithImpersonateGroup(env.GetImpersonateGroupPointer())
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+		WithImpersonateUser(cfg.GetImpersonateUserPointer()).
+		WithImpersonateGroup(cfg.GetImpersonateGroupPointer())
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	result, err := client.GetApplication(params, clientBearerToken)
 	if err != nil {
@@ -114,27 +164,27 @@ func Get(env env.Env, appName string) (*models.Application, error) {
 }
 
 // IsAliasDefined Checks if app alias is defined
-func IsAliasDefined(env env.Env, appName string) (bool, interface{}) {
-	appAlias := getAlias(env, appName)
+func IsAliasDefined(cfg config.Config, appName string, logger *log.Entry) error {
+	appAlias := getAlias(cfg, appName)
 	if appAlias != nil {
-		log.Infof("App alias is defined %s. Now we can try to hit it to see if it responds", *appAlias)
-		return true, *appAlias
+		logger.Infof("App alias for application %s is defined %s. Now we can try to hit it to see if it responds", appName, *appAlias)
+		return nil
 	}
 
-	log.Info("App alias is not yet defined")
-	return false, nil
+	logger.Infof("App alias for application %s is not yet defined", appName)
+	return fmt.Errorf("public alias for application %s is not defined", appName)
 }
 
-func getAlias(env env.Env, appName string) *string {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func getAlias(cfg config.Config, appName string) *string {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	applicationDetails, err := client.GetApplication(params, clientBearerToken)
 	if err == nil && applicationDetails.Payload != nil && applicationDetails.Payload.AppAlias != nil {
@@ -150,35 +200,34 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 }
 
 // TryGetPublicDomainName Waits for public domain name to be defined
-func TryGetPublicDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
-	publicDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
+func TryGetPublicDomainName(cfg config.Config, appName, environmentName, componentName string) (string, error) {
+	publicDomainName := getEnvVariable(cfg, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
-		return false, nil
+		return "", fmt.Errorf("public domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
-	return true, publicDomainName
+	return publicDomainName, nil
 }
 
 // TryGetCanonicalDomainName Waits for canonical domain name to be defined
-func TryGetCanonicalDomainName(env env.Env, appName, environmentName, componentName string) (bool, interface{}) {
-	canonicalDomainName := getEnvVariable(env, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
+func TryGetCanonicalDomainName(cfg config.Config, appName, environmentName, componentName string) (string, error) {
+	canonicalDomainName := getEnvVariable(cfg, appName, environmentName, componentName, canonicalEndpointEnvironmentVariable)
 	if canonicalDomainName == "" {
-		return false, nil
+		return "", fmt.Errorf("canonical domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
-
-	return true, canonicalDomainName
+	return canonicalDomainName, nil
 }
 
-func getEnvVariable(env env.Env, appName, envName, forComponentName, variableName string) string {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func getEnvVariable(cfg config.Config, appName, envName, forComponentName, variableName string) string {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := environmentclient.NewGetEnvironmentParams().
 		WithAppName(appName).
 		WithEnvName(envName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetEnvironmentClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetEnvironmentClient(cfg)
 
 	environmentDetails, err := client.GetEnvironment(params, clientBearerToken)
 	if err == nil &&
@@ -196,40 +245,40 @@ func getEnvVariable(env env.Env, appName, envName, forComponentName, variableNam
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(env env.Env, urls ...string) (bool, interface{}) {
+func AreResponding(cfg config.Config, logger *log.Entry, urls ...string) error {
 	for _, url := range urls {
-		ok, _ := IsResponding(env, url)
-		if !ok {
-			return false, nil
+		responded := IsResponding(cfg, logger, url)
+		if !responded {
+			return errors.New("not all endpoints respond")
 		}
 	}
 
-	return true, nil
+	return nil
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(env env.Env, url string) (bool, interface{}) {
-	req := httpUtils.CreateRequest(env, url, "GET", nil)
+func IsResponding(cfg config.Config, logger *log.Entry, url string) bool {
+	req := httpUtils.CreateRequest(cfg, url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 
 	if err == nil && resp.StatusCode == 200 {
-		log.Info("App alias responded ok")
-		return true, nil
+		logger.Info("App alias responded ok")
+		return true
 	}
 
 	if err != nil {
-		log.Debugf("Request to alias '%s' returned error %v", url, err)
+		logger.Debugf("Failed request to the alias '%s': %v", url, err)
 	}
 
 	if resp != nil {
-		log.Debugf("Request to alias '%s' returned status %v", url, resp.StatusCode)
+		logger.Debugf("Request to alias '%s' returned status %v", url, resp.StatusCode)
 	}
 
 	if err == nil && resp == nil {
-		log.Debugf("Request to alias '%s' returned no response and no err.", url)
+		logger.Debugf("Request to alias '%s' returned no response and no err.", url)
 	}
 
-	log.Infof("Alias '%s' is still not responding", url)
-	return false, nil
+	logger.Infof("Alias '%s' is still not responding", url)
+	return false
 }

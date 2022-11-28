@@ -1,8 +1,10 @@
 package promote
 
 import (
+	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
@@ -11,59 +13,51 @@ import (
 const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
-func DeploymentWithinEnvironment(env envUtil.Env, suiteName string) (bool, error) {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func DeploymentWithinEnvironment(cfg config.Config, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Get deployments
-	deploymentToPromote, err := getLastDeployment(env, environmentToPromoteWithin)
+	deploymentToPromote, err := getLastDeployment(cfg, environmentToPromoteWithin)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Assert that we no deployments within environment
-	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
+	deploymentsInEnvironment, err := getDeployments(cfg, environmentToPromoteWithin)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
-	promoteJobName, err := promote(env, deploymentToPromote, environmentToPromoteWithin, environmentToPromoteWithin)
+	promoteJobName, err := promote(cfg, deploymentToPromote, environmentToPromoteWithin, environmentToPromoteWithin)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Get job
-	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return job.IsDone(env, config.App2Name, promoteJobName)
-	})
-	if ok && status.(string) == "Succeeded" {
-		doneCheck, ok := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-			return isNewDeploymentExist(env, numDeploymentsBefore)
-		})
-
-		if doneCheck && ok.(bool) {
-			return true, nil
-		}
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
+		return job.IsDone(cfg, defaults.App2Name, promoteJobName, logger)
+	}, logger)
+	if err != nil {
+		return err
 	}
-
-	return false, nil
+	if jobStatus != "Succeeded" {
+		return fmt.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
+	}
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return isNewDeploymentExist(cfg, numDeploymentsBefore)
+	}, logger)
 }
 
-func isNewDeploymentExist(env envUtil.Env, numDeploymentsBefore int) (bool, interface{}) {
-	deploymentsInEnvironment, err := getDeployments(env, environmentToPromoteWithin)
+func isNewDeploymentExist(cfg config.Config, numDeploymentsBefore int) error {
+	deploymentsInEnvironment, err := getDeployments(cfg, environmentToPromoteWithin)
 	if err != nil {
-		logger.Errorf("Error: %v", err)
-		return true, false
+		return err
 	}
 
-	if err != nil {
-		logger.Errorf("Error: %v", err)
-		return true, false
-	}
 	numDeploymentsAfter := len(deploymentsInEnvironment)
-	if (numDeploymentsAfter - numDeploymentsBefore) == 1 {
-		return true, true
+	if (numDeploymentsAfter - numDeploymentsBefore) != 1 {
+		return fmt.Errorf("new expected deployment does not exist")
 	}
-
-	return false, nil
+	return nil
 }

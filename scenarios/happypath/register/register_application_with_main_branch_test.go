@@ -3,7 +3,7 @@ package register
 import (
 	"testing"
 
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,10 +14,9 @@ Also running the test may fail, because it may time out.
 Its best use is when debugging a single test
 */
 func TestApplicationWithMainConfigBranch(t *testing.T) {
-	env.SetRequiredEnvironmentVariablesForTest()
-	environmentVariables := env.NewEnv()
+	config.SetRequiredEnvironmentVariablesForTest()
+	environmentVariables := config.NewConfig()
 
-	ok, err := ApplicationWithMainConfigBranch(environmentVariables, suiteName)
+	err := ApplicationWithMainConfigBranch(environmentVariables, suiteName)
 	assert.NoError(t, err)
-	assert.True(t, ok)
 }

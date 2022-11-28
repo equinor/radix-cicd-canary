@@ -1,4 +1,4 @@
-package config
+package defaults
 
 // TODO: Add test for build-deploy for a specific commitId.
 // Before user story https://dev.azure.com/Equinor/Radix/_workitems/edit/106471, the AppXCommitId didn't have any effect on the build-deploy jobs

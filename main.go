@@ -1,15 +1,15 @@
 package main
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
 	"github.com/equinor/radix-cicd-canary/scenarios/nsp"
 	nsplong "github.com/equinor/radix-cicd-canary/scenarios/nsp-long"
-	"net/http"
-	"time"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )
@@ -25,24 +25,24 @@ func init() {
 func main() {
 	log.Info("Starting...")
 
-	environmentVariables := env.NewEnv()
-	logLevel := environmentVariables.GetLogLevel()
+	cfg := config.NewConfig()
+	logLevel := cfg.GetLogLevel()
 	log.Infof("Log level: %v", logLevel)
 	log.SetLevel(logLevel)
 
-	sleepInterval := environmentVariables.GetSleepIntervalBetweenTestRuns()
+	sleepInterval := cfg.GetSleepIntervalBetweenTestRuns()
 	happyPathSuite := happypath.TestSuite()
 	deployOnlySuite := deployonly.TestSuite()
 
-	nspSleepInterval := environmentVariables.GetNSPSleepInterval()
-	nspLongSleepInterval := environmentVariables.GetNSPLongSleepInterval()
+	nspSleepInterval := cfg.GetNSPSleepInterval()
+	nspLongSleepInterval := cfg.GetNSPLongSleepInterval()
 	nspSuite := nsp.TestSuite()
 	nspLongSuite := nsplong.TestSuite()
 
-	go runSuites(environmentVariables, sleepInterval, happyPathSuite)
-	go runSuites(environmentVariables, sleepInterval, deployOnlySuite)
-	go runSuites(environmentVariables, nspSleepInterval, nspSuite)
-	go runSuites(environmentVariables, nspLongSleepInterval, nspLongSuite)
+	go runSuites(cfg, sleepInterval, happyPathSuite)
+	go runSuites(cfg, sleepInterval, deployOnlySuite)
+	go runSuites(cfg, nspSleepInterval, nspSuite)
+	go runSuites(cfg, nspLongSleepInterval, nspLongSuite)
 
 	log.Info("Started suites. Start metrics service.")
 	http.Handle("/metrics", promhttp.Handler())
@@ -54,7 +54,7 @@ func main() {
 	log.Info("Complete.")
 }
 
-func runSuites(environmentVariables env.Env, sleepInterval time.Duration, suites ...test.Suite) {
+func runSuites(environmentVariables config.Config, sleepInterval time.Duration, suites ...test.Suite) {
 	log.Debugf("Prepare to run %d suite(s)", len(suites))
 	suites = filterSuites(suites, environmentVariables)
 	if len(suites) == 0 {
@@ -70,7 +70,7 @@ func runSuites(environmentVariables env.Env, sleepInterval time.Duration, suites
 	}
 }
 
-func filterSuites(suites []test.Suite, environmentVariables env.Env) []test.Suite {
+func filterSuites(suites []test.Suite, environmentVariables config.Config) []test.Suite {
 	filter := environmentVariables.GetSuiteList()
 	if len(filter) == 0 {
 		return suites
@@ -82,10 +82,10 @@ func filterSuites(suites []test.Suite, environmentVariables env.Env) []test.Suit
 	for _, suite := range suites {
 		// pass the filter if mentioned and !isBlacklist OR if !mentioned and isBlacklist
 		if contains(filter, suite.Name) != isBlacklist {
-			log.Debugf("- run suite \"%s\"", suite.Name)
+			log.Debugf("- run suite '%s'", suite.Name)
 			suitesToRun = append(suitesToRun, suite)
 		} else {
-			log.Debugf("- skip suite \"%s\"", suite.Name)
+			log.Debugf("- skip suite '%s'", suite.Name)
 		}
 	}
 	return suitesToRun

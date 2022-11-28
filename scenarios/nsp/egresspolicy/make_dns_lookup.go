@@ -2,9 +2,10 @@ package egresspolicy
 
 import (
 	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,18 +13,18 @@ import (
 var logger *log.Entry
 
 // LookupInternalDNS tests that we are able to make lookups to internal DNS
-func LookupInternalDNS(env env.Env, suiteName string) (bool, error) {
-	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
+func LookupInternalDNS(cfg config.Config, suiteName string) error {
+	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(internalDnsUrl, suiteName)
 }
 
 // LookupPublicDNS tests that we are able to make lookups to public DNS
-func LookupPublicDNS(env env.Env, suiteName string) (bool, error) {
-	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", env.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
+func LookupPublicDNS(cfg config.Config, suiteName string) error {
+	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(publicDnsUrl, suiteName)
 }
 
-func lookupDns(dnsUrl string, suiteName string) (bool, error) {
+func lookupDns(dnsUrl string, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	client := httpUtils.GetHTTPDefaultClient()
@@ -32,9 +33,12 @@ func lookupDns(dnsUrl string, suiteName string) (bool, error) {
 	dnsResponse, dnsErr := client.Get(dnsUrl)
 
 	if dnsErr != nil {
-		return false, dnsErr
+		return dnsErr
 	}
-	return dnsResponse.StatusCode == 200, nil
+	if dnsResponse.StatusCode != 200 {
+		return fmt.Errorf("expected dnsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode)
+	}
+	return nil
 }
 
 // InternalDnsSuccess is a function after a call to Lookup succeeds

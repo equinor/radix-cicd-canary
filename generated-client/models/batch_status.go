@@ -42,7 +42,7 @@ type BatchStatus struct {
 	JobStatuses []*JobStatus `json:"jobStatuses"`
 
 	// Status message, if any, of the job
-	// Example: \"Error occurred\
+	// Example: 'Error occurred\
 	Message string `json:"message,omitempty"`
 
 	// Name of the job

@@ -20,7 +20,7 @@ serviceAccount:
   name: ""
 
 impersonate:
-  user: t_iknu@equinor.com
+  user: radix@equinor.com
 
 deployKey:
   public: xx

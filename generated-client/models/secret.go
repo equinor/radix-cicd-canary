@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -47,6 +48,13 @@ type Secret struct {
 	// Example: Consistent
 	Status string `json:"status,omitempty"`
 
+	// StatusMessages contains a list of messages related to the Status
+	StatusMessages []string `json:"statusMessages"`
+
+	// TLSCertificates holds the TLS certificate and certificate authorities (CA)
+	// The first certificate in the list should be the TLS certificate and the rest should be CA certificates
+	TLSCertificates []*TLSCertificate `json:"tlsCertificates"`
+
 	// type
 	Type SecretType `json:"type,omitempty"`
 }
@@ -56,6 +64,10 @@ func (m *Secret) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTLSCertificates(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -73,6 +85,32 @@ func (m *Secret) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *Secret) validateTLSCertificates(formats strfmt.Registry) error {
+	if swag.IsZero(m.TLSCertificates) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.TLSCertificates); i++ {
+		if swag.IsZero(m.TLSCertificates[i]) { // not required
+			continue
+		}
+
+		if m.TLSCertificates[i] != nil {
+			if err := m.TLSCertificates[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tlsCertificates" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tlsCertificates" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -99,6 +137,10 @@ func (m *Secret) validateType(formats strfmt.Registry) error {
 func (m *Secret) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateTLSCertificates(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -106,6 +148,26 @@ func (m *Secret) ContextValidate(ctx context.Context, formats strfmt.Registry) e
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Secret) contextValidateTLSCertificates(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.TLSCertificates); i++ {
+
+		if m.TLSCertificates[i] != nil {
+			if err := m.TLSCertificates[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tlsCertificates" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("tlsCertificates" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

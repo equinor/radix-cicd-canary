@@ -1,11 +1,14 @@
 package machineuser
 
 import (
+	"errors"
+	"fmt"
+
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/go-openapi/runtime"
@@ -13,87 +16,88 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var logger *log.Entry
+type step struct {
+	logger *log.Entry
+}
 
 // Create Tests that machine user is created properly
-func Create(env envUtil.Env, suiteName string) (bool, error) {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func Create(cfg config.Config, suiteName string) error {
+	s := &step{logger: log.WithFields(log.Fields{"Suite": suiteName})}
 
-	// Enable machine user
-	enabled := true
-	err := patchMachineUser(env, enabled)
+	s.logger.Debugf("patch to enable machine user")
+	const enabled = true
+	err := s.patchMachineUser(cfg, enabled)
 	if err != nil {
-		return false, err
+		return err
 	}
+	s.logger.Debugf("patches")
 
-	ok, machineUserToken := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return getMachineUserToken(env)
-	})
+	s.logger.Debugf("get machine user token")
+	machineUserToken, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*string, error) {
+		return getMachineUserToken(cfg)
+	}, s.logger)
 
-	if !ok {
-		log.Error("Cannot get machine token")
-		return false, nil
+	if err != nil {
+		return err
 	}
+	s.logger.Debugf("machine user token is given")
 
-	token := machineUserToken.(*string)
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return hasAccess(env, *token)
-	})
+	s.logger.Debugf("check machine user token has access")
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return s.hasAccess(cfg, *machineUserToken)
+	}, s.logger)
 
-	if !ok {
-		log.Error("Does not have expected access with machine token")
-		return false, nil
+	if err != nil {
+		return fmt.Errorf("does not have expected access with machine token. %w", err)
 	}
 
 	// Should only have access to its own application
-	hasAccessToOtherApplication := hasAccessToApplication(env, config.App1Name, *token)
+	hasAccessToOtherApplication := s.hasAccessToApplication(cfg, defaults.App1Name, *machineUserToken)
 	if hasAccessToOtherApplication {
-		log.Debugf("Has not expected access to another application \"%s\"", config.App1Name)
-		return false, nil
+		return fmt.Errorf("has not expected access to another application '%s'", defaults.App1Name)
 	}
 
 	// Disable machine user
-	err = patchMachineUser(env, !enabled)
+	err = s.patchMachineUser(cfg, !enabled)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Token should no longer have access
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return hasNoAccess(env, *token)
-	})
+	s.logger.Debugf("check machine user token has no access")
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return s.hasNoAccess(cfg, *machineUserToken)
+	}, s.logger)
 
-	if !ok {
-		log.Error("Has not expected access with machine token")
-		return false, nil
+	if err != nil {
+		return fmt.Errorf("has not expected access with machine token. %w", err)
 	}
-	log.Debug("MachineUser was set and un-set properly")
-	return true, nil
+	s.logger.Debug("MachineUser was set and un-set properly")
+	return nil
 }
 
-func getMachineUserToken(env envUtil.Env) (bool, *string) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func getMachineUserToken(cfg config.Config) (*string, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := apiclient.NewRegenerateMachineUserTokenParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
-		WithAppName(config.App2Name)
+		WithAppName(defaults.App2Name)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	tokenResponse, err := client.RegenerateMachineUserToken(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Cannot regenerate machine token: %s", err)
-		return false, nil
+		return nil, fmt.Errorf("cannot regenerate machine token: %v", err)
 	}
 
-	return true, tokenResponse.Payload.Token
+	return tokenResponse.Payload.Token, nil
 }
 
-func patchMachineUser(env envUtil.Env, enabled bool) error {
-	log.Debugf("Set MachineUser to %v", enabled)
+func (s *step) patchMachineUser(cfg config.Config, enabled bool) error {
+	s.logger.Debugf("Set MachineUser to %v", enabled)
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			MachineUser: &enabled,
@@ -101,72 +105,85 @@ func patchMachineUser(env envUtil.Env, enabled bool) error {
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().
-		WithAppName(config.App2Name).
+		WithAppName(defaults.App2Name).
 		WithPatchRequest(&patchRequest)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	_, err := client.ModifyRegistrationDetails(params, clientBearerToken)
 	if err != nil {
 		return err
 	}
-	log.Debugf("MachineUser has been set to %v", enabled)
+	s.logger.Debugf("MachineUser has been set to %v", enabled)
 	return nil
 }
 
-func hasNoAccess(env envUtil.Env, machineUserToken string) (bool, interface{}) {
-	return hasProperAccess(env, machineUserToken, false), nil
+func (s *step) hasNoAccess(cfg config.Config, machineUserToken string) error {
+	return s.hasProperAccess(cfg, machineUserToken, false)
 }
 
-func hasAccess(env envUtil.Env, machineUserToken string) (bool, interface{}) {
-	return hasProperAccess(env, machineUserToken, true), nil
+func (s *step) hasAccess(cfg config.Config, machineUserToken string) error {
+	return s.hasProperAccess(cfg, machineUserToken, true)
 }
 
-func hasProperAccess(env envUtil.Env, machineUserToken string, properAccess bool) bool {
-	accessToApplication := hasAccessToApplication(env, config.App2Name, machineUserToken)
+func (s *step) hasProperAccess(cfg config.Config, machineUserToken string, properAccess bool) error {
+	s.logger.Debugf("check hasProperAccess: %v", properAccess)
+	accessToApplication := s.hasAccessToApplication(cfg, defaults.App2Name, machineUserToken)
 
-	err := buildApp(env, machineUserToken)
-	accessToBuild := !isTriggerPipelineBuildUnauthorized(err)
+	err := buildApp(cfg, machineUserToken)
+	s.logger.Debugf("err from buildApp: %v", err)
+	accessToBuild := !s.isTriggerPipelineBuildUnauthorized(err)
 
-	err = setSecret(env, machineUserToken)
-	accessToSecret := !isSetSecretUnauthorizedError(err)
+	err = setSecret(cfg, machineUserToken)
+	s.logger.Debugf("err from setSecret: %v", err)
+	accessToSecret := !s.isSetSecretUnauthorizedError(err)
 
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
+	s.logger.Debugf(" - accessToApplication: %v, accessToBuild: %v, accessToSecret: %v", accessToApplication, accessToBuild, accessToSecret)
+	s.logger.Debugf(" - hasProperAccess: %v", hasProperAccess)
 	if !hasProperAccess {
-		logger.Info("Proper access hasn't been granted yet")
+		return fmt.Errorf("proper access hasn't been granted yet")
 	}
-
-	return hasProperAccess
+	return nil
 }
 
-func hasAccessToApplication(env envUtil.Env, appName, machineUserToken string) bool {
-	_, err := getApplication(env, appName, machineUserToken)
-	return !isGetApplicationUnauthorized(err) && !isGetApplicationForbidden(err)
+func (s *step) hasAccessToApplication(cfg config.Config, appName, machineUserToken string) bool {
+	s.logger.Debugf("get application with machine user token")
+	_, err := getApplication(cfg, appName, machineUserToken)
+	if err != nil {
+		s.logger.Debugf("got an err %v", err)
+	}
+	isGetApplicationUnauthorized := s.isGetApplicationUnauthorized(err)
+	getApplicationForbidden := s.isGetApplicationForbidden(err)
+	s.logger.Debugf("isGetApplicationUnauthorized: %v, getApplicationForbidden: %v", isGetApplicationUnauthorized, getApplicationForbidden)
+	hasAccess := !isGetApplicationUnauthorized && !getApplicationForbidden
+	s.logger.Debugf("hasAccessToApplication: %v", hasAccess)
+	return hasAccess
 }
 
-func isGetApplicationUnauthorized(err error) bool {
-	if _, ok := err.(*apiclient.GetApplicationUnauthorized); ok {
+func (s *step) isGetApplicationUnauthorized(err error) bool {
+	if errors.Is(err, &apiclient.GetApplicationUnauthorized{}) {
 		return true
 	}
-
+	s.logger.Debugf("GetApplicationUnauthorized err: %v", err)
 	return false
 }
 
-func isSetSecretUnauthorizedError(err error) bool {
-	if _, ok := err.(*environmentclient.ChangeComponentSecretUnauthorized); ok {
+func (s *step) isSetSecretUnauthorizedError(err error) bool {
+	if errors.Is(err, &environmentclient.ChangeComponentSecretUnauthorized{}) {
 		return true
 	}
-
+	s.logger.Debugf("SetSecretUnauthorized err: %v", err)
 	return false
 }
 
-func getApplication(env envUtil.Env, appName, machineUserToken string) (*models.Application, error) {
+func getApplication(cfg config.Config, appName, machineUserToken string) (*models.Application, error) {
 	params := apiclient.NewGetApplicationParams().
 		WithAppName(appName)
 
 	clientBearerToken := httptransport.BearerToken(machineUserToken)
-	client := httpUtils.GetApplicationClient(env)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	application, err := client.GetApplication(params, clientBearerToken)
 	if err != nil {
@@ -176,17 +193,17 @@ func getApplication(env envUtil.Env, appName, machineUserToken string) (*models.
 	return application.Payload, nil
 }
 
-func buildApp(env envUtil.Env, machineUserToken string) error {
+func buildApp(cfg config.Config, machineUserToken string) error {
 	bodyParameters := models.PipelineParametersBuild{
-		Branch: config.App2BranchToBuildFrom,
+		Branch: defaults.App2BranchToBuildFrom,
 	}
 
 	params := apiclient.NewTriggerPipelineBuildParams().
-		WithAppName(config.App2Name).
+		WithAppName(defaults.App2Name).
 		WithPipelineParametersBuild(&bodyParameters)
 
 	clientBearerToken := httptransport.BearerToken(machineUserToken)
-	client := httpUtils.GetApplicationClient(env)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	_, err := client.TriggerPipelineBuild(params, clientBearerToken)
 	if err != nil {
@@ -196,49 +213,49 @@ func buildApp(env envUtil.Env, machineUserToken string) error {
 	return nil
 }
 
-func setSecret(env envUtil.Env, machineUserToken string) error {
+func setSecret(cfg config.Config, machineUserToken string) error {
 	params := environmentclient.NewChangeComponentSecretParams().
-		WithAppName(config.App2Name).
-		WithEnvName(config.App2EnvironmentName).
-		WithComponentName(config.App2Component2Name).
-		WithSecretName(config.App2SecretName).
+		WithAppName(defaults.App2Name).
+		WithEnvName(defaults.App2EnvironmentName).
+		WithComponentName(defaults.App2Component2Name).
+		WithSecretName(defaults.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: stringPtr(config.App2SecretValue),
+				SecretValue: stringPtr(defaults.App2SecretValue),
 			})
 
 	clientBearerToken := httptransport.BearerToken(machineUserToken)
-	client := httpUtils.GetEnvironmentClient(env)
+	client := httpUtils.GetEnvironmentClient(cfg)
 
 	_, err := client.ChangeComponentSecret(params, clientBearerToken)
 	if err != nil {
-		logger.Errorf("Error calling ChangeComponentSecret for application %s: %v", config.App2Name, err)
-		return err
+		return fmt.Errorf("failed calling ChangeComponentSecret for application %s: %w", defaults.App2Name, err)
 	}
-
 	return nil
 }
 
-func isTriggerPipelineBuildUnauthorized(err error) bool {
-	return err != nil && checkErrorResponse(err, 401)
+func (s *step) isTriggerPipelineBuildUnauthorized(err error) bool {
+	return err != nil && s.checkErrorResponse(err, 401)
 }
 
-func isGetApplicationForbidden(err error) bool {
-	switch err.(type) {
-	case *apiclient.GetApplicationForbidden:
+func (s *step) isGetApplicationForbidden(err error) bool {
+	if errors.Is(err, &apiclient.GetApplicationForbidden{}) {
 		return true
 	}
-
+	s.logger.Debugf("expected err apiclient.GetApplicationForbidden but got: %v", err)
 	return false
 }
 
-func checkErrorResponse(err error, expectedStatusCode int) bool {
+func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
 	apiError, ok := err.(*runtime.APIError)
 	if ok {
 		errorCode := apiError.Code
+		s.logger.Debugf("checkErrorResponse err code: %d, expected err code: %d", errorCode, expectedStatusCode)
 		if errorCode == expectedStatusCode {
 			return true
 		}
+	} else {
+		s.logger.Debugf("checkErrorResponse err is not runtime.APIError")
 	}
 	return false
 }

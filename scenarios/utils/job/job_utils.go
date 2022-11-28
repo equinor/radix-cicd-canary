@@ -1,52 +1,51 @@
 package job
 
 import (
-	pipelineJobclient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
+	"fmt"
+
+	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
 
 // IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(env env.Env, appName, expectedStatus string) (bool, interface{}) {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func IsListedWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
-	params := pipelineJobclient.NewGetApplicationJobsParams().
+	params := pipelineJobClient.NewGetApplicationJobsParams().
 		WithAppName(appName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("Error calling GetApplicationJobs for application %s: %v", appName, err)
-		return false, nil
+		return nil, fmt.Errorf("error calling GetApplicationJobs for application %s: %v", appName, err)
 	}
 	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
-		log.Debugf("GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
-		return false, nil
+		return nil, fmt.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
 	}
 	if applicationJobs.Payload[0].Status != expectedStatus {
-		log.Debugf("GetApplicationJobs for application %s expected status \"%s\", but it received \"%s\"",
+		return nil, fmt.Errorf("method GetApplicationJobs for application %s expected status '%s', but it received '%s'",
 			appName, expectedStatus, applicationJobs.Payload[0].Status)
-		return false, nil
 	}
-	log.Debugf("GetApplicationJobs for application %s received expected status \"%s\"", appName, expectedStatus)
-	return true, applicationJobs.Payload[0]
+	logger.Debugf("method GetApplicationJobs for application %s received expected status '%s'", appName, expectedStatus)
+	return applicationJobs.Payload[0], nil
 }
 
 // Stop Stops a job
-func Stop(env env.Env, appName, jobName string) bool {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func Stop(cfg config.Config, appName, jobName string) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
-	params := pipelineJobclient.NewStopApplicationJobParams().
+	params := pipelineJobClient.NewStopApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
@@ -54,71 +53,76 @@ func Stop(env env.Env, appName, jobName string) bool {
 
 	jobStopped, err := client.StopApplicationJob(params, clientBearerToken)
 	if err == nil && jobStopped != nil {
-		return true
+		return nil
 	}
 
-	log.Infof("Failed stopping job %s. Error: %v", jobName, err)
-	return false
+	return fmt.Errorf("failed to stop job %s for an app %s. Error: %w", jobName, appName, err)
 }
 
 // IsDone Checks if job is done
-func IsDone(env env.Env, appName, jobName string) (bool, interface{}) {
-	jobStatus := GetStatus(env, appName, jobName)
-	if jobStatus == "Succeeded" || jobStatus == "Failed" {
-		log.Debugf("Job is done with status: %s", jobStatus)
-		return true, jobStatus
+func IsDone(cfg config.Config, appName, jobName string, logger *log.Entry) (string, error) {
+	jobStatus, err := GetStatus(cfg, appName, jobName, logger)
+	if err != nil {
+		return "", err
 	}
-
-	log.Debug("Job is not done yet")
-	return false, nil
+	if jobStatus == "Succeeded" || jobStatus == "Failed" {
+		logger.Debugf("Job %s for an app %s is done with status: %s", jobName, appName, jobStatus)
+		return jobStatus, nil
+	}
+	logger.Debugf("Job %s for an app %s is not done yet", jobName, appName)
+	return "", fmt.Errorf("job %s for an app %s was possible failed, Status %s", jobName, appName, jobStatus)
 }
 
 // GetStatus Gets status of job
-func GetStatus(env env.Env, appName, jobName string) string {
-	job := Get(env, appName, jobName)
-	if job != nil {
-		return job.Status
+func GetStatus(cfg config.Config, appName, jobName string, logger *log.Entry) (string, error) {
+	job, err := Get(cfg, appName, jobName)
+	if err != nil {
+		return "", err
 	}
-
-	log.Debug("Job was not listed yet")
-	return ""
+	if job != nil {
+		return job.Status, nil
+	}
+	logger.Debugf("Job %s was not listed yet", jobName)
+	return "", fmt.Errorf("job %s does not exist", jobName)
 }
 
 // Get gets job from job name
-func Get(env env.Env, appName, jobName string) *models.Job {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func Get(cfg config.Config, appName, jobName string) (*models.Job, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
-	params := pipelineJobclient.NewGetApplicationJobParams().
+	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
-	if err == nil && applicationJob.Payload != nil {
-		return applicationJob.Payload
+	if err != nil {
+		return nil, err
 	}
-
-	return nil
+	if applicationJob.Payload != nil {
+		return applicationJob.Payload, nil
+	}
+	return nil, fmt.Errorf("failed to get job %s", jobName)
 }
 
 // GetSteps gets job from job name
-func GetSteps(env env.Env, appName, jobName string) []*models.Step {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
-	params := pipelineJobclient.NewGetApplicationJobParams().
+	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
 	if err == nil &&
@@ -132,23 +136,23 @@ func GetSteps(env env.Env, appName, jobName string) []*models.Step {
 }
 
 // GetLogForStep gets log for step
-func GetLogForStep(env env.Env, appName, jobName, stepName string) string {
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+func GetLogForStep(cfg config.Config, appName, jobName, stepName string, logger *log.Entry) string {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
-	params := pipelineJobclient.NewGetPipelineJobStepLogsParams().
+	params := pipelineJobClient.NewGetPipelineJobStepLogsParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithStepName(stepName).
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetJobClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetJobClient(cfg)
 
 	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, clientBearerToken)
 	if err != nil {
-		log.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
+		logger.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
 		return ""
 	}
 	return applicationJobLogs.Payload

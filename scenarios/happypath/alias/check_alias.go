@@ -1,46 +1,45 @@
 package alias
 
 import (
-	"errors"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	log "github.com/sirupsen/logrus"
 )
 
 // DefaultResponding Checks if default alias of application is responding
-func DefaultResponding(env envUtil.Env, suiteName string) (bool, error) {
-	ok, publicDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.TryGetPublicDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
-	})
+func DefaultResponding(cfg config.Config, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	publicDomainName, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
+		return application.TryGetPublicDomainName(cfg, defaults.App2Name, defaults.App2EnvironmentName, defaults.App2Component1Name)
+	}, logger)
 
-	if !ok {
-		return false, errors.New("public domain name of alias is empty")
+	if err != nil {
+		return err
 	}
 
-	ok, canonicalDomainName := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.TryGetCanonicalDomainName(env, config.App2Name, config.App2EnvironmentName, config.App2Component1Name)
-	})
+	canonicalDomainName, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
+		return application.TryGetCanonicalDomainName(cfg, defaults.App2Name, defaults.App2EnvironmentName, defaults.App2Component1Name)
+	}, logger)
 
-	if !ok {
-		return false, errors.New("canonical domain name of alias is empty")
+	if err != nil {
+		return err
 	}
 
-	if application.IsRunningInActiveCluster(publicDomainName.(string), canonicalDomainName.(string)) {
-		ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-			return application.IsAliasDefined(env, config.App2Name)
-		})
+	if application.IsRunningInActiveCluster(publicDomainName, canonicalDomainName) {
+		err := test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+			return application.IsAliasDefined(cfg, defaults.App2Name, logger)
+		}, logger)
 
-		if !ok {
-			return false, errors.New("public alias is not defined")
+		if err != nil {
+			return err
 		}
 	}
 
-	ok, _ = test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		schema := "https"
-		return application.AreResponding(env, http.GetUrl(schema, canonicalDomainName.(string)), http.GetUrl(schema, publicDomainName.(string)))
-	})
-	return ok, nil
+		return application.AreResponding(cfg, logger, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
+	}, logger)
 }

@@ -38,7 +38,7 @@ type JobStatus struct {
 	JobID string `json:"jobId,omitempty"`
 
 	// Status message, if any, of the job
-	// Example: \"Error occurred\
+	// Example: 'Error occurred'
 	Message string `json:"message,omitempty"`
 
 	// Name of the job
