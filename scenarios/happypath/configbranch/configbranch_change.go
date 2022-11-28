@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
@@ -23,28 +23,28 @@ type expectedStep struct {
 	components []string
 }
 
-// Change Tests that radixconfig is read from the branch defined as configBanch
-func Change(env envUtil.Env, suiteName string) (bool, error) {
+// Change Tests that radixconfig is read from the branch defined as configBranch
+func Change(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger first build via web hook
-	ok, err := httpUtils.TriggerWebhookPush(env, config.App4ConfigBranch, config.App4CommitID, config.App4SSHRepository, config.App4SharedSecret)
-	if !ok {
-		return false, err
+	err := httpUtils.TriggerWebhookPush(cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, logger)
+	if err != nil {
+		return err
 	}
 
 	logger.Infof("First job was triggered")
-	jobSummary, err := waitForJobRunning(env)
+	jobSummary, err := waitForJobRunning(cfg)
 
 	if err != nil {
-		return false, errors.WithMessage(err, fmt.Sprintf("first job for application %s", config.App4Name))
+		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
 	}
 
 	jobName := jobSummary.Name
 	logger.Infof("First job name: %s", jobName)
 
-	if ok, err = waitForJobDone(env, jobName); !ok {
-		return false, errors.WithMessage(err, fmt.Sprintf("first job for application %s", config.App4Name))
+	if err = waitForJobDone(cfg, jobName); err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
 	}
 
 	logger.Info("First job was completed")
@@ -55,35 +55,35 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www", components: []string{"www"}},
-		{name: "run-pipelines", components: []string{}},
+		//{name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
-		return false, err
+	if ok, err := validateJobSteps(cfg, jobName, expectedSteps); !ok {
+		return err
 	}
 
 	// Change config branch, trigger second webhook and verify job
-	if err := patchConfigBranch(env, config.App4NewConfigBranch); err != nil {
-		return false, err
+	if err := patchConfigBranch(cfg, defaults.App4NewConfigBranch); err != nil {
+		return err
 	}
 
-	ok, err = httpUtils.TriggerWebhookPush(env, config.App4NewConfigBranch, config.App4NewCommitID, config.App4SSHRepository, config.App4SharedSecret)
-	if !ok {
-		return false, err
+	err = httpUtils.TriggerWebhookPush(cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, logger)
+	if err != nil {
+		return err
 	}
 
 	logger.Infof("Second job was triggered")
-	jobSummary, err = waitForJobRunning(env)
+	jobSummary, err = waitForJobRunning(cfg)
 
 	if err != nil {
-		return false, errors.WithMessage(err, fmt.Sprintf("second job for application %s", config.App4Name))
+		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
 	}
 
 	jobName = jobSummary.Name
 	logger.Infof("Second job name: %s", jobName)
 
-	if ok, err = waitForJobDone(env, jobName); !ok {
-		return false, errors.WithMessage(err, fmt.Sprintf("second job for application %s", config.App4Name))
+	if err = waitForJobDone(cfg, jobName); err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
 	}
 
 	logger.Info("Second job was completed")
@@ -94,50 +94,38 @@ func Change(env envUtil.Env, suiteName string) (bool, error) {
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www2", components: []string{"www2"}},
-		{name: "run-pipelines", components: []string{}},
+		//{name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(env, jobName, expectedSteps); !ok {
-		return false, err
+	if ok, err := validateJobSteps(cfg, jobName, expectedSteps); !ok {
+		return err
 	}
 
-	return true, nil
+	return nil
 }
 
-func waitForJobRunning(env envUtil.Env) (*models.JobSummary, error) {
+func waitForJobRunning(cfg config.Config) (*models.JobSummary, error) {
 	status := "Running"
 
-	ok, obj := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return job.IsListedWithStatus(env, config.App4Name, status)
-	})
-
-	if !ok {
-		return nil, fmt.Errorf("could not get job with status %s", status)
-	}
-
-	if jobSummary, ok := obj.(*models.JobSummary); ok {
-		return jobSummary, nil
-	}
-
-	return nil, fmt.Errorf("could not unmarshal jobSummary")
+	return test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
+		return job.IsListedWithStatus(cfg, defaults.App4Name, status, logger)
+	}, logger)
 }
 
-func waitForJobDone(env envUtil.Env, jobName string) (bool, error) {
-	ok, status := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return job.IsDone(env, config.App4Name, jobName)
-	})
-
-	if !ok {
-		return false, fmt.Errorf("job %s did not complete within the specified timeout period", jobName)
+func waitForJobDone(cfg config.Config, jobName string) error {
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
+		return job.IsDone(cfg, defaults.App4Name, jobName, logger)
+	}, logger)
+	if err != nil {
+		return err
 	}
-	if status.(string) != "Succeeded" {
-		return false, fmt.Errorf("job %s completed with status %s", jobName, status)
+	if jobStatus != "Succeeded" {
+		return fmt.Errorf("job %s completed with status %s", jobName, jobStatus)
 	}
-
-	return true, nil
+	return nil
 }
 
-func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
+func patchConfigBranch(cfg config.Config, newConfigBranch string) error {
 	logger.Debugf("Set ConfigBranch to %v", newConfigBranch)
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
@@ -146,11 +134,11 @@ func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().
-		WithAppName(config.App4Name).
+		WithAppName(defaults.App4Name).
 		WithPatchRequest(&patchRequest)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetApplicationClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
 
 	_, err := client.ModifyRegistrationDetails(params, clientBearerToken)
 	if err != nil {
@@ -160,8 +148,8 @@ func patchConfigBranch(env envUtil.Env, newConfigBranch string) error {
 	return nil
 }
 
-func validateJobSteps(env envUtil.Env, jobName string, expectedSteps []expectedStep) (bool, error) {
-	steps := job.GetSteps(env, config.App4Name, jobName)
+func validateJobSteps(cfg config.Config, jobName string, expectedSteps []expectedStep) (bool, error) {
+	steps := job.GetSteps(cfg, defaults.App4Name, jobName)
 
 	if len(steps) != len(expectedSteps) {
 		return false, fmt.Errorf("number of pipeline steps was not as expected")

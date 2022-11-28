@@ -1,35 +1,42 @@
 package register
 
 import (
+	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 // ApplicationWithNoDeployKey Tests that we are able to register application
 // with no deploy key and that deploy key is generated
-func ApplicationWithNoDeployKey(env envUtil.Env, suiteName string) (bool, error) {
-	appName := config.App1Name
-	appRepo := config.App1Repository
-	appSharedSecret := config.App1SharedSecret
-	appCreator := config.App1Creator
-	appConfigBranch := config.App1ConfigBranch
-	appConfigurationItem := config.App1ConfigurationItem
+func ApplicationWithNoDeployKey(cfg config.Config, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	appName := defaults.App1Name
+	appRepo := defaults.App1Repository
+	appSharedSecret := defaults.App1SharedSecret
+	appCreator := defaults.App1Creator
+	appConfigBranch := defaults.App1ConfigBranch
+	appConfigurationItem := defaults.App1ConfigurationItem
 
-	registerApplicationOK, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
+	err := application.DeleteIfExist(cfg, appName, logger)
 	if err != nil {
-		logger.Errorf("%v", err)
-		return false, err
+		return err
 	}
 
-	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsDefined(env, config.App2Name)
-	})
-
-	if !ok {
-		return false, nil
+	registerApplicationOK, err := application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
+	if err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	return registerApplicationOK.Payload.ApplicationRegistration.PublicKey != "", err
+	if registerApplicationOK.Payload.ApplicationRegistration.PublicKey == "" {
+		return fmt.Errorf("the Public Key of the registered application %s is empty", appName)
+	}
+
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.IsDefined(cfg, appName)
+	}, logger)
 }

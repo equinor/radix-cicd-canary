@@ -2,13 +2,14 @@ package egresspolicy
 
 import (
 	"fmt"
-	"github.com/equinor/radix-cicd-canary/metrics"
-	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
-	"github.com/equinor/radix-common/utils/errors"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
+
+	"github.com/equinor/radix-cicd-canary/metrics"
+	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
+	"github.com/equinor/radix-common/utils/errors"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -16,42 +17,42 @@ const (
 )
 
 // ReachRadixSite tests that canary golang endpoint can be reached from networkpolicy canary with policy that allows it
-func ReachRadixSite(env env.Env, suiteName string) (bool, error) {
+func ReachRadixSite(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appEnv := "allowradix"
-	reachRadixSiteUrl := getReachRadixSiteUrl(env, appEnv)
+	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
 		Timeout: time.Duration(timeout) * time.Second,
 	}
 	_, err := client.Get(reachRadixSiteUrl)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
 }
 
 // NotReachRadixSite tests that canary golang endpoint can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachRadixSite(env env.Env, suiteName string) (bool, error) {
+func NotReachRadixSite(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appEnv := "egressrulestopublicdns"
-	reachRadixSiteUrl := getReachRadixSiteUrl(env, appEnv)
+	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
 		Timeout: time.Duration(timeout) * time.Second,
 	}
 	res, err := client.Get(reachRadixSiteUrl)
 	if err == nil && res.StatusCode == 200 {
-		return false, fmt.Errorf("request to %s from canary should have been blocked by network policy", env.GetGolangCanaryUrl())
+		return fmt.Errorf("request to %s from canary should have been blocked by network policy", cfg.GetGolangCanaryUrl())
 	}
-	return true, nil
+	return nil
 }
 
 // NotReachExternalSite tests that a list of external websites can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachExternalSite(env env.Env, suiteName string) (bool, error) {
+func NotReachExternalSite(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {
-		reachExternalSiteUrl := fmt.Sprintf("%s/testexternalwebsite", env.GetNetworkPolicyCanaryUrl(appEnv))
+		reachExternalSiteUrl := fmt.Sprintf("%s/testexternalwebsite", cfg.GetNetworkPolicyCanaryUrl(appEnv))
 		client := http.Client{
 			Timeout: 60 * time.Second,
 		}
@@ -61,13 +62,13 @@ func NotReachExternalSite(env env.Env, suiteName string) (bool, error) {
 		}
 	}
 	if len(errs) > 0 {
-		return false, errors.Concat(errs)
+		return errors.Concat(errs)
 	}
-	return true, nil
+	return nil
 }
 
-func getReachRadixSiteUrl(env env.Env, appEnv string) string {
-	return fmt.Sprintf("%s/testradixsite", env.GetNetworkPolicyCanaryUrl(appEnv))
+func getReachRadixSiteUrl(cfg config.Config, appEnv string) string {
+	return fmt.Sprintf("%s/testradixsite", cfg.GetNetworkPolicyCanaryUrl(appEnv))
 }
 
 // ReachRadixSiteSuccess is a function after a call to ReachRadixSite succeeds

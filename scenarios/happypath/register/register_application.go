@@ -1,40 +1,38 @@
 package register
 
 import (
+	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
-var logger *log.Entry
-
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(env envUtil.Env, suiteName string) (bool, error) {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func Application(cfg config.Config, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	appName := defaults.App2Name
+	appRepo := defaults.App2Repository
+	appSharedSecret := defaults.App2SharedSecret
+	appCreator := defaults.App2Creator
+	appConfigBranch := defaults.App2ConfigBranch
+	appConfigurationItem := defaults.App2ConfigurationItem
 
-	appName := config.App2Name
-	appRepo := config.App2Repository
-	appSharedSecret := config.App2SharedSecret
-	appCreator := config.App2Creator
-	appConfigBranch := config.App2ConfigBranch
-	appConfigurationItem := config.App2ConfigurationItem
-
-	_, err := application.Register(env, appName, appRepo, appSharedSecret, appCreator, env.GetPublicKey(), env.GetPrivateKey(), appConfigBranch, appConfigurationItem)
+	err := application.DeleteIfExist(cfg, appName, logger)
 	if err != nil {
-		logger.Errorf("%v", err)
-		return false, err
+		return err
 	}
 
-	ok, _ := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return application.IsDefined(env, config.App2Name)
-	})
-
-	if !ok {
-		return false, nil
+	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, cfg.GetPublicKey(), cfg.GetPrivateKey(), appConfigBranch, appConfigurationItem)
+	if err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	return true, nil
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.IsDefined(cfg, appName)
+	}, logger)
 }

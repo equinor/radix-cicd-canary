@@ -17,8 +17,8 @@ import (
 	jobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
 	pipelineJobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
 	platformAPIClient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/crypto"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
@@ -46,7 +46,7 @@ func GetHTTPDefaultClient() *http.Client {
 }
 
 // CreateRequest setup correct header for running tests
-func CreateRequest(env env.Env, url, method string, parameters interface{}) *http.Request {
+func CreateRequest(cfg config.Config, url, method string, parameters interface{}) *http.Request {
 	var reader io.Reader
 	if parameters != nil {
 		payload, _ := json.Marshal(parameters)
@@ -54,16 +54,16 @@ func CreateRequest(env env.Env, url, method string, parameters interface{}) *htt
 	}
 
 	req, _ := http.NewRequest(method, url, reader)
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", env.GetBearerToken()))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", cfg.GetBearerToken()))
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Impersonate-User", env.GetImpersonateUser())
-	req.Header.Add("Impersonate-Group", env.GetImpersonateGroup())
+	req.Header.Add("Impersonate-User", cfg.GetImpersonateUser())
+	req.Header.Add("Impersonate-Group", cfg.GetImpersonateGroup())
 
 	return req
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret string) (bool, error) {
+func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSecret string, logger *log.Entry) error {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -72,98 +72,98 @@ func TriggerWebhookPush(env env.Env, branch, commit, repository, sharedSecret st
 		},
 	}
 
-	req := CreateRequest(env, fmt.Sprintf("%s/events/github", env.GetGitHubWebHookAPIURL()), "POST", parameters)
+	req := CreateRequest(cfg, fmt.Sprintf("%s/events/github", cfg.GetGitHubWebHookAPIURL()), "POST", parameters)
 	client := http.DefaultClient
 	payload, _ := json.Marshal(parameters)
 
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature-256", crypto.SHA256HMAC([]byte(sharedSecret), payload))
 
-	log.Debugf("Trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit)
+	logger.Debugf("Trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return false, errors.WithMessage(err,
-			fmt.Sprintf("error trigger webhook push for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
+		return errors.WithMessage(err,
+			fmt.Sprintf("error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
-	if ok, err := CheckResponse(resp); !ok {
-		return false, errors.WithMessage(err,
-			fmt.Sprintf("error checking webhook response for \"%s\" branch of repository %s, for commit %s", branch, repository, commit))
+	if err := CheckResponse(resp, logger); err != nil {
+		return errors.WithMessage(err,
+			fmt.Sprintf("error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
-	return true, nil
+	return nil
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response) (bool, error) {
+func CheckResponse(resp *http.Response, logger *log.Entry) error {
 	defer resp.Body.Close()
 	_, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return false, errors.WithMessage(err, "error reading response body")
+		return errors.WithMessage(err, "error reading response body")
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-		log.Debugf("Response code: %d", resp.StatusCode)
-		return true, nil
+		logger.Debugf("Response code: %d", resp.StatusCode)
+		return nil
 	}
 
-	return false, fmt.Errorf("response status code is %d", resp.StatusCode)
+	return fmt.Errorf("response status code is %d", resp.StatusCode)
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
-func CheckUrl(url string) (bool, error) {
-	log.Debugf("Sending request to %s", url)
+func CheckUrl(url string, logger *log.Entry) error {
+	logger.Debugf("Sending request to %s", url)
 	response, err := http.Get(url)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return CheckResponse(response)
+	return CheckResponse(response, logger)
 }
 
 // GetClientBearerToken Gets bearer token in order to make call to API server
-func GetClientBearerToken(env env.Env) runtime.ClientAuthInfoWriter {
-	return httptransport.BearerToken(env.GetBearerToken())
+func GetClientBearerToken(cfg config.Config) runtime.ClientAuthInfoWriter {
+	return httptransport.BearerToken(cfg.GetBearerToken())
 }
 
 // GetPlatformClient Gets the Platform API client
-func GetPlatformClient(env env.Env) platformAPIClient.ClientService {
-	return platformAPIClient.New(getTransport(env), strfmt.Default)
+func GetPlatformClient(cfg config.Config) platformAPIClient.ClientService {
+	return platformAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
 // GetApplicationClient Gets the Application API client
-func GetApplicationClient(env env.Env) applicationAPIClient.ClientService {
-	return applicationAPIClient.New(getTransport(env), strfmt.Default)
+func GetApplicationClient(cfg config.Config) applicationAPIClient.ClientService {
+	return applicationAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
 // GetJobClient Gets the Job API client
-func GetJobClient(env env.Env) pipelineJobAPIClient.ClientService {
-	return pipelineJobAPIClient.New(getTransport(env), strfmt.Default)
+func GetJobClient(cfg config.Config) pipelineJobAPIClient.ClientService {
+	return pipelineJobAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
 // GetEnvironmentClient Gets the Environment API client
-func GetEnvironmentClient(env env.Env) environmentAPIClient.ClientService {
-	return environmentAPIClient.New(getTransport(env), strfmt.Default)
+func GetEnvironmentClient(cfg config.Config) environmentAPIClient.ClientService {
+	return environmentAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
 // GetDeploymentClient Gets the Deployment API client
-func GetDeploymentClient(env env.Env) deploymentAPIClient.ClientService {
-	return deploymentAPIClient.New(getTransport(env), strfmt.Default)
+func GetDeploymentClient(cfg config.Config) deploymentAPIClient.ClientService {
+	return deploymentAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
 // GetComponentClient Gets the Component API client
-func GetComponentClient(env env.Env) componentAPIClient.ClientService {
-	return componentAPIClient.New(getTransport(env), strfmt.Default)
+func GetComponentClient(cfg config.Config) componentAPIClient.ClientService {
+	return componentAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
 // GetK8sJobClient Gets the K8s job API client
-func GetK8sJobClient(env env.Env) jobAPIClient.ClientService {
-	return jobAPIClient.New(getTransport(env), strfmt.Default)
+func GetK8sJobClient(cfg config.Config) jobAPIClient.ClientService {
+	return jobAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
-func getTransport(env env.Env) *httptransport.Runtime {
-	radixAPIURL := env.GetRadixAPIURL()
-	schemes := env.GetRadixAPISchemes()
+func getTransport(cfg config.Config) *httptransport.Runtime {
+	radixAPIURL := cfg.GetRadixAPIURL()
+	schemes := cfg.GetRadixAPISchemes()
 
 	return httptransport.New(radixAPIURL, basePath, schemes)
 }

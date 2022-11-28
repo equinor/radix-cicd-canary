@@ -55,3 +55,7 @@ delete-image-and-deploy:
 .PHONY: test
 test:
 	go test -cover `go list ./...`
+
+.PHONY: staticcheck
+staticcheck:
+	staticcheck ./...

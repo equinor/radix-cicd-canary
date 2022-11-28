@@ -2,9 +2,10 @@ package ingress
 
 import (
 	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,22 +13,22 @@ import (
 var logger *log.Entry
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(env env.Env, suiteName string) (bool, error) {
+func Reach(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	client := httpUtils.GetHTTPDefaultClient()
-	url := fmt.Sprintf("%s/health", env.GetGolangCanaryUrl())
+	url := fmt.Sprintf("%s/health", cfg.GetGolangCanaryUrl())
 	logger.Debugf("Requesting data from %s", url)
 
 	// Run tests ingress
 	_, err := client.Get(url)
 	if err == nil {
 		// Successful test
-		return true, nil
+		return nil
 	}
 
 	// Failed test
-	return false, err
+	return err
 }
 
 // Success is a function after a call to Reach succeeds

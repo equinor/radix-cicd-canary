@@ -1,8 +1,10 @@
 package list
 
 import (
+	"fmt"
+
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"
 )
@@ -10,18 +12,18 @@ import (
 var logger *log.Entry
 
 // Applications Test that we are able to list applications
-func Applications(env env.Env, suiteName string) (bool, error) {
+func Applications(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
-	impersonateUser := env.GetImpersonateUser()
-	impersonateGroup := env.GetImpersonateGroup()
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
 
 	params := apiclient.NewShowApplicationsParams().
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(env)
-	client := httpUtils.GetPlatformClient(env)
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetPlatformClient(cfg)
 
 	showAppOk, err := client.ShowApplications(params, clientBearerToken)
 	if err == nil {
@@ -31,5 +33,8 @@ func Applications(env env.Env, suiteName string) (bool, error) {
 		}
 	}
 
-	return err == nil && len(showAppOk.Payload) > 0, err
+	if len(showAppOk.Payload) == 0 {
+		return fmt.Errorf("list of applications returned an empty list")
+	}
+	return err
 }

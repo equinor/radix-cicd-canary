@@ -1,16 +1,17 @@
 package build
 
 import (
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	"errors"
+	"fmt"
+
+	"github.com/equinor/radix-cicd-canary/generated-client/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	envUtil "github.com/equinor/radix-cicd-canary/scenarios/utils/env"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	log "github.com/sirupsen/logrus"
 )
-
-var logger *log.Entry
 
 type expectedStep struct {
 	name       string
@@ -18,27 +19,33 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully build an application
-func Application(env envUtil.Env, suiteName string) (bool, error) {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func Application(cfg config.Config, suiteName string) error {
+	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	// Trigger build via web hook
-	ok, err := httpUtils.TriggerWebhookPush(env, config.App3BranchToBuildFrom, config.App3CommitID, config.App3SSHRepository, config.App3SharedSecret)
-	if !ok {
-		return false, err
+	err := httpUtils.TriggerWebhookPush(cfg, defaults.App3BranchToBuildFrom, defaults.App3CommitID, defaults.App3SSHRepository, defaults.App3SharedSecret, logger)
+	if err != nil {
+		return fmt.Errorf("failed to push webhook push for App3, error %v", err)
 	}
 
 	// Get job
-	ok, jobSummary := test.WaitForCheckFuncOrTimeout(env, func(env envUtil.Env) (bool, interface{}) {
-		return job.IsListedWithStatus(env, config.App3Name, "Succeeded")
-	})
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
+		jobSummary, err := job.IsListedWithStatus(cfg, defaults.App3Name, "Succeeded", logger)
+		if err != nil {
+			return nil, err
+		}
+		return jobSummary, err
+	}, logger)
 
-	if !ok {
-		log.Debugf("Could not get listed job for application %s status \"%s\" - exiting.", config.App3Name, "Succeeded")
-		return false, nil
+	if err != nil {
+		return err
+	}
+	if jobSummary == nil {
+		return fmt.Errorf("could not get listed job for application %s status '%s'", defaults.App3Name, "Succeeded")
 	}
 
-	jobName := (jobSummary.(*models.JobSummary)).Name
-	steps := job.GetSteps(env, config.App3Name, jobName)
+	jobName := jobSummary.Name
+	steps := job.GetSteps(cfg, defaults.App3Name, jobName)
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
 		{name: "prepare-pipelines", components: []string{}},
@@ -47,9 +54,8 @@ func Application(env envUtil.Env, suiteName string) (bool, error) {
 	}
 
 	if steps == nil && len(steps) != len(expectedSteps) {
-		logger.Error("Pipeline steps was not as expected")
-		return false, nil
+		return errors.New("pipeline steps was not as expected")
 	}
 
-	return true, nil
+	return nil
 }
