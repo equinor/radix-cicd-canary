@@ -10,14 +10,10 @@ import (
 
 // IsListedWithStatus Checks if job exists with status
 func IsListedWithStatus(cfg config.Config, appName string, appEnv string, jobComponentName string, batchName string, expectedStatus string) error {
-	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
 	params := jobClient.NewGetBatchesParams().
 		WithJobComponentName(jobComponentName).
 		WithAppName(appName).
-		WithEnvName(appEnv).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithEnvName(appEnv)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetK8sJobClient(cfg)
