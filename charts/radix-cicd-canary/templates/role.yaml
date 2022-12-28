@@ -34,24 +34,6 @@ rules:
   - update  # required for testing ad-group updates using service account
   - patch   # required for testing ad-group updates using service account
   - delete  # required for testing ad-group updates using service account
-- apiGroups:
-  - radix.equinor.com
-  resources:
-  - radixregistrations
-  resourceNames:
-  - radix-networkpolicy-canary
-  verbs:
-  - get     # required for testing NSP-Long
-- apiGroups:
-  - batch
-  resources:
-  - jobs
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
   resources:
   - namespaces
   verbs:
