@@ -41,7 +41,7 @@ rules:
   resourceNames:
   - radix-networkpolicy-canary
   verbs:
-  - get     # required for testing ad-group updates using service account
+  - get     # required for testing NSP-Long
 - apiGroups:
   - batch
   resources:
