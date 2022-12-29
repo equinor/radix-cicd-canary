@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -12,6 +11,7 @@ import (
 
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
 	log "github.com/sirupsen/logrus"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -74,6 +74,17 @@ type Config struct {
 	networkPolicyCanaryAppName          string
 	networkPolicyCanaryJobComponentName string
 	golangCanaryUrl                     string
+}
+
+var configmap *v1.ConfigMap
+
+func init() {
+	kubeClient := kubeUtils.GetKubernetesClient()
+	cm, err := kubeClient.CoreV1().ConfigMaps(namespace).Get(context.Background(), configMapName, metav1.GetOptions{})
+	if err != nil {
+		log.Fatalf("error reading config map: %v", err)
+	}
+	configmap = cm
 }
 
 // NewConfig Constructor
@@ -269,7 +280,7 @@ func (cfg Config) GetRadixAPISchemes() []string {
 }
 
 func getBearerToken() string {
-	token, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
+	token, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
 	if err != nil {
 		return os.Getenv("BEARER_TOKEN")
 	}
@@ -404,12 +415,10 @@ func SetRequiredEnvironmentVariablesForTest() {
 }
 
 func getConfigFromMap(config string) string {
-	kubeClient := kubeUtils.GetKubernetesClient()
-	configmap, err := kubeClient.CoreV1().ConfigMaps(namespace).Get(context.Background(), configMapName, metav1.GetOptions{})
-	if err != nil {
-		log.Fatalf("Error reading config map: %v", err)
+	configValue, found := configmap.Data[config]
+	if !found {
+		log.Fatalf("%s not found in configmap", config)
 	}
-	configValue := configmap.Data[config]
 	return configValue
 }
 

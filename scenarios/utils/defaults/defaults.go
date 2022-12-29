@@ -7,8 +7,9 @@ package defaults
 // When functionality in the user story is released to all clusters, we must add a test to verify that the commit id is actually used by the pipeline job(s)
 
 const (
-	App1Name                         = "canarycicd-test1"
-	App1Repository                   = "https://github.com/equinor/radix-canarycicd-test-1"
+	App1Name       = "canarycicd-test1"
+	App1Repository = "https://github.com/equinor/radix-canarycicd-test-1"
+	// file deepcode ignore HardcodedPassword: This is a fake shared secret
 	App1SharedSecret                 = "AnySharedSecret"
 	App1Creator                      = "a-user@equinor.com"
 	App1ConfigBranch                 = "master"

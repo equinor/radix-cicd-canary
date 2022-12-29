@@ -21,25 +21,25 @@ rules:
   resources: ["configmaps"]
   verbs: ["get"]
 - apiGroups:
-    - radix.equinor.com
+  - radix.equinor.com
   resources:
-    - radixregistrations
+  - radixregistrations
   resourceNames:
-    - canarycicd-test1
-    - canarycicd-test2
-    - canarycicd-test3
-    - canarycicd-test4
+  - canarycicd-test1
+  - canarycicd-test2
+  - canarycicd-test3
+  - canarycicd-test4
   verbs:
-    - get     # required for testing ad-group updates using service account
-    - update  # required for testing ad-group updates using service account
-    - patch   # required for testing ad-group updates using service account
-    - delete  # required for testing ad-group updates using service account
+  - get     # required for testing ad-group updates using service account
+  - update  # required for testing ad-group updates using service account
+  - patch   # required for testing ad-group updates using service account
+  - delete  # required for testing ad-group updates using service account
 - apiGroups:
-    - ""
+  - ""
   resources:
-    - namespaces
+  - namespaces
   verbs:
-    - list
+  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
