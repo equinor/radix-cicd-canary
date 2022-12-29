@@ -37,7 +37,6 @@ const (
 	privateImageHubPasswordConfig             = "privateImageHubPassword"
 	networkPolicyCanaryPasswordConfig         = "networkPolicyCanaryPassword"
 	networkPolicyCanaryAppNameConfig          = "networkPolicyCanaryAppName"
-	golangCanaryUrlConfig                     = "golangCanaryUrl"
 	networkPolicyCanaryJobComponentNameConfig = "networkPolicyCanaryJobComponentName"
 	envVarSuiteList                           = "SUITE_LIST"
 	envVarIsBlacklist                         = "SUITE_LIST_IS_BLACKLIST"
@@ -73,7 +72,6 @@ type Config struct {
 	isErrorLogLevel                     bool
 	networkPolicyCanaryAppName          string
 	networkPolicyCanaryJobComponentName string
-	golangCanaryUrl                     string
 }
 
 var configmap *v1.ConfigMap
@@ -115,7 +113,6 @@ func NewConfig() Config {
 		isErrorLogLevel(),
 		getNetworkPolicyCanaryAppName(),
 		getNetworkPolicyCanaryJobComponentName(),
-		getGolangCanaryUrl(),
 	}
 }
 
@@ -259,9 +256,9 @@ func (cfg Config) GetNetworkPolicyCanaryUrl(appEnv string) string {
 	return fmt.Sprintf("%s.%s", canaryURLPrefix, cfg.GetClusterFQDN())
 }
 
-func (cfg Config) GetGolangCanaryUrl() string {
-	return cfg.golangCanaryUrl
-}
+// func (cfg Config) GetGolangCanaryUrl() string {
+// 	return fmt.Sprintf("%s.%s", "https://www-radix-canary-golang-prod", cfg.clusterFQDN)
+// }
 
 func (cfg Config) GetNetworkPolicyCanaryAppName() string {
 	return cfg.networkPolicyCanaryAppName
@@ -371,14 +368,6 @@ func getNetworkPolicyCanaryAppName() string {
 		log.Fatalf("Could not read %s from configmap", networkPolicyCanaryAppNameConfig)
 	}
 	return appName
-}
-
-func getGolangCanaryUrl() string {
-	url := getConfigFromMap(golangCanaryUrlConfig)
-	if url == "" {
-		log.Fatalf("Could not read %s from configmap", golangCanaryUrlConfig)
-	}
-	return url
 }
 
 func getNetworkPolicyCanaryJobComponentName() string {
