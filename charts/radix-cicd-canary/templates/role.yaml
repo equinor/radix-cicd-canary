@@ -34,6 +34,8 @@ rules:
   - update  # required for testing ad-group updates using service account
   - patch   # required for testing ad-group updates using service account
   - delete  # required for testing ad-group updates using service account
+- apiGroups:
+  - ""
   resources:
   - namespaces
   verbs:
