@@ -256,10 +256,6 @@ func (cfg Config) GetNetworkPolicyCanaryUrl(appEnv string) string {
 	return fmt.Sprintf("%s.%s", canaryURLPrefix, cfg.GetClusterFQDN())
 }
 
-// func (cfg Config) GetGolangCanaryUrl() string {
-// 	return fmt.Sprintf("%s.%s", "https://www-radix-canary-golang-prod", cfg.clusterFQDN)
-// }
-
 func (cfg Config) GetNetworkPolicyCanaryAppName() string {
 	return cfg.networkPolicyCanaryAppName
 }
