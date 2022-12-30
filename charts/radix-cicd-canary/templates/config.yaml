@@ -29,5 +29,4 @@ data:
   nspLongSleepInterval: {{ .Values.nspLongSleepInterval | quote }}
   networkPolicyCanaryAppName: {{ .Values.networkPolicyCanaryAppName }}
   networkPolicyCanaryJobComponentName: {{ .Values.networkPolicyCanaryJobComponentName }}
-  golangCanaryUrl: {{ .Values.golangCanaryUrl }}
   networkPolicyCanaryPassword: {{ .Values.networkPolicyCanary.password }}
