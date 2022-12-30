@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
@@ -98,7 +97,7 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 // CheckResponse Checks that the response was successful
 func CheckResponse(resp *http.Response, logger *log.Entry) error {
 	defer resp.Body.Close()
-	_, err := ioutil.ReadAll(resp.Body)
+	_, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return errors.WithMessage(err, "error reading response body")
 	}

@@ -3,7 +3,7 @@ package egresspolicy
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/models"
@@ -66,7 +66,7 @@ func startJobBatch(baseUrl string, password string, appEnv string) (string, erro
 		return "", fmt.Errorf("got non-200 OK from %s", jobBatchUrl)
 	}
 	defer response.Body.Close()
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return "", err
 	}
