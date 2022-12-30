@@ -2,6 +2,7 @@ package ingress
 
 import (
 	"fmt"
+	neturl "net/url"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
@@ -16,8 +17,9 @@ var logger *log.Entry
 func Reach(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
+	baseUrl := fmt.Sprintf("%s.%s", "https://www-radix-canary-golang-prod", cfg.GetClusterFQDN())
+	url, _ := neturl.JoinPath(baseUrl, "health")
 	client := httpUtils.GetHTTPDefaultClient()
-	url := fmt.Sprintf("%s/health", cfg.GetGolangCanaryUrl())
 	logger.Debugf("Requesting data from %s", url)
 
 	// Run tests ingress

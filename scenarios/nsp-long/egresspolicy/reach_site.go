@@ -41,7 +41,7 @@ func NotReachRadixSite(cfg config.Config, suiteName string) error {
 	}
 	res, err := client.Get(reachRadixSiteUrl)
 	if err == nil && res.StatusCode == 200 {
-		return fmt.Errorf("request to %s from canary should have been blocked by network policy", cfg.GetGolangCanaryUrl())
+		return fmt.Errorf("request to %s from canary should have been blocked by network policy", reachRadixSiteUrl)
 	}
 	return nil
 }

@@ -1,9 +1,9 @@
 module github.com/equinor/radix-cicd-canary
 
-go 1.18
+go 1.19
 
 require (
-	github.com/equinor/radix-common v1.2.1
+	github.com/equinor/radix-common v1.2.5
 	github.com/go-openapi/errors v0.20.3
 	github.com/go-openapi/runtime v0.24.1
 	github.com/go-openapi/strfmt v0.21.3
