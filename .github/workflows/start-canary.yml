@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - 259748-schedule-scaling-of-cicd-canary
+
+permissions:
+  id-token: write
+
 jobs:
   start-canary:
     name: Start radix-cicd-canary
