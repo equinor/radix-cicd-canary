@@ -73,7 +73,7 @@ rules:
     resourceNames: ["{{ .Chart.Name }}"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-Kind: RoleBinding
+kind: RoleBinding
 metadata:
     name: "deployment-scaler"
     labels:
