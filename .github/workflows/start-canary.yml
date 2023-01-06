@@ -1,6 +1,9 @@
 name: start-canary
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 259748-schedule-scaling-of-cicd-canary
 jobs:
   start-canary:
     name: Start radix-cicd-canary
