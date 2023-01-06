@@ -17,7 +17,7 @@ jobs:
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
-          client-id: 5e48ca1f-a2bf-4dec-b96d-bbf8ce69f9f6 #b96d264b-7053-4465-a4a7-32be5b0fec49 #app registration appid or managed identity clientid
+          client-id: cd30b7bc-24f7-4887-948a-82ff1c0a2646
           tenant-id: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
           allow-no-subscriptions: true
       - name: 'Get Azure principal token for Radix'
