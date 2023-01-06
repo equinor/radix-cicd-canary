@@ -20,11 +20,9 @@ jobs:
           client-id: cd30b7bc-24f7-4887-948a-82ff1c0a2646
           tenant-id: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
           allow-no-subscriptions: true
-      - name: 'Get Azure principal token for Radix'
+      - name: 'Download AKS kubeconfig'
         run: |
-          token=$(az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv)
-          echo "::add-mask::$token"
-          echo "APP_SERVICE_ACCOUNT_TOKEN=$token" >> $GITHUB_ENV
+          az aks get-credentials --name weekly-51 --resource-group clusters --subscription 16ede44b-1f74-40a5-b428-46cca9a5741b --format exec --overwrite-existing
       - name: scale-to-one
         run: |
-          kubectl --server="https://weekly-51-clusters-16ede4-2fee27ec.hcp.northeurope.azmk8s.io" --token=${APP_SERVICE_ACCOUNT_TOKEN} scale deployment radix-cicd-canary --replicas=1 -n radix-cicd-canary
+          kubectl scale deployment radix-cicd-canary --replicas=1 -n radix-cicd-canary
