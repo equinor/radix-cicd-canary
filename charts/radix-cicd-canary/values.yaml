@@ -3,6 +3,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 clusterFQDN: xx
+servicePrincipalId: cb8778a6-d33f-4d9b-b326-9063d8dcdf89 # this SP scales the canary deployment on schedule
 
 image:
   repository: xx

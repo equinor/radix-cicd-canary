@@ -56,3 +56,34 @@ subjects:
   kind: ServiceAccount
   name: {{ include "cicd-canary.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: "deployment-scaler"
+  labels:
+    {{- include "cicd-canary.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: ["apps/v1"]
+    resources: ["deployments.apps"]
+    verbs:
+     - "update"
+     - "patch"
+    resourceNames: ["{{ .Chart.Name }}"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+Kind: RoleBinding
+metadata:
+    name: "deployment-scaler"
+    labels:
+        {{- include "cicd-canary.labels" . | nindent 4 }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: "deployment-scaler"
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: {{ .Values.servicePrincipalId }}
