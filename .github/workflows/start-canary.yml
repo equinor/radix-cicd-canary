@@ -1,0 +1,23 @@
+name: start-canary
+on:
+  workflow_dispatch:
+jobs:
+  start-canary:
+    name: Start radix-cicd-canary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: 5e48ca1f-a2bf-4dec-b96d-bbf8ce69f9f6 #b96d264b-7053-4465-a4a7-32be5b0fec49 #app registration appid or managed identity clientid
+          tenant-id: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
+          allow-no-subscriptions: true
+      - name: 'Get Azure principal token for Radix'
+        run: |
+          token=$(az account get-access-token --resource 6dae42f8-4368-4678-94ff-3960e28e3630 --query=accessToken -otsv)
+          echo "::add-mask::$token"
+          echo "APP_SERVICE_ACCOUNT_TOKEN=$token" >> $GITHUB_ENV
+      - name: scale-to-one
+        run: |
+          kubectl --server="https://weekly-51-clusters-16ede4-2fee27ec.hcp.northeurope.azmk8s.io" --token=${APP_SERVICE_ACCOUNT_TOKEN} scale deployment radix-cicd-canary --replicas=1 -n radix-cicd-canary
