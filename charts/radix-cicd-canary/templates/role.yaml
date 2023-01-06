@@ -77,7 +77,7 @@ kind: RoleBinding
 metadata:
     name: "deployment-scaler"
     labels:
-        {{- include "cicd-canary.labels" . | nindent 4 }}
+      {{- include "cicd-canary.labels" . | nindent 4 }}
     namespace: {{ .Release.Namespace }}
 roleRef:
     apiGroup: rbac.authorization.k8s.io
