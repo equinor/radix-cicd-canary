@@ -21,9 +21,9 @@ jobs:
           tenant-id: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
           allow-no-subscriptions: true
       - uses: azure/use-kubelogin@v1
-        name: 'Download AKS kubeconfig'
         with:
           kubelogin-version: 'latest'
+      - name: 'Download AKS kubeconfig'
         run: |
           az aks get-credentials --name weekly-51 --resource-group clusters --subscription 16ede44b-1f74-40a5-b428-46cca9a5741b --format exec --overwrite-existing
       - name: scale-to-one
