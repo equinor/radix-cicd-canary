@@ -17,7 +17,7 @@ jobs:
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
-          client-id: cd30b7bc-24f7-4887-948a-82ff1c0a2646
+          client-id: 8d20fb80-5c36-4033-af70-832a48dabeaf
           tenant-id: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
           allow-no-subscriptions: true
       - uses: azure/use-kubelogin@v1
@@ -27,7 +27,7 @@ jobs:
           kubelogin-version: 'latest'
       - name: 'Download AKS kubeconfig'
         run: |
-          az aks get-credentials --name weekly-51 --resource-group clusters --subscription 16ede44b-1f74-40a5-b428-46cca9a5741b --format exec --overwrite-existing
+          az aks get-credentials --name weekly-52 --resource-group clusters --subscription 16ede44b-1f74-40a5-b428-46cca9a5741b --format exec --overwrite-existing
       - name: scale-to-one
         run: |
-          kubectl scale deployment radix-cicd-canary --replicas=1 -n radix-cicd-canary
+          az aks command invoke --name weekly-52 --resource-group clusters --command "kubectl scale deployment radix-cicd-canary --replicas=1 -n radix-cicd-canary"
