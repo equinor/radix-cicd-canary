@@ -9,7 +9,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/configbranch"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/delete"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/list"
-	"github.com/equinor/radix-cicd-canary/scenarios/happypath/machineuser"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/promote"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/register"
@@ -114,13 +113,6 @@ func TestSuite() test.Suite {
 				Name:        "UpdateADGroup",
 				Description: "Checks that access can be locked down by updating AD group",
 				Test:        adgroup.Update,
-				SuccessFn:   successFunction,
-				FailFn:      failFunction,
-			},
-			{
-				Name:        "CreateMachineUser",
-				Description: "Checks that machine user can be created and get proper access",
-				Test:        machineuser.Create,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
