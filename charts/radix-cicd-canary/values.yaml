@@ -64,3 +64,6 @@ resources:
   requests:
     cpu: 50m
     memory: 100Mi
+
+env:
+  logLevel: INFO
