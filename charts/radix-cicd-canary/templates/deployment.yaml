@@ -27,8 +27,10 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           env:
+            {{- if and .Values.env .Values.env.logLevel }}
             - name: LOG_LEVEL
               value: {{ .Values.env.logLevel }}
+            {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
