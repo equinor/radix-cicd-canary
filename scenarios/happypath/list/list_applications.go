@@ -3,7 +3,7 @@ package list
 import (
 	"fmt"
 
-	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/platform"
+	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/platform"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"

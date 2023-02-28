@@ -3,8 +3,8 @@ package job
 import (
 	"fmt"
 
-	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/client/pipeline_job"
-	"github.com/equinor/radix-cicd-canary/generated-client/models"
+	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/pipeline_job"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	log "github.com/sirupsen/logrus"

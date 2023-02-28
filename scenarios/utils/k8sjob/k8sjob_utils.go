@@ -3,7 +3,7 @@ package k8sjob
 import (
 	"fmt"
 
-	jobClient "github.com/equinor/radix-cicd-canary/generated-client/client/job"
+	jobClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 )

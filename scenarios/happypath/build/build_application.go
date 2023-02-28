@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/equinor/radix-cicd-canary/generated-client/models"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"

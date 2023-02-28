@@ -1,7 +1,7 @@
 package unauthorized
 
 import (
-	"github.com/equinor/radix-cicd-canary/generated-client/client/application"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
