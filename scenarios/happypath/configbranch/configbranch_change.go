@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	apiclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
-	"github.com/equinor/radix-cicd-canary/generated-client/models"
+	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"

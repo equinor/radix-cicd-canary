@@ -3,8 +3,8 @@ package secret
 import (
 	"fmt"
 
-	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
-	models "github.com/equinor/radix-cicd-canary/generated-client/models"
+	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
+	models "github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"

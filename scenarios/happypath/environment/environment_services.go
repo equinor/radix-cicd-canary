@@ -1,8 +1,8 @@
 package environment
 
 import (
-	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/client/environment"
-	"github.com/equinor/radix-cicd-canary/generated-client/models"
+	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 )
