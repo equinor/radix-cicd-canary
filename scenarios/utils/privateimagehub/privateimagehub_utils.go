@@ -3,8 +3,8 @@ package privateimagehub
 import (
 	"fmt"
 
-	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/client/application"
-	"github.com/equinor/radix-cicd-canary/generated-client/models"
+	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 )

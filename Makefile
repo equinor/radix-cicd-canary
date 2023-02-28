@@ -13,7 +13,8 @@ CONTAINER_REPO ?= radix$(ENVIRONMENT)
 DOCKER_REGISTRY	?= $(CONTAINER_REPO).azurecr.io
 
 generate-client:
-	swagger generate client -t ./generated-client -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radix
+	swagger generate client -t ./generated-client/radixapi -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radixapi
+	swagger generate client -t ./generated-client/jobserver -f https://raw.githubusercontent.com/equinor/radix-public-site/main/public-site/docs/src/guides/configure-jobs/swagger.json -A jobserver
 
 build:
 	docker build -t radix-cicd-canary:$(BRANCH)-$(VERSION) .
