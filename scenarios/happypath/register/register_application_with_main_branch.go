@@ -2,6 +2,7 @@ package register
 
 import (
 	"fmt"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
@@ -27,7 +28,7 @@ func ApplicationWithMainConfigBranch(cfg config.Config, suiteName string) error 
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, cfg.GetPublicKeyCanary4(), cfg.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem)
+	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, cfg.GetPublicKeyCanary4(), cfg.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}

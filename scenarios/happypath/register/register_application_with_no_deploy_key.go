@@ -27,7 +27,7 @@ func ApplicationWithNoDeployKey(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	registerApplicationOK, err := application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem)
+	registerApplicationOK, err := application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
