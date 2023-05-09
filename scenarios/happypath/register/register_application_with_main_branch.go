@@ -28,7 +28,7 @@ func ApplicationWithMainConfigBranch(cfg config.Config, suiteName string) error 
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, cfg.GetPublicKeyCanary4(), cfg.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
+	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}

@@ -8,10 +8,8 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // RegenerateDeployKeyAndSecretData RegenerateDeployKeyAndSecretData Holds regenerated shared secret
@@ -19,31 +17,15 @@ import (
 // swagger:model RegenerateDeployKeyAndSecretData
 type RegenerateDeployKeyAndSecretData struct {
 
+	// PrivateKey of the deploy key
+	PrivateKey string `json:"privateKey,omitempty"`
+
 	// SharedSecret of the shared secret
-	// Required: true
-	SharedSecret *string `json:"sharedSecret"`
+	SharedSecret string `json:"sharedSecret,omitempty"`
 }
 
 // Validate validates this regenerate deploy key and secret data
 func (m *RegenerateDeployKeyAndSecretData) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateSharedSecret(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *RegenerateDeployKeyAndSecretData) validateSharedSecret(formats strfmt.Registry) error {
-
-	if err := validate.Required("sharedSecret", "body", m.SharedSecret); err != nil {
-		return err
-	}
-
 	return nil
 }
 
