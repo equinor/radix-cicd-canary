@@ -30,11 +30,10 @@ func Application(cfg config.Config, suiteName string) error {
 	}
 
 	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, appName)
+		return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), logger)
 	}, logger)
 	if err != nil {
 		return err
 	}
-
-	return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), logger)
+	return nil
 }
