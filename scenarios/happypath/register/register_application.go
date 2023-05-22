@@ -32,7 +32,19 @@ func Application(cfg config.Config, suiteName string) error {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.IsDefined(cfg, appName)
+	}, logger)
+	if err != nil {
+		return err
+	}
+
+	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), "", logger)
+	if err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("failed to regenerate deploy key for application %s", appName))
+	}
+
 	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), "some-secret", logger)
+		return application.HasDeployKey(cfg, appName, cfg.GetPublicKey(), logger)
 	}, logger)
 }

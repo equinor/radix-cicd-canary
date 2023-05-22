@@ -105,6 +105,32 @@ func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret st
 	return nil
 }
 
+func HasDeployKey(cfg config.Config, appName, expectedDeployKey string, logger *log.Entry) error {
+	actualDeployKey, err := GetDeployKey(cfg, appName, logger)
+	if err != nil {
+		return err
+	}
+
+	if strings.TrimSpace(expectedDeployKey) != strings.TrimSpace(actualDeployKey) {
+		return fmt.Errorf("application %s does not have the expected deploy key", appName)
+	}
+
+	return nil
+}
+
+func IsDeployKeyDefined(cfg config.Config, appName string, logger *log.Entry) error {
+	actualDeployKey, err := GetDeployKey(cfg, appName, logger)
+	if err != nil {
+		return err
+	}
+
+	if strings.TrimSpace(actualDeployKey) == "" {
+		return fmt.Errorf("deploy key for application %s is not defined", appName)
+	}
+
+	return nil
+}
+
 func GetDeployKey(cfg config.Config, appName string, logger *log.Entry) (string, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroup()

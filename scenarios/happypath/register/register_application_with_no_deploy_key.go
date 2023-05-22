@@ -32,13 +32,14 @@ func ApplicationWithNoDeployKey(cfg config.Config, suiteName string) error {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	pubKey, err := application.GetDeployKey(cfg, appName, logger)
 	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		pubKey, err = application.GetDeployKey(cfg, appName, logger)
-		return err
+		return application.IsDefined(cfg, appName)
 	}, logger)
-	if err != nil || pubKey == "" {
+	if err != nil {
 		return err
 	}
-	return nil
+
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.IsDeployKeyDefined(cfg, appName, logger)
+	}, logger)
 }

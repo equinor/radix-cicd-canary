@@ -29,7 +29,19 @@ func Application(cfg config.Config, suiteName string) error {
 		return err
 	}
 
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.IsDefined(cfg, defaults.App3Name)
+	}, logger)
+	if err != nil {
+		return err
+	}
+
+	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), "", logger)
+	if err != nil {
+		return err
+	}
+
 	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), "some-secret", logger)
+		return application.HasDeployKey(cfg, appName, cfg.GetPublicKeyCanary3(), logger)
 	}, logger)
 }
