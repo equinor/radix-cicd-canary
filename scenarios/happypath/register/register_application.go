@@ -32,11 +32,7 @@ func Application(cfg config.Config, suiteName string) error {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), logger)
 	}, logger)
-	if err != nil {
-		return err
-	}
-	return nil
 }

@@ -29,11 +29,7 @@ func Application(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), logger)
 	}, logger)
-	if err != nil {
-		return err
-	}
-	return nil
 }
