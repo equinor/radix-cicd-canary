@@ -30,6 +30,6 @@ func Application(cfg config.Config, suiteName string) error {
 	}
 
 	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), logger)
+		return application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), "some-secret", logger)
 	}, logger)
 }

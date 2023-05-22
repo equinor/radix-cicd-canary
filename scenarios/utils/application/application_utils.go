@@ -80,7 +80,7 @@ func DeleteByServiceAccount(cfg config.Config, appName string, logger *log.Entry
 	return deleteApplication(cfg, appName, params)
 }
 
-func RegenerateDeployKey(cfg config.Config, appName string, privateKey string, logger *log.Entry) error {
+func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret string, logger *log.Entry) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroup()
 	logger.Debugf("regenerate deploy key for application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
@@ -90,9 +90,10 @@ func RegenerateDeployKey(cfg config.Config, appName string, privateKey string, l
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(appName).
 		WithRegenerateDeployKeyAndSecretData(&models.RegenerateDeployKeyAndSecretData{
-			PrivateKey: privateKey,
+			PrivateKey:   privateKey,
+			SharedSecret: sharedSecret,
 		},
-	)
+		)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
@@ -113,7 +114,7 @@ func GetDeployKey(cfg config.Config, appName string, logger *log.Entry) (string,
 		WithImpersonateUser(&impersonateUser).
 		WithImpersonateGroup(&impersonateGroup).
 		WithAppName(appName)
-	
+
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
 
@@ -123,8 +124,6 @@ func GetDeployKey(cfg config.Config, appName string, logger *log.Entry) (string,
 	}
 	return *response.Payload.PublicDeployKey, nil
 }
-
-
 
 func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
