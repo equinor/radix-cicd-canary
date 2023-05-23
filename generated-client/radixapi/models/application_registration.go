@@ -48,14 +48,6 @@ type ApplicationRegistration struct {
 	// Required: true
 	Owner *string `json:"owner"`
 
-	// PrivateKey the private part of the deploy key set or returned
-	// after successful application
-	PrivateKey string `json:"privateKey,omitempty"`
-
-	// PublicKey the public part of the deploy key set or returned
-	// after successful application
-	PublicKey string `json:"publicKey,omitempty"`
-
 	// radixconfig.yaml file name and path, starting from the GitHub repository root (without leading slash)
 	RadixConfigFullName string `json:"radixConfigFullName,omitempty"`
 

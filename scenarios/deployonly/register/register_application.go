@@ -24,12 +24,24 @@ func Application(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, cfg.GetPublicKeyCanary3(), cfg.GetPrivateKeyCanary3(), appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
+	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
+	if err != nil {
+		return err
+	}
+
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.IsDefined(cfg, defaults.App3Name)
+	}, logger)
+	if err != nil {
+		return err
+	}
+
+	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), "", logger)
 	if err != nil {
 		return err
 	}
 
 	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, defaults.App3Name)
+		return application.HasDeployKey(cfg, appName, cfg.GetPublicKeyCanary3(), logger)
 	}, logger)
 }

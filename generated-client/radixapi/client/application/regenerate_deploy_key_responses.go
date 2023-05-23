@@ -7,12 +7,9 @@ package application
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 )
 
 // RegenerateDeployKeyReader is a Reader for the RegenerateDeployKey structure.
@@ -23,8 +20,8 @@ type RegenerateDeployKeyReader struct {
 // ReadResponse reads a server response into the received o.
 func (o *RegenerateDeployKeyReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
 	switch response.Code() {
-	case 200:
-		result := NewRegenerateDeployKeyOK()
+	case 204:
+		result := NewRegenerateDeployKeyNoContent()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
 			return nil, err
 		}
@@ -46,34 +43,23 @@ func (o *RegenerateDeployKeyReader) ReadResponse(response runtime.ClientResponse
 	}
 }
 
-// NewRegenerateDeployKeyOK creates a RegenerateDeployKeyOK with default headers values
-func NewRegenerateDeployKeyOK() *RegenerateDeployKeyOK {
-	return &RegenerateDeployKeyOK{}
+// NewRegenerateDeployKeyNoContent creates a RegenerateDeployKeyNoContent with default headers values
+func NewRegenerateDeployKeyNoContent() *RegenerateDeployKeyNoContent {
+	return &RegenerateDeployKeyNoContent{}
 }
 
-/* RegenerateDeployKeyOK describes a response with status code 200, with default header values.
+/* RegenerateDeployKeyNoContent describes a response with status code 204, with default header values.
 
 Successful regenerate machine-user token
 */
-type RegenerateDeployKeyOK struct {
-	Payload *models.DeployKeyAndSecret
+type RegenerateDeployKeyNoContent struct {
 }
 
-func (o *RegenerateDeployKeyOK) Error() string {
-	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyOK  %+v", 200, o.Payload)
-}
-func (o *RegenerateDeployKeyOK) GetPayload() *models.DeployKeyAndSecret {
-	return o.Payload
+func (o *RegenerateDeployKeyNoContent) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyNoContent ", 204)
 }
 
-func (o *RegenerateDeployKeyOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
-
-	o.Payload = new(models.DeployKeyAndSecret)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
-		return err
-	}
+func (o *RegenerateDeployKeyNoContent) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

@@ -12,8 +12,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// ApplicationWithMainConfigBranch Tests that we are able to register application
-// with no deploy key and that deploy key is generated
+// ApplicationWithMainConfigBranch Tests that we are able to register the application
 func ApplicationWithMainConfigBranch(cfg config.Config, suiteName string) error {
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
 	appName := defaults.App4Name
@@ -28,12 +27,24 @@ func ApplicationWithMainConfigBranch(cfg config.Config, suiteName string) error 
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, cfg.GetPublicKeyCanary4(), cfg.GetPrivateKeyCanary4(), appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
+	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		return application.IsDefined(cfg, appName)
+	}, logger)
+	if err != nil {
+		return err
+	}
+
+	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary4(), "", logger)
+	if err != nil {
+		return err
+	}
+
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.HasDeployKey(cfg, appName, cfg.GetPublicKeyCanary4(), logger)
 	}, logger)
 }

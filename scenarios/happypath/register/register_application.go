@@ -27,12 +27,24 @@ func Application(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, cfg.GetPublicKey(), cfg.GetPrivateKey(), appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
+	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		return application.IsDefined(cfg, appName)
+	}, logger)
+	if err != nil {
+		return err
+	}
+
+	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), "", logger)
+	if err != nil {
+		return errors.WithMessage(err, fmt.Sprintf("failed to regenerate deploy key for application %s", appName))
+	}
+
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.HasDeployKey(cfg, appName, cfg.GetPublicKey(), logger)
 	}, logger)
 }
