@@ -19,6 +19,9 @@ import (
 // swagger:model AzureIdentity
 type AzureIdentity struct {
 
+	// The Azure Key Vaults names, which use Azure Identity
+	AzureKeyVaults []string `json:"azureKeyVaults"`
+
 	// ClientId is the client ID of an Azure User Assigned Managed Identity
 	// or the application ID of an Azure AD Application Registration
 	// Required: true

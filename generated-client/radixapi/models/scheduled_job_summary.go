@@ -41,6 +41,11 @@ type ScheduledJobSummary struct {
 	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
 
+	// FailedCount is the number of times the job has failed
+	// Example: 1
+	// Required: true
+	FailedCount *int32 `json:"failedCount"`
+
 	// JobId JobId, if any
 	// Example: \"job1\
 	JobID string `json:"jobId,omitempty"`
@@ -85,6 +90,10 @@ func (m *ScheduledJobSummary) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateFailedCount(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateReplicaList(formats); err != nil {
 		res = append(res, err)
 	}
@@ -110,6 +119,15 @@ func (m *ScheduledJobSummary) Validate(formats strfmt.Registry) error {
 func (m *ScheduledJobSummary) validateBackoffLimit(formats strfmt.Registry) error {
 
 	if err := validate.Required("backoffLimit", "body", m.BackoffLimit); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *ScheduledJobSummary) validateFailedCount(formats strfmt.Registry) error {
+
+	if err := validate.Required("failedCount", "body", m.FailedCount); err != nil {
 		return err
 	}
 

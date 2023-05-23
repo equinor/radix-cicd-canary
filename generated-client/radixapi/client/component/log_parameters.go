@@ -111,6 +111,14 @@ type LogParams struct {
 	*/
 	PodName string
 
+	/* Previous.
+
+	   Get previous container log if true
+
+	   Format: boolean
+	*/
+	Previous *string
+
 	/* SinceTime.
 
 	   Get log only from sinceTime (example 2020-03-18T07:20:41+00:00)
@@ -260,6 +268,17 @@ func (o *LogParams) SetPodName(podName string) {
 	o.PodName = podName
 }
 
+// WithPrevious adds the previous to the log params
+func (o *LogParams) WithPrevious(previous *string) *LogParams {
+	o.SetPrevious(previous)
+	return o
+}
+
+// SetPrevious adds the previous to the log params
+func (o *LogParams) SetPrevious(previous *string) {
+	o.Previous = previous
+}
+
 // WithSinceTime adds the sinceTime to the log params
 func (o *LogParams) WithSinceTime(sinceTime *strfmt.DateTime) *LogParams {
 	o.SetSinceTime(sinceTime)
@@ -347,6 +366,23 @@ func (o *LogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry)
 	// path param podName
 	if err := r.SetPathParam("podName", o.PodName); err != nil {
 		return err
+	}
+
+	if o.Previous != nil {
+
+		// query param previous
+		var qrPrevious string
+
+		if o.Previous != nil {
+			qrPrevious = *o.Previous
+		}
+		qPrevious := qrPrevious
+		if qPrevious != "" {
+
+			if err := r.SetQueryParam("previous", qPrevious); err != nil {
+				return err
+			}
+		}
 	}
 
 	if o.SinceTime != nil {

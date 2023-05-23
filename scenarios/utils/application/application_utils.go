@@ -26,7 +26,7 @@ const (
 )
 
 // Register Will register application
-func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, publicKey, privateKey, configBranch, configurationItem string, adGroups []string) (*apiclient.RegisterApplicationOK, error) {
+func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, adGroups []string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroup()
 	bodyParameters := models.ApplicationRegistrationRequest{
@@ -36,8 +36,6 @@ func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, 
 			SharedSecret:      &appSharedSecret,
 			Creator:           &appCreator,
 			AdGroups:          adGroups,
-			PublicKey:         publicKey,
-			PrivateKey:        privateKey,
 			ConfigBranch:      &configBranch,
 			ConfigurationItem: configurationItem,
 		},
@@ -80,6 +78,77 @@ func DeleteByServiceAccount(cfg config.Config, appName string, logger *log.Entry
 		WithAppName(appName)
 
 	return deleteApplication(cfg, appName, params)
+}
+
+func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret string, logger *log.Entry) error {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
+	logger.Debugf("regenerate deploy key for application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
+
+	params := applicationclient.NewRegenerateDeployKeyParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup).
+		WithAppName(appName).
+		WithRegenerateDeployKeyAndSecretData(&models.RegenerateDeployKeyAndSecretData{
+			PrivateKey:   privateKey,
+			SharedSecret: sharedSecret,
+		},
+		)
+
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
+
+	_, err := client.RegenerateDeployKey(params, clientBearerToken)
+	if err != nil {
+		return fmt.Errorf("failed regenerating deploy key for the application %s: %v", appName, err)
+	}
+	return nil
+}
+
+func HasDeployKey(cfg config.Config, appName, expectedDeployKey string, logger *log.Entry) error {
+	actualDeployKey, err := GetDeployKey(cfg, appName, logger)
+	if err != nil {
+		return err
+	}
+
+	if strings.TrimSpace(expectedDeployKey) != strings.TrimSpace(actualDeployKey) {
+		return fmt.Errorf("application %s does not have the expected deploy key", appName)
+	}
+
+	return nil
+}
+
+func IsDeployKeyDefined(cfg config.Config, appName string, logger *log.Entry) error {
+	actualDeployKey, err := GetDeployKey(cfg, appName, logger)
+	if err != nil {
+		return err
+	}
+
+	if strings.TrimSpace(actualDeployKey) == "" {
+		return fmt.Errorf("deploy key for application %s is not defined", appName)
+	}
+
+	return nil
+}
+
+func GetDeployKey(cfg config.Config, appName string, logger *log.Entry) (string, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroup()
+	logger.Debugf("get deploy key for application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
+
+	params := applicationclient.NewGetDeployKeyAndSecretParams().
+		WithImpersonateUser(&impersonateUser).
+		WithImpersonateGroup(&impersonateGroup).
+		WithAppName(appName)
+
+	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
+	client := httpUtils.GetApplicationClient(cfg)
+
+	response, err := client.GetDeployKeyAndSecret(params, clientBearerToken)
+	if err != nil {
+		return "", fmt.Errorf("failed getting deploy key for the application %s: %v", appName, err)
+	}
+	return *response.Payload.PublicDeployKey, nil
 }
 
 func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
