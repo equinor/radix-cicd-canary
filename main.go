@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
@@ -19,7 +18,7 @@ func init() {
 	// If you get GOAWAY calling API with token using:
 	// az account get-access-token
 	// ...enable this line
-	os.Setenv("GODEBUG", "http2server=0,http2client=0")
+	// os.Setenv("GODEBUG", "http2server=0,http2client=0")
 }
 
 func main() {
