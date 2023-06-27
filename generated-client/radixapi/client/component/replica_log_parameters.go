@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewReplicaLogParams creates a new ReplicaLogParams object,
@@ -63,7 +64,7 @@ type ReplicaLogParams struct {
 
 	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
-	ImpersonateGroup *string
+	ImpersonateGroup []string
 
 	/* ImpersonateUser.
 
@@ -110,6 +111,14 @@ type ReplicaLogParams struct {
 	   Name of pod
 	*/
 	PodName string
+
+	/* Previous.
+
+	   Get previous container log if true
+
+	   Format: boolean
+	*/
+	Previous *string
 
 	/* SinceTime.
 
@@ -173,13 +182,13 @@ func (o *ReplicaLogParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithImpersonateGroup adds the impersonateGroup to the replica log params
-func (o *ReplicaLogParams) WithImpersonateGroup(impersonateGroup *string) *ReplicaLogParams {
+func (o *ReplicaLogParams) WithImpersonateGroup(impersonateGroup []string) *ReplicaLogParams {
 	o.SetImpersonateGroup(impersonateGroup)
 	return o
 }
 
 // SetImpersonateGroup adds the impersonateGroup to the replica log params
-func (o *ReplicaLogParams) SetImpersonateGroup(impersonateGroup *string) {
+func (o *ReplicaLogParams) SetImpersonateGroup(impersonateGroup []string) {
 	o.ImpersonateGroup = impersonateGroup
 }
 
@@ -260,6 +269,17 @@ func (o *ReplicaLogParams) SetPodName(podName string) {
 	o.PodName = podName
 }
 
+// WithPrevious adds the previous to the replica log params
+func (o *ReplicaLogParams) WithPrevious(previous *string) *ReplicaLogParams {
+	o.SetPrevious(previous)
+	return o
+}
+
+// SetPrevious adds the previous to the replica log params
+func (o *ReplicaLogParams) SetPrevious(previous *string) {
+	o.Previous = previous
+}
+
 // WithSinceTime adds the sinceTime to the replica log params
 func (o *ReplicaLogParams) WithSinceTime(sinceTime *strfmt.DateTime) *ReplicaLogParams {
 	o.SetSinceTime(sinceTime)
@@ -281,9 +301,14 @@ func (o *ReplicaLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 
 	if o.ImpersonateGroup != nil {
 
-		// header param Impersonate-Group
-		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
-			return err
+		// binding items for Impersonate-Group
+		joinedImpersonateGroup := o.bindParamImpersonateGroup(reg)
+
+		// header array param Impersonate-Group
+		if len(joinedImpersonateGroup) > 0 {
+			if err := r.SetHeaderParam("Impersonate-Group", joinedImpersonateGroup[0]); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -349,6 +374,23 @@ func (o *ReplicaLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		return err
 	}
 
+	if o.Previous != nil {
+
+		// query param previous
+		var qrPrevious string
+
+		if o.Previous != nil {
+			qrPrevious = *o.Previous
+		}
+		qPrevious := qrPrevious
+		if qPrevious != "" {
+
+			if err := r.SetQueryParam("previous", qPrevious); err != nil {
+				return err
+			}
+		}
+	}
+
 	if o.SinceTime != nil {
 
 		// query param sinceTime
@@ -370,4 +412,21 @@ func (o *ReplicaLogParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Re
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
+}
+
+// bindParamReplicaLog binds the parameter Impersonate-Group
+func (o *ReplicaLogParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
+	impersonateGroupIR := o.ImpersonateGroup
+
+	var impersonateGroupIC []string
+	for _, impersonateGroupIIR := range impersonateGroupIR { // explode []string
+
+		impersonateGroupIIV := impersonateGroupIIR // string as string
+		impersonateGroupIC = append(impersonateGroupIC, impersonateGroupIIV)
+	}
+
+	// items.CollectionFormat: ""
+	impersonateGroupIS := swag.JoinByFormat(impersonateGroupIC, "")
+
+	return impersonateGroupIS
 }

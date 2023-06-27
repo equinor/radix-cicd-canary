@@ -30,6 +30,10 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	DeleteBatch(params *DeleteBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBatchNoContent, error)
+
+	DeleteJob(params *DeleteJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteJobNoContent, error)
+
 	GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchOK, error)
 
 	GetBatches(params *GetBatchesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchesOK, error)
@@ -47,6 +51,84 @@ type ClientService interface {
 	StopJob(params *StopJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopJobNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  DeleteBatch deletes batch
+*/
+func (a *Client) DeleteBatch(params *DeleteBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBatchNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeleteBatchParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "deleteBatch",
+		Method:             "DELETE",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &DeleteBatchReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DeleteBatchNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteBatch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  DeleteJob deletes job
+*/
+func (a *Client) DeleteJob(params *DeleteJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteJobNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewDeleteJobParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "deleteJob",
+		Method:             "DELETE",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &DeleteJobReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*DeleteJobNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for deleteJob: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*

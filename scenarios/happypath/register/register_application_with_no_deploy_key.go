@@ -27,16 +27,19 @@ func ApplicationWithNoDeployKey(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	registerApplicationOK, err := application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, "", "", appConfigBranch, appConfigurationItem, []string{cfg.GetImpersonateGroup()})
+	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup())
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	if registerApplicationOK.Payload.ApplicationRegistration.PublicKey == "" {
-		return fmt.Errorf("the Public Key of the registered application %s is empty", appName)
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		return application.IsDefined(cfg, appName)
+	}, logger)
+	if err != nil {
+		return err
 	}
 
 	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, appName)
+		return application.IsDeployKeyDefined(cfg, appName, logger)
 	}, logger)
 }

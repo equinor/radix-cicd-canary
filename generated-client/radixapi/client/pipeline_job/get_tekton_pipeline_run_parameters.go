@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetTektonPipelineRunParams creates a new GetTektonPipelineRunParams object,
@@ -63,7 +64,7 @@ type GetTektonPipelineRunParams struct {
 
 	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
-	ImpersonateGroup *string
+	ImpersonateGroup []string
 
 	/* ImpersonateUser.
 
@@ -143,13 +144,13 @@ func (o *GetTektonPipelineRunParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithImpersonateGroup adds the impersonateGroup to the get tekton pipeline run params
-func (o *GetTektonPipelineRunParams) WithImpersonateGroup(impersonateGroup *string) *GetTektonPipelineRunParams {
+func (o *GetTektonPipelineRunParams) WithImpersonateGroup(impersonateGroup []string) *GetTektonPipelineRunParams {
 	o.SetImpersonateGroup(impersonateGroup)
 	return o
 }
 
 // SetImpersonateGroup adds the impersonateGroup to the get tekton pipeline run params
-func (o *GetTektonPipelineRunParams) SetImpersonateGroup(impersonateGroup *string) {
+func (o *GetTektonPipelineRunParams) SetImpersonateGroup(impersonateGroup []string) {
 	o.ImpersonateGroup = impersonateGroup
 }
 
@@ -207,9 +208,14 @@ func (o *GetTektonPipelineRunParams) WriteToRequest(r runtime.ClientRequest, reg
 
 	if o.ImpersonateGroup != nil {
 
-		// header param Impersonate-Group
-		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
-			return err
+		// binding items for Impersonate-Group
+		joinedImpersonateGroup := o.bindParamImpersonateGroup(reg)
+
+		// header array param Impersonate-Group
+		if len(joinedImpersonateGroup) > 0 {
+			if err := r.SetHeaderParam("Impersonate-Group", joinedImpersonateGroup[0]); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -240,4 +246,21 @@ func (o *GetTektonPipelineRunParams) WriteToRequest(r runtime.ClientRequest, reg
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
+}
+
+// bindParamGetTektonPipelineRun binds the parameter Impersonate-Group
+func (o *GetTektonPipelineRunParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
+	impersonateGroupIR := o.ImpersonateGroup
+
+	var impersonateGroupIC []string
+	for _, impersonateGroupIIR := range impersonateGroupIR { // explode []string
+
+		impersonateGroupIIV := impersonateGroupIIR // string as string
+		impersonateGroupIC = append(impersonateGroupIC, impersonateGroupIIV)
+	}
+
+	// items.CollectionFormat: ""
+	impersonateGroupIS := swag.JoinByFormat(impersonateGroupIC, "")
+
+	return impersonateGroupIS
 }

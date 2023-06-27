@@ -13,11 +13,11 @@ import (
 func Access(cfg config.Config, suiteName string) error {
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := application.NewGetApplicationParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.RestrictedApplicationName)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)

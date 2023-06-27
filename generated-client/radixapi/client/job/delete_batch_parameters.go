@@ -17,48 +17,48 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewGetBatchParams creates a new GetBatchParams object,
+// NewDeleteBatchParams creates a new DeleteBatchParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewGetBatchParams() *GetBatchParams {
-	return &GetBatchParams{
+func NewDeleteBatchParams() *DeleteBatchParams {
+	return &DeleteBatchParams{
 		timeout: cr.DefaultTimeout,
 	}
 }
 
-// NewGetBatchParamsWithTimeout creates a new GetBatchParams object
+// NewDeleteBatchParamsWithTimeout creates a new DeleteBatchParams object
 // with the ability to set a timeout on a request.
-func NewGetBatchParamsWithTimeout(timeout time.Duration) *GetBatchParams {
-	return &GetBatchParams{
+func NewDeleteBatchParamsWithTimeout(timeout time.Duration) *DeleteBatchParams {
+	return &DeleteBatchParams{
 		timeout: timeout,
 	}
 }
 
-// NewGetBatchParamsWithContext creates a new GetBatchParams object
+// NewDeleteBatchParamsWithContext creates a new DeleteBatchParams object
 // with the ability to set a context for a request.
-func NewGetBatchParamsWithContext(ctx context.Context) *GetBatchParams {
-	return &GetBatchParams{
+func NewDeleteBatchParamsWithContext(ctx context.Context) *DeleteBatchParams {
+	return &DeleteBatchParams{
 		Context: ctx,
 	}
 }
 
-// NewGetBatchParamsWithHTTPClient creates a new GetBatchParams object
+// NewDeleteBatchParamsWithHTTPClient creates a new DeleteBatchParams object
 // with the ability to set a custom HTTPClient for a request.
-func NewGetBatchParamsWithHTTPClient(client *http.Client) *GetBatchParams {
-	return &GetBatchParams{
+func NewDeleteBatchParamsWithHTTPClient(client *http.Client) *DeleteBatchParams {
+	return &DeleteBatchParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetBatchParams contains all the parameters to send to the API endpoint
-   for the get batch operation.
+/* DeleteBatchParams contains all the parameters to send to the API endpoint
+   for the delete batch operation.
 
    Typically these are written to a http.Request.
 */
-type GetBatchParams struct {
+type DeleteBatchParams struct {
 
 	/* ImpersonateGroup.
 
@@ -101,122 +101,122 @@ type GetBatchParams struct {
 	HTTPClient *http.Client
 }
 
-// WithDefaults hydrates default values in the get batch params (not the query body).
+// WithDefaults hydrates default values in the delete batch params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *GetBatchParams) WithDefaults() *GetBatchParams {
+func (o *DeleteBatchParams) WithDefaults() *DeleteBatchParams {
 	o.SetDefaults()
 	return o
 }
 
-// SetDefaults hydrates default values in the get batch params (not the query body).
+// SetDefaults hydrates default values in the delete batch params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *GetBatchParams) SetDefaults() {
+func (o *DeleteBatchParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the get batch params
-func (o *GetBatchParams) WithTimeout(timeout time.Duration) *GetBatchParams {
+// WithTimeout adds the timeout to the delete batch params
+func (o *DeleteBatchParams) WithTimeout(timeout time.Duration) *DeleteBatchParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the get batch params
-func (o *GetBatchParams) SetTimeout(timeout time.Duration) {
+// SetTimeout adds the timeout to the delete batch params
+func (o *DeleteBatchParams) SetTimeout(timeout time.Duration) {
 	o.timeout = timeout
 }
 
-// WithContext adds the context to the get batch params
-func (o *GetBatchParams) WithContext(ctx context.Context) *GetBatchParams {
+// WithContext adds the context to the delete batch params
+func (o *DeleteBatchParams) WithContext(ctx context.Context) *DeleteBatchParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the get batch params
-func (o *GetBatchParams) SetContext(ctx context.Context) {
+// SetContext adds the context to the delete batch params
+func (o *DeleteBatchParams) SetContext(ctx context.Context) {
 	o.Context = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the get batch params
-func (o *GetBatchParams) WithHTTPClient(client *http.Client) *GetBatchParams {
+// WithHTTPClient adds the HTTPClient to the delete batch params
+func (o *DeleteBatchParams) WithHTTPClient(client *http.Client) *DeleteBatchParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the get batch params
-func (o *GetBatchParams) SetHTTPClient(client *http.Client) {
+// SetHTTPClient adds the HTTPClient to the delete batch params
+func (o *DeleteBatchParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithImpersonateGroup adds the impersonateGroup to the get batch params
-func (o *GetBatchParams) WithImpersonateGroup(impersonateGroup []string) *GetBatchParams {
+// WithImpersonateGroup adds the impersonateGroup to the delete batch params
+func (o *DeleteBatchParams) WithImpersonateGroup(impersonateGroup []string) *DeleteBatchParams {
 	o.SetImpersonateGroup(impersonateGroup)
 	return o
 }
 
-// SetImpersonateGroup adds the impersonateGroup to the get batch params
-func (o *GetBatchParams) SetImpersonateGroup(impersonateGroup []string) {
+// SetImpersonateGroup adds the impersonateGroup to the delete batch params
+func (o *DeleteBatchParams) SetImpersonateGroup(impersonateGroup []string) {
 	o.ImpersonateGroup = impersonateGroup
 }
 
-// WithImpersonateUser adds the impersonateUser to the get batch params
-func (o *GetBatchParams) WithImpersonateUser(impersonateUser *string) *GetBatchParams {
+// WithImpersonateUser adds the impersonateUser to the delete batch params
+func (o *DeleteBatchParams) WithImpersonateUser(impersonateUser *string) *DeleteBatchParams {
 	o.SetImpersonateUser(impersonateUser)
 	return o
 }
 
-// SetImpersonateUser adds the impersonateUser to the get batch params
-func (o *GetBatchParams) SetImpersonateUser(impersonateUser *string) {
+// SetImpersonateUser adds the impersonateUser to the delete batch params
+func (o *DeleteBatchParams) SetImpersonateUser(impersonateUser *string) {
 	o.ImpersonateUser = impersonateUser
 }
 
-// WithAppName adds the appName to the get batch params
-func (o *GetBatchParams) WithAppName(appName string) *GetBatchParams {
+// WithAppName adds the appName to the delete batch params
+func (o *DeleteBatchParams) WithAppName(appName string) *DeleteBatchParams {
 	o.SetAppName(appName)
 	return o
 }
 
-// SetAppName adds the appName to the get batch params
-func (o *GetBatchParams) SetAppName(appName string) {
+// SetAppName adds the appName to the delete batch params
+func (o *DeleteBatchParams) SetAppName(appName string) {
 	o.AppName = appName
 }
 
-// WithBatchName adds the batchName to the get batch params
-func (o *GetBatchParams) WithBatchName(batchName string) *GetBatchParams {
+// WithBatchName adds the batchName to the delete batch params
+func (o *DeleteBatchParams) WithBatchName(batchName string) *DeleteBatchParams {
 	o.SetBatchName(batchName)
 	return o
 }
 
-// SetBatchName adds the batchName to the get batch params
-func (o *GetBatchParams) SetBatchName(batchName string) {
+// SetBatchName adds the batchName to the delete batch params
+func (o *DeleteBatchParams) SetBatchName(batchName string) {
 	o.BatchName = batchName
 }
 
-// WithEnvName adds the envName to the get batch params
-func (o *GetBatchParams) WithEnvName(envName string) *GetBatchParams {
+// WithEnvName adds the envName to the delete batch params
+func (o *DeleteBatchParams) WithEnvName(envName string) *DeleteBatchParams {
 	o.SetEnvName(envName)
 	return o
 }
 
-// SetEnvName adds the envName to the get batch params
-func (o *GetBatchParams) SetEnvName(envName string) {
+// SetEnvName adds the envName to the delete batch params
+func (o *DeleteBatchParams) SetEnvName(envName string) {
 	o.EnvName = envName
 }
 
-// WithJobComponentName adds the jobComponentName to the get batch params
-func (o *GetBatchParams) WithJobComponentName(jobComponentName string) *GetBatchParams {
+// WithJobComponentName adds the jobComponentName to the delete batch params
+func (o *DeleteBatchParams) WithJobComponentName(jobComponentName string) *DeleteBatchParams {
 	o.SetJobComponentName(jobComponentName)
 	return o
 }
 
-// SetJobComponentName adds the jobComponentName to the get batch params
-func (o *GetBatchParams) SetJobComponentName(jobComponentName string) {
+// SetJobComponentName adds the jobComponentName to the delete batch params
+func (o *DeleteBatchParams) SetJobComponentName(jobComponentName string) {
 	o.JobComponentName = jobComponentName
 }
 
 // WriteToRequest writes these params to a swagger request
-func (o *GetBatchParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
+func (o *DeleteBatchParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
 	if err := r.SetTimeout(o.timeout); err != nil {
 		return err
@@ -270,8 +270,8 @@ func (o *GetBatchParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 	return nil
 }
 
-// bindParamGetBatch binds the parameter Impersonate-Group
-func (o *GetBatchParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
+// bindParamDeleteBatch binds the parameter Impersonate-Group
+func (o *DeleteBatchParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
 	impersonateGroupIR := o.ImpersonateGroup
 
 	var impersonateGroupIC []string

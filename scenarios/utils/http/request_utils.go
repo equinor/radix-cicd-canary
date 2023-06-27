@@ -53,10 +53,12 @@ func CreateRequest(cfg config.Config, url, method string, parameters interface{}
 	}
 
 	req, _ := http.NewRequest(method, url, reader)
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", cfg.GetBearerToken()))
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Impersonate-User", cfg.GetImpersonateUser())
-	req.Header.Add("Impersonate-Group", cfg.GetImpersonateGroup())
+
+	// TODO: Why do we need these headers?
+	// req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", cfg.GetBearerToken()))
+	// req.Header.Add("Impersonate-User", cfg.GetImpersonateUser())
+	// req.Header.Add("Impersonate-Group", cfg.GetImpersonateGroup())
 
 	return req
 }

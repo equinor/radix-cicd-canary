@@ -24,11 +24,11 @@ func Set(cfg config.Config, suiteName string) error {
 	}
 
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewChangeComponentSecretParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name).
 		WithEnvName(defaults.App2EnvironmentName).
 		WithComponentName(defaults.App2Component2Name).
@@ -62,13 +62,13 @@ func isDeploymentConsistent(cfg config.Config) error {
 
 func getEnvironmentDetails(cfg config.Config) *models.Environment {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewGetEnvironmentParams().
 		WithAppName(defaults.App2Name).
 		WithEnvName(defaults.App2EnvironmentName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
 

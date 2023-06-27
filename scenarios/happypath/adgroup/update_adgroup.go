@@ -49,7 +49,7 @@ func Update(cfg config.Config, suiteName string) error {
 	s.logger.Debugf("admin AD-Group has no access")
 
 	s.logger.Debugf("patch an admin AD-Group with access")
-	err = patchAdGroup(cfg, cfg.GetImpersonateGroup())
+	err = patchAdGroup(cfg, cfg.GetAppAdminGroup())
 	if err != nil {
 		return err
 	}
@@ -114,11 +114,11 @@ func patchAdGroup(cfg config.Config, adGroup string) error {
 
 func getApplication(cfg config.Config) (*models.Application, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := apiclient.NewGetApplicationParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
@@ -134,7 +134,7 @@ func getApplication(cfg config.Config) (*models.Application, error) {
 
 func buildApp(cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	bodyParameters := models.PipelineParametersBuild{
 		Branch: defaults.App2BranchToBuildFrom,
@@ -143,8 +143,8 @@ func buildApp(cfg config.Config) error {
 	params := apiclient.NewTriggerPipelineBuildParams().
 		WithAppName(defaults.App2Name).
 		WithPipelineParametersBuild(&bodyParameters).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
@@ -159,11 +159,11 @@ func buildApp(cfg config.Config) error {
 
 func setSecret(cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewChangeComponentSecretParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name).
 		WithEnvName(defaults.App2EnvironmentName).
 		WithComponentName(defaults.App2Component2Name).

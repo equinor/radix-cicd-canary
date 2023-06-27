@@ -17,48 +17,48 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewGetJobParams creates a new GetJobParams object,
+// NewDeleteJobParams creates a new DeleteJobParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewGetJobParams() *GetJobParams {
-	return &GetJobParams{
+func NewDeleteJobParams() *DeleteJobParams {
+	return &DeleteJobParams{
 		timeout: cr.DefaultTimeout,
 	}
 }
 
-// NewGetJobParamsWithTimeout creates a new GetJobParams object
+// NewDeleteJobParamsWithTimeout creates a new DeleteJobParams object
 // with the ability to set a timeout on a request.
-func NewGetJobParamsWithTimeout(timeout time.Duration) *GetJobParams {
-	return &GetJobParams{
+func NewDeleteJobParamsWithTimeout(timeout time.Duration) *DeleteJobParams {
+	return &DeleteJobParams{
 		timeout: timeout,
 	}
 }
 
-// NewGetJobParamsWithContext creates a new GetJobParams object
+// NewDeleteJobParamsWithContext creates a new DeleteJobParams object
 // with the ability to set a context for a request.
-func NewGetJobParamsWithContext(ctx context.Context) *GetJobParams {
-	return &GetJobParams{
+func NewDeleteJobParamsWithContext(ctx context.Context) *DeleteJobParams {
+	return &DeleteJobParams{
 		Context: ctx,
 	}
 }
 
-// NewGetJobParamsWithHTTPClient creates a new GetJobParams object
+// NewDeleteJobParamsWithHTTPClient creates a new DeleteJobParams object
 // with the ability to set a custom HTTPClient for a request.
-func NewGetJobParamsWithHTTPClient(client *http.Client) *GetJobParams {
-	return &GetJobParams{
+func NewDeleteJobParamsWithHTTPClient(client *http.Client) *DeleteJobParams {
+	return &DeleteJobParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetJobParams contains all the parameters to send to the API endpoint
-   for the get job operation.
+/* DeleteJobParams contains all the parameters to send to the API endpoint
+   for the delete job operation.
 
    Typically these are written to a http.Request.
 */
-type GetJobParams struct {
+type DeleteJobParams struct {
 
 	/* ImpersonateGroup.
 
@@ -101,122 +101,122 @@ type GetJobParams struct {
 	HTTPClient *http.Client
 }
 
-// WithDefaults hydrates default values in the get job params (not the query body).
+// WithDefaults hydrates default values in the delete job params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *GetJobParams) WithDefaults() *GetJobParams {
+func (o *DeleteJobParams) WithDefaults() *DeleteJobParams {
 	o.SetDefaults()
 	return o
 }
 
-// SetDefaults hydrates default values in the get job params (not the query body).
+// SetDefaults hydrates default values in the delete job params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *GetJobParams) SetDefaults() {
+func (o *DeleteJobParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the get job params
-func (o *GetJobParams) WithTimeout(timeout time.Duration) *GetJobParams {
+// WithTimeout adds the timeout to the delete job params
+func (o *DeleteJobParams) WithTimeout(timeout time.Duration) *DeleteJobParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the get job params
-func (o *GetJobParams) SetTimeout(timeout time.Duration) {
+// SetTimeout adds the timeout to the delete job params
+func (o *DeleteJobParams) SetTimeout(timeout time.Duration) {
 	o.timeout = timeout
 }
 
-// WithContext adds the context to the get job params
-func (o *GetJobParams) WithContext(ctx context.Context) *GetJobParams {
+// WithContext adds the context to the delete job params
+func (o *DeleteJobParams) WithContext(ctx context.Context) *DeleteJobParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the get job params
-func (o *GetJobParams) SetContext(ctx context.Context) {
+// SetContext adds the context to the delete job params
+func (o *DeleteJobParams) SetContext(ctx context.Context) {
 	o.Context = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the get job params
-func (o *GetJobParams) WithHTTPClient(client *http.Client) *GetJobParams {
+// WithHTTPClient adds the HTTPClient to the delete job params
+func (o *DeleteJobParams) WithHTTPClient(client *http.Client) *DeleteJobParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the get job params
-func (o *GetJobParams) SetHTTPClient(client *http.Client) {
+// SetHTTPClient adds the HTTPClient to the delete job params
+func (o *DeleteJobParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithImpersonateGroup adds the impersonateGroup to the get job params
-func (o *GetJobParams) WithImpersonateGroup(impersonateGroup []string) *GetJobParams {
+// WithImpersonateGroup adds the impersonateGroup to the delete job params
+func (o *DeleteJobParams) WithImpersonateGroup(impersonateGroup []string) *DeleteJobParams {
 	o.SetImpersonateGroup(impersonateGroup)
 	return o
 }
 
-// SetImpersonateGroup adds the impersonateGroup to the get job params
-func (o *GetJobParams) SetImpersonateGroup(impersonateGroup []string) {
+// SetImpersonateGroup adds the impersonateGroup to the delete job params
+func (o *DeleteJobParams) SetImpersonateGroup(impersonateGroup []string) {
 	o.ImpersonateGroup = impersonateGroup
 }
 
-// WithImpersonateUser adds the impersonateUser to the get job params
-func (o *GetJobParams) WithImpersonateUser(impersonateUser *string) *GetJobParams {
+// WithImpersonateUser adds the impersonateUser to the delete job params
+func (o *DeleteJobParams) WithImpersonateUser(impersonateUser *string) *DeleteJobParams {
 	o.SetImpersonateUser(impersonateUser)
 	return o
 }
 
-// SetImpersonateUser adds the impersonateUser to the get job params
-func (o *GetJobParams) SetImpersonateUser(impersonateUser *string) {
+// SetImpersonateUser adds the impersonateUser to the delete job params
+func (o *DeleteJobParams) SetImpersonateUser(impersonateUser *string) {
 	o.ImpersonateUser = impersonateUser
 }
 
-// WithAppName adds the appName to the get job params
-func (o *GetJobParams) WithAppName(appName string) *GetJobParams {
+// WithAppName adds the appName to the delete job params
+func (o *DeleteJobParams) WithAppName(appName string) *DeleteJobParams {
 	o.SetAppName(appName)
 	return o
 }
 
-// SetAppName adds the appName to the get job params
-func (o *GetJobParams) SetAppName(appName string) {
+// SetAppName adds the appName to the delete job params
+func (o *DeleteJobParams) SetAppName(appName string) {
 	o.AppName = appName
 }
 
-// WithEnvName adds the envName to the get job params
-func (o *GetJobParams) WithEnvName(envName string) *GetJobParams {
+// WithEnvName adds the envName to the delete job params
+func (o *DeleteJobParams) WithEnvName(envName string) *DeleteJobParams {
 	o.SetEnvName(envName)
 	return o
 }
 
-// SetEnvName adds the envName to the get job params
-func (o *GetJobParams) SetEnvName(envName string) {
+// SetEnvName adds the envName to the delete job params
+func (o *DeleteJobParams) SetEnvName(envName string) {
 	o.EnvName = envName
 }
 
-// WithJobComponentName adds the jobComponentName to the get job params
-func (o *GetJobParams) WithJobComponentName(jobComponentName string) *GetJobParams {
+// WithJobComponentName adds the jobComponentName to the delete job params
+func (o *DeleteJobParams) WithJobComponentName(jobComponentName string) *DeleteJobParams {
 	o.SetJobComponentName(jobComponentName)
 	return o
 }
 
-// SetJobComponentName adds the jobComponentName to the get job params
-func (o *GetJobParams) SetJobComponentName(jobComponentName string) {
+// SetJobComponentName adds the jobComponentName to the delete job params
+func (o *DeleteJobParams) SetJobComponentName(jobComponentName string) {
 	o.JobComponentName = jobComponentName
 }
 
-// WithJobName adds the jobName to the get job params
-func (o *GetJobParams) WithJobName(jobName string) *GetJobParams {
+// WithJobName adds the jobName to the delete job params
+func (o *DeleteJobParams) WithJobName(jobName string) *DeleteJobParams {
 	o.SetJobName(jobName)
 	return o
 }
 
-// SetJobName adds the jobName to the get job params
-func (o *GetJobParams) SetJobName(jobName string) {
+// SetJobName adds the jobName to the delete job params
+func (o *DeleteJobParams) SetJobName(jobName string) {
 	o.JobName = jobName
 }
 
 // WriteToRequest writes these params to a swagger request
-func (o *GetJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
+func (o *DeleteJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
 	if err := r.SetTimeout(o.timeout); err != nil {
 		return err
@@ -270,8 +270,8 @@ func (o *GetJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 	return nil
 }
 
-// bindParamGetJob binds the parameter Impersonate-Group
-func (o *GetJobParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
+// bindParamDeleteJob binds the parameter Impersonate-Group
+func (o *DeleteJobParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
 	impersonateGroupIR := o.ImpersonateGroup
 
 	var impersonateGroupIC []string

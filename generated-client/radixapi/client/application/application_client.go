@@ -44,6 +44,8 @@ type ClientService interface {
 
 	GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBuildSecretsOK, error)
 
+	GetDeployKeyAndSecret(params *GetDeployKeyAndSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeployKeyAndSecretOK, error)
+
 	GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeploymentsOK, error)
 
 	GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPrivateImageHubsOK, error)
@@ -54,7 +56,7 @@ type ClientService interface {
 
 	ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ModifyRegistrationDetailsOK, error)
 
-	RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyOK, error)
+	RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyNoContent, error)
 
 	RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateMachineUserTokenOK, error)
 
@@ -355,6 +357,45 @@ func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime
 }
 
 /*
+  GetDeployKeyAndSecret gets deploy key and secret
+*/
+func (a *Client) GetDeployKeyAndSecret(params *GetDeployKeyAndSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeployKeyAndSecretOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetDeployKeyAndSecretParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "getDeployKeyAndSecret",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/deploy-key-and-secret",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetDeployKeyAndSecretReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetDeployKeyAndSecretOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for getDeployKeyAndSecret: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
   GetDeployments lists the application deployments
 */
 func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeploymentsOK, error) {
@@ -552,7 +593,7 @@ func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsPara
 /*
   RegenerateDeployKey regenerates deploy key
 */
-func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyOK, error) {
+func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyNoContent, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewRegenerateDeployKeyParams()
@@ -578,7 +619,7 @@ func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*RegenerateDeployKeyOK)
+	success, ok := result.(*RegenerateDeployKeyNoContent)
 	if ok {
 		return success, nil
 	}
