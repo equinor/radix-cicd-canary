@@ -314,9 +314,9 @@ func getEnvVariable(cfg config.Config, appName, envName, forComponentName, varia
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(cfg config.Config, logger *log.Entry, urls ...string) error {
+func AreResponding(logger *log.Entry, urls ...string) error {
 	for _, url := range urls {
-		responded := IsResponding(cfg, logger, url)
+		responded := IsResponding(logger, url)
 		if !responded {
 			return errors.New("not all endpoints respond")
 		}
@@ -326,8 +326,8 @@ func AreResponding(cfg config.Config, logger *log.Entry, urls ...string) error {
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(cfg config.Config, logger *log.Entry, url string) bool {
-	req := httpUtils.CreateRequest(cfg, url, "GET", nil)
+func IsResponding(logger *log.Entry, url string) bool {
+	req := httpUtils.CreateRequest(url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 
