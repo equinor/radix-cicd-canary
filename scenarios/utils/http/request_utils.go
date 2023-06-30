@@ -45,7 +45,7 @@ func GetHTTPDefaultClient() *http.Client {
 }
 
 // CreateRequest setup correct header for running tests
-func CreateRequest(cfg config.Config, url, method string, parameters interface{}) *http.Request {
+func CreateRequest(url, method string, parameters interface{}) *http.Request {
 	var reader io.Reader
 	if parameters != nil {
 		payload, _ := json.Marshal(parameters)
@@ -54,12 +54,6 @@ func CreateRequest(cfg config.Config, url, method string, parameters interface{}
 
 	req, _ := http.NewRequest(method, url, reader)
 	req.Header.Add("Content-Type", "application/json")
-
-	// TODO: Why do we need these headers?
-	// req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", cfg.GetBearerToken()))
-	// req.Header.Add("Impersonate-User", cfg.GetImpersonateUser())
-	// req.Header.Add("Impersonate-Group", cfg.GetImpersonateGroup())
-
 	return req
 }
 
@@ -73,7 +67,7 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 		},
 	}
 
-	req := CreateRequest(cfg, fmt.Sprintf("%s/events/github", cfg.GetGitHubWebHookAPIURL()), "POST", parameters)
+	req := CreateRequest(fmt.Sprintf("%s/events/github", cfg.GetGitHubWebHookAPIURL()), "POST", parameters)
 	client := http.DefaultClient
 	payload, _ := json.Marshal(parameters)
 
