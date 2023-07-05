@@ -19,9 +19,6 @@ import (
 // swagger:model Application
 type Application struct {
 
-	// Creator of the application (user principle name).
-	Creator string `json:"creator,omitempty"`
-
 	// Environments List of environments for this application
 	Environments []*EnvironmentSummary `json:"environments"`
 
@@ -31,12 +28,6 @@ type Application struct {
 	// Name the name of the application
 	// Example: radix-canary-golang
 	Name string `json:"name,omitempty"`
-
-	// Owner of the application (email). Can be a single person or a shared group email
-	Owner string `json:"owner,omitempty"`
-
-	// Repository the github repository
-	Repository string `json:"repository,omitempty"`
 
 	// app alias
 	AppAlias *ApplicationAlias `json:"appAlias,omitempty"`

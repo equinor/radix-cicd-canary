@@ -49,8 +49,8 @@ func SetPassword(cfg config.Config, appName string) error {
 		WithAppName(appName).
 		WithServerName(*imageHub.Server).
 		WithImageHubSecret(&secretParameters).
-		WithImpersonateUser(cfg.GetImpersonateUserPointer()).
-		WithImpersonateGroup(cfg.GetImpersonateGroupPointer())
+		WithImpersonateUser(cfg.GetImpersonateUser()).
+		WithImpersonateGroup(cfg.GetImpersonateGroups())
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
@@ -63,8 +63,8 @@ func SetPassword(cfg config.Config, appName string) error {
 func List(cfg config.Config, appName string) ([]*models.ImageHubSecret, error) {
 	params := applicationclient.NewGetPrivateImageHubsParams().
 		WithAppName(appName).
-		WithImpersonateUser(cfg.GetImpersonateUserPointer()).
-		WithImpersonateGroup(cfg.GetImpersonateGroupPointer())
+		WithImpersonateUser(cfg.GetImpersonateUser()).
+		WithImpersonateGroup(cfg.GetImpersonateGroups())
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)

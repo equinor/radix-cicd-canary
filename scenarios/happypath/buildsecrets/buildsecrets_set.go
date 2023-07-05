@@ -76,12 +76,12 @@ func Set(cfg config.Config, suiteName string) error {
 
 func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := applicationClient.NewGetBuildSecretsParams().
 		WithAppName(defaults.App2Name).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
 
@@ -102,7 +102,7 @@ func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) e
 func setSecret(cfg config.Config, secretName, secretValue string) error {
 	logger.Debugf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	secretParameters := models.SecretParameters{
 		SecretValue: &secretValue,
@@ -112,8 +112,8 @@ func setSecret(cfg config.Config, secretName, secretValue string) error {
 		WithAppName(defaults.App2Name).
 		WithSecretName(secretName).
 		WithSecretValue(&secretParameters).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)

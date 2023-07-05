@@ -26,24 +26,24 @@ const (
 )
 
 // Register Will register application
-func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, adGroups []string) (*apiclient.RegisterApplicationOK, error) {
+func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, appAdminGroup string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 	bodyParameters := models.ApplicationRegistrationRequest{
 		ApplicationRegistration: &models.ApplicationRegistration{
 			Name:              &appName,
 			Repository:        &appRepo,
 			SharedSecret:      &appSharedSecret,
 			Creator:           &appCreator,
-			AdGroups:          adGroups,
+			AdGroups:          []string{appAdminGroup},
 			ConfigBranch:      &configBranch,
 			ConfigurationItem: configurationItem,
 		},
 	}
 
 	params := apiclient.NewRegisterApplicationParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithApplicationRegistration(&bodyParameters)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
@@ -55,12 +55,12 @@ func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, 
 // DeleteByImpersonatedUser Deletes an application by the impersonated user
 func DeleteByImpersonatedUser(cfg config.Config, appName string, logger *log.Entry) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
-	logger.Debugf("delete an application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
+	impersonateGroup := cfg.GetImpersonateGroups()
+	logger.Debugf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, impersonateGroup)
 
 	params := applicationclient.NewDeleteApplicationParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(appName)
 
 	return deleteApplication(cfg, appName, params)
@@ -82,12 +82,12 @@ func DeleteByServiceAccount(cfg config.Config, appName string, logger *log.Entry
 
 func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret string, logger *log.Entry) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
-	logger.Debugf("regenerate deploy key for application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
+	impersonateGroup := cfg.GetImpersonateGroups()
+	logger.Debugf("regenerate deploy key for application %s by the impersonamed user %v, group %s", appName, impersonateUser, impersonateGroup)
 
 	params := applicationclient.NewRegenerateDeployKeyParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(appName).
 		WithRegenerateDeployKeyAndSecretData(&models.RegenerateDeployKeyAndSecretData{
 			PrivateKey:   privateKey,
@@ -133,12 +133,12 @@ func IsDeployKeyDefined(cfg config.Config, appName string, logger *log.Entry) er
 
 func GetDeployKey(cfg config.Config, appName string, logger *log.Entry) (string, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
-	logger.Debugf("get deploy key for application %s by the impersonamed user %s, group %s", appName, impersonateUser, impersonateGroup)
+	impersonateGroup := cfg.GetImpersonateGroups()
+	logger.Debugf("get deploy key for application %s by the impersonated user %v, group %s", appName, impersonateUser, impersonateGroup)
 
 	params := applicationclient.NewGetDeployKeyAndSecretParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(appName)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
@@ -165,15 +165,15 @@ func deleteApplication(cfg config.Config, appName string, params *applicationcli
 // Deploy Deploy application
 func Deploy(cfg config.Config, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	bodyParameters := models.PipelineParametersDeploy{
 		ToEnvironment: toEnvironment,
 	}
 
 	params := applicationclient.NewTriggerPipelineDeployParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(appName).
 		WithPipelineParametersDeploy(&bodyParameters)
 
@@ -220,8 +220,8 @@ func DeleteIfExist(cfg config.Config, appName string, logger *log.Entry) error {
 func Get(cfg config.Config, appName string) (*models.Application, error) {
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
-		WithImpersonateUser(cfg.GetImpersonateUserPointer()).
-		WithImpersonateGroup(cfg.GetImpersonateGroupPointer())
+		WithImpersonateUser(cfg.GetImpersonateUser()).
+		WithImpersonateGroup(cfg.GetImpersonateGroups())
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
 
@@ -246,12 +246,12 @@ func IsAliasDefined(cfg config.Config, appName string, logger *log.Entry) error 
 
 func getAlias(cfg config.Config, appName string) *string {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
 
@@ -288,13 +288,13 @@ func TryGetCanonicalDomainName(cfg config.Config, appName, environmentName, comp
 
 func getEnvVariable(cfg config.Config, appName, envName, forComponentName, variableName string) string {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewGetEnvironmentParams().
 		WithAppName(appName).
 		WithEnvName(envName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
 
@@ -314,9 +314,9 @@ func getEnvVariable(cfg config.Config, appName, envName, forComponentName, varia
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(cfg config.Config, logger *log.Entry, urls ...string) error {
+func AreResponding(logger *log.Entry, urls ...string) error {
 	for _, url := range urls {
-		responded := IsResponding(cfg, logger, url)
+		responded := IsResponding(logger, url)
 		if !responded {
 			return errors.New("not all endpoints respond")
 		}
@@ -326,8 +326,8 @@ func AreResponding(cfg config.Config, logger *log.Entry, urls ...string) error {
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(cfg config.Config, logger *log.Entry, url string) bool {
-	req := httpUtils.CreateRequest(cfg, url, "GET", nil)
+func IsResponding(logger *log.Entry, url string) bool {
+	req := httpUtils.CreateRequest(url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 

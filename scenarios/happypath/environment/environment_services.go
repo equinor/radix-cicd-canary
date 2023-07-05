@@ -12,8 +12,8 @@ func GetEnvironment(cfg config.Config, appName, envName string) (*models.Environ
 	params := environmentclient.NewGetEnvironmentParams().
 		WithAppName(appName).
 		WithEnvName(envName).
-		WithImpersonateUser(cfg.GetImpersonateUserPointer()).
-		WithImpersonateGroup(cfg.GetImpersonateGroupPointer())
+		WithImpersonateUser(cfg.GetImpersonateUser()).
+		WithImpersonateGroup(cfg.GetImpersonateGroups())
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
 

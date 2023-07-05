@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetTektonPipelineRunTaskStepLogsParams creates a new GetTektonPipelineRunTaskStepLogsParams object,
@@ -63,7 +64,7 @@ type GetTektonPipelineRunTaskStepLogsParams struct {
 
 	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
-	ImpersonateGroup *string
+	ImpersonateGroup []string
 
 	/* ImpersonateUser.
 
@@ -179,13 +180,13 @@ func (o *GetTektonPipelineRunTaskStepLogsParams) SetHTTPClient(client *http.Clie
 }
 
 // WithImpersonateGroup adds the impersonateGroup to the get tekton pipeline run task step logs params
-func (o *GetTektonPipelineRunTaskStepLogsParams) WithImpersonateGroup(impersonateGroup *string) *GetTektonPipelineRunTaskStepLogsParams {
+func (o *GetTektonPipelineRunTaskStepLogsParams) WithImpersonateGroup(impersonateGroup []string) *GetTektonPipelineRunTaskStepLogsParams {
 	o.SetImpersonateGroup(impersonateGroup)
 	return o
 }
 
 // SetImpersonateGroup adds the impersonateGroup to the get tekton pipeline run task step logs params
-func (o *GetTektonPipelineRunTaskStepLogsParams) SetImpersonateGroup(impersonateGroup *string) {
+func (o *GetTektonPipelineRunTaskStepLogsParams) SetImpersonateGroup(impersonateGroup []string) {
 	o.ImpersonateGroup = impersonateGroup
 }
 
@@ -298,9 +299,14 @@ func (o *GetTektonPipelineRunTaskStepLogsParams) WriteToRequest(r runtime.Client
 
 	if o.ImpersonateGroup != nil {
 
-		// header param Impersonate-Group
-		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
-			return err
+		// binding items for Impersonate-Group
+		joinedImpersonateGroup := o.bindParamImpersonateGroup(reg)
+
+		// header array param Impersonate-Group
+		if len(joinedImpersonateGroup) > 0 {
+			if err := r.SetHeaderParam("Impersonate-Group", joinedImpersonateGroup[0]); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -392,4 +398,21 @@ func (o *GetTektonPipelineRunTaskStepLogsParams) WriteToRequest(r runtime.Client
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
+}
+
+// bindParamGetTektonPipelineRunTaskStepLogs binds the parameter Impersonate-Group
+func (o *GetTektonPipelineRunTaskStepLogsParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
+	impersonateGroupIR := o.ImpersonateGroup
+
+	var impersonateGroupIC []string
+	for _, impersonateGroupIIR := range impersonateGroupIR { // explode []string
+
+		impersonateGroupIIV := impersonateGroupIIR // string as string
+		impersonateGroupIC = append(impersonateGroupIC, impersonateGroupIIV)
+	}
+
+	// items.CollectionFormat: ""
+	impersonateGroupIS := swag.JoinByFormat(impersonateGroupIC, "")
+
+	return impersonateGroupIS
 }

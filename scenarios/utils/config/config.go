@@ -38,6 +38,7 @@ const (
 	networkPolicyCanaryPasswordConfig         = "networkPolicyCanaryPassword"
 	networkPolicyCanaryAppNameConfig          = "networkPolicyCanaryAppName"
 	networkPolicyCanaryJobComponentNameConfig = "networkPolicyCanaryJobComponentName"
+	appAdminGroupConfig                       = "appAdminGroup"
 	envVarSuiteList                           = "SUITE_LIST"
 	envVarIsBlacklist                         = "SUITE_LIST_IS_BLACKLIST"
 	envVarLogLevel                            = "LOG_LEVEL"
@@ -72,6 +73,7 @@ type Config struct {
 	isErrorLogLevel                     bool
 	networkPolicyCanaryAppName          string
 	networkPolicyCanaryJobComponentName string
+	appAdminGroup                       string
 }
 
 var configmap *v1.ConfigMap
@@ -113,6 +115,7 @@ func NewConfig() Config {
 		isErrorLogLevel(),
 		getNetworkPolicyCanaryAppName(),
 		getNetworkPolicyCanaryJobComponentName(),
+		getAppAdminGroup(),
 	}
 }
 
@@ -122,23 +125,20 @@ func (cfg Config) GetBearerToken() string {
 }
 
 // GetImpersonateUser get impersonate user from config map
-func (cfg Config) GetImpersonateUser() string {
-	return cfg.impersonateUser
+func (cfg Config) GetImpersonateUser() *string {
+	if len(cfg.impersonateUser) > 0 {
+		return &cfg.impersonateUser
+	}
+	return nil
 }
 
-// GetImpersonateUserPointer get impersonate user from config map
-func (cfg Config) GetImpersonateUserPointer() *string {
-	return &cfg.impersonateUser
+// GetImpersonateGroups get list of groups for impersonation
+func (cfg Config) GetImpersonateGroups() []string {
+	return []string{cfg.impersonateGroup, cfg.GetAppAdminGroup()}
 }
 
-// GetImpersonateGroup get impersonate group from config map
-func (cfg Config) GetImpersonateGroup() string {
-	return cfg.impersonateGroup
-}
-
-// GetImpersonateGroupPointer get impersonate group from config map
-func (cfg Config) GetImpersonateGroupPointer() *string {
-	return &cfg.impersonateGroup
+func (cfg Config) GetAppAdminGroup() string {
+	return cfg.appAdminGroup
 }
 
 // GetClusterFQDN get Radix cluster FQDN from config map
@@ -286,6 +286,10 @@ func getImpersonateUser() string {
 
 func getImpersonateGroup() string {
 	return getConfigFromMap(impersonateGroupConfig)
+}
+
+func getAppAdminGroup() string {
+	return getConfigFromMap(appAdminGroupConfig)
 }
 
 func getClusterFQDN() string {
