@@ -34,30 +34,30 @@ func Update(cfg config.Config, suiteName string) error {
 	}
 	s.logger.Debugf("admin AD-Group has access")
 
-	s.logger.Debugf("patch an admin AD-Group without access")
+	s.logger.Debugf("patch the RR and set new admin AD group, which cicd-canary does not impersonate")
 	err = patchAdGroup(cfg, adGroupWithNoAccess)
 	if err != nil {
 		return err
 	}
-	s.logger.Debugf("admin AD-Group is patched")
+	s.logger.Debugf("RR's admin AD-Group is patched")
 
-	s.logger.Debugf("check that admin AD-Group has no access")
+	s.logger.Debugf("check that cicd-canary lacks access with current impersonation")
 	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasNoAccess, s.logger)
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
-	s.logger.Debugf("admin AD-Group has no access")
+	s.logger.Debugf("cicd-canary lacks access with current group impersonation")
 
-	s.logger.Debugf("patch an admin AD-Group with access")
+	s.logger.Debugf("patch the RR and set original AD group as admin, which cicd-canary does impersonate")
 	err = patchAdGroup(cfg, cfg.GetAppAdminGroup())
 	if err != nil {
 		return err
 	}
 	s.logger.Debugf("admin AD-Group is patched")
 
-	s.logger.Debugf("check that admin AD-Group has access")
+	s.logger.Debugf("check that cicd-canary has access")
 	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
-	s.logger.Debugf("admin AD-Group has no access")
+	s.logger.Debugf("cicd-canary has access")
 	return err
 }
 
