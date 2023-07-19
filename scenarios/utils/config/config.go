@@ -39,6 +39,7 @@ const (
 	networkPolicyCanaryAppNameConfig          = "networkPolicyCanaryAppName"
 	networkPolicyCanaryJobComponentNameConfig = "networkPolicyCanaryJobComponentName"
 	appAdminGroupConfig                       = "appAdminGroup"
+	appReaderGroupsConfig                     = "appReaderGroups"
 	envVarSuiteList                           = "SUITE_LIST"
 	envVarIsBlacklist                         = "SUITE_LIST_IS_BLACKLIST"
 	envVarLogLevel                            = "LOG_LEVEL"
@@ -74,6 +75,7 @@ type Config struct {
 	networkPolicyCanaryAppName          string
 	networkPolicyCanaryJobComponentName string
 	appAdminGroup                       string
+	appReaderGroups                     []string
 }
 
 var configmap *v1.ConfigMap
@@ -116,6 +118,7 @@ func NewConfig() Config {
 		getNetworkPolicyCanaryAppName(),
 		getNetworkPolicyCanaryJobComponentName(),
 		getAppAdminGroup(),
+		getAppReaderGroups(),
 	}
 }
 
@@ -292,6 +295,16 @@ func getAppAdminGroup() string {
 	return getConfigFromMap(appAdminGroupConfig)
 }
 
+func getAppReaderGroups() []string {
+	appReaderGroups := os.Getenv(appReaderGroupsConfig)
+	// return empty list if no values (Split would return [""])
+	if len(appReaderGroups) == 0 {
+		return make([]string, 0)
+	}
+	split := strings.Split(appReaderGroups, ":")
+	return split
+}
+
 func getClusterFQDN() string {
 	return getConfigFromMap(clusterFQDNConfig)
 }
@@ -431,6 +444,10 @@ func (cfg Config) getRadixAPIPrefix() string {
 
 func (cfg Config) getWebHookPrefix() string {
 	return cfg.webhookPrefix
+}
+
+func (cfg Config) GetAppReaderGroups() []string {
+	return cfg.appReaderGroups
 }
 
 func isDebugLogLevel() bool {
