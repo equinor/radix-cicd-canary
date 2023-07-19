@@ -47,13 +47,6 @@ func TestSuite() test.Suite {
 		},
 		Tests: []test.Spec{
 			{
-				Name:        "UnauthorizedReaderAccess",
-				Description: "Check that reader access to the application is appropriate",
-				Test:        unauthorized.ReaderAccess,
-				SuccessFn:   successFunction,
-				FailFn:      failFunction,
-			}, // TODO: move further down after debugging is finished
-			{
 				Name:        "ListApplications",
 				Description: "List applications",
 				Test:        list.Applications,
@@ -102,6 +95,13 @@ func TestSuite() test.Suite {
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},
+			{
+				Name:        "UnauthorizedReaderAccess",
+				Description: "Check that reader access to the application is appropriate",
+				Test:        unauthorized.ReaderAccess,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			}, // TODO: move further down after debugging is finished
 			{
 				Name:        "PromoteDeploymentToOtherEnvironment",
 				Description: "Promote deployment to other environment",
