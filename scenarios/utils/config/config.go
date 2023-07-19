@@ -296,13 +296,14 @@ func getAppAdminGroup() string {
 }
 
 func getAppReaderGroups() []string {
-	appReaderGroups := os.Getenv(appReaderGroupsConfig)
+	appReaderGroups := getConfigFromMap(appReaderGroupsConfig)
 	// return empty list if no values (Split would return [""])
 	if len(appReaderGroups) == 0 {
 		return make([]string, 0)
 	}
 	split := strings.Split(appReaderGroups, ":")
 	return split
+	// TODO: comma separator will break interpolation in role.yaml manifest
 }
 
 func getClusterFQDN() string {
