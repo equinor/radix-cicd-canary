@@ -2,6 +2,7 @@ package unauthorized
 
 import (
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -40,42 +41,45 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 		WithAppName(defaults.App2Name)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
-	client := httpUtils.GetApplicationClient(cfg)
+	applicationClient := httpUtils.GetApplicationClient(cfg)
 
 	logger.Debugf("check that impersonated user has read access to the application %s", defaults.App2Name)
-	_, err := client.GetApplication(getApplicationParams, clientBearerToken)
+	_, err := applicationClient.GetApplication(getApplicationParams, clientBearerToken)
 	if err != nil {
 		return err
 	}
 
-	restartApplicationParams := application.NewRestartApplicationParams().
+	restartEnvironmentParameters := environment.NewRestartEnvironmentParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroups).
+		WithEnvName("qa").
 		WithAppName(defaults.App2Name)
 
-	logger.Debugf("check that impersonated user cannot restart application %s", defaults.App2Name)
-	_, err = client.RestartApplication(restartApplicationParams, clientBearerToken)
+	logger.Debugf("check that impersonated user cannot restart env qa in application %s", defaults.App2Name)
+	environmentClient := httpUtils.GetEnvironmentClient(cfg)
+	_, err = environmentClient.RestartEnvironment(restartEnvironmentParameters, clientBearerToken)
 	wrongAccessError := givesAccessError(err)
 	if wrongAccessError != nil {
 		return wrongAccessError
 	}
 
+	nonExistingUser := "non-existing-user"
 	triggerPipelineForApplicationParams := application.NewTriggerPipelineBuildDeployParams().
-		WithImpersonateUser(impersonateUser).
+		WithImpersonateUser(&nonExistingUser).
 		WithImpersonateGroup(impersonateGroups).
 		WithAppName(defaults.App2Name)
 
 	logger.Debugf("check that impersonated user cannot trigger pipeline for application %s", defaults.App2Name)
-	_, err = client.TriggerPipelineBuildDeploy(triggerPipelineForApplicationParams, clientBearerToken)
-	if err != nil {
-		return err
-	}
-	return givesAccessError(err)
+	_, err = applicationClient.TriggerPipelineBuildDeploy(triggerPipelineForApplicationParams, clientBearerToken)
+	wrongAccessError = givesAccessError(err)
+	return wrongAccessError
 }
 
 func givesAccessError(err error) error {
 	switch err.(type) {
 	case *application.GetApplicationForbidden:
+		return nil
+	case *environment.RestartEnvironmentForbidden:
 		return nil
 	}
 	return err
