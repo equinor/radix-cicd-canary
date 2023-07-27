@@ -13,7 +13,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/promote"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/register"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/secret"
-	"github.com/equinor/radix-cicd-canary/scenarios/happypath/teardown"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/unauthorized"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 )
@@ -97,11 +96,11 @@ func TestSuite() test.Suite {
 			},
 			{
 				Name:        "UnauthorizedReaderAccess",
-				Description: "Check that reader access to the application is appropriate",
+				Description: "Check that a user with access to the application is appropriate",
 				Test:        unauthorized.ReaderAccess,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
-			}, // TODO: move further down after debugging is finished
+			},
 			{
 				Name:        "PromoteDeploymentToOtherEnvironment",
 				Description: "Promote deployment to other environment",

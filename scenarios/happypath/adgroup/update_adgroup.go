@@ -205,17 +205,19 @@ func (s *step) isTriggerPipelineBuildForbidden(err error) bool {
 }
 
 func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
-	apiError, ok := err.(*runtime.APIError)
-	if ok {
+	switch err.(type) {
+	case *apiclient.TriggerPipelineBuildForbidden:
+		s.logger.Debugf("checkErrorResponse err code: %d", 403)
+		return true
+	case *runtime.APIError:
+		apiError, _ := err.(*runtime.APIError)
 		errorCode := apiError.Code
 		s.logger.Debugf("checkErrorResponse err code: %d", errorCode)
-		if errorCode == expectedStatusCode {
-			return true
-		}
-	} else {
-		s.logger.Debugf("checkErrorResponse err is not runtime.APIError")
+		return errorCode == expectedStatusCode
+	default:
+		s.logger.Debugf("checkErrorResponse err is not an expected type")
+		return false
 	}
-	return false
 }
 
 func stringPtr(str string) *string {

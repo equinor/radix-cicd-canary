@@ -1,8 +1,10 @@
 package unauthorized
 
 import (
+	"fmt"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -67,7 +69,13 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 	triggerPipelineForApplicationParams := application.NewTriggerPipelineBuildDeployParams().
 		WithImpersonateUser(&nonExistingUser).
 		WithImpersonateGroup(impersonateGroups).
-		WithAppName(defaults.App2Name)
+		WithAppName(defaults.App2Name).
+		WithPipelineParametersBuild(
+			&models.PipelineParametersBuild{
+				Branch:   defaults.App2BranchToBuildFrom,
+				CommitID: "this-commit-is-invalid-and-this-job-will-never-be-created",
+			},
+		)
 
 	logger.Debugf("check that impersonated user cannot trigger pipeline for application %s", defaults.App2Name)
 	_, err = applicationClient.TriggerPipelineBuildDeploy(triggerPipelineForApplicationParams, clientBearerToken)
@@ -81,6 +89,11 @@ func givesAccessError(err error) error {
 		return nil
 	case *environment.RestartEnvironmentForbidden:
 		return nil
+	case *application.TriggerPipelineBuildDeployForbidden:
+		return nil
+	case nil:
+		return fmt.Errorf("expected 403 from radix-api, but got nil")
+	default:
+		return fmt.Errorf("expected 403 from radix-api, but got %v", err)
 	}
-	return err
 }
