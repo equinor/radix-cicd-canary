@@ -13,6 +13,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/promote"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/register"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/secret"
+	"github.com/equinor/radix-cicd-canary/scenarios/happypath/teardown"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/unauthorized"
 	"github.com/equinor/radix-cicd-canary/scenarios/test"
 )
