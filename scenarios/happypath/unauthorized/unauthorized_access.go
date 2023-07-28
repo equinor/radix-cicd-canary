@@ -1,6 +1,7 @@
 package unauthorized
 
 import (
+	"errors"
 	"fmt"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -35,52 +36,78 @@ func Access(cfg config.Config, suiteName string) error {
 func ReaderAccess(cfg config.Config, suiteName string) error {
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroups := cfg.GetAppReaderGroups()
-
-	getApplicationParams := application.NewGetApplicationParams().
-		WithImpersonateUser(impersonateUser).
-		WithImpersonateGroup(impersonateGroups).
-		WithAppName(defaults.App2Name)
-
+	readerGroup := cfg.GetAppReaderGroup()
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
-	applicationClient := httpUtils.GetApplicationClient(cfg)
 
-	logger.Debugf("check that impersonated user has read access to the application %s", defaults.App2Name)
-	_, err := applicationClient.GetApplication(getApplicationParams, clientBearerToken)
-	if err != nil {
-		return err
+	type impersonateParam interface {
+		SetImpersonateUser(*string)
+		SetImpersonateGroup([]string)
+		SetAppName(string)
 	}
 
-	restartEnvironmentParameters := environment.NewRestartEnvironmentParams().
-		WithImpersonateUser(impersonateUser).
-		WithImpersonateGroup(impersonateGroups).
-		WithEnvName("qa").
-		WithAppName(defaults.App2Name)
-
-	logger.Debugf("check that impersonated user cannot restart env qa in application %s", defaults.App2Name)
-	environmentClient := httpUtils.GetEnvironmentClient(cfg)
-	_, err = environmentClient.RestartEnvironment(restartEnvironmentParameters, clientBearerToken)
-	wrongAccessError := givesAccessError(err)
-	if wrongAccessError != nil {
-		return wrongAccessError
+	type scenarioSpec struct {
+		name          string
+		logMsg        string
+		expectedError error
+		testFunc      func(impersonationSetter func(impersonateParam)) error
 	}
 
-	nonExistingUser := "non-existing-user"
-	triggerPipelineForApplicationParams := application.NewTriggerPipelineBuildDeployParams().
-		WithImpersonateUser(&nonExistingUser).
-		WithImpersonateGroup(impersonateGroups).
-		WithAppName(defaults.App2Name).
-		WithPipelineParametersBuild(
-			&models.PipelineParametersBuild{
-				Branch:   defaults.App2BranchToBuildFrom,
-				CommitID: "this-commit-is-invalid-and-this-job-will-never-be-created",
+	scenarios := []scenarioSpec{
+		{
+			name:          "reader-user-can-read-RR",
+			logMsg:        fmt.Sprintf("checking that user with reader role can read RR for application %s", defaults.App2Name),
+			expectedError: nil,
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				param := application.NewGetApplicationParams()
+				impersonationSetter(param)
+				_, err := httpUtils.GetApplicationClient(cfg).GetApplication(param, clientBearerToken)
+				return err
 			},
-		)
+		},
+		{
+			name:          "reader-user-cannot-restart-env",
+			logMsg:        fmt.Sprintf("checking that user with reader role cannot restart env %s for application %s", defaults.App2EnvironmentName, defaults.App2Name),
+			expectedError: environment.NewRestartEnvironmentForbidden(),
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				param := environment.NewRestartEnvironmentParams().WithEnvName(defaults.App2EnvironmentName)
+				impersonationSetter(param)
+				_, err := httpUtils.GetEnvironmentClient(cfg).RestartEnvironment(param, clientBearerToken)
+				return err
+			},
+		},
+		{
+			name:          "reader-user-cannot-trigger-pipeline",
+			logMsg:        fmt.Sprintf("checking that user with read role cannot trigger build-deploy pipeline for application %s", defaults.App2Name),
+			expectedError: application.NewTriggerPipelineBuildDeployForbidden(),
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				param := application.NewTriggerPipelineBuildDeployParams().
+					WithPipelineParametersBuild(
+						&models.PipelineParametersBuild{
+							Branch:   defaults.App2BranchToBuildFrom,
+							CommitID: "this-commit-is-invalid-and-this-job-will-never-be-created",
+						},
+					)
+				impersonationSetter(param)
+				_, err := httpUtils.GetApplicationClient(cfg).TriggerPipelineBuildDeploy(param, clientBearerToken)
+				return err
+			},
+		},
+	}
 
-	logger.Debugf("check that impersonated user cannot trigger pipeline for application %s", defaults.App2Name)
-	_, err = applicationClient.TriggerPipelineBuildDeploy(triggerPipelineForApplicationParams, clientBearerToken)
-	wrongAccessError = givesAccessError(err)
-	return wrongAccessError
+	setImpersonation := func(p impersonateParam) {
+		p.SetImpersonateUser(impersonateUser)
+		p.SetImpersonateGroup([]string{readerGroup})
+		p.SetAppName(defaults.App2Name)
+	}
+
+	for _, scenario := range scenarios {
+		logger.Debugf(scenario.logMsg)
+		err := scenario.testFunc(setImpersonation)
+		if !errors.Is(err, scenario.expectedError) {
+			return fmt.Errorf("incorrect response on scenario %s: Got %v, expected %v", scenario.name, err, scenario.expectedError)
+		}
+	}
+	return nil
 }
 
 func givesAccessError(err error) error {

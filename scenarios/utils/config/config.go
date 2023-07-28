@@ -39,7 +39,7 @@ const (
 	networkPolicyCanaryAppNameConfig          = "networkPolicyCanaryAppName"
 	networkPolicyCanaryJobComponentNameConfig = "networkPolicyCanaryJobComponentName"
 	appAdminGroupConfig                       = "appAdminGroup"
-	appReaderGroupsConfig                     = "appReaderGroups"
+	appReaderGroupsConfig                     = "appReaderGroup"
 	envVarSuiteList                           = "SUITE_LIST"
 	envVarIsBlacklist                         = "SUITE_LIST_IS_BLACKLIST"
 	envVarLogLevel                            = "LOG_LEVEL"
@@ -75,7 +75,7 @@ type Config struct {
 	networkPolicyCanaryAppName          string
 	networkPolicyCanaryJobComponentName string
 	appAdminGroup                       string
-	appReaderGroups                     []string
+	appReaderGroup                      string
 }
 
 var configmap *v1.ConfigMap
@@ -118,7 +118,7 @@ func NewConfig() Config {
 		getNetworkPolicyCanaryAppName(),
 		getNetworkPolicyCanaryJobComponentName(),
 		getAppAdminGroup(),
-		getAppReaderGroups(),
+		getAppReaderGroup(),
 	}
 }
 
@@ -295,15 +295,8 @@ func getAppAdminGroup() string {
 	return getConfigFromMap(appAdminGroupConfig)
 }
 
-func getAppReaderGroups() []string {
-	appReaderGroups := getConfigFromMap(appReaderGroupsConfig)
-	// return empty list if no values (Split would return [""])
-	if len(appReaderGroups) == 0 {
-		return make([]string, 0)
-	}
-	split := strings.Split(appReaderGroups, ":")
-	return split
-	// TODO: comma separator will break interpolation in role.yaml manifest
+func getAppReaderGroup() string {
+	return getConfigFromMap(appReaderGroupsConfig)
 }
 
 func getClusterFQDN() string {
@@ -447,8 +440,8 @@ func (cfg Config) getWebHookPrefix() string {
 	return cfg.webhookPrefix
 }
 
-func (cfg Config) GetAppReaderGroups() []string {
-	return cfg.appReaderGroups
+func (cfg Config) GetAppReaderGroup() string {
+	return cfg.appReaderGroup
 }
 
 func isDebugLogLevel() bool {
