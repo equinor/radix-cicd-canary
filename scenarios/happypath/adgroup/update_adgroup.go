@@ -205,15 +205,13 @@ func (s *step) isTriggerPipelineBuildForbidden(err error) bool {
 }
 
 func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
-	switch err.(type) {
+	switch err := err.(type) {
 	case *apiclient.TriggerPipelineBuildForbidden:
 		s.logger.Debugf("checkErrorResponse err code: %d", 403)
 		return true
 	case *runtime.APIError:
-		apiError, _ := err.(*runtime.APIError)
-		errorCode := apiError.Code
-		s.logger.Debugf("checkErrorResponse err code: %d", errorCode)
-		return errorCode == expectedStatusCode
+		s.logger.Debugf("checkErrorResponse err code: %d", err.Code)
+		return err.Code == expectedStatusCode
 	default:
 		s.logger.Debugf("checkErrorResponse err is not an expected type")
 		return false
