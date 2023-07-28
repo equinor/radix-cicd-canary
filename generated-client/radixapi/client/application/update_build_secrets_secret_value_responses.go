@@ -38,6 +38,12 @@ func (o *UpdateBuildSecretsSecretValueReader) ReadResponse(response runtime.Clie
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewUpdateBuildSecretsSecretValueForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewUpdateBuildSecretsSecretValueNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -114,6 +120,27 @@ func (o *UpdateBuildSecretsSecretValueUnauthorized) Error() string {
 }
 
 func (o *UpdateBuildSecretsSecretValueUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewUpdateBuildSecretsSecretValueForbidden creates a UpdateBuildSecretsSecretValueForbidden with default headers values
+func NewUpdateBuildSecretsSecretValueForbidden() *UpdateBuildSecretsSecretValueForbidden {
+	return &UpdateBuildSecretsSecretValueForbidden{}
+}
+
+/* UpdateBuildSecretsSecretValueForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type UpdateBuildSecretsSecretValueForbidden struct {
+}
+
+func (o *UpdateBuildSecretsSecretValueForbidden) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueForbidden ", 403)
+}
+
+func (o *UpdateBuildSecretsSecretValueForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

@@ -3,6 +3,7 @@ package adgroup
 import (
 	"errors"
 	"fmt"
+	commonUtils "github.com/equinor/radix-common/utils"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -170,7 +171,7 @@ func setSecret(cfg config.Config) error {
 		WithSecretName(defaults.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: stringPtr(defaults.App2SecretValue),
+				SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
 			})
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
@@ -216,8 +217,4 @@ func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
 		s.logger.Debugf("checkErrorResponse err is not an expected type")
 		return false
 	}
-}
-
-func stringPtr(str string) *string {
-	return &str
 }

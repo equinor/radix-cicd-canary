@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
+	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	commonUtils "github.com/equinor/radix-common/utils"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -92,6 +97,103 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 				return err
 			},
 		},
+		// TODO: delete app
+		{
+			name:          "reader-user-cannot-delete-app",
+			logMsg:        fmt.Sprintf("checking that user with read role cannot delete app %s", defaults.App2Name),
+			expectedError: application.NewDeleteApplicationForbidden(),
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				param := application.NewDeleteApplicationParams()
+				impersonationSetter(param)
+				_, err := httpUtils.GetApplicationClient(cfg).DeleteApplication(param, clientBearerToken)
+				return err
+			},
+		},
+		// TODO: set build secret
+		{
+			name:          "reader-user-cannot-set-build-secret",
+			logMsg:        fmt.Sprintf("checking that user with read role cannot set build secret for app %s", defaults.App2Name),
+			expectedError: application.NewUpdateBuildSecretsSecretValueForbidden(),
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				param := application.NewUpdateBuildSecretsSecretValueParams().WithSecretName(defaults.App2SecretName).WithSecretValue(&models.SecretParameters{
+					SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
+				})
+				impersonationSetter(param)
+				_, err := httpUtils.GetApplicationClient(cfg).UpdateBuildSecretsSecretValue(param, clientBearerToken)
+				return err
+			},
+		},
+		// TODO: set private image hub secret
+		{
+			name:          "reader-user-cannot-set-private-image-hub-secret",
+			logMsg:        fmt.Sprintf("checking that user with read role cannot set private image hub secret for app %s", defaults.App2Name),
+			expectedError: application.NewUpdatePrivateImageHubsSecretValueBadRequest(), // TODO: should be forbidden 403. requires some rewrite of radix-api or radix-operator lib function
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				imageHubs, err := privateimagehub.List(cfg, defaults.App2Name)
+				if err != nil {
+					return err
+				}
+				imageHub := imageHubs[0]
+				param := application.NewUpdatePrivateImageHubsSecretValueParams().WithServerName(*imageHub.Server).WithImageHubSecret(&models.SecretParameters{
+					SecretValue: commonUtils.StringPtr("some-value"),
+				})
+				impersonationSetter(param)
+				_, err = httpUtils.GetApplicationClient(cfg).UpdatePrivateImageHubsSecretValue(param, clientBearerToken)
+				return err
+			},
+		},
+		// TODO: set secret App2SecretName (DB_PASS) for redis component
+		{
+			name:          "reader-user-cannot-set-secret",
+			logMsg:        fmt.Sprintf("checking that user with read role cannot set secret for app %s", defaults.App2Name),
+			expectedError: environment.NewChangeComponentSecretInternalServerError(), // TODO: should be forbidden 403. requires work on radix-api
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				param := environment.NewChangeComponentSecretParams().WithEnvName(defaults.App2EnvironmentName).
+					WithComponentName(defaults.App2Component2Name).
+					WithSecretName(defaults.App2SecretName).
+					WithComponentSecret(
+						&models.SecretParameters{
+							SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
+						})
+				impersonationSetter(param)
+				_, err := httpUtils.GetEnvironmentClient(cfg).ChangeComponentSecret(param, clientBearerToken)
+				return err
+			},
+		},
+		// TODO: check that reading pipeline log is allowed https://console.dev.radix.equinor.com/api/v1/applications/radix-networkpolicy-canary/jobs/radix-pipeline-20230728084604-ew3sz/logs/radix-pipeline?lines=1000
+		{
+			name:          "reader-user-can-read-pipeline-log",
+			logMsg:        fmt.Sprintf("checking that user with read role can read pipeline log for app %s", defaults.App2Name),
+			expectedError: nil,
+			testFunc: func(impersonationSetter func(impersonateParam)) error {
+				// Get job
+				jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
+					return job.IsListedWithStatus(cfg, defaults.App2Name, "Stopped", logger)
+				}, logger)
+				jobName := jobSummary.Name
+				param := pipeline_job.NewGetPipelineJobStepLogsParams().WithJobName(jobName).WithStepName("build-app")
+				impersonationSetter(param)
+				_, err = httpUtils.GetJobClient(cfg).GetPipelineJobStepLogs(param, clientBearerToken)
+				return err
+			},
+		},
+		// TODO: check that reading runtime log is allowed https://console.dev.radix.equinor.com/api/v1/applications/radix-networkpolicy-canary/environments/egressrulestopublicdns/components/web/replicas/web-978d76dc4-ctgzz/logs?lines=1000
+		//{
+		//	name:          "reader-user-can-read-runtime-log",
+		//	logMsg:        fmt.Sprintf("checking that user with read role can read runtime log for app %s", defaults.App2Name),
+		//	expectedError: nil,
+		//	testFunc: func(impersonationSetter func(impersonateParam)) error {
+		//		// Get pod name, https://console.dev.radix.equinor.com/log-api/applications/radix-networkpolicy-canary/environments/egressrulestopublicdns/components/web
+		//		componentSummary := component.NewComponentsParams().WithEnvName(defaults.App2EnvironmentName)
+		//		podName := test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+		//			return podIsListedWithStatus(cfg, defaults.App2Name, defaults.App2EnvironmentName, defaults.App2Component1Name, "Running")
+		//		}
+		//		param := component.NewReplicaLogParams().WithEnvName(defaults.App2EnvironmentName).WithComponentName(defaults.App2Component1Name).WithPodName(podName)
+		//		impersonationSetter(param)
+		//		_, err := httpUtils.GetComponentClient(cfg).ReplicaLog(param, clientBearerToken)
+		//		return err
+		//	},
+		//},
 	}
 
 	setImpersonation := func(p impersonateParam) {
