@@ -199,13 +199,6 @@ func givesAccessError(err error) error {
 	switch err.(type) {
 	case *application.GetApplicationForbidden:
 		return nil
-	case *environment.RestartEnvironmentForbidden:
-		return nil
-	case *application.TriggerPipelineBuildDeployForbidden:
-		return nil
-	case nil:
-		return fmt.Errorf("expected 403 from radix-api, but got nil")
-	default:
-		return fmt.Errorf("expected 403 from radix-api, but got %v", err)
 	}
+	return err
 }
