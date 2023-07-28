@@ -1,7 +1,7 @@
 apiVersion: v1
 name: radix-cicd-canary
-version: 1.1.19
-appVersion: 1.1.19
+version: 1.1.20
+appVersion: 1.1.20
 kubeVersion: ">=1.22.0"
 description: Radix CICD Canary
 keywords:
