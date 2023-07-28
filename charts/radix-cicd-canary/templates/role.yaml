@@ -15,7 +15,7 @@ rules:
   resourceNames:
   - {{ include "cicd-canary.platformUserGroup" . | quote }}
   - {{ .Values.appAdminGroup | quote }}
-  - {{ .Values.appReaderGroups | quote }}
+  - {{ .Values.appReaderGroup | quote }}
 - apiGroups: ["*"]
   resources: ["configmaps"]
   verbs: ["get"]
