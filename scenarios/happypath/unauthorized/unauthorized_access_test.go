@@ -23,7 +23,7 @@ func TestUnauthorizedAccess(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestUnauthorizedReaderccess(t *testing.T) {
+func TestUnauthorizedReaderAccess(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 

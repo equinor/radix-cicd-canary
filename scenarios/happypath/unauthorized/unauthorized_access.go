@@ -26,7 +26,7 @@ func Access(cfg config.Config, suiteName string) error {
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
 
-	logger.Debugf("check that inpersonated user has no access to the application %s", defaults.RestrictedApplicationName)
+	logger.Debugf("check that impersonated user has no access to the application %s", defaults.RestrictedApplicationName)
 	_, err := client.GetApplication(params, clientBearerToken)
 	return givesAccessError(err)
 }
