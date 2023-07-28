@@ -166,6 +166,9 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 				jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
 					return job.IsListedWithStatus(cfg, defaults.App2Name, "Stopped", logger)
 				}, logger)
+				if err != nil {
+					return err
+				}
 				jobName := jobSummary.Name
 				param := pipeline_job.NewGetPipelineJobStepLogsParams().WithJobName(jobName).WithStepName("radix-pipeline")
 				impersonationSetter(param)
