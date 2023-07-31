@@ -96,6 +96,13 @@ func TestSuite() test.Suite {
 				FailFn:      failFunction,
 			},
 			{
+				Name:        "UnauthorizedReaderAccess",
+				Description: "Check that a user with reader role has appropriate access to the application",
+				Test:        unauthorized.ReaderAccess,
+				SuccessFn:   successFunction,
+				FailFn:      failFunction,
+			},
+			{
 				Name:        "PromoteDeploymentToOtherEnvironment",
 				Description: "Promote deployment to other environment",
 				Test:        promote.DeploymentToAnotherEnvironment,

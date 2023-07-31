@@ -13,12 +13,12 @@ import (
 // IsListedWithStatus Checks if job exists with status
 func IsListedWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobsParams().
 		WithAppName(appName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
 
@@ -40,7 +40,7 @@ func IsListedWithStatus(cfg config.Config, appName, expectedStatus string, logge
 // Stop Stops a job
 func Stop(cfg config.Config, appName, jobName string) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
@@ -48,8 +48,8 @@ func Stop(cfg config.Config, appName, jobName string) error {
 	params := pipelineJobClient.NewStopApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	jobStopped, err := client.StopApplicationJob(params, clientBearerToken)
 	if err == nil && jobStopped != nil {
@@ -89,13 +89,13 @@ func GetStatus(cfg config.Config, appName, jobName string, logger *log.Entry) (s
 // Get gets job from job name
 func Get(cfg config.Config, appName, jobName string) (*models.Job, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
@@ -113,13 +113,13 @@ func Get(cfg config.Config, appName, jobName string) (*models.Job, error) {
 // GetSteps gets job from job name
 func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
@@ -138,14 +138,14 @@ func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
 // GetLogForStep gets log for step
 func GetLogForStep(cfg config.Config, appName, jobName, stepName string, logger *log.Entry) string {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetPipelineJobStepLogsParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithStepName(stepName).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)

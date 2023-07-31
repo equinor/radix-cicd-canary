@@ -1,11 +1,11 @@
-FROM golang:1.19-alpine3.17 as builder
+FROM golang:1.20-alpine3.18 as builder
 
 ENV GO111MODULE=on
 
 RUN apk update && apk add git && apk add ca-certificates curl && \
     apk add --no-cache gcc musl-dev
 
-RUN go install honnef.co/go/tools/cmd/staticcheck@v0.4.2
+RUN go install honnef.co/go/tools/cmd/staticcheck@2023.1.3
 
 WORKDIR /go/src/github.com/equinor/radix-cicd-canary/
 

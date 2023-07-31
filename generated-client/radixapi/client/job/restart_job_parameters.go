@@ -17,48 +17,48 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewGetJobParams creates a new GetJobParams object,
+// NewRestartJobParams creates a new RestartJobParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewGetJobParams() *GetJobParams {
-	return &GetJobParams{
+func NewRestartJobParams() *RestartJobParams {
+	return &RestartJobParams{
 		timeout: cr.DefaultTimeout,
 	}
 }
 
-// NewGetJobParamsWithTimeout creates a new GetJobParams object
+// NewRestartJobParamsWithTimeout creates a new RestartJobParams object
 // with the ability to set a timeout on a request.
-func NewGetJobParamsWithTimeout(timeout time.Duration) *GetJobParams {
-	return &GetJobParams{
+func NewRestartJobParamsWithTimeout(timeout time.Duration) *RestartJobParams {
+	return &RestartJobParams{
 		timeout: timeout,
 	}
 }
 
-// NewGetJobParamsWithContext creates a new GetJobParams object
+// NewRestartJobParamsWithContext creates a new RestartJobParams object
 // with the ability to set a context for a request.
-func NewGetJobParamsWithContext(ctx context.Context) *GetJobParams {
-	return &GetJobParams{
+func NewRestartJobParamsWithContext(ctx context.Context) *RestartJobParams {
+	return &RestartJobParams{
 		Context: ctx,
 	}
 }
 
-// NewGetJobParamsWithHTTPClient creates a new GetJobParams object
+// NewRestartJobParamsWithHTTPClient creates a new RestartJobParams object
 // with the ability to set a custom HTTPClient for a request.
-func NewGetJobParamsWithHTTPClient(client *http.Client) *GetJobParams {
-	return &GetJobParams{
+func NewRestartJobParamsWithHTTPClient(client *http.Client) *RestartJobParams {
+	return &RestartJobParams{
 		HTTPClient: client,
 	}
 }
 
-/* GetJobParams contains all the parameters to send to the API endpoint
-   for the get job operation.
+/* RestartJobParams contains all the parameters to send to the API endpoint
+   for the restart job operation.
 
    Typically these are written to a http.Request.
 */
-type GetJobParams struct {
+type RestartJobParams struct {
 
 	/* ImpersonateGroup.
 
@@ -101,122 +101,122 @@ type GetJobParams struct {
 	HTTPClient *http.Client
 }
 
-// WithDefaults hydrates default values in the get job params (not the query body).
+// WithDefaults hydrates default values in the restart job params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *GetJobParams) WithDefaults() *GetJobParams {
+func (o *RestartJobParams) WithDefaults() *RestartJobParams {
 	o.SetDefaults()
 	return o
 }
 
-// SetDefaults hydrates default values in the get job params (not the query body).
+// SetDefaults hydrates default values in the restart job params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *GetJobParams) SetDefaults() {
+func (o *RestartJobParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
-// WithTimeout adds the timeout to the get job params
-func (o *GetJobParams) WithTimeout(timeout time.Duration) *GetJobParams {
+// WithTimeout adds the timeout to the restart job params
+func (o *RestartJobParams) WithTimeout(timeout time.Duration) *RestartJobParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
-// SetTimeout adds the timeout to the get job params
-func (o *GetJobParams) SetTimeout(timeout time.Duration) {
+// SetTimeout adds the timeout to the restart job params
+func (o *RestartJobParams) SetTimeout(timeout time.Duration) {
 	o.timeout = timeout
 }
 
-// WithContext adds the context to the get job params
-func (o *GetJobParams) WithContext(ctx context.Context) *GetJobParams {
+// WithContext adds the context to the restart job params
+func (o *RestartJobParams) WithContext(ctx context.Context) *RestartJobParams {
 	o.SetContext(ctx)
 	return o
 }
 
-// SetContext adds the context to the get job params
-func (o *GetJobParams) SetContext(ctx context.Context) {
+// SetContext adds the context to the restart job params
+func (o *RestartJobParams) SetContext(ctx context.Context) {
 	o.Context = ctx
 }
 
-// WithHTTPClient adds the HTTPClient to the get job params
-func (o *GetJobParams) WithHTTPClient(client *http.Client) *GetJobParams {
+// WithHTTPClient adds the HTTPClient to the restart job params
+func (o *RestartJobParams) WithHTTPClient(client *http.Client) *RestartJobParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
-// SetHTTPClient adds the HTTPClient to the get job params
-func (o *GetJobParams) SetHTTPClient(client *http.Client) {
+// SetHTTPClient adds the HTTPClient to the restart job params
+func (o *RestartJobParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithImpersonateGroup adds the impersonateGroup to the get job params
-func (o *GetJobParams) WithImpersonateGroup(impersonateGroup []string) *GetJobParams {
+// WithImpersonateGroup adds the impersonateGroup to the restart job params
+func (o *RestartJobParams) WithImpersonateGroup(impersonateGroup []string) *RestartJobParams {
 	o.SetImpersonateGroup(impersonateGroup)
 	return o
 }
 
-// SetImpersonateGroup adds the impersonateGroup to the get job params
-func (o *GetJobParams) SetImpersonateGroup(impersonateGroup []string) {
+// SetImpersonateGroup adds the impersonateGroup to the restart job params
+func (o *RestartJobParams) SetImpersonateGroup(impersonateGroup []string) {
 	o.ImpersonateGroup = impersonateGroup
 }
 
-// WithImpersonateUser adds the impersonateUser to the get job params
-func (o *GetJobParams) WithImpersonateUser(impersonateUser *string) *GetJobParams {
+// WithImpersonateUser adds the impersonateUser to the restart job params
+func (o *RestartJobParams) WithImpersonateUser(impersonateUser *string) *RestartJobParams {
 	o.SetImpersonateUser(impersonateUser)
 	return o
 }
 
-// SetImpersonateUser adds the impersonateUser to the get job params
-func (o *GetJobParams) SetImpersonateUser(impersonateUser *string) {
+// SetImpersonateUser adds the impersonateUser to the restart job params
+func (o *RestartJobParams) SetImpersonateUser(impersonateUser *string) {
 	o.ImpersonateUser = impersonateUser
 }
 
-// WithAppName adds the appName to the get job params
-func (o *GetJobParams) WithAppName(appName string) *GetJobParams {
+// WithAppName adds the appName to the restart job params
+func (o *RestartJobParams) WithAppName(appName string) *RestartJobParams {
 	o.SetAppName(appName)
 	return o
 }
 
-// SetAppName adds the appName to the get job params
-func (o *GetJobParams) SetAppName(appName string) {
+// SetAppName adds the appName to the restart job params
+func (o *RestartJobParams) SetAppName(appName string) {
 	o.AppName = appName
 }
 
-// WithEnvName adds the envName to the get job params
-func (o *GetJobParams) WithEnvName(envName string) *GetJobParams {
+// WithEnvName adds the envName to the restart job params
+func (o *RestartJobParams) WithEnvName(envName string) *RestartJobParams {
 	o.SetEnvName(envName)
 	return o
 }
 
-// SetEnvName adds the envName to the get job params
-func (o *GetJobParams) SetEnvName(envName string) {
+// SetEnvName adds the envName to the restart job params
+func (o *RestartJobParams) SetEnvName(envName string) {
 	o.EnvName = envName
 }
 
-// WithJobComponentName adds the jobComponentName to the get job params
-func (o *GetJobParams) WithJobComponentName(jobComponentName string) *GetJobParams {
+// WithJobComponentName adds the jobComponentName to the restart job params
+func (o *RestartJobParams) WithJobComponentName(jobComponentName string) *RestartJobParams {
 	o.SetJobComponentName(jobComponentName)
 	return o
 }
 
-// SetJobComponentName adds the jobComponentName to the get job params
-func (o *GetJobParams) SetJobComponentName(jobComponentName string) {
+// SetJobComponentName adds the jobComponentName to the restart job params
+func (o *RestartJobParams) SetJobComponentName(jobComponentName string) {
 	o.JobComponentName = jobComponentName
 }
 
-// WithJobName adds the jobName to the get job params
-func (o *GetJobParams) WithJobName(jobName string) *GetJobParams {
+// WithJobName adds the jobName to the restart job params
+func (o *RestartJobParams) WithJobName(jobName string) *RestartJobParams {
 	o.SetJobName(jobName)
 	return o
 }
 
-// SetJobName adds the jobName to the get job params
-func (o *GetJobParams) SetJobName(jobName string) {
+// SetJobName adds the jobName to the restart job params
+func (o *RestartJobParams) SetJobName(jobName string) {
 	o.JobName = jobName
 }
 
 // WriteToRequest writes these params to a swagger request
-func (o *GetJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
+func (o *RestartJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
 	if err := r.SetTimeout(o.timeout); err != nil {
 		return err
@@ -270,8 +270,8 @@ func (o *GetJobParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regist
 	return nil
 }
 
-// bindParamGetJob binds the parameter Impersonate-Group
-func (o *GetJobParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
+// bindParamRestartJob binds the parameter Impersonate-Group
+func (o *RestartJobParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
 	impersonateGroupIR := o.ImpersonateGroup
 
 	var impersonateGroupIC []string

@@ -29,6 +29,12 @@ func (o *TriggerPipelineBuildDeployReader) ReadResponse(response runtime.ClientR
 			return nil, err
 		}
 		return result, nil
+	case 403:
+		result := NewTriggerPipelineBuildDeployForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewTriggerPipelineBuildDeployNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -68,6 +74,27 @@ func (o *TriggerPipelineBuildDeployOK) readResponse(response runtime.ClientRespo
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
 		return err
 	}
+
+	return nil
+}
+
+// NewTriggerPipelineBuildDeployForbidden creates a TriggerPipelineBuildDeployForbidden with default headers values
+func NewTriggerPipelineBuildDeployForbidden() *TriggerPipelineBuildDeployForbidden {
+	return &TriggerPipelineBuildDeployForbidden{}
+}
+
+/* TriggerPipelineBuildDeployForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type TriggerPipelineBuildDeployForbidden struct {
+}
+
+func (o *TriggerPipelineBuildDeployForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployForbidden ", 403)
+}
+
+func (o *TriggerPipelineBuildDeployForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

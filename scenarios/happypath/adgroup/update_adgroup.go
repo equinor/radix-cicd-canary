@@ -3,6 +3,7 @@ package adgroup
 import (
 	"errors"
 	"fmt"
+	commonUtils "github.com/equinor/radix-common/utils"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -34,30 +35,30 @@ func Update(cfg config.Config, suiteName string) error {
 	}
 	s.logger.Debugf("admin AD-Group has access")
 
-	s.logger.Debugf("patch an admin AD-Group without access")
+	s.logger.Debugf("patch the RR and set new admin AD group, which the impersonated user is not member of")
 	err = patchAdGroup(cfg, adGroupWithNoAccess)
 	if err != nil {
 		return err
 	}
-	s.logger.Debugf("admin AD-Group is patched")
+	s.logger.Debugf("RR's admin AD-Group is patched")
 
-	s.logger.Debugf("check that admin AD-Group has no access")
+	s.logger.Debugf("check that the application cannot be accessed with current impersonation")
 	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasNoAccess, s.logger)
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
-	s.logger.Debugf("admin AD-Group has no access")
+	s.logger.Debugf("application cannot be accessed with current impersonation")
 
-	s.logger.Debugf("patch an admin AD-Group with access")
-	err = patchAdGroup(cfg, cfg.GetImpersonateGroup())
+	s.logger.Debugf("patch the RR and set oroginal admin AD group, which the impersonated user is member of")
+	err = patchAdGroup(cfg, cfg.GetAppAdminGroup())
 	if err != nil {
 		return err
 	}
 	s.logger.Debugf("admin AD-Group is patched")
 
-	s.logger.Debugf("check that admin AD-Group has access")
+	s.logger.Debugf("check that the application can be accessed with current impersonation")
 	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
-	s.logger.Debugf("admin AD-Group has no access")
+	s.logger.Debugf("application can be accessed with current impersonation")
 	return err
 }
 
@@ -114,11 +115,11 @@ func patchAdGroup(cfg config.Config, adGroup string) error {
 
 func getApplication(cfg config.Config) (*models.Application, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := apiclient.NewGetApplicationParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
@@ -134,7 +135,7 @@ func getApplication(cfg config.Config) (*models.Application, error) {
 
 func buildApp(cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	bodyParameters := models.PipelineParametersBuild{
 		Branch: defaults.App2BranchToBuildFrom,
@@ -143,8 +144,8 @@ func buildApp(cfg config.Config) error {
 	params := apiclient.NewTriggerPipelineBuildParams().
 		WithAppName(defaults.App2Name).
 		WithPipelineParametersBuild(&bodyParameters).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
@@ -159,18 +160,18 @@ func buildApp(cfg config.Config) error {
 
 func setSecret(cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewChangeComponentSecretParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name).
 		WithEnvName(defaults.App2EnvironmentName).
 		WithComponentName(defaults.App2Component2Name).
 		WithSecretName(defaults.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: stringPtr(defaults.App2SecretValue),
+				SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
 			})
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
@@ -205,19 +206,15 @@ func (s *step) isTriggerPipelineBuildForbidden(err error) bool {
 }
 
 func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
-	apiError, ok := err.(*runtime.APIError)
-	if ok {
-		errorCode := apiError.Code
-		s.logger.Debugf("checkErrorResponse err code: %d", errorCode)
-		if errorCode == expectedStatusCode {
-			return true
-		}
-	} else {
-		s.logger.Debugf("checkErrorResponse err is not runtime.APIError")
+	switch err := err.(type) {
+	case *apiclient.TriggerPipelineBuildForbidden:
+		s.logger.Debugf("checkErrorResponse err code: %d", 403)
+		return true
+	case *runtime.APIError:
+		s.logger.Debugf("checkErrorResponse err code: %d", err.Code)
+		return err.Code == expectedStatusCode
+	default:
+		s.logger.Debugf("checkErrorResponse err is not an expected type")
+		return false
 	}
-	return false
-}
-
-func stringPtr(str string) *string {
-	return &str
 }

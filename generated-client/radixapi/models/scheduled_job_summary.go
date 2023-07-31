@@ -61,6 +61,10 @@ type ScheduledJobSummary struct {
 	// Array of ReplicaSummary
 	ReplicaList []*ReplicaSummary `json:"replicaList"`
 
+	// Timestamp of the job restart, if applied.
+	// +optional
+	Restart string `json:"Restart,omitempty"`
+
 	// Started timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Started string `json:"started,omitempty"`

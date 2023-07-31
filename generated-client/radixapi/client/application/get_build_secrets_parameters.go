@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetBuildSecretsParams creates a new GetBuildSecretsParams object,
@@ -63,7 +64,7 @@ type GetBuildSecretsParams struct {
 
 	   Works only with custom setup of cluster. Allow impersonation of test group (Required if Impersonate-User is set)
 	*/
-	ImpersonateGroup *string
+	ImpersonateGroup []string
 
 	/* ImpersonateUser.
 
@@ -131,13 +132,13 @@ func (o *GetBuildSecretsParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithImpersonateGroup adds the impersonateGroup to the get build secrets params
-func (o *GetBuildSecretsParams) WithImpersonateGroup(impersonateGroup *string) *GetBuildSecretsParams {
+func (o *GetBuildSecretsParams) WithImpersonateGroup(impersonateGroup []string) *GetBuildSecretsParams {
 	o.SetImpersonateGroup(impersonateGroup)
 	return o
 }
 
 // SetImpersonateGroup adds the impersonateGroup to the get build secrets params
-func (o *GetBuildSecretsParams) SetImpersonateGroup(impersonateGroup *string) {
+func (o *GetBuildSecretsParams) SetImpersonateGroup(impersonateGroup []string) {
 	o.ImpersonateGroup = impersonateGroup
 }
 
@@ -173,9 +174,14 @@ func (o *GetBuildSecretsParams) WriteToRequest(r runtime.ClientRequest, reg strf
 
 	if o.ImpersonateGroup != nil {
 
-		// header param Impersonate-Group
-		if err := r.SetHeaderParam("Impersonate-Group", *o.ImpersonateGroup); err != nil {
-			return err
+		// binding items for Impersonate-Group
+		joinedImpersonateGroup := o.bindParamImpersonateGroup(reg)
+
+		// header array param Impersonate-Group
+		if len(joinedImpersonateGroup) > 0 {
+			if err := r.SetHeaderParam("Impersonate-Group", joinedImpersonateGroup[0]); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -196,4 +202,21 @@ func (o *GetBuildSecretsParams) WriteToRequest(r runtime.ClientRequest, reg strf
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
+}
+
+// bindParamGetBuildSecrets binds the parameter Impersonate-Group
+func (o *GetBuildSecretsParams) bindParamImpersonateGroup(formats strfmt.Registry) []string {
+	impersonateGroupIR := o.ImpersonateGroup
+
+	var impersonateGroupIC []string
+	for _, impersonateGroupIIR := range impersonateGroupIR { // explode []string
+
+		impersonateGroupIIV := impersonateGroupIIR // string as string
+		impersonateGroupIC = append(impersonateGroupIC, impersonateGroupIIV)
+	}
+
+	// items.CollectionFormat: ""
+	impersonateGroupIS := swag.JoinByFormat(impersonateGroupIC, "")
+
+	return impersonateGroupIS
 }

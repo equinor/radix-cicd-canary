@@ -16,11 +16,11 @@ func Applications(cfg config.Config, suiteName string) error {
 	logger = log.WithFields(log.Fields{"Suite": suiteName})
 
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := apiclient.NewShowApplicationsParams().
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetPlatformClient(cfg)

@@ -6,11 +6,7 @@ metadata:
   labels:
     {{- include "cicd-canary.labels" . | nindent 4 }}
 data:
-  {{if eq .Values.clusterType "playground"}}
-  impersonateGroup: "{{ .Values.radixGroups.playground }}"
-  {{else}}
-  impersonateGroup: "{{ .Values.radixGroups.user }}"
-  {{end}}
+  impersonateGroup: {{ include "cicd-canary.platformUserGroup" . | quote }}
   impersonateUser: {{ .Values.impersonate.user }}
   publicKey: {{ .Values.deployKey.public }}
   privateKeyBase64: {{ .Values.deployKey.private }}
@@ -30,3 +26,5 @@ data:
   networkPolicyCanaryAppName: {{ .Values.networkPolicyCanaryAppName }}
   networkPolicyCanaryJobComponentName: {{ .Values.networkPolicyCanaryJobComponentName }}
   networkPolicyCanaryPassword: {{ .Values.networkPolicyCanary.password }}
+  appAdminGroup: {{ .Values.appAdminGroup | quote }}
+  appReaderGroup: {{ .Values.appReaderGroup | quote }}

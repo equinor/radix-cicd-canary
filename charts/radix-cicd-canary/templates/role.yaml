@@ -12,11 +12,10 @@ rules:
 - apiGroups: [""]
   resources: ["groups"]
   verbs: ["impersonate"]
-  {{if eq .Values.clusterType "playground"}}
-  resourceNames: [{{ .Values.radixGroups.playground }}]
-  {{else}}
-  resourceNames: [{{ .Values.radixGroups.user }}]
-  {{end}}
+  resourceNames:
+  - {{ include "cicd-canary.platformUserGroup" . | quote }}
+  - {{ .Values.appAdminGroup | quote }}
+  - {{ .Values.appReaderGroup | quote }}
 - apiGroups: ["*"]
   resources: ["configmaps"]
   verbs: ["get"]

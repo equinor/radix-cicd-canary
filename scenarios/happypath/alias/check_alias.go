@@ -38,8 +38,8 @@ func DefaultResponding(cfg config.Config, suiteName string) error {
 		}
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
+	return test.WaitForCheckFuncOrTimeout(cfg, func(_ config.Config) error {
 		schema := "https"
-		return application.AreResponding(cfg, logger, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
+		return application.AreResponding(logger, http.GetUrl(schema, canonicalDomainName), http.GetUrl(schema, publicDomainName))
 	}, logger)
 }

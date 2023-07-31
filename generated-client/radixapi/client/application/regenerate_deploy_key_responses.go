@@ -50,7 +50,7 @@ func NewRegenerateDeployKeyNoContent() *RegenerateDeployKeyNoContent {
 
 /* RegenerateDeployKeyNoContent describes a response with status code 204, with default header values.
 
-Successful regenerate machine-user token
+Successfully regenerated deploy key and set shared secret
 */
 type RegenerateDeployKeyNoContent struct {
 }

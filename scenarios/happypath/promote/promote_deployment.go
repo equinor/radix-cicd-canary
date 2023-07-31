@@ -29,7 +29,7 @@ func DeploymentToAnotherEnvironment(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	// Assert that we no deployments within environment
+	// Assert that we have no deployments within environment
 	deploymentsInEnvironment, err := getDeployments(cfg, envToDeployTo)
 	if err != nil {
 		return err
@@ -77,13 +77,13 @@ func getLastDeployment(cfg config.Config, environment string) (*models.Deploymen
 
 func getDeployments(cfg config.Config, environment string) ([]*models.DeploymentSummary, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewGetApplicationEnvironmentDeploymentsParams().
 		WithAppName(defaults.App2Name).
 		WithEnvName(environment).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
 
@@ -97,7 +97,7 @@ func getDeployments(cfg config.Config, environment string) ([]*models.Deployment
 
 func promote(cfg config.Config, deployment *models.DeploymentSummary, from, to string) (string, error) {
 	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroup()
+	impersonateGroup := cfg.GetImpersonateGroups()
 
 	bodyParameters := models.PipelineParametersPromote{
 		DeploymentName:  *deployment.Name,
@@ -108,8 +108,8 @@ func promote(cfg config.Config, deployment *models.DeploymentSummary, from, to s
 	params := applicationclient.NewTriggerPipelinePromoteParams().
 		WithAppName(defaults.App2Name).
 		WithPipelineParametersPromote(&bodyParameters).
-		WithImpersonateUser(&impersonateUser).
-		WithImpersonateGroup(&impersonateGroup)
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
 	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
 

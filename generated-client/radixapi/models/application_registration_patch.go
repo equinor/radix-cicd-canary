@@ -37,6 +37,9 @@ type ApplicationRegistrationPatch struct {
 	// radixconfig.yaml file name and path, starting from the GitHub repository root (without leading slash)
 	RadixConfigFullName string `json:"radixConfigFullName,omitempty"`
 
+	// ReaderAdGroups the groups that should be able to read the application
+	ReaderAdGroups []string `json:"ReaderAdGroups"`
+
 	// Repository the github repository
 	Repository string `json:"repository,omitempty"`
 

@@ -30,6 +30,8 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	GetJobComponentDeployments(params *GetJobComponentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobComponentDeploymentsOK, error)
+
 	DeleteBatch(params *DeleteBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBatchNoContent, error)
 
 	DeleteJob(params *DeleteJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteJobNoContent, error)
@@ -46,11 +48,54 @@ type ClientService interface {
 
 	JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*JobLogOK, error)
 
+	RestartBatch(params *RestartBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartBatchNoContent, error)
+
+	RestartJob(params *RestartJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartJobNoContent, error)
+
 	StopBatch(params *StopBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopBatchNoContent, error)
 
 	StopJob(params *StopJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopJobNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+  GetJobComponentDeployments gets list of deployments for the job component
+*/
+func (a *Client) GetJobComponentDeployments(params *GetJobComponentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobComponentDeploymentsOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetJobComponentDeploymentsParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GetJobComponentDeployments",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/deployments",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetJobComponentDeploymentsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetJobComponentDeploymentsOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GetJobComponentDeployments: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -362,6 +407,84 @@ func (a *Client) JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWri
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for jobLog: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  RestartBatch restarts a scheduled or stopped batch
+*/
+func (a *Client) RestartBatch(params *RestartBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartBatchNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRestartBatchParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "restartBatch",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &RestartBatchReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RestartBatchNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for restartBatch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+  RestartJob restarts a running or stopped scheduled job
+*/
+func (a *Client) RestartJob(params *RestartJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartJobNoContent, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewRestartJobParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "restartJob",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &RestartJobReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*RestartJobNoContent)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for restartJob: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

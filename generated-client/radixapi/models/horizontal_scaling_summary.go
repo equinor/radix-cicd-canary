@@ -21,6 +21,10 @@ type HorizontalScalingSummary struct {
 	// Example: 70
 	CurrentCPUUtilizationPercentage int32 `json:"currentCPUUtilizationPercentage,omitempty"`
 
+	// Component current average memory utilization over all pods, represented as a percentage of requested memory
+	// Example: 80
+	CurrentMemoryUtilizationPercentage int32 `json:"currentMemoryUtilizationPercentage,omitempty"`
+
 	// Component maximum replicas. From radixconfig.yaml
 	// Example: 5
 	MaxReplicas int32 `json:"maxReplicas,omitempty"`
@@ -32,6 +36,10 @@ type HorizontalScalingSummary struct {
 	// Component target average CPU utilization over all pods
 	// Example: 80
 	TargetCPUUtilizationPercentage int32 `json:"targetCPUUtilizationPercentage,omitempty"`
+
+	// Component target average memory utilization over all pods
+	// Example: 80
+	TargetMemoryUtilizationPercentage int32 `json:"targetMemoryUtilizationPercentage,omitempty"`
 }
 
 // Validate validates this horizontal scaling summary
