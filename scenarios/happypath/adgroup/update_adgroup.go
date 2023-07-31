@@ -47,7 +47,7 @@ func Update(cfg config.Config, suiteName string) error {
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
-	s.logger.Debugf("cicd-canary lacks access with current group impersonation")
+	s.logger.Debugf("application cannot be accessed with current impersonation")
 
 	s.logger.Debugf("patch the RR and set original AD group as admin, which cicd-canary does impersonate")
 	err = patchAdGroup(cfg, cfg.GetAppAdminGroup())
