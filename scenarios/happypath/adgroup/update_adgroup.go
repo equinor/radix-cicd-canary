@@ -49,7 +49,7 @@ func Update(cfg config.Config, suiteName string) error {
 	}
 	s.logger.Debugf("application cannot be accessed with current impersonation")
 
-	s.logger.Debugf("patch the RR and set original AD group as admin, which cicd-canary does impersonate")
+	s.logger.Debugf("patch the RR and set oroginal admin AD group, which the impersonated user is member of")
 	err = patchAdGroup(cfg, cfg.GetAppAdminGroup())
 	if err != nil {
 		return err
