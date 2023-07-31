@@ -58,7 +58,7 @@ func Update(cfg config.Config, suiteName string) error {
 
 	s.logger.Debugf("check that the application can be accessed with current impersonation")
 	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
-	s.logger.Debugf("cicd-canary has access")
+	s.logger.Debugf("application can be accessed with current impersonation")
 	return err
 }
 
