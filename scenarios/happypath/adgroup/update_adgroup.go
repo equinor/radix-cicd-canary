@@ -42,7 +42,7 @@ func Update(cfg config.Config, suiteName string) error {
 	}
 	s.logger.Debugf("RR's admin AD-Group is patched")
 
-	s.logger.Debugf("check that cicd-canary lacks access with current impersonation")
+	s.logger.Debugf("check that the application cannot be accessed with current impersonation")
 	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasNoAccess, s.logger)
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
