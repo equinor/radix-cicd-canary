@@ -26,7 +26,7 @@ const (
 )
 
 // Register Will register application
-func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, appAdminGroup string) (*apiclient.RegisterApplicationOK, error) {
+func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, appAdminGroup string, appReaderGroups []string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	bodyParameters := models.ApplicationRegistrationRequest{
@@ -36,6 +36,7 @@ func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, 
 			SharedSecret:      &appSharedSecret,
 			Creator:           &appCreator,
 			AdGroups:          []string{appAdminGroup},
+			ReaderAdGroups:    appReaderGroups,
 			ConfigBranch:      &configBranch,
 			ConfigurationItem: configurationItem,
 		},

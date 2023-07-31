@@ -32,6 +32,12 @@ func (o *RestartEnvironmentReader) ReadResponse(response runtime.ClientResponse,
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewRestartEnvironmentForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewRestartEnvironmentNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -81,6 +87,27 @@ func (o *RestartEnvironmentUnauthorized) Error() string {
 }
 
 func (o *RestartEnvironmentUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewRestartEnvironmentForbidden creates a RestartEnvironmentForbidden with default headers values
+func NewRestartEnvironmentForbidden() *RestartEnvironmentForbidden {
+	return &RestartEnvironmentForbidden{}
+}
+
+/* RestartEnvironmentForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type RestartEnvironmentForbidden struct {
+}
+
+func (o *RestartEnvironmentForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentForbidden ", 403)
+}
+
+func (o *RestartEnvironmentForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

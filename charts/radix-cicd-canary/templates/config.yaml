@@ -27,3 +27,4 @@ data:
   networkPolicyCanaryJobComponentName: {{ .Values.networkPolicyCanaryJobComponentName }}
   networkPolicyCanaryPassword: {{ .Values.networkPolicyCanary.password }}
   appAdminGroup: {{ .Values.appAdminGroup | quote }}
+  appReaderGroup: {{ .Values.appReaderGroup | quote }}

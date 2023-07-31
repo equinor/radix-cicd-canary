@@ -29,7 +29,7 @@ func DeploymentToAnotherEnvironment(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	// Assert that we no deployments within environment
+	// Assert that we have no deployments within environment
 	deploymentsInEnvironment, err := getDeployments(cfg, envToDeployTo)
 	if err != nil {
 		return err

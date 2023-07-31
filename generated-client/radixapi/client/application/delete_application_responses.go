@@ -32,6 +32,12 @@ func (o *DeleteApplicationReader) ReadResponse(response runtime.ClientResponse, 
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewDeleteApplicationForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewDeleteApplicationNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -81,6 +87,27 @@ func (o *DeleteApplicationUnauthorized) Error() string {
 }
 
 func (o *DeleteApplicationUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewDeleteApplicationForbidden creates a DeleteApplicationForbidden with default headers values
+func NewDeleteApplicationForbidden() *DeleteApplicationForbidden {
+	return &DeleteApplicationForbidden{}
+}
+
+/* DeleteApplicationForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type DeleteApplicationForbidden struct {
+}
+
+func (o *DeleteApplicationForbidden) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}][%d] deleteApplicationForbidden ", 403)
+}
+
+func (o *DeleteApplicationForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

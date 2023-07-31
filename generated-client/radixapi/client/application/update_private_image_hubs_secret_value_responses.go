@@ -38,6 +38,12 @@ func (o *UpdatePrivateImageHubsSecretValueReader) ReadResponse(response runtime.
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewUpdatePrivateImageHubsSecretValueForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewUpdatePrivateImageHubsSecretValueNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -114,6 +120,27 @@ func (o *UpdatePrivateImageHubsSecretValueUnauthorized) Error() string {
 }
 
 func (o *UpdatePrivateImageHubsSecretValueUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewUpdatePrivateImageHubsSecretValueForbidden creates a UpdatePrivateImageHubsSecretValueForbidden with default headers values
+func NewUpdatePrivateImageHubsSecretValueForbidden() *UpdatePrivateImageHubsSecretValueForbidden {
+	return &UpdatePrivateImageHubsSecretValueForbidden{}
+}
+
+/* UpdatePrivateImageHubsSecretValueForbidden describes a response with status code 403, with default header values.
+
+Forbidden
+*/
+type UpdatePrivateImageHubsSecretValueForbidden struct {
+}
+
+func (o *UpdatePrivateImageHubsSecretValueForbidden) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueForbidden ", 403)
+}
+
+func (o *UpdatePrivateImageHubsSecretValueForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

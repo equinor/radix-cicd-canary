@@ -45,7 +45,11 @@ clusterType: development
 
 # A GUID for the app admin groups.
 # Should not be a valid group since this will grant members admin access to the canary apps
-appAdminGroup: "ffffffff-ffff-ffff-ffff-ffffffffffff"
+appAdminGroup: "hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh"
+
+# A GUID for the app reader groups.
+# Should not be a valid group since this will grant members reader access to the canary apps
+appReaderGroup: "rrrrrrrr-rrrr-rrrr-rrrr-rrrrrrrrrrrr"
 
 # Defines the actual Radix Platform User AD group that grants access to register new apps
 radixGroups:
