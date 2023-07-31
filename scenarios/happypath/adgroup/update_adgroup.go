@@ -35,7 +35,7 @@ func Update(cfg config.Config, suiteName string) error {
 	}
 	s.logger.Debugf("admin AD-Group has access")
 
-	s.logger.Debugf("patch the RR and set new admin AD group, which cicd-canary does not impersonate")
+	s.logger.Debugf("patch the RR and set new admin AD group, which the impersonated user is not member of")
 	err = patchAdGroup(cfg, adGroupWithNoAccess)
 	if err != nil {
 		return err
