@@ -10,8 +10,38 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// IsListedWithStatus Checks if job exists with status
-func IsListedWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
+// GetLastPipelineJobWithStatus Checks if a last pipeline job exists with status
+func GetLastPipelineJobWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
+	jobSummaries, err := getPipelineJobs(cfg, appName)
+	if err != nil {
+		return nil, err
+	}
+	lastJobSummary := jobSummaries[0]
+	if lastJobSummary.Status != expectedStatus {
+		return nil, fmt.Errorf("method GetLastPipelineJobWithStatus for application %s expected status '%s', but it received '%s'",
+			appName, expectedStatus, lastJobSummary.Status)
+	}
+	logger.Debugf("method GetLastPipelineJobWithStatus for application %s received expected status '%s'", appName, expectedStatus)
+	return lastJobSummary, nil
+}
+
+// GetAnyPipelineJobWithStatus Checks if any pipeline job exists with status
+func GetAnyPipelineJobWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
+	jobSummaries, err := getPipelineJobs(cfg, appName)
+	if err != nil {
+		return nil, err
+	}
+	for _, jobSummary := range jobSummaries {
+		if jobSummary.Status == expectedStatus {
+			logger.Debugf("method GetAnyPipelineJobWithStatus for application %s received expected status '%s'", appName, expectedStatus)
+			return jobSummary, nil
+		}
+	}
+	return nil, fmt.Errorf("method GetAnyPipelineJobWithStatus for application %s expected any job with the status '%s', but it does not exist",
+		appName, expectedStatus)
+}
+
+func getPipelineJobs(cfg config.Config, appName string) ([]*models.JobSummary, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -29,12 +59,8 @@ func IsListedWithStatus(cfg config.Config, appName, expectedStatus string, logge
 	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
 		return nil, fmt.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
 	}
-	if applicationJobs.Payload[0].Status != expectedStatus {
-		return nil, fmt.Errorf("method GetApplicationJobs for application %s expected status '%s', but it received '%s'",
-			appName, expectedStatus, applicationJobs.Payload[0].Status)
-	}
-	logger.Debugf("method GetApplicationJobs for application %s received expected status '%s'", appName, expectedStatus)
-	return applicationJobs.Payload[0], nil
+	jobSummaries := applicationJobs.Payload
+	return jobSummaries, nil
 }
 
 // Stop Stops a job
@@ -70,7 +96,7 @@ func IsDone(cfg config.Config, appName, jobName string, logger *log.Entry) (stri
 		return jobStatus, nil
 	}
 	logger.Debugf("Job %s for an app %s is not done yet", jobName, appName)
-	return "", fmt.Errorf("job %s for an app %s was possible failed, Status %s", jobName, appName, jobStatus)
+	return "", fmt.Errorf("job %s for an app %s is not complete yet, Status %s", jobName, appName, jobStatus)
 }
 
 // GetStatus Gets status of job
