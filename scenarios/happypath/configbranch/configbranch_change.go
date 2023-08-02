@@ -55,7 +55,7 @@ func Change(cfg config.Config, suiteName string) error {
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www", components: []string{"www"}},
-		//{name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
+		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
 	if ok, err := validateJobSteps(cfg, jobName, expectedSteps); !ok {
@@ -94,7 +94,7 @@ func Change(cfg config.Config, suiteName string) error {
 		{name: "radix-pipeline", components: []string{}},
 		{name: "clone", components: []string{}},
 		{name: "build-www2", components: []string{"www2"}},
-		//{name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
+		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
 	if ok, err := validateJobSteps(cfg, jobName, expectedSteps); !ok {
@@ -108,7 +108,7 @@ func waitForJobRunning(cfg config.Config) (*models.JobSummary, error) {
 	status := "Running"
 
 	return test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(cfg, defaults.App4Name, status, logger)
+		return job.GetLastPipelineJobWithStatus(cfg, defaults.App4Name, status, logger)
 	}, logger)
 }
 

@@ -34,7 +34,7 @@ func Application(cfg config.Config, suiteName string) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		jobSummary, err := job.IsListedWithStatus(cfg, defaults.App3Name, "Succeeded", logger)
+		jobSummary, err := job.GetLastPipelineJobWithStatus(cfg, defaults.App3Name, "Succeeded", logger)
 		if err != nil {
 			return nil, err
 		}

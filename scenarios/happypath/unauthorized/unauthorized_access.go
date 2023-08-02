@@ -164,7 +164,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 			testFunc: func(impersonationSetter func(impersonateParam)) error {
 				// Get job
 				jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-					return job.IsListedWithStatus(cfg, defaults.App2Name, "Stopped", logger)
+					return job.GetAnyPipelineJobWithStatus(cfg, defaults.App2Name, "Succeeded", logger)
 				}, logger)
 				if err != nil {
 					return err
