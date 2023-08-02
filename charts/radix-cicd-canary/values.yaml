@@ -60,7 +60,7 @@ radixApiPrefix: server-radix-api-prod
 radixWebhookPrefix: webhook-radix-github-webhook-prod
 clusterFqdn: weekly-27.dev.radix.equinor.com
 timeoutOfTest: 1200
-sleepIntervalBetweenChecks: 5
+sleepIntervalBetweenChecks: 10
 sleepIntervalTestRuns: 300
 nspSleepInterval: 15
 nspLongSleepInterval: 600

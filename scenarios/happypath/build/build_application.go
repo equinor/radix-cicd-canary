@@ -45,7 +45,7 @@ func Application(cfg config.Config, suiteName string) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(cfg, defaults.App2Name, "Running", logger)
+		return job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Running", logger)
 	}, logger)
 
 	if err != nil {
@@ -65,7 +65,7 @@ func Application(cfg config.Config, suiteName string) error {
 	logger.Infof("Second job was triggered")
 
 	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		_, err := job.IsListedWithStatus(cfg, defaults.App2Name, "Queued", logger)
+		_, err := job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Queued", logger)
 		return err
 	}, logger)
 
@@ -110,14 +110,14 @@ func Application(cfg config.Config, suiteName string) error {
 	}
 
 	stepLog := job.GetLogForStep(cfg, defaults.App2Name, jobName, "build-app", logger)
-	//Validate if Dockerfile build output contains SHA256 hash of build secrets:
-	//https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
+	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
+	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
 		return errors.New("build secrets are not contained in build log")
 	}
 
 	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(cfg, defaults.App2Name, "Running", logger)
+		return job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Running", logger)
 	}, logger)
 
 	if err != nil {
@@ -133,7 +133,7 @@ func Application(cfg config.Config, suiteName string) error {
 	}
 
 	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		_, err := job.IsListedWithStatus(cfg, defaults.App2Name, "Stopped", logger)
+		_, err := job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Stopped", logger)
 		return err
 	}, logger)
 	if err != nil {

@@ -31,15 +31,17 @@ func Set(cfg config.Config, suiteName string) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.IsListedWithStatus(cfg, defaults.App2Name, "Failed", logger)
+		return job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Failed", logger)
 	}, logger)
 	if err != nil {
 		return err
 	}
 
 	jobName := jobSummary.Name
-	job, _ := job.Get(cfg, defaults.App2Name, jobName)
-
+	job, err := job.Get(cfg, defaults.App2Name, jobName)
+	if err != nil {
+		return err
+	}
 	expectedSteps := []string{
 		"clone-config",
 		"prepare-pipelines",
