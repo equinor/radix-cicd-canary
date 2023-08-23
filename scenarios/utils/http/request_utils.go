@@ -116,11 +116,6 @@ func CheckUrl(url string, logger *log.Entry) error {
 	return CheckResponse(response, logger)
 }
 
-// GetClientBearerToken Gets bearer token in order to make call to API server
-func GetClientBearerToken(cfg config.Config) runtime.ClientAuthInfoWriter {
-	return httptransport.BearerToken(cfg.GetBearerToken())
-}
-
 // GetPlatformClient Gets the Platform API client
 func GetPlatformClient(cfg config.Config) platformAPIClient.ClientService {
 	return platformAPIClient.New(getTransport(cfg), strfmt.Default)
@@ -156,16 +151,32 @@ func GetK8sJobClient(cfg config.Config) jobAPIClient.ClientService {
 	return jobAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
-func getTransport(cfg config.Config) *httptransport.Runtime {
-	radixAPIURL := cfg.GetRadixAPIURL()
-	schemes := cfg.GetRadixAPISchemes()
-
-	return httptransport.New(radixAPIURL, basePath, schemes)
-}
-
 func GetUrl(schema string, domainName string) string {
 	if strings.HasPrefix("http://", domainName) || strings.HasPrefix("https://", domainName) {
 		return domainName
 	}
 	return fmt.Sprintf("%s://%s", schema, domainName)
+}
+
+func getTransport(cfg config.Config) *httptransport.Runtime {
+	radixAPIURL := cfg.GetRadixAPIURL()
+	schemes := cfg.GetRadixAPISchemes()
+	transport := httptransport.New(radixAPIURL, basePath, schemes)
+	transport.DefaultAuthentication = getClientAuthInfoWriter(cfg)
+	return transport
+}
+
+func getClientAuthInfoWriter(cfg config.Config) runtime.ClientAuthInfoWriter {
+	if ts := cfg.GetTokenSource(); ts != nil {
+		return runtime.ClientAuthInfoWriterFunc(func(cr runtime.ClientRequest, r strfmt.Registry) error {
+			token, err := ts.Token()
+			if err != nil {
+				return err
+			}
+			cr.SetHeaderParam(runtime.HeaderAuthorization, "Bearer "+token.AccessToken)
+			return nil
+		})
+	}
+
+	return nil
 }

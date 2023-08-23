@@ -38,10 +38,8 @@ func Set(cfg config.Config, suiteName string) error {
 				SecretValue: stringPtr(defaults.App2SecretValue),
 			})
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
-
-	_, err = client.ChangeComponentSecret(params, clientBearerToken)
+	_, err = client.ChangeComponentSecret(params, nil)
 	if err != nil {
 		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %v", defaults.App2Name, err)
 	}
@@ -69,10 +67,8 @@ func getEnvironmentDetails(cfg config.Config) *models.Environment {
 		WithEnvName(defaults.App2EnvironmentName).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
-
-	environmentDetails, err := client.GetEnvironment(params, clientBearerToken)
+	environmentDetails, err := client.GetEnvironment(params, nil)
 	if err == nil && environmentDetails.Payload != nil {
 		return environmentDetails.Payload
 	}

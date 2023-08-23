@@ -3,6 +3,7 @@ package unauthorized
 import (
 	"errors"
 	"fmt"
+
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/pipeline_job"
@@ -29,11 +30,9 @@ func Access(cfg config.Config, suiteName string) error {
 		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.RestrictedApplicationName)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
 	logger.Debugf("check that impersonated user has no access to the application %s", defaults.RestrictedApplicationName)
-	_, err := client.GetApplication(params, clientBearerToken)
+	_, err := client.GetApplication(params, nil)
 	return givesAccessError(err)
 }
 
@@ -42,7 +41,6 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 	logger := log.WithFields(log.Fields{"Suite": suiteName})
 	impersonateUser := cfg.GetImpersonateUser()
 	readerGroup := cfg.GetAppReaderGroup()
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 
 	type impersonateParam interface {
 		SetImpersonateUser(*string)
@@ -65,7 +63,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 			testFunc: func(impersonationSetter func(impersonateParam)) error {
 				param := application.NewGetApplicationParams()
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).GetApplication(param, clientBearerToken)
+				_, err := httpUtils.GetApplicationClient(cfg).GetApplication(param, nil)
 				return err
 			},
 		},
@@ -76,7 +74,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 			testFunc: func(impersonationSetter func(impersonateParam)) error {
 				param := environment.NewRestartEnvironmentParams().WithEnvName(defaults.App2EnvironmentName)
 				impersonationSetter(param)
-				_, err := httpUtils.GetEnvironmentClient(cfg).RestartEnvironment(param, clientBearerToken)
+				_, err := httpUtils.GetEnvironmentClient(cfg).RestartEnvironment(param, nil)
 				return err
 			},
 		},
@@ -93,7 +91,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 						},
 					)
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).TriggerPipelineBuildDeploy(param, clientBearerToken)
+				_, err := httpUtils.GetApplicationClient(cfg).TriggerPipelineBuildDeploy(param, nil)
 				return err
 			},
 		},
@@ -104,7 +102,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 			testFunc: func(impersonationSetter func(impersonateParam)) error {
 				param := application.NewDeleteApplicationParams()
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).DeleteApplication(param, clientBearerToken)
+				_, err := httpUtils.GetApplicationClient(cfg).DeleteApplication(param, nil)
 				return err
 			},
 		},
@@ -117,7 +115,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 					SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
 				})
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).UpdateBuildSecretsSecretValue(param, clientBearerToken)
+				_, err := httpUtils.GetApplicationClient(cfg).UpdateBuildSecretsSecretValue(param, nil)
 				return err
 			},
 		},
@@ -135,7 +133,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 					SecretValue: commonUtils.StringPtr("some-value"),
 				})
 				impersonationSetter(param)
-				_, err = httpUtils.GetApplicationClient(cfg).UpdatePrivateImageHubsSecretValue(param, clientBearerToken)
+				_, err = httpUtils.GetApplicationClient(cfg).UpdatePrivateImageHubsSecretValue(param, nil)
 				return err
 			},
 		},
@@ -152,7 +150,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 							SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
 						})
 				impersonationSetter(param)
-				_, err := httpUtils.GetEnvironmentClient(cfg).ChangeComponentSecret(param, clientBearerToken)
+				_, err := httpUtils.GetEnvironmentClient(cfg).ChangeComponentSecret(param, nil)
 				return err
 			},
 		},
@@ -172,7 +170,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 				jobName := jobSummary.Name
 				param := pipeline_job.NewGetPipelineJobStepLogsParams().WithJobName(jobName).WithStepName("radix-pipeline")
 				impersonationSetter(param)
-				_, err = httpUtils.GetJobClient(cfg).GetPipelineJobStepLogs(param, clientBearerToken)
+				_, err = httpUtils.GetJobClient(cfg).GetPipelineJobStepLogs(param, nil)
 				return err
 			},
 		},

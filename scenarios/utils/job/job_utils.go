@@ -49,10 +49,8 @@ func getPipelineJobs(cfg config.Config, appName string) ([]*models.JobSummary, e
 		WithAppName(appName).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
-
-	applicationJobs, err := client.GetApplicationJobs(params, clientBearerToken)
+	applicationJobs, err := client.GetApplicationJobs(params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error calling GetApplicationJobs for application %s: %v", appName, err)
 	}
@@ -67,17 +65,14 @@ func getPipelineJobs(cfg config.Config, appName string) ([]*models.JobSummary, e
 func Stop(cfg config.Config, appName, jobName string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
-
 	params := pipelineJobClient.NewStopApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	jobStopped, err := client.StopApplicationJob(params, clientBearerToken)
+	jobStopped, err := client.StopApplicationJob(params, nil)
 	if err == nil && jobStopped != nil {
 		return nil
 	}
@@ -123,10 +118,8 @@ func Get(cfg config.Config, appName, jobName string) (*models.Job, error) {
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
-
-	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
+	applicationJob, err := client.GetApplicationJob(params, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -147,10 +140,8 @@ func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
-
-	applicationJob, err := client.GetApplicationJob(params, clientBearerToken)
+	applicationJob, err := client.GetApplicationJob(params, nil)
 	if err == nil &&
 		applicationJob.Payload != nil &&
 		applicationJob.Payload.Steps != nil {
@@ -173,10 +164,8 @@ func GetLogForStep(cfg config.Config, appName, jobName, stepName string, logger 
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetJobClient(cfg)
-
-	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, clientBearerToken)
+	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, nil)
 	if err != nil {
 		logger.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
 		return ""

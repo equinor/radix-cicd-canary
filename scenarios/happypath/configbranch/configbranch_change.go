@@ -137,10 +137,8 @@ func patchConfigBranch(cfg config.Config, newConfigBranch string) error {
 		WithAppName(defaults.App4Name).
 		WithPatchRequest(&patchRequest)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	_, err := client.ModifyRegistrationDetails(params, clientBearerToken)
+	_, err := client.ModifyRegistrationDetails(params, nil)
 	if err != nil {
 		return err
 	}

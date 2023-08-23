@@ -14,10 +14,8 @@ func GetEnvironment(cfg config.Config, appName, envName string) (*models.Environ
 		WithEnvName(envName).
 		WithImpersonateUser(cfg.GetImpersonateUser()).
 		WithImpersonateGroup(cfg.GetImpersonateGroups())
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
-
-	result, err := client.GetEnvironment(params, clientBearerToken)
+	result, err := client.GetEnvironment(params, nil)
 	if err != nil {
 		return nil, err
 	}
