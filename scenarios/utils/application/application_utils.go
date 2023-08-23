@@ -47,10 +47,8 @@ func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, 
 		WithImpersonateGroup(impersonateGroup).
 		WithApplicationRegistration(&bodyParameters)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetPlatformClient(cfg)
-
-	return client.RegisterApplication(params, clientBearerToken)
+	return client.RegisterApplication(params, nil)
 }
 
 // DeleteByImpersonatedUser Deletes an application by the impersonated user
@@ -96,10 +94,8 @@ func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret st
 		},
 		)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	_, err := client.RegenerateDeployKey(params, clientBearerToken)
+	_, err := client.RegenerateDeployKey(params, nil)
 	if err != nil {
 		return fmt.Errorf("failed regenerating deploy key for the application %s: %v", appName, err)
 	}
@@ -142,10 +138,8 @@ func GetDeployKey(cfg config.Config, appName string, logger *log.Entry) (string,
 		WithImpersonateGroup(impersonateGroup).
 		WithAppName(appName)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	response, err := client.GetDeployKeyAndSecret(params, clientBearerToken)
+	response, err := client.GetDeployKeyAndSecret(params, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed getting deploy key for the application %s: %v", appName, err)
 	}
@@ -153,10 +147,8 @@ func GetDeployKey(cfg config.Config, appName string, logger *log.Entry) (string,
 }
 
 func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	_, err := client.DeleteApplication(params, clientBearerToken)
+	_, err := client.DeleteApplication(params, nil)
 	if err != nil {
 		return fmt.Errorf("failed deleting the application %s: %v", appName, err)
 	}
@@ -178,10 +170,8 @@ func Deploy(cfg config.Config, appName, toEnvironment string) (*applicationclien
 		WithAppName(appName).
 		WithPipelineParametersDeploy(&bodyParameters)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	return client.TriggerPipelineDeploy(params, clientBearerToken)
+	return client.TriggerPipelineDeploy(params, nil)
 }
 
 // IsDefined Checks if application is defined
@@ -223,10 +213,8 @@ func Get(cfg config.Config, appName string) (*models.Application, error) {
 		WithAppName(appName).
 		WithImpersonateUser(cfg.GetImpersonateUser()).
 		WithImpersonateGroup(cfg.GetImpersonateGroups())
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	result, err := client.GetApplication(params, clientBearerToken)
+	result, err := client.GetApplication(params, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -253,10 +241,8 @@ func getAlias(cfg config.Config, appName string) *string {
 		WithAppName(appName).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	applicationDetails, err := client.GetApplication(params, clientBearerToken)
+	applicationDetails, err := client.GetApplication(params, nil)
 	if err == nil && applicationDetails.Payload != nil && applicationDetails.Payload.AppAlias != nil {
 		return applicationDetails.Payload.AppAlias.URL
 	}
@@ -296,10 +282,8 @@ func getEnvVariable(cfg config.Config, appName, envName, forComponentName, varia
 		WithEnvName(envName).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
-
-	environmentDetails, err := client.GetEnvironment(params, clientBearerToken)
+	environmentDetails, err := client.GetEnvironment(params, nil)
 	if err == nil &&
 		environmentDetails.Payload != nil &&
 		environmentDetails.Payload.ActiveDeployment != nil {

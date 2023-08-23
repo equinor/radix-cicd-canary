@@ -19,10 +19,8 @@ func IsListedWithStatus(cfg config.Config, appName string, appEnv string, jobCom
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetK8sJobClient(cfg)
-
-	batches, err := client.GetBatches(params, clientBearerToken)
+	batches, err := client.GetBatches(params, nil)
 
 	if err != nil {
 		return fmt.Errorf("error calling GetBatches for application %s in environment %s: %v", appName, appEnv, err)
