@@ -3,6 +3,7 @@ package adgroup
 import (
 	"errors"
 	"fmt"
+
 	commonUtils "github.com/equinor/radix-common/utils"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
@@ -102,10 +103,8 @@ func patchAdGroup(cfg config.Config, adGroup string) error {
 		WithAppName(defaults.App2Name).
 		WithPatchRequest(&patchRequest)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	_, err := client.ModifyRegistrationDetails(params, clientBearerToken)
+	_, err := client.ModifyRegistrationDetails(params, nil)
 	if err != nil {
 		return err
 	}
@@ -122,10 +121,8 @@ func getApplication(cfg config.Config) (*models.Application, error) {
 		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	application, err := client.GetApplication(params, clientBearerToken)
+	application, err := client.GetApplication(params, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -147,10 +144,8 @@ func buildApp(cfg config.Config) error {
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	_, err := client.TriggerPipelineBuild(params, clientBearerToken)
+	_, err := client.TriggerPipelineBuild(params, nil)
 	if err != nil {
 		return err
 	}
@@ -174,10 +169,8 @@ func setSecret(cfg config.Config) error {
 				SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
 			})
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
-
-	_, err := client.ChangeComponentSecret(params, clientBearerToken)
+	_, err := client.ChangeComponentSecret(params, nil)
 	if err != nil {
 		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", defaults.App2Name, err)
 	}

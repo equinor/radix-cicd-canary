@@ -84,10 +84,8 @@ func getDeployments(cfg config.Config, environment string) ([]*models.Deployment
 		WithEnvName(environment).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetEnvironmentClient(cfg)
-
-	deployments, err := client.GetApplicationEnvironmentDeployments(params, clientBearerToken)
+	deployments, err := client.GetApplicationEnvironmentDeployments(params, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -110,10 +108,8 @@ func promote(cfg config.Config, deployment *models.DeploymentSummary, from, to s
 		WithPipelineParametersPromote(&bodyParameters).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetApplicationClient(cfg)
-
-	returnValue, err := client.TriggerPipelinePromote(params, clientBearerToken)
+	returnValue, err := client.TriggerPipelinePromote(params, nil)
 	if err != nil {
 		return "", err
 	}

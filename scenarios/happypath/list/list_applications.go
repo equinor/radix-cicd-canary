@@ -22,10 +22,8 @@ func Applications(cfg config.Config, suiteName string) error {
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	clientBearerToken := httpUtils.GetClientBearerToken(cfg)
 	client := httpUtils.GetPlatformClient(cfg)
-
-	showAppOk, err := client.ShowApplications(params, clientBearerToken)
+	showAppOk, err := client.ShowApplications(params, nil)
 	if err == nil {
 		logger.Infof("Response length: %v", len(showAppOk.Payload))
 		for i, appSummary := range showAppOk.Payload {

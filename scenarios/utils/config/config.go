@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -10,7 +11,9 @@ import (
 	"time"
 
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/tokensource"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/oauth2"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -45,11 +48,11 @@ const (
 	envVarLogLevel                            = "LOG_LEVEL"
 	envUseLocalRadixApi                       = "USE_LOCAL_RADIX_API"
 	envUseLocalGitHubWebHookApi               = "USE_LOCAL_GITHUB_WEBHOOK_API"
+	serviceAccountTokenFile                   = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 )
 
 // Config Holds all the environment variables
 type Config struct {
-	bearerToken                         string
 	impersonateUser                     string
 	impersonateGroup                    string
 	clusterFQDN                         string
@@ -69,13 +72,11 @@ type Config struct {
 	nspLongSleepInterval                time.Duration
 	suiteList                           []string
 	suiteListIsBlacklist                bool // suiteList is a whitelist by default
-	isDebugLogLevel                     bool
-	isWarningLogLevel                   bool
-	isErrorLogLevel                     bool
 	networkPolicyCanaryAppName          string
 	networkPolicyCanaryJobComponentName string
 	appAdminGroup                       string
 	appReaderGroup                      string
+	tokenSource                         oauth2.TokenSource
 }
 
 var configmap *v1.ConfigMap
@@ -92,7 +93,6 @@ func init() {
 // NewConfig Constructor
 func NewConfig() Config {
 	return Config{
-		getBearerToken(),
 		getImpersonateUser(),
 		getImpersonateGroup(),
 		getClusterFQDN(),
@@ -112,23 +112,16 @@ func NewConfig() Config {
 		GetNSPLongSleepInterval(),
 		getSuiteList(),
 		getIsBlacklist(),
-		isDebugLogLevel(),
-		isWarningLogLevel(),
-		isErrorLogLevel(),
 		getNetworkPolicyCanaryAppName(),
 		getNetworkPolicyCanaryJobComponentName(),
 		getAppAdminGroup(),
 		getAppReaderGroup(),
+		getTokenSource(),
 	}
 }
 
-// GetBearerToken get bearer token either from token file or environment variable
-func (cfg Config) GetBearerToken() string {
-	return cfg.bearerToken
-}
-
 // GetImpersonateUser get impersonate user from config map
-func (cfg Config) GetImpersonateUser() *string {
+func (cfg *Config) GetImpersonateUser() *string {
 	if len(cfg.impersonateUser) > 0 {
 		return &cfg.impersonateUser
 	}
@@ -136,109 +129,108 @@ func (cfg Config) GetImpersonateUser() *string {
 }
 
 // GetImpersonateGroups get list of groups for impersonation
-func (cfg Config) GetImpersonateGroups() []string {
+func (cfg *Config) GetImpersonateGroups() []string {
 	return []string{cfg.impersonateGroup, cfg.GetAppAdminGroup()}
 }
 
-func (cfg Config) GetAppAdminGroup() string {
+func (cfg *Config) GetAppAdminGroup() string {
 	return cfg.appAdminGroup
 }
 
 // GetClusterFQDN get Radix cluster FQDN from config map
-func (cfg Config) GetClusterFQDN() string {
+func (cfg *Config) GetClusterFQDN() string {
 	return cfg.clusterFQDN
 }
 
 // GetPublicKey get public deploy key from config map
-func (cfg Config) GetPublicKey() string {
+func (cfg *Config) GetPublicKey() string {
 	return cfg.publicKey
 }
 
 // GetPrivateKey get private deploy key from config map
-func (cfg Config) GetPrivateKey() string {
+func (cfg *Config) GetPrivateKey() string {
 	return cfg.privateKey
 }
 
 // GetPublicKeyCanary3 get public deploy key from config map
-func (cfg Config) GetPublicKeyCanary3() string {
+func (cfg *Config) GetPublicKeyCanary3() string {
 	return cfg.publicKeyCanary3
 }
 
 // GetPrivateKeyCanary3 get private deploy key from config map
-func (cfg Config) GetPrivateKeyCanary3() string {
+func (cfg *Config) GetPrivateKeyCanary3() string {
 	return cfg.privateKeyCanary3
 }
 
 // GetPublicKeyCanary4 get public deploy key from config map
-func (cfg Config) GetPublicKeyCanary4() string {
+func (cfg *Config) GetPublicKeyCanary4() string {
 	return cfg.publicKeyCanary4
 }
 
 // GetPrivateKeyCanary4 get private deploy key from config map
-func (cfg Config) GetPrivateKeyCanary4() string {
+func (cfg *Config) GetPrivateKeyCanary4() string {
 	return cfg.privateKeyCanary4
 }
 
 // GetPrivateImageHubPassword get private image hub password
-func (cfg Config) GetPrivateImageHubPassword() string {
+func (cfg *Config) GetPrivateImageHubPassword() string {
 	return getConfigFromMap(privateImageHubPasswordConfig)
 }
 
 // GetNetworkPolicyCanaryPassword get networkpolicy-canary HTTP password from environment
-func (cfg Config) GetNetworkPolicyCanaryPassword() string {
+func (cfg *Config) GetNetworkPolicyCanaryPassword() string {
 	return cfg.networkPolicyCanaryPassword
 }
 
 // GetTimeoutOfTest Get the time it should take before a test should time out from config map
-func (cfg Config) GetTimeoutOfTest() time.Duration {
+func (cfg *Config) GetTimeoutOfTest() time.Duration {
 	return cfg.timeoutOfTest
 }
 
 // GetSleepIntervalBetweenCheckFunc Gets the sleep inteval between two checks from config map
-func (cfg Config) GetSleepIntervalBetweenCheckFunc() time.Duration {
+func (cfg *Config) GetSleepIntervalBetweenCheckFunc() time.Duration {
 	return cfg.sleepIntervalBetweenCheckFunc
 }
 
 // GetSleepIntervalBetweenTestRuns Gets the sleep inteval between two test runs from config map
-func (cfg Config) GetSleepIntervalBetweenTestRuns() time.Duration {
+func (cfg *Config) GetSleepIntervalBetweenTestRuns() time.Duration {
 	return cfg.sleepIntervalBetweenTestRuns
 }
 
 // GetNSPSleepInterval Gets the sleep inteval between NSP test runs from config map
-func (cfg Config) GetNSPSleepInterval() time.Duration {
+func (cfg *Config) GetNSPSleepInterval() time.Duration {
 	return cfg.nspSleepInterval
 }
 
 // GetNSPLongSleepInterval Gets the sleep inteval between NSPLong test runs from config map
-func (cfg Config) GetNSPLongSleepInterval() time.Duration {
+func (cfg *Config) GetNSPLongSleepInterval() time.Duration {
 	return cfg.nspLongSleepInterval
 }
 
 // GetSuiteList Gets a filter list for which suites to run
-func (cfg Config) GetSuiteList() []string {
+func (cfg *Config) GetSuiteList() []string {
 	return cfg.suiteList
 }
 
 // GetSuiteListIsBlacklist Gets whether suiteList is considered a blacklist
-func (cfg Config) GetSuiteListIsBlacklist() bool {
+func (cfg *Config) GetSuiteListIsBlacklist() bool {
 	return cfg.suiteListIsBlacklist
 }
 
-// GetLogLevel Gets log level
-func (cfg Config) GetLogLevel() log.Level {
-	switch {
-	case isDebugLogLevel():
-		return log.DebugLevel
-	case isWarningLogLevel():
-		return log.WarnLevel
-	case isErrorLogLevel():
-		return log.ErrorLevel
-	default:
-		return log.InfoLevel
-	}
+func (cfg *Config) GetTokenSource() oauth2.TokenSource {
+	return cfg.tokenSource
 }
 
-func (cfg Config) GetRadixAPIURL() string {
+// GetLogLevel Gets log level
+func (cfg *Config) GetLogLevel() log.Level {
+	lvl, err := log.ParseLevel(os.Getenv(envVarLogLevel))
+	if err != nil {
+		return log.InfoLevel
+	}
+	return lvl
+}
+
+func (cfg *Config) GetRadixAPIURL() string {
 	if useLocalRadixApi() {
 		return "localhost:3002"
 	} else {
@@ -246,7 +238,7 @@ func (cfg Config) GetRadixAPIURL() string {
 	}
 }
 
-func (cfg Config) GetGitHubWebHookAPIURL() string {
+func (cfg *Config) GetGitHubWebHookAPIURL() string {
 	if useLocalGitHubWebHookApi() {
 		return "http://localhost:3001"
 	} else {
@@ -254,20 +246,20 @@ func (cfg Config) GetGitHubWebHookAPIURL() string {
 	}
 }
 
-func (cfg Config) GetNetworkPolicyCanaryUrl(appEnv string) string {
+func (cfg *Config) GetNetworkPolicyCanaryUrl(appEnv string) string {
 	canaryURLPrefix := fmt.Sprintf("https://web-%s-%s", cfg.GetNetworkPolicyCanaryAppName(), appEnv)
 	return fmt.Sprintf("%s.%s", canaryURLPrefix, cfg.GetClusterFQDN())
 }
 
-func (cfg Config) GetNetworkPolicyCanaryAppName() string {
+func (cfg *Config) GetNetworkPolicyCanaryAppName() string {
 	return cfg.networkPolicyCanaryAppName
 }
 
-func (cfg Config) GetNetworkPolicyCanaryJobComponentName() string {
+func (cfg *Config) GetNetworkPolicyCanaryJobComponentName() string {
 	return cfg.networkPolicyCanaryJobComponentName
 }
 
-func (cfg Config) GetRadixAPISchemes() []string {
+func (cfg *Config) GetRadixAPISchemes() []string {
 	if useLocalRadixApi() {
 		return []string{"http"}
 	} else {
@@ -275,12 +267,24 @@ func (cfg Config) GetRadixAPISchemes() []string {
 	}
 }
 
-func getBearerToken() string {
-	token, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token")
-	if err != nil {
-		return os.Getenv("BEARER_TOKEN")
+func getTokenSource() oauth2.TokenSource {
+	var ts oauth2.TokenSource
+	if _, err := os.Stat(serviceAccountTokenFile); err == nil {
+		ts = tokensource.FromJwtCallback(func() (string, error) {
+			token, err := os.ReadFile(serviceAccountTokenFile)
+			return string(token), err
+		})
+	} else if envToken := os.Getenv("BEARER_TOKEN"); len(envToken) > 0 {
+		ts = tokensource.FromJwtCallback(func() (string, error) {
+			return envToken, nil
+		})
 	}
-	return string(token)
+
+	if ts == nil {
+		panic(errors.New("failed to create TokenSource from service account token or environmnt variable"))
+	}
+
+	return oauth2.ReuseTokenSource(nil, ts)
 }
 
 func getImpersonateUser() string {
@@ -432,28 +436,16 @@ func getIsBlacklist() bool {
 	return envVarIsTrueOrYes(strings.ToLower(os.Getenv(envVarIsBlacklist)))
 }
 
-func (cfg Config) getRadixAPIPrefix() string {
+func (cfg *Config) getRadixAPIPrefix() string {
 	return cfg.radixAPIPrefix
 }
 
-func (cfg Config) getWebHookPrefix() string {
+func (cfg *Config) getWebHookPrefix() string {
 	return cfg.webhookPrefix
 }
 
-func (cfg Config) GetAppReaderGroup() string {
+func (cfg *Config) GetAppReaderGroup() string {
 	return cfg.appReaderGroup
-}
-
-func isDebugLogLevel() bool {
-	return strings.EqualFold(os.Getenv(envVarLogLevel), "DEBUG")
-}
-
-func isWarningLogLevel() bool {
-	return strings.EqualFold(os.Getenv(envVarLogLevel), "WARNING")
-}
-
-func isErrorLogLevel() bool {
-	return strings.EqualFold(os.Getenv(envVarLogLevel), "ERROR")
 }
 
 func useLocalRadixApi() bool {
