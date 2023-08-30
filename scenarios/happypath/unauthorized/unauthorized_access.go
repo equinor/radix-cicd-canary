@@ -140,7 +140,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 		{
 			name:          "reader-user-cannot-set-secret",
 			logMsg:        fmt.Sprintf("checking that user with read role cannot set secret for app %s", defaults.App2Name),
-			expectedError: environment.NewChangeComponentSecretInternalServerError(), // TODO: should be forbidden 403. requires work on radix-api
+			expectedError: environment.NewChangeComponentSecretForbidden(),
 			testFunc: func(impersonationSetter func(impersonateParam)) error {
 				param := environment.NewChangeComponentSecretParams().WithEnvName(defaults.App2EnvironmentName).
 					WithComponentName(defaults.App2Component2Name).
