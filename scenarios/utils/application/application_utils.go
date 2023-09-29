@@ -323,7 +323,6 @@ func IsResponding(logger zerolog.Logger, url string) bool {
 
 	if err != nil {
 		logger.Debug().Err(err).Str("url", url).Msg("Failed request to the alias")
-		// logger.Debugf("Failed request to the alias '%s': %v", url, err)
 	}
 
 	if resp != nil {
