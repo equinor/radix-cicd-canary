@@ -30,7 +30,7 @@ func main() {
 	logLevel := cfg.GetLogLevel()
 	pretty := cfg.GetPrettyPrint()
 	zerolog.SetGlobalLevel(logLevel)
-	if pretty == true {
+	if pretty {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.TimeOnly})
 	}
 
