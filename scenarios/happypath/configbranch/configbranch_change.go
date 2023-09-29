@@ -26,7 +26,7 @@ type expectedStep struct {
 
 // Change Tests that radixconfig is read from the branch defined as configBranch
 func Change(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger() //(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	// Trigger first build via web hook
 	err := httpUtils.TriggerWebhookPush(cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, logger)
