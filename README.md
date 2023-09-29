@@ -105,7 +105,7 @@ Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in t
 By default `Info` and `Error` messages have being logged. This can be configured via environment variable `LOG_LEVEL` (pods need to be restarted after changes)
 * `LOG_LEVEL=ERROR` - log only `Error` messages
 * `LOG_LEVEL=INFO` or not set - log `Info` and `Error` messages
-* `LOG_LEVEL=WARNING` or not set - log `Info`, `Warning` and `Error` messages
+* `LOG_LEVEL=WARN` or not set - log `Info`, `Warning` and `Error` messages
 * `LOG_LEVEL=DEBUG` - log `Debug`, `Warning`, `Info` and `Error` messages
 * `PRETTY_PRINT=yes` - Print human readable text instead of json messages
 
