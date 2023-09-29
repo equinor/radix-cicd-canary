@@ -13,7 +13,7 @@ import (
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
 func Set(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger() //log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	// Due to a timing bug in Config Syncer (https://github.com/kubeops/config-syncer) that can happen
 	// when a new namespace is created and at the same time a secret that must be synced to the namespace is updated,
 	// the old "cached" secret from the nsSyncer overwrites the secret created by the secret informer's OnUpdate.
