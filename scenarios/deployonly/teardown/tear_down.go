@@ -9,7 +9,7 @@ import (
 
 // TearDown Deletes applications
 func TearDown(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger() //WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	err := application.DeleteByServiceAccount(cfg, defaults.App3Name, logger)
 	if err != nil {
 		logger.Debug().Err(err).Msg("Teardown failure")
