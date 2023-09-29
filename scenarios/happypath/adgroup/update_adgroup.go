@@ -28,7 +28,7 @@ const (
 
 // Update Tests that updates to AD group locks down an application
 func Update(cfg config.Config, suiteName string) error {
-	s := &step{logger: log.With().Str("suite", suiteName).Logger()} //WithFields(log.Fields{"Suite": suiteName})}
+	s := &step{logger: log.With().Str("suite", suiteName).Logger()}
 
 	s.logger.Debug().Msg("check that admin AD-Group has access")
 	err := test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
