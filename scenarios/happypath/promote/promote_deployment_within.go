@@ -7,14 +7,14 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
 func DeploymentWithinEnvironment(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(cfg, environmentToPromoteWithin)

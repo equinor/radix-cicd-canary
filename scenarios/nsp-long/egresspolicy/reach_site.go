@@ -9,7 +9,7 @@ import (
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-common/utils/errors"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -18,7 +18,7 @@ const (
 
 // ReachRadixSite tests that canary golang endpoint can be reached from networkpolicy canary with policy that allows it
 func ReachRadixSite(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 	appEnv := "allowradix"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -33,7 +33,7 @@ func ReachRadixSite(cfg config.Config, suiteName string) error {
 
 // NotReachRadixSite tests that canary golang endpoint can not be reached from networkpolicy canary with policy that prohibits it
 func NotReachRadixSite(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 	appEnv := "egressrulestopublicdns"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -48,7 +48,7 @@ func NotReachRadixSite(cfg config.Config, suiteName string) error {
 
 // NotReachExternalSite tests that a list of external websites can not be reached from networkpolicy canary with policy that prohibits it
 func NotReachExternalSite(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {
@@ -76,7 +76,7 @@ func ReachRadixSiteSuccess(testName string) {
 	nspMetrics.AddRadixSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
 }
 
 // ReachRadixSiteFail is a function after a call to ReachRadixSite failed
@@ -84,7 +84,7 @@ func ReachRadixSiteFail(testName string) {
 	nspMetrics.AddRadixSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	logger.Info().Str("test", testName).Msg("Test: FAIL")
 }
 
 // NotReachRadixSiteSuccess is a function after a call to NotReachRadixSite succeeds
@@ -92,7 +92,7 @@ func NotReachRadixSiteSuccess(testName string) {
 	nspMetrics.AddNotRadixSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
 }
 
 // NotReachRadixSiteFail is a function after a call to NotReachRadixSite failed
@@ -100,7 +100,7 @@ func NotReachRadixSiteFail(testName string) {
 	nspMetrics.AddNotRadixSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	logger.Info().Str("test", testName).Msg("Test: FAIL")
 }
 
 // NotReachExternalSiteSuccess is a function after a call to NotReachExternalSite failed
@@ -108,7 +108,7 @@ func NotReachExternalSiteSuccess(testName string) {
 	nspMetrics.AddNotExternalSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
 }
 
 // NotReachExternalSiteFail is a function after a call to NotReachExternalSite failed
@@ -116,5 +116,5 @@ func NotReachExternalSiteFail(testName string) {
 	nspMetrics.AddNotExternalSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	logger.Info().Str("test", testName).Msg("Test: FAIL")
 }

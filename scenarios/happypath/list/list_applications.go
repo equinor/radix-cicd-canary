@@ -6,14 +6,15 @@ import (
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/platform"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
+var logger zerolog.Logger
 
 // Applications Test that we are able to list applications
 func Applications(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
@@ -25,9 +26,9 @@ func Applications(cfg config.Config, suiteName string) error {
 	client := httpUtils.GetPlatformClient(cfg)
 	showAppOk, err := client.ShowApplications(params, nil)
 	if err == nil {
-		logger.Infof("Response length: %v", len(showAppOk.Payload))
+		logger.Info().Msgf("Response length: %v", len(showAppOk.Payload))
 		for i, appSummary := range showAppOk.Payload {
-			logger.Infof("App %v: %s", i, appSummary.Name)
+			logger.Info().Msgf("App %v: %s", i, appSummary.Name)
 		}
 	}
 

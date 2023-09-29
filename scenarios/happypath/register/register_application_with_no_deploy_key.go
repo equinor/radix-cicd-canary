@@ -8,13 +8,13 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // ApplicationWithNoDeployKey Tests that we are able to register application
 // with no deploy key and that deploy key is generated
 func ApplicationWithNoDeployKey(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	appName := defaults.App1Name
 	appRepo := defaults.App1Repository
 	appSharedSecret := defaults.App1SharedSecret

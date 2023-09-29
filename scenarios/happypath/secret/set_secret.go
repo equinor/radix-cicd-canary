@@ -9,14 +9,15 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
+var logger zerolog.Logger
 
 // Set Test that we are able to set secret
 func Set(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	err := test.WaitForCheckFuncOrTimeout(cfg, isDeploymentConsistent, logger)
 	if err != nil {
@@ -52,7 +53,7 @@ func isDeploymentConsistent(cfg config.Config) error {
 		environmentDetails.ActiveDeployment != nil &&
 		environmentDetails.Status != "" &&
 		len(environmentDetails.Secrets) > 0 {
-		logger.Info("Deployment is consistent. We can set the secret.")
+		logger.Info().Msg("Deployment is consistent. We can set the secret.")
 		return nil
 	}
 	return fmt.Errorf("deployment is not consistent")

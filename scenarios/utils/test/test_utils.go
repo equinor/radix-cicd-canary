@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
 )
 
 // CheckFn The prototype function for any check function without return value
@@ -16,13 +16,13 @@ type CheckFn func(cfg config.Config) error
 type CheckFnNew[T any] func(cfg config.Config) (T, error)
 
 // WaitForCheckFuncOrTimeout Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFuncOrTimeout(cfg config.Config, checkFunc CheckFn, logger *log.Entry) error {
+func WaitForCheckFuncOrTimeout(cfg config.Config, checkFunc CheckFn, logger zerolog.Logger) error {
 	_, err := WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (any, error) { return nil, checkFunc(cfg) }, logger)
 	return err
 }
 
 // WaitForCheckFuncWithValueOrTimeout Call this to ensure we wait until a check is reached, or time out, returning a value
-func WaitForCheckFuncWithValueOrTimeout[T any](cfg config.Config, checkFunc CheckFnNew[T], logger *log.Entry) (T, error) {
+func WaitForCheckFuncWithValueOrTimeout[T any](cfg config.Config, checkFunc CheckFnNew[T], logger zerolog.Logger) (T, error) {
 	timeout := cfg.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := cfg.GetSleepIntervalBetweenCheckFunc()
 	firstSleepBetweenCheckFunc := time.Second
@@ -34,7 +34,7 @@ func WaitForCheckFuncWithValueOrTimeout[T any](cfg config.Config, checkFunc Chec
 		if checkFuncErr == nil {
 			return obj, nil
 		}
-		logger.Debugf("check function fails in WaitForCheck: %v", checkFuncErr)
+		logger.Debug().Err(checkFuncErr).Msg("check function fails in WaitForCheck")
 
 		// should accumulatedWait include sleep?
 		if sleepIntervalBetweenCheckFunc > 0 {

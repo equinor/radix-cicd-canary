@@ -5,13 +5,13 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // Application Tests that we are able to register application
 // with deploy key set
 func Application(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger() //.WithFields(log.Fields{"Suite": suiteName})
 	appName := defaults.App3Name
 	appRepo := defaults.App3Repository
 	appSharedSecret := defaults.App3SharedSecret

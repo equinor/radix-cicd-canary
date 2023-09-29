@@ -3,18 +3,17 @@ package register
 import (
 	"fmt"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 // ApplicationWithMainConfigBranch Tests that we are able to register the application
 func ApplicationWithMainConfigBranch(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	appName := defaults.App4Name
 	appRepo := defaults.App4Repository
 	appSharedSecret := defaults.App4SharedSecret

@@ -107,6 +107,7 @@ By default `Info` and `Error` messages have being logged. This can be configured
 * `LOG_LEVEL=INFO` or not set - log `Info` and `Error` messages
 * `LOG_LEVEL=WARNING` or not set - log `Info`, `Warning` and `Error` messages
 * `LOG_LEVEL=DEBUG` - log `Debug`, `Warning`, `Info` and `Error` messages
+* `PRETTY_PRINT=yes` - Print human readable text instead of json messages
 
 By default, all suites are running. This can be configured with environment variables
 * `SUITE_LIST` - list of suite names, separated by `:`

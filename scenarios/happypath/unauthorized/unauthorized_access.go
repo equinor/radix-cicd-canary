@@ -15,13 +15,13 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	commonUtils "github.com/equinor/radix-common/utils"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // Access Checks that we are not able to enter any application we should not
 // have access to
 func Access(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -31,14 +31,14 @@ func Access(cfg config.Config, suiteName string) error {
 		WithAppName(defaults.RestrictedApplicationName)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	logger.Debugf("check that impersonated user has no access to the application %s", defaults.RestrictedApplicationName)
+	logger.Debug().Msgf("check that impersonated user has no access to the application %s", defaults.RestrictedApplicationName)
 	_, err := client.GetApplication(params, nil)
 	return givesAccessError(err)
 }
 
 // ReaderAccess Checks that we have appropriate access to the application as readers
 func ReaderAccess(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	impersonateUser := cfg.GetImpersonateUser()
 	readerGroup := cfg.GetAppReaderGroup()
 
@@ -184,7 +184,7 @@ func ReaderAccess(cfg config.Config, suiteName string) error {
 	}
 
 	for _, scenario := range scenarios {
-		logger.Debugf(scenario.logMsg)
+		logger.Debug().Msg(scenario.logMsg)
 		err := scenario.testFunc(setImpersonation)
 		if !errors.Is(err, scenario.expectedError) {
 			return fmt.Errorf("incorrect response on scenario %s: Got %v, expected %v", scenario.name, err, scenario.expectedError)

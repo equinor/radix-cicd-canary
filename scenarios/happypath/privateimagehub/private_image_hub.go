@@ -8,18 +8,18 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
 func Set(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 
 	err := privateimagehub.PasswordNotSet(cfg, defaults.App2Name)
 	if err != nil {
 		return err
 	}
-	logger.Infof("SUCCESS: private image hub is not set")
+	logger.Info().Msg("SUCCESS: private image hub is not set")
 
 	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		return podNotLoaded(cfg)
@@ -27,13 +27,13 @@ func Set(cfg config.Config, suiteName string) error {
 	if err != nil {
 		return fmt.Errorf("%s component is running before private image hub password was set. %v", defaults.App2ComponentPrivateImageHubName, err)
 	}
-	logger.Infof("SUCCESS: container is not loaded")
+	logger.Info().Msg("SUCCESS: container is not loaded")
 
 	err = privateimagehub.SetPassword(cfg, defaults.App2Name)
 	if err != nil {
 		return fmt.Errorf("failed to set private image hub password. %v", err)
 	}
-	logger.Infof("SUCCESS: set private image hub password")
+	logger.Info().Msg("SUCCESS: set private image hub password")
 
 	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		return podLoaded(cfg)
@@ -41,13 +41,13 @@ func Set(cfg config.Config, suiteName string) error {
 	if err != nil {
 		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", defaults.App2ComponentPrivateImageHubName, err.Error())
 	}
-	logger.Infof("SUCCESS: container is loaded with updated image hub password")
+	logger.Info().Msg("SUCCESS: container is loaded with updated image hub password")
 
 	err = privateimagehub.PasswordSet(cfg, defaults.App2Name)
 	if err != nil {
 		return err
 	}
-	logger.Infof("SUCCESS: private image hub is verified set")
+	logger.Info().Msg("SUCCESS: private image hub is verified set")
 
 	return nil
 }

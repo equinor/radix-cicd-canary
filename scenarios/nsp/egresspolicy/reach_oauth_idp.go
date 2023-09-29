@@ -8,12 +8,12 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // ReachOauthIdp tests that IDP endpoint can be reached from Oauth Aux pod
 func ReachOauthIdp(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 	appEnv := "oauthdenyall"
 	timeout := 15
 	oauthCallbackUrl := fmt.Sprintf("%s/oauth2/callback?code=bullshitcode", cfg.GetNetworkPolicyCanaryUrl(appEnv))
@@ -32,7 +32,7 @@ func ReachOauthIdpSuccess(testName string) {
 	nspMetrics.AddOauthIdpReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
 }
 
 // ReachOauthIdpFail is a function after a call to ReachOauthIdp failed
@@ -40,5 +40,5 @@ func ReachOauthIdpFail(testName string) {
 	nspMetrics.AddOauthIdpUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	logger.Info().Str("test", testName).Msg("Test: FAIL")
 }
