@@ -26,7 +26,7 @@ func Update(ctx context.Context, cfg config.Config, suiteName string) error {
 	logger := log.Ctx(ctx)
 
 	logger.Debug().Msg("check that admin AD-Group has access")
-	err := test.WaitForCheckFuncOrTimeout(cfg, hasAccess, ctx)
+	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, hasAccess)
 	if err != nil {
 		return fmt.Errorf("failed to get update details of the suite %s: %w", suiteName, err)
 	}
@@ -40,7 +40,7 @@ func Update(ctx context.Context, cfg config.Config, suiteName string) error {
 	logger.Debug().Msg("RR's admin AD-Group is patched")
 
 	logger.Debug().Msg("check that the application cannot be accessed with current impersonation")
-	err = test.WaitForCheckFuncOrTimeout(cfg, hasNoAccess, ctx)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, hasNoAccess)
 	if err != nil {
 		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
@@ -54,7 +54,7 @@ func Update(ctx context.Context, cfg config.Config, suiteName string) error {
 	logger.Debug().Msg("admin AD-Group is patched")
 
 	logger.Debug().Msg("check that the application can be accessed with current impersonation")
-	err = test.WaitForCheckFuncOrTimeout(cfg, hasAccess, ctx)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, hasAccess)
 	logger.Debug().Msg("application can be accessed with current impersonation")
 	return err
 }
@@ -68,7 +68,7 @@ func hasAccess(cfg config.Config, ctx context.Context) error {
 }
 
 func hasProperAccess(ctx context.Context, cfg config.Config, properAccess bool) error {
-	_, err := getApplication(cfg)
+	_, err := getApplication(ctx, cfg)
 	accessToApplication := !isGetApplicationForbidden(err)
 
 	err = buildApp(cfg)
@@ -109,12 +109,13 @@ func patchAdGroup(ctx context.Context, cfg config.Config, appName string, adGrou
 	return nil
 }
 
-func getApplication(cfg config.Config) (*models.Application, error) {
+func getApplication(ctx context.Context, cfg config.Config) (*models.Application, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := apiclient.NewGetApplicationParams().
 		WithImpersonateUser(impersonateUser).
+		WithContext(ctx).
 		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name)
 

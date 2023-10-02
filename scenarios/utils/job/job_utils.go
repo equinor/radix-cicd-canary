@@ -12,8 +12,8 @@ import (
 )
 
 // GetLastPipelineJobWithStatus Checks if a last pipeline job exists with status
-func GetLastPipelineJobWithStatus(cfg config.Config, appName, expectedStatus string, ctx context.Context) (*models.JobSummary, error) {
-	jobSummaries, err := getPipelineJobs(cfg, appName)
+func GetLastPipelineJobWithStatus(ctx context.Context, cfg config.Config, appName, expectedStatus string) (*models.JobSummary, error) {
+	jobSummaries, err := getPipelineJobs(ctx, cfg, appName)
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +27,8 @@ func GetLastPipelineJobWithStatus(cfg config.Config, appName, expectedStatus str
 }
 
 // GetAnyPipelineJobWithStatus Checks if any pipeline job exists with status
-func GetAnyPipelineJobWithStatus(cfg config.Config, appName, expectedStatus string, ctx context.Context) (*models.JobSummary, error) {
-	jobSummaries, err := getPipelineJobs(cfg, appName)
+func GetAnyPipelineJobWithStatus(ctx context.Context, cfg config.Config, appName, expectedStatus string) (*models.JobSummary, error) {
+	jobSummaries, err := getPipelineJobs(ctx, cfg, appName)
 	if err != nil {
 		return nil, err
 	}
@@ -42,12 +42,13 @@ func GetAnyPipelineJobWithStatus(cfg config.Config, appName, expectedStatus stri
 		appName, expectedStatus)
 }
 
-func getPipelineJobs(cfg config.Config, appName string) ([]*models.JobSummary, error) {
+func getPipelineJobs(ctx context.Context, cfg config.Config, appName string) ([]*models.JobSummary, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobsParams().
 		WithAppName(appName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetJobClient(cfg)
@@ -63,13 +64,14 @@ func getPipelineJobs(cfg config.Config, appName string) ([]*models.JobSummary, e
 }
 
 // Stop Stops a job
-func Stop(cfg config.Config, appName, jobName string) error {
+func Stop(ctx context.Context, cfg config.Config, appName, jobName string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	client := httpUtils.GetJobClient(cfg)
 	params := pipelineJobClient.NewStopApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
@@ -132,13 +134,14 @@ func Get(ctx context.Context, cfg config.Config, appName, jobName string) (*mode
 }
 
 // GetSteps gets job from job name
-func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
+func GetSteps(ctx context.Context, cfg config.Config, appName, jobName string) []*models.Step {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
@@ -155,7 +158,7 @@ func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
 }
 
 // GetLogForStep gets log for step
-func GetLogForStep(cfg config.Config, appName, jobName, stepName string, ctx context.Context) string {
+func GetLogForStep(ctx context.Context, cfg config.Config, appName, jobName, stepName string) string {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -163,6 +166,7 @@ func GetLogForStep(cfg config.Config, appName, jobName, stepName string, ctx con
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithStepName(stepName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 

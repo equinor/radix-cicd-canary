@@ -28,19 +28,19 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	// Trigger deploy via Radix API
-	_, err := application.Deploy(cfg, appName, toEnvironment)
+	_, err := application.Deploy(ctx, cfg, appName, toEnvironment)
 	if err != nil {
 		return fmt.Errorf("failed to deploy the application %s:  %v", appName, err)
 	}
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		jobSummary, err := job.GetLastPipelineJobWithStatus(cfg, appName, "Succeeded", ctx)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		jobSummary, err := job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Succeeded")
 		if err != nil {
 			return nil, err
 		}
 		return jobSummary, err
-	}, appCtx)
+	})
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	}
 
 	jobName := jobSummary.Name
-	steps := job.GetSteps(cfg, defaults.App3Name, jobName)
+	steps := job.GetSteps(appCtx, cfg, appName, jobName)
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},

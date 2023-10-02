@@ -37,18 +37,18 @@ func DeploymentWithinEnvironment(ctx context.Context, cfg config.Config, suiteNa
 	}
 
 	// Get job
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
 		return job.IsDone(cfg, appName, promoteJobName, ctx)
-	}, appCtx)
+	})
 	if err != nil {
 		return err
 	}
 	if jobStatus != "Succeeded" {
 		return fmt.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
 	}
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	return test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return isNewDeploymentExist(ctx, cfg, appName, numDeploymentsBefore)
-	}, appCtx)
+	})
 }
 
 func isNewDeploymentExist(ctx context.Context, cfg config.Config, appName string, numDeploymentsBefore int) error {

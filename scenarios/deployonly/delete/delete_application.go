@@ -12,5 +12,5 @@ import (
 // Applications Tests that we are able to delete applications
 func Applications(ctx context.Context, cfg config.Config, suiteName string) error {
 	appCtx := log.Ctx(ctx).With().Str("app", defaults.App3Name).Logger().WithContext(ctx)
-	return application.DeleteByImpersonatedUser(cfg, defaults.App3Name, appCtx)
+	return application.DeleteByImpersonatedUser(appCtx, cfg, defaults.App3Name)
 }

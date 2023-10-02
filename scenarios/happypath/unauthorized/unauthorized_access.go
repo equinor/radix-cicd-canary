@@ -28,6 +28,7 @@ func Access(ctx context.Context, cfg config.Config, suiteName string) error {
 	params := application.NewGetApplicationParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
+		WithContext(ctx).
 		WithAppName(defaults.RestrictedApplicationName)
 
 	client := httpUtils.GetApplicationClient(cfg)
@@ -169,9 +170,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config, suiteName string) erro
 			expectedError: nil,
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				// Get job
-				jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-					return job.GetAnyPipelineJobWithStatus(cfg, appName, "Succeeded", ctx)
-				}, ctx)
+				jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+					return job.GetAnyPipelineJobWithStatus(ctx, cfg, appName, "Succeeded")
+				})
 				if err != nil {
 					return err
 				}

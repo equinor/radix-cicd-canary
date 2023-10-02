@@ -23,29 +23,29 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	appConfigurationItem := defaults.App2ConfigurationItem
 	appCtx := log.With().Str("suite", suiteName).Str("app", appName).Logger().WithContext(ctx)
 
-	err := application.DeleteIfExist(cfg, appName, appCtx)
+	err := application.DeleteIfExist(appCtx, cfg, appName)
 	if err != nil {
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(appCtx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return application.IsDefined(ctx, cfg, appName)
-	}, appCtx)
+	})
 	if err != nil {
 		return err
 	}
 
-	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), "", appCtx)
+	err = application.RegenerateDeployKey(appCtx, cfg, appName, cfg.GetPrivateKey(), "")
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to regenerate deploy key for application %s", appName))
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
-		return application.HasDeployKey(cfg, appName, cfg.GetPublicKey(), ctx)
-	}, appCtx)
+	return test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.HasDeployKey(ctx, cfg, appName, cfg.GetPublicKey())
+	})
 }

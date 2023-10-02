@@ -44,9 +44,9 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	log.Ctx(appCtx).Info().Msg("First job was triggered")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, appName, "Running", ctx)
-	}, appCtx)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Running")
+	})
 
 	if err != nil {
 		return err
@@ -65,19 +65,19 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	}
 	log.Ctx(appCtx).Info().Msg("Second job was triggered")
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
-		_, err := job.GetLastPipelineJobWithStatus(cfg, appName, "Queued", ctx)
+	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
+		_, err := job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Queued")
 		return err
-	}, appCtx)
+	})
 
 	if err != nil {
 		return err
 	}
 
 	log.Ctx(appCtx).Info().Msg("Second job was queued")
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
 		return job.IsDone(cfg, appName, jobName, ctx)
-	}, appCtx)
+	})
 	if err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 		return fmt.Errorf("expected job status was Success, but got %s", jobStatus)
 	}
 	log.Ctx(appCtx).Info().Msg("First job was completed")
-	steps := job.GetSteps(cfg, appName, jobName)
+	steps := job.GetSteps(appCtx, cfg, appName, jobName)
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -110,16 +110,16 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 		}
 	}
 
-	stepLog := job.GetLogForStep(cfg, appName, jobName, "build-app", appCtx)
+	stepLog := job.GetLogForStep(appCtx, cfg, appName, jobName, "build-app")
 	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
 		return errors.New("build secrets are not contained in build log")
 	}
 
-	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, appName, "Running", ctx)
-	}, appCtx)
+	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Running")
+	})
 
 	if err != nil {
 		return err
@@ -127,20 +127,21 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 
 	// Stop job and verify that it has been stopped
 	jobName = jobSummary.Name
-	log.Ctx(appCtx).Info().Str("job", jobName).Msg("Second job name")
-	err = job.Stop(cfg, appName, jobName)
+	jobCtx := log.Ctx(appCtx).With().Str("job", jobName).Logger().WithContext(appCtx)
+	log.Ctx(jobCtx).Info().Msg("Second job name")
+	err = job.Stop(jobCtx, cfg, appName, jobName)
 	if err != nil {
 		return err
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
-		_, err := job.GetLastPipelineJobWithStatus(cfg, appName, "Stopped", ctx)
+	err = test.WaitForCheckFuncOrTimeout(jobCtx, cfg, func(cfg config.Config, ctx context.Context) error {
+		_, err := job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Stopped")
 		return err
-	}, appCtx)
+	})
 	if err != nil {
 		return err
 	}
 
-	log.Ctx(appCtx).Info().Msg("Second job was stopped")
+	log.Ctx(jobCtx).Info().Msg("Second job was stopped")
 	return nil
 }

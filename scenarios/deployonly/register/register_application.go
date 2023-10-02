@@ -21,29 +21,29 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	appConfigBranch := defaults.App3ConfigBranch
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
-	err := application.DeleteIfExist(cfg, appName, appCtx)
+	err := application.DeleteIfExist(appCtx, cfg, appName)
 	if err != nil {
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(appCtx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
 		return err
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return application.IsDefined(ctx, cfg, defaults.App3Name)
-	}, appCtx)
+	})
 	if err != nil {
 		return err
 	}
 
-	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), "", appCtx)
+	err = application.RegenerateDeployKey(appCtx, cfg, appName, cfg.GetPrivateKeyCanary3(), "")
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
-		return application.HasDeployKey(cfg, appName, cfg.GetPublicKeyCanary3(), ctx)
-	}, appCtx)
+	return test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.HasDeployKey(ctx, cfg, appName, cfg.GetPublicKeyCanary3())
+	})
 }

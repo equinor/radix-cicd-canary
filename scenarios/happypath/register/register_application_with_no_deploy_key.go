@@ -23,24 +23,24 @@ func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config, suiteNam
 	appConfigurationItem := defaults.App1ConfigurationItem
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
-	err := application.DeleteIfExist(cfg, appName, appCtx)
+	err := application.DeleteIfExist(appCtx, cfg, appName)
 	if err != nil {
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(appCtx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return application.IsDefined(ctx, cfg, appName)
-	}, appCtx)
+	})
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
-		return application.IsDeployKeyDefined(cfg, appName, ctx)
-	}, appCtx)
+	return test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsDeployKeyDefined(ctx, cfg, appName)
+	})
 }

@@ -13,7 +13,7 @@ import (
 func TearDown(ctx context.Context, cfg config.Config, suiteName string) error {
 	for _, appName := range []string{defaults.App1Name, defaults.App2Name, defaults.App4Name} {
 		appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
-		err := application.DeleteByServiceAccount(cfg, appName, appCtx)
+		err := application.DeleteByServiceAccount(appCtx, cfg, appName)
 		if err != nil {
 			log.Ctx(appCtx).Debug().Err(err).Msg("Teardown failed")
 		}

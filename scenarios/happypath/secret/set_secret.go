@@ -16,7 +16,7 @@ import (
 // Set Test that we are able to set secret
 func Set(ctx context.Context, cfg config.Config, suiteName string) error {
 
-	err := test.WaitForCheckFuncOrTimeout(cfg, isDeploymentConsistent, ctx)
+	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, isDeploymentConsistent)
 	if err != nil {
 		return err
 	}

@@ -26,7 +26,7 @@ const (
 )
 
 // Register Will register application
-func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, appAdminGroup string, appReaderGroups []string) (*apiclient.RegisterApplicationOK, error) {
+func Register(ctx context.Context, cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, appAdminGroup string, appReaderGroups []string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	bodyParameters := models.ApplicationRegistrationRequest{
@@ -45,6 +45,7 @@ func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, 
 	params := apiclient.NewRegisterApplicationParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
+		WithContext(ctx).
 		WithApplicationRegistration(&bodyParameters)
 
 	client := httpUtils.GetPlatformClient(cfg)
@@ -52,7 +53,7 @@ func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, 
 }
 
 // DeleteByImpersonatedUser Deletes an application by the impersonated user
-func DeleteByImpersonatedUser(cfg config.Config, appName string, ctx context.Context) error {
+func DeleteByImpersonatedUser(ctx context.Context, cfg config.Config, appName string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	log.Ctx(ctx).Debug().Msgf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, impersonateGroup)
@@ -60,13 +61,14 @@ func DeleteByImpersonatedUser(cfg config.Config, appName string, ctx context.Con
 	params := applicationclient.NewDeleteApplicationParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
+		WithContext(ctx).
 		WithAppName(appName)
 
 	return deleteApplication(cfg, appName, params)
 }
 
 // DeleteByServiceAccount an application by the service account
-func DeleteByServiceAccount(cfg config.Config, appName string, ctx context.Context) error {
+func DeleteByServiceAccount(ctx context.Context, cfg config.Config, appName string) error {
 	err := IsDefined(ctx, cfg, appName)
 	if err != nil {
 		return err
@@ -74,12 +76,13 @@ func DeleteByServiceAccount(cfg config.Config, appName string, ctx context.Conte
 	log.Ctx(ctx).Debug().Msg("delete an application by the service account")
 
 	params := applicationclient.NewDeleteApplicationParams().
+		WithContext(ctx).
 		WithAppName(appName)
 
 	return deleteApplication(cfg, appName, params)
 }
 
-func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret string, ctx context.Context) error {
+func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privateKey, sharedSecret string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	log.Ctx(ctx).Debug().Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("regenerate deploy key for application by the impersonamed user")
@@ -102,8 +105,8 @@ func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret st
 	return nil
 }
 
-func HasDeployKey(cfg config.Config, appName, expectedDeployKey string, ctx context.Context) error {
-	actualDeployKey, err := GetDeployKey(cfg, appName, ctx)
+func HasDeployKey(ctx context.Context, cfg config.Config, appName, expectedDeployKey string) error {
+	actualDeployKey, err := GetDeployKey(ctx, cfg, appName)
 	if err != nil {
 		return err
 	}
@@ -115,8 +118,8 @@ func HasDeployKey(cfg config.Config, appName, expectedDeployKey string, ctx cont
 	return nil
 }
 
-func IsDeployKeyDefined(cfg config.Config, appName string, ctx context.Context) error {
-	actualDeployKey, err := GetDeployKey(cfg, appName, ctx)
+func IsDeployKeyDefined(ctx context.Context, cfg config.Config, appName string) error {
+	actualDeployKey, err := GetDeployKey(ctx, cfg, appName)
 	if err != nil {
 		return err
 	}
@@ -128,7 +131,7 @@ func IsDeployKeyDefined(cfg config.Config, appName string, ctx context.Context) 
 	return nil
 }
 
-func GetDeployKey(cfg config.Config, appName string, ctx context.Context) (string, error) {
+func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (string, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	log.Ctx(ctx).Debug().Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("get deploy key for application by the impersonated user")
@@ -136,6 +139,7 @@ func GetDeployKey(cfg config.Config, appName string, ctx context.Context) (strin
 	params := applicationclient.NewGetDeployKeyAndSecretParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
+		WithContext(ctx).
 		WithAppName(appName)
 
 	client := httpUtils.GetApplicationClient(cfg)
@@ -156,7 +160,7 @@ func deleteApplication(cfg config.Config, appName string, params *applicationcli
 }
 
 // Deploy Deploy application
-func Deploy(cfg config.Config, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
+func Deploy(ctx context.Context, cfg config.Config, appName, toEnvironment string) (*applicationclient.TriggerPipelineDeployOK, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -167,6 +171,7 @@ func Deploy(cfg config.Config, appName, toEnvironment string) (*applicationclien
 	params := applicationclient.NewTriggerPipelineDeployParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
+		WithContext(ctx).
 		WithAppName(appName).
 		WithPipelineParametersDeploy(&bodyParameters)
 
@@ -197,14 +202,14 @@ func appNamespacesDoNotExist(ctx context.Context, appName string) error {
 }
 
 // DeleteIfExist Delete application if it exists
-func DeleteIfExist(cfg config.Config, appName string, ctx context.Context) error {
-	err := DeleteByServiceAccount(cfg, appName, ctx)
+func DeleteIfExist(ctx context.Context, cfg config.Config, appName string) error {
+	err := DeleteByServiceAccount(ctx, cfg, appName)
 	if err != nil {
 		return nil
 	}
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	return test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return appNamespacesDoNotExist(ctx, appName)
-	}, ctx)
+	})
 }
 
 // Get gets an application by appName
@@ -223,8 +228,8 @@ func Get(ctx context.Context, cfg config.Config, appName string) (*models.Applic
 }
 
 // IsAliasDefined Checks if app alias is defined
-func IsAliasDefined(cfg config.Config, appName string, ctx context.Context) error {
-	appAlias := getAlias(cfg, appName)
+func IsAliasDefined(ctx context.Context, cfg config.Config, appName string) error {
+	appAlias := getAlias(ctx, cfg, appName)
 	if appAlias != nil {
 		log.Ctx(ctx).Info().Str("appAlias", *appAlias).Msg("App alias for application is defined. Now we can try to hit it to see if it responds")
 		return nil
@@ -234,12 +239,13 @@ func IsAliasDefined(cfg config.Config, appName string, ctx context.Context) erro
 	return fmt.Errorf("public alias for application %s is not defined", appName)
 }
 
-func getAlias(cfg config.Config, appName string) *string {
+func getAlias(ctx context.Context, cfg config.Config, appName string) *string {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetApplicationClient(cfg)
@@ -257,8 +263,8 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 }
 
 // TryGetPublicDomainName Waits for public domain name to be defined
-func TryGetPublicDomainName(cfg config.Config, appName, environmentName, componentName string) (string, error) {
-	publicDomainName := getEnvVariable(cfg, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
+func TryGetPublicDomainName(ctx context.Context, cfg config.Config, appName, environmentName, componentName string) (string, error) {
+	publicDomainName := getEnvVariable(ctx, cfg, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
 		return "", fmt.Errorf("public domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
@@ -266,21 +272,22 @@ func TryGetPublicDomainName(cfg config.Config, appName, environmentName, compone
 }
 
 // TryGetCanonicalDomainName Waits for canonical domain name to be defined
-func TryGetCanonicalDomainName(cfg config.Config, appName, environmentName, componentName string) (string, error) {
-	canonicalDomainName := getEnvVariable(cfg, appName, environmentName, componentName, canonicalEndpointEnvironmentVariable)
+func TryGetCanonicalDomainName(ctx context.Context, cfg config.Config, appName, environmentName, componentName string) (string, error) {
+	canonicalDomainName := getEnvVariable(ctx, cfg, appName, environmentName, componentName, canonicalEndpointEnvironmentVariable)
 	if canonicalDomainName == "" {
 		return "", fmt.Errorf("canonical domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
 	return canonicalDomainName, nil
 }
 
-func getEnvVariable(cfg config.Config, appName, envName, forComponentName, variableName string) string {
+func getEnvVariable(ctx context.Context, cfg config.Config, appName, envName, forComponentName, variableName string) string {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewGetEnvironmentParams().
 		WithAppName(appName).
 		WithEnvName(envName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetEnvironmentClient(cfg)

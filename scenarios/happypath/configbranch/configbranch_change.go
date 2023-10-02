@@ -58,7 +58,7 @@ func Change(ctx context.Context, cfg config.Config, suiteName string) error {
 		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(cfg, jobName, appName, expectedSteps); !ok {
+	if ok, err := validateJobSteps(appCtx, cfg, jobName, appName, expectedSteps); !ok {
 		return err
 	}
 
@@ -97,7 +97,7 @@ func Change(ctx context.Context, cfg config.Config, suiteName string) error {
 		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(cfg, appName, jobName, expectedSteps); !ok {
+	if ok, err := validateJobSteps(appCtx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
 	}
 
@@ -107,15 +107,15 @@ func Change(ctx context.Context, cfg config.Config, suiteName string) error {
 func waitForJobRunning(ctx context.Context, cfg config.Config, appName string) (*models.JobSummary, error) {
 	status := "Running"
 
-	return test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, appName, status, ctx)
-	}, ctx)
+	return test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, appName, status)
+	})
 }
 
 func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName string) error {
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
 		return job.IsDone(cfg, appName, jobName, ctx)
-	}, ctx)
+	})
 	if err != nil {
 		return err
 	}
@@ -147,8 +147,8 @@ func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfi
 	return nil
 }
 
-func validateJobSteps(cfg config.Config, appName, jobName string, expectedSteps []expectedStep) (bool, error) {
-	steps := job.GetSteps(cfg, appName, jobName)
+func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps []expectedStep) (bool, error) {
+	steps := job.GetSteps(ctx, cfg, appName, jobName)
 
 	if len(steps) != len(expectedSteps) {
 		return false, fmt.Errorf("number of pipeline steps was not as expected")

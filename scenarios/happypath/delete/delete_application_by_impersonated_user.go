@@ -15,7 +15,7 @@ func Applications(ctx context.Context, cfg config.Config, suiteName string) erro
 	var errs []error
 	for _, appName := range []string{defaults.App1Name, defaults.App2Name, defaults.App4Name} {
 		appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
-		err := application.DeleteByImpersonatedUser(cfg, appName, appCtx)
+		err := application.DeleteByImpersonatedUser(appCtx, cfg, appName)
 		if err != nil {
 			errs = append(errs, err)
 		}

@@ -23,9 +23,9 @@ func Set(ctx context.Context, cfg config.Config, suiteName string) error {
 	}
 	log.Ctx(appCtx).Info().Msg("SUCCESS: private image hub is not set")
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return podNotLoaded(cfg, appName)
-	}, appCtx)
+	})
 	if err != nil {
 		return fmt.Errorf("%s component is running before private image hub password was set. %v", defaults.App2ComponentPrivateImageHubName, err)
 	}
@@ -37,9 +37,9 @@ func Set(ctx context.Context, cfg config.Config, suiteName string) error {
 	}
 	log.Ctx(appCtx).Info().Msg("SUCCESS: set private image hub password")
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return podLoaded(cfg, appName)
-	}, appCtx)
+	})
 	if err != nil {
 		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", defaults.App2ComponentPrivateImageHubName, err.Error())
 	}

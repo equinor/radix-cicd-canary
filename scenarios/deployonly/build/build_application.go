@@ -31,13 +31,13 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	}
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		jobSummary, err := job.GetLastPipelineJobWithStatus(cfg, appName, "Succeeded", ctx)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		jobSummary, err := job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Succeeded")
 		if err != nil {
 			return nil, err
 		}
 		return jobSummary, err
-	}, appCtx)
+	})
 
 	if err != nil {
 		return err
@@ -47,7 +47,7 @@ func Application(ctx context.Context, cfg config.Config, suiteName string) error
 	}
 
 	jobName := jobSummary.Name
-	steps := job.GetSteps(cfg, appName, jobName)
+	steps := job.GetSteps(ctx, cfg, appName, jobName)
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
 		{name: "prepare-pipelines", components: []string{}},

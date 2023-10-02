@@ -29,9 +29,9 @@ func Set(ctx context.Context, cfg config.Config, suiteName string) error {
 	log.Ctx(appCtx).Info().Msg("Job was triggered to apply RA")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, appName, "Failed", ctx)
-	}, appCtx)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Failed")
+	})
 	if err != nil {
 		return err
 	}
@@ -52,9 +52,9 @@ func Set(ctx context.Context, cfg config.Config, suiteName string) error {
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return buildSecretsAreListedWithStatus(ctx, cfg, appName, "Pending")
-	}, appCtx)
+	})
 
 	if err != nil {
 		return err
@@ -70,9 +70,9 @@ func Set(ctx context.Context, cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+	return test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return buildSecretsAreListedWithStatus(ctx, cfg, appName, "Consistent")
-	}, ctx)
+	})
 }
 
 func buildSecretsAreListedWithStatus(ctx context.Context, cfg config.Config, appName, expectedStatus string) error {

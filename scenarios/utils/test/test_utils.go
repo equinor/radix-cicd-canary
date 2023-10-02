@@ -17,13 +17,13 @@ type CheckFn func(cfg config.Config, ctx context.Context) error
 type CheckFnNew[T any] func(cfg config.Config, ctx context.Context) (T, error)
 
 // WaitForCheckFuncOrTimeout Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFuncOrTimeout(cfg config.Config, checkFunc CheckFn, ctx context.Context) error {
-	_, err := WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (any, error) { return nil, checkFunc(cfg, ctx) }, ctx)
+func WaitForCheckFuncOrTimeout(ctx context.Context, cfg config.Config, checkFunc CheckFn) error {
+	_, err := WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (any, error) { return nil, checkFunc(cfg, ctx) })
 	return err
 }
 
 // WaitForCheckFuncWithValueOrTimeout Call this to ensure we wait until a check is reached, or time out, returning a value
-func WaitForCheckFuncWithValueOrTimeout[T any](cfg config.Config, checkFunc CheckFnNew[T], ctx context.Context) (T, error) {
+func WaitForCheckFuncWithValueOrTimeout[T any](ctx context.Context, cfg config.Config, checkFunc CheckFnNew[T]) (T, error) {
 	timeout := cfg.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := cfg.GetSleepIntervalBetweenCheckFunc()
 	firstSleepBetweenCheckFunc := time.Second
