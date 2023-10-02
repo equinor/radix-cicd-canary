@@ -1,6 +1,7 @@
 package list
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,6 @@ func TestListApplications(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Applications(environmentVariables, suiteName)
+	err := Applications(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

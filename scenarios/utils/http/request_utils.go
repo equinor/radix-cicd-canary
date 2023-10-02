@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -22,7 +23,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 const basePath = "/api/v1"
@@ -58,7 +59,7 @@ func CreateRequest(url, method string, parameters interface{}) *http.Request {
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSecret string, logger zerolog.Logger) error {
+func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSecret string, ctx context.Context) error {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -74,7 +75,7 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature-256", crypto.SHA256HMAC([]byte(sharedSecret), payload))
 
-	logger.Debug().Str("branch", branch).Str("repository", repository).Str("comit", commit).Msg("Trigger webhook push")
+	log.Ctx(ctx).Debug().Str("branch", branch).Str("repository", repository).Str("comit", commit).Msg("Trigger webhook push")
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -82,7 +83,7 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 			fmt.Sprintf("error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
 
-	if err := CheckResponse(resp, logger); err != nil {
+	if err := CheckResponse(resp, ctx); err != nil {
 		return errors.WithMessage(err,
 			fmt.Sprintf("error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit))
 	}
@@ -91,7 +92,7 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response, logger zerolog.Logger) error {
+func CheckResponse(resp *http.Response, ctx context.Context) error {
 	defer resp.Body.Close()
 	_, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -99,7 +100,7 @@ func CheckResponse(resp *http.Response, logger zerolog.Logger) error {
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-		logger.Debug().Int("statusCode", resp.StatusCode).Msg("Response code")
+		log.Ctx(ctx).Debug().Int("statusCode", resp.StatusCode).Msg("Response code")
 		return nil
 	}
 
@@ -107,13 +108,17 @@ func CheckResponse(resp *http.Response, logger zerolog.Logger) error {
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
-func CheckUrl(url string, logger zerolog.Logger) error {
-	logger.Debug().Str("url", url).Msg("Sending request")
-	response, err := http.Get(url)
+func CheckUrl(url string, ctx context.Context) error {
+	log.Ctx(ctx).Debug().Str("url", url).Msg("Sending request")
+
+	request, _ := http.NewRequest("GET", url, nil)
+	request = request.WithContext(ctx)
+
+	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		return err
 	}
-	return CheckResponse(response, logger)
+	return CheckResponse(response, ctx)
 }
 
 // GetPlatformClient Gets the Platform API client

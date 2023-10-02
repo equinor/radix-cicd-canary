@@ -15,7 +15,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 )
@@ -52,10 +52,10 @@ func Register(cfg config.Config, appName, appRepo, appSharedSecret, appCreator, 
 }
 
 // DeleteByImpersonatedUser Deletes an application by the impersonated user
-func DeleteByImpersonatedUser(cfg config.Config, appName string, logger zerolog.Logger) error {
+func DeleteByImpersonatedUser(cfg config.Config, appName string, ctx context.Context) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-	logger.Debug().Str("appName", appName).Msgf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, impersonateGroup)
+	log.Ctx(ctx).Debug().Msgf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, impersonateGroup)
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithImpersonateUser(impersonateUser).
@@ -66,12 +66,12 @@ func DeleteByImpersonatedUser(cfg config.Config, appName string, logger zerolog.
 }
 
 // DeleteByServiceAccount an application by the service account
-func DeleteByServiceAccount(cfg config.Config, appName string, logger zerolog.Logger) error {
-	err := IsDefined(cfg, appName)
+func DeleteByServiceAccount(cfg config.Config, appName string, ctx context.Context) error {
+	err := IsDefined(ctx, cfg, appName)
 	if err != nil {
 		return err
 	}
-	logger.Debug().Str("appName", appName).Msg("delete an application by the service account")
+	log.Ctx(ctx).Debug().Msg("delete an application by the service account")
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithAppName(appName)
@@ -79,10 +79,10 @@ func DeleteByServiceAccount(cfg config.Config, appName string, logger zerolog.Lo
 	return deleteApplication(cfg, appName, params)
 }
 
-func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret string, logger zerolog.Logger) error {
+func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret string, ctx context.Context) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-	logger.Debug().Str("appName", appName).Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("regenerate deploy key for application by the impersonamed user")
+	log.Ctx(ctx).Debug().Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("regenerate deploy key for application by the impersonamed user")
 
 	params := applicationclient.NewRegenerateDeployKeyParams().
 		WithImpersonateUser(impersonateUser).
@@ -102,8 +102,8 @@ func RegenerateDeployKey(cfg config.Config, appName, privateKey, sharedSecret st
 	return nil
 }
 
-func HasDeployKey(cfg config.Config, appName, expectedDeployKey string, logger zerolog.Logger) error {
-	actualDeployKey, err := GetDeployKey(cfg, appName, logger)
+func HasDeployKey(cfg config.Config, appName, expectedDeployKey string, ctx context.Context) error {
+	actualDeployKey, err := GetDeployKey(cfg, appName, ctx)
 	if err != nil {
 		return err
 	}
@@ -115,8 +115,8 @@ func HasDeployKey(cfg config.Config, appName, expectedDeployKey string, logger z
 	return nil
 }
 
-func IsDeployKeyDefined(cfg config.Config, appName string, logger zerolog.Logger) error {
-	actualDeployKey, err := GetDeployKey(cfg, appName, logger)
+func IsDeployKeyDefined(cfg config.Config, appName string, ctx context.Context) error {
+	actualDeployKey, err := GetDeployKey(cfg, appName, ctx)
 	if err != nil {
 		return err
 	}
@@ -128,10 +128,10 @@ func IsDeployKeyDefined(cfg config.Config, appName string, logger zerolog.Logger
 	return nil
 }
 
-func GetDeployKey(cfg config.Config, appName string, logger zerolog.Logger) (string, error) {
+func GetDeployKey(cfg config.Config, appName string, ctx context.Context) (string, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-	logger.Debug().Str("appName", appName).Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("get deploy key for application by the impersonated user")
+	log.Ctx(ctx).Debug().Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("get deploy key for application by the impersonated user")
 
 	params := applicationclient.NewGetDeployKeyAndSecretParams().
 		WithImpersonateUser(impersonateUser).
@@ -175,16 +175,16 @@ func Deploy(cfg config.Config, appName, toEnvironment string) (*applicationclien
 }
 
 // IsDefined Checks if application is defined
-func IsDefined(cfg config.Config, appName string) error {
-	_, err := Get(cfg, appName)
+func IsDefined(ctx context.Context, cfg config.Config, appName string) error {
+	_, err := Get(ctx, cfg, appName)
 	if err == nil {
 		return nil
 	}
 	return fmt.Errorf("application %s is not defined", appName)
 }
 
-func appNamespacesDoNotExist(appName string) error {
-	nsList, err := kubeUtils.GetKubernetesClient().CoreV1().Namespaces().List(context.Background(), metav1.ListOptions{
+func appNamespacesDoNotExist(ctx context.Context, appName string) error {
+	nsList, err := kubeUtils.GetKubernetesClient().CoreV1().Namespaces().List(ctx, metav1.ListOptions{
 		LabelSelector: labels.Set{"radix-app": appName}.String(),
 	})
 	if err != nil {
@@ -197,20 +197,21 @@ func appNamespacesDoNotExist(appName string) error {
 }
 
 // DeleteIfExist Delete application if it exists
-func DeleteIfExist(cfg config.Config, appName string, logger zerolog.Logger) error {
-	err := DeleteByServiceAccount(cfg, appName, logger)
+func DeleteIfExist(cfg config.Config, appName string, ctx context.Context) error {
+	err := DeleteByServiceAccount(cfg, appName, ctx)
 	if err != nil {
 		return nil
 	}
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return appNamespacesDoNotExist(appName)
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return appNamespacesDoNotExist(ctx, appName)
+	}, ctx)
 }
 
 // Get gets an application by appName
-func Get(cfg config.Config, appName string) (*models.Application, error) {
+func Get(ctx context.Context, cfg config.Config, appName string) (*models.Application, error) {
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
+		WithContext(ctx).
 		WithImpersonateUser(cfg.GetImpersonateUser()).
 		WithImpersonateGroup(cfg.GetImpersonateGroups())
 	client := httpUtils.GetApplicationClient(cfg)
@@ -222,14 +223,14 @@ func Get(cfg config.Config, appName string) (*models.Application, error) {
 }
 
 // IsAliasDefined Checks if app alias is defined
-func IsAliasDefined(cfg config.Config, appName string, logger zerolog.Logger) error {
+func IsAliasDefined(cfg config.Config, appName string, ctx context.Context) error {
 	appAlias := getAlias(cfg, appName)
 	if appAlias != nil {
-		logger.Info().Str("appName", appName).Str("appAlias", *appAlias).Msg("App alias for application is defined. Now we can try to hit it to see if it responds")
+		log.Ctx(ctx).Info().Str("appAlias", *appAlias).Msg("App alias for application is defined. Now we can try to hit it to see if it responds")
 		return nil
 	}
 
-	logger.Info().Str("appName", appName).Msg("App alias for application is not yet defined")
+	log.Ctx(ctx).Info().Msg("App alias for application is not yet defined")
 	return fmt.Errorf("public alias for application %s is not defined", appName)
 }
 
@@ -299,9 +300,9 @@ func getEnvVariable(cfg config.Config, appName, envName, forComponentName, varia
 }
 
 // AreResponding Checks if all endpoint responds
-func AreResponding(logger zerolog.Logger, urls ...string) error {
+func AreResponding(ctx context.Context, urls ...string) error {
 	for _, url := range urls {
-		responded := IsResponding(logger, url)
+		responded := IsResponding(ctx, url)
 		if !responded {
 			return errors.New("not all endpoints respond")
 		}
@@ -311,10 +312,11 @@ func AreResponding(logger zerolog.Logger, urls ...string) error {
 }
 
 // IsResponding Checks if endpoint is responding
-func IsResponding(logger zerolog.Logger, url string) bool {
+func IsResponding(ctx context.Context, url string) bool {
 	req := httpUtils.CreateRequest(url, "GET", nil)
 	client := http.DefaultClient
 	resp, err := client.Do(req)
+	logger := log.Ctx(ctx)
 
 	if err == nil && resp.StatusCode == 200 {
 		logger.Info().Msg("App alias responded ok")

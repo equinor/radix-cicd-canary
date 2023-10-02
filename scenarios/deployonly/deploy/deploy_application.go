@@ -1,6 +1,7 @@
 package deploy
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -21,10 +22,10 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
-func Application(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func Application(ctx context.Context, cfg config.Config, suiteName string) error {
 	appName := defaults.App3Name
 	toEnvironment := defaults.App3EnvironmentName
+	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	// Trigger deploy via Radix API
 	_, err := application.Deploy(cfg, appName, toEnvironment)
@@ -33,13 +34,13 @@ func Application(cfg config.Config, suiteName string) error {
 	}
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		jobSummary, err := job.GetLastPipelineJobWithStatus(cfg, defaults.App3Name, "Succeeded", logger)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		jobSummary, err := job.GetLastPipelineJobWithStatus(cfg, appName, "Succeeded", ctx)
 		if err != nil {
 			return nil, err
 		}
 		return jobSummary, err
-	}, logger)
+	}, appCtx)
 	if err != nil {
 		return err
 	}

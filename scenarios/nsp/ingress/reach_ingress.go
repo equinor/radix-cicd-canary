@@ -1,6 +1,7 @@
 package ingress
 
 import (
+	"context"
 	"fmt"
 	neturl "net/url"
 
@@ -15,13 +16,11 @@ import (
 var logger zerolog.Logger
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
-
+func Reach(ctx context.Context, cfg config.Config, suiteName string) error {
 	baseUrl := fmt.Sprintf("%s.%s", "https://www-radix-canary-golang-prod", cfg.GetClusterFQDN())
 	url, _ := neturl.JoinPath(baseUrl, "health")
 	client := httpUtils.GetHTTPDefaultClient()
-	logger.Debug().Str("url", url).Msg("Requesting data")
+	log.Ctx(ctx).Debug().Str("url", url).Msg("Requesting data")
 
 	// Run tests ingress
 	_, err := client.Get(url)

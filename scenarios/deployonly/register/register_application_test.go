@@ -1,6 +1,7 @@
 package register
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,6 @@ func TestRegisterApplication(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Application(environmentVariables, suiteName)
+	err := Application(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

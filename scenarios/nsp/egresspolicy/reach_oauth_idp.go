@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -8,12 +9,10 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/rs/zerolog/log"
 )
 
 // ReachOauthIdp tests that IDP endpoint can be reached from Oauth Aux pod
-func ReachOauthIdp(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func ReachOauthIdp(ctx context.Context, cfg config.Config, suiteName string) error {
 	appEnv := "oauthdenyall"
 	timeout := 15
 	oauthCallbackUrl := fmt.Sprintf("%s/oauth2/callback?code=bullshitcode", cfg.GetNetworkPolicyCanaryUrl(appEnv))

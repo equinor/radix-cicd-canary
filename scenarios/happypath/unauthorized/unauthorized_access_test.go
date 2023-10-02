@@ -1,6 +1,7 @@
 package unauthorized
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,7 +20,7 @@ func TestUnauthorizedAccess(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Access(environmentVariables, suiteName)
+	err := Access(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }
 
@@ -27,6 +28,6 @@ func TestUnauthorizedReaderAccess(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := ReaderAccess(environmentVariables, suiteName)
+	err := ReaderAccess(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

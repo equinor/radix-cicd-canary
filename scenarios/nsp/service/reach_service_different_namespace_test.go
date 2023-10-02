@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,6 @@ func TestReachServiceDifferentNamespace(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Reach(environmentVariables, suiteName)
+	err := Reach(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

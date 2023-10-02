@@ -1,6 +1,7 @@
 package secret
 
 import (
+	"context"
 	"fmt"
 
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -16,10 +17,9 @@ import (
 var logger zerolog.Logger
 
 // Set Test that we are able to set secret
-func Set(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func Set(ctx context.Context, cfg config.Config, suiteName string) error {
 
-	err := test.WaitForCheckFuncOrTimeout(cfg, isDeploymentConsistent, logger)
+	err := test.WaitForCheckFuncOrTimeout(cfg, isDeploymentConsistent, ctx)
 	if err != nil {
 		return err
 	}
@@ -47,13 +47,13 @@ func Set(cfg config.Config, suiteName string) error {
 	return nil
 }
 
-func isDeploymentConsistent(cfg config.Config) error {
+func isDeploymentConsistent(cfg config.Config, ctx context.Context) error {
 	environmentDetails := getEnvironmentDetails(cfg)
 	if environmentDetails != nil &&
 		environmentDetails.ActiveDeployment != nil &&
 		environmentDetails.Status != "" &&
 		len(environmentDetails.Secrets) > 0 {
-		logger.Info().Msg("Deployment is consistent. We can set the secret.")
+		log.Ctx(ctx).Info().Msg("Deployment is consistent. We can set the secret.")
 		return nil
 	}
 	return fmt.Errorf("deployment is not consistent")

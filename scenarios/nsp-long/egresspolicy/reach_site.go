@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,7 +10,6 @@ import (
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-common/utils/errors"
-	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -17,8 +17,7 @@ const (
 )
 
 // ReachRadixSite tests that canary golang endpoint can be reached from networkpolicy canary with policy that allows it
-func ReachRadixSite(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func ReachRadixSite(ctx context.Context, cfg config.Config, suiteName string) error {
 	appEnv := "allowradix"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -32,8 +31,7 @@ func ReachRadixSite(cfg config.Config, suiteName string) error {
 }
 
 // NotReachRadixSite tests that canary golang endpoint can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachRadixSite(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func NotReachRadixSite(ctx context.Context, cfg config.Config, suiteName string) error {
 	appEnv := "egressrulestopublicdns"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -47,8 +45,7 @@ func NotReachRadixSite(cfg config.Config, suiteName string) error {
 }
 
 // NotReachExternalSite tests that a list of external websites can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachExternalSite(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func NotReachExternalSite(ctx context.Context, cfg config.Config, suiteName string) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {

@@ -1,28 +1,29 @@
 package test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // CheckFn The prototype function for any check function without return value
-type CheckFn func(cfg config.Config) error
+type CheckFn func(cfg config.Config, ctx context.Context) error
 
 // CheckFnNew The prototype function for any check function with return value
-type CheckFnNew[T any] func(cfg config.Config) (T, error)
+type CheckFnNew[T any] func(cfg config.Config, ctx context.Context) (T, error)
 
 // WaitForCheckFuncOrTimeout Call this to ensure we wait until a check is reached, or time out
-func WaitForCheckFuncOrTimeout(cfg config.Config, checkFunc CheckFn, logger zerolog.Logger) error {
-	_, err := WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (any, error) { return nil, checkFunc(cfg) }, logger)
+func WaitForCheckFuncOrTimeout(cfg config.Config, checkFunc CheckFn, ctx context.Context) error {
+	_, err := WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (any, error) { return nil, checkFunc(cfg, ctx) }, ctx)
 	return err
 }
 
 // WaitForCheckFuncWithValueOrTimeout Call this to ensure we wait until a check is reached, or time out, returning a value
-func WaitForCheckFuncWithValueOrTimeout[T any](cfg config.Config, checkFunc CheckFnNew[T], logger zerolog.Logger) (T, error) {
+func WaitForCheckFuncWithValueOrTimeout[T any](cfg config.Config, checkFunc CheckFnNew[T], ctx context.Context) (T, error) {
 	timeout := cfg.GetTimeoutOfTest()
 	sleepIntervalBetweenCheckFunc := cfg.GetSleepIntervalBetweenCheckFunc()
 	firstSleepBetweenCheckFunc := time.Second
@@ -30,11 +31,11 @@ func WaitForCheckFuncWithValueOrTimeout[T any](cfg config.Config, checkFunc Chec
 
 	for {
 		startTime := time.Now()
-		obj, checkFuncErr := checkFunc(cfg)
+		obj, checkFuncErr := checkFunc(cfg, ctx)
 		if checkFuncErr == nil {
 			return obj, nil
 		}
-		logger.Debug().Err(checkFuncErr).Msg("check function fails in WaitForCheck")
+		log.Ctx(ctx).Debug().Err(checkFuncErr).Msg("check function fails in WaitForCheck")
 
 		// should accumulatedWait include sleep?
 		if sleepIntervalBetweenCheckFunc > 0 {

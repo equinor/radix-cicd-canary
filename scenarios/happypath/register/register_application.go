@@ -1,6 +1,7 @@
 package register
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
@@ -13,16 +14,16 @@ import (
 
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func Application(ctx context.Context, cfg config.Config, suiteName string) error {
 	appName := defaults.App2Name
 	appRepo := defaults.App2Repository
 	appSharedSecret := defaults.App2SharedSecret
 	appCreator := defaults.App2Creator
 	appConfigBranch := defaults.App2ConfigBranch
 	appConfigurationItem := defaults.App2ConfigurationItem
+	appCtx := log.With().Str("suite", suiteName).Str("app", appName).Logger().WithContext(ctx)
 
-	err := application.DeleteIfExist(cfg, appName, logger)
+	err := application.DeleteIfExist(cfg, appName, appCtx)
 	if err != nil {
 		return err
 	}
@@ -32,19 +33,19 @@ func Application(cfg config.Config, suiteName string) error {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, appName)
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsDefined(ctx, cfg, appName)
+	}, appCtx)
 	if err != nil {
 		return err
 	}
 
-	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), "", logger)
+	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), "", appCtx)
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("failed to regenerate deploy key for application %s", appName))
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.HasDeployKey(cfg, appName, cfg.GetPublicKey(), logger)
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.HasDeployKey(cfg, appName, cfg.GetPublicKey(), ctx)
+	}, appCtx)
 }

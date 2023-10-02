@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
@@ -14,23 +15,21 @@ import (
 var logger zerolog.Logger
 
 // LookupInternalDNS tests that we are able to make lookups to internal DNS
-func LookupInternalDNS(cfg config.Config, suiteName string) error {
+func LookupInternalDNS(ctx context.Context, cfg config.Config, suiteName string) error {
 	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
-	return lookupDns(internalDnsUrl, suiteName)
+	return lookupDns(internalDnsUrl, ctx)
 }
 
 // LookupPublicDNS tests that we are able to make lookups to public DNS
-func LookupPublicDNS(cfg config.Config, suiteName string) error {
+func LookupPublicDNS(ctx context.Context, cfg config.Config, suiteName string) error {
 	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
-	return lookupDns(publicDnsUrl, suiteName)
+	return lookupDns(publicDnsUrl, ctx)
 }
 
-func lookupDns(dnsUrl string, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
-
+func lookupDns(dnsUrl string, ctx context.Context) error {
 	client := httpUtils.GetHTTPDefaultClient()
 
-	logger.Debug().Str("url", dnsUrl).Msg("Requesting data")
+	log.Ctx(ctx).Debug().Str("url", dnsUrl).Msg("Requesting data")
 	dnsResponse, dnsErr := client.Get(dnsUrl)
 
 	if dnsErr != nil {

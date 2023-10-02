@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,15 +12,13 @@ import (
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 )
 
 var logger zerolog.Logger
 
 // StartAndCheckJobBatch starts a job batch and confirms that jobs were created
-func StartAndCheckJobBatch(cfg config.Config, suiteName string) error {
+func StartAndCheckJobBatch(ctx context.Context, cfg config.Config, suiteName string) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
-	logger = log.With().Str("suite", suiteName).Logger()
 
 	for _, appEnv := range appEnvs {
 		baseUrl := cfg.GetNetworkPolicyCanaryUrl(appEnv)

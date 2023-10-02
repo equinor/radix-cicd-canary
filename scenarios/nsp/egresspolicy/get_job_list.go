@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
@@ -8,17 +9,15 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-common/utils/errors"
-	"github.com/rs/zerolog/log"
 )
 
 // GetJobList tests that we are able to retrieve job list from job scheduler
-func GetJobList(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func GetJobList(ctx context.Context, cfg config.Config, suiteName string) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {
 		jobListUrl := fmt.Sprintf("%s/testjobscheduler", cfg.GetNetworkPolicyCanaryUrl(appEnv))
-		err := httpUtils.CheckUrl(jobListUrl, logger)
+		err := httpUtils.CheckUrl(jobListUrl, ctx)
 		if err != nil {
 			errs = append(errs, err)
 		}

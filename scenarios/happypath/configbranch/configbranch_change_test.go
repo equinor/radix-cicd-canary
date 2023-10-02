@@ -1,6 +1,7 @@
 package configbranch
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,6 @@ func TestChange(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Change(environmentVariables, suiteName)
+	err := Change(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

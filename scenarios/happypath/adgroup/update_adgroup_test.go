@@ -1,6 +1,7 @@
 package adgroup
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,6 @@ func TestUpdateAdGroup(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Update(environmentVariables, suiteName)
+	err := Update(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

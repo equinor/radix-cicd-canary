@@ -1,6 +1,7 @@
 package register
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
@@ -12,16 +13,16 @@ import (
 )
 
 // ApplicationWithMainConfigBranch Tests that we are able to register the application
-func ApplicationWithMainConfigBranch(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func ApplicationWithMainConfigBranch(ctx context.Context, cfg config.Config, suiteName string) error {
 	appName := defaults.App4Name
 	appRepo := defaults.App4Repository
 	appSharedSecret := defaults.App4SharedSecret
 	appCreator := defaults.App4Creator
 	appConfigBranch := defaults.App4ConfigBranch
 	appConfigurationItem := defaults.App4ConfigurationItem
+	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
-	err := application.DeleteIfExist(cfg, appName, logger)
+	err := application.DeleteIfExist(cfg, appName, appCtx)
 	if err != nil {
 		return err
 	}
@@ -31,19 +32,19 @@ func ApplicationWithMainConfigBranch(cfg config.Config, suiteName string) error 
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, appName)
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsDefined(ctx, cfg, appName)
+	}, appCtx)
 	if err != nil {
 		return err
 	}
 
-	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary4(), "", logger)
+	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary4(), "", appCtx)
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.HasDeployKey(cfg, appName, cfg.GetPublicKeyCanary4(), logger)
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.HasDeployKey(cfg, appName, cfg.GetPublicKeyCanary4(), ctx)
+	}, appCtx)
 }

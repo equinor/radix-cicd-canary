@@ -1,6 +1,7 @@
 package promote
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,7 +20,7 @@ func TestPromoteDeploymentToAnotherEnvironment(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := DeploymentToAnotherEnvironment(environmentVariables, suiteName)
+	err := DeploymentToAnotherEnvironment(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }
 
@@ -27,6 +28,6 @@ func TestPromoteDeploymentWithinEnvironment(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := DeploymentWithinEnvironment(environmentVariables, suiteName)
+	err := DeploymentWithinEnvironment(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

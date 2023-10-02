@@ -1,6 +1,7 @@
 package register
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
@@ -13,16 +14,16 @@ import (
 
 // ApplicationWithNoDeployKey Tests that we are able to register application
 // with no deploy key and that deploy key is generated
-func ApplicationWithNoDeployKey(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config, suiteName string) error {
 	appName := defaults.App1Name
 	appRepo := defaults.App1Repository
 	appSharedSecret := defaults.App1SharedSecret
 	appCreator := defaults.App1Creator
 	appConfigBranch := defaults.App1ConfigBranch
 	appConfigurationItem := defaults.App1ConfigurationItem
+	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
-	err := application.DeleteIfExist(cfg, appName, logger)
+	err := application.DeleteIfExist(cfg, appName, appCtx)
 	if err != nil {
 		return err
 	}
@@ -32,14 +33,14 @@ func ApplicationWithNoDeployKey(cfg config.Config, suiteName string) error {
 		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, appName)
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsDefined(ctx, cfg, appName)
+	}, appCtx)
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDeployKeyDefined(cfg, appName, logger)
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsDeployKeyDefined(cfg, appName, ctx)
+	}, appCtx)
 }

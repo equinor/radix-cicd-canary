@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,7 +20,7 @@ func TestLookupInternalDNS(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := LookupInternalDNS(environmentVariables, suiteName)
+	err := LookupInternalDNS(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }
 
@@ -27,6 +28,6 @@ func TestLookupPublicDNS(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := LookupPublicDNS(environmentVariables, suiteName)
+	err := LookupPublicDNS(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

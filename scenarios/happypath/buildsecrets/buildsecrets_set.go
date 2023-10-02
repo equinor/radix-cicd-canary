@@ -1,6 +1,7 @@
 package buildsecrets
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -19,27 +20,27 @@ import (
 var logger zerolog.Logger
 
 // Set Tests that we are able to successfully set build secrets
-func Set(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
-
+func Set(ctx context.Context, cfg config.Config, suiteName string) error {
+	appName := defaults.App2Name
+	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 	// Trigger build to apply RA with build secrets
-	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
+	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, appCtx)
 	if err != nil {
 		return err
 	}
 
-	logger.Info().Msg("Job was triggered to apply RA")
+	log.Ctx(appCtx).Info().Msg("Job was triggered to apply RA")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Failed", logger)
-	}, logger)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(cfg, appName, "Failed", ctx)
+	}, appCtx)
 	if err != nil {
 		return err
 	}
 
 	jobName := jobSummary.Name
-	job, err := job.Get(cfg, defaults.App2Name, jobName)
+	job, err := job.Get(ctx, cfg, appName, jobName)
 	if err != nil {
 		return err
 	}
@@ -54,35 +55,36 @@ func Set(cfg config.Config, suiteName string) error {
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return buildSecretsAreListedWithStatus(cfg, "Pending")
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return buildSecretsAreListedWithStatus(ctx, cfg, appName, "Pending")
+	}, appCtx)
 
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(cfg, build.Secret1, build.Secret1Value)
+	err = setSecret(appCtx, cfg, appName, build.Secret1, build.Secret1Value)
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(cfg, build.Secret2, build.Secret2Value)
+	err = setSecret(appCtx, cfg, appName, build.Secret2, build.Secret2Value)
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return buildSecretsAreListedWithStatus(cfg, "Consistent")
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return buildSecretsAreListedWithStatus(ctx, cfg, appName, "Consistent")
+	}, ctx)
 }
 
-func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) error {
+func buildSecretsAreListedWithStatus(ctx context.Context, cfg config.Config, appName, expectedStatus string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := applicationClient.NewGetBuildSecretsParams().
-		WithAppName(defaults.App2Name).
+		WithAppName(appName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetApplicationClient(cfg)
@@ -96,12 +98,12 @@ func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) e
 		}
 	}
 
-	logger.Info().Msg("Build secrets are not listed yet")
+	log.Ctx(ctx).Info().Msg("Build secrets are not listed yet")
 	return fmt.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
 }
 
-func setSecret(cfg config.Config, secretName, secretValue string) error {
-	logger.Debug().Msgf("setSecret %s with value %s", secretName, secretValue)
+func setSecret(ctx context.Context, cfg config.Config, appName, secretName, secretValue string) error {
+	log.Ctx(ctx).Debug().Msgf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -110,7 +112,8 @@ func setSecret(cfg config.Config, secretName, secretValue string) error {
 	}
 
 	params := applicationClient.NewUpdateBuildSecretsSecretValueParams().
-		WithAppName(defaults.App2Name).
+		WithAppName(appName).
+		WithContext(ctx).
 		WithSecretName(secretName).
 		WithSecretValue(&secretParameters).
 		WithImpersonateUser(impersonateUser).

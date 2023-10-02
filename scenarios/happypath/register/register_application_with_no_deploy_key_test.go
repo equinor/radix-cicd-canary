@@ -1,6 +1,7 @@
 package register
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -17,6 +18,6 @@ func TestRegisterApplicationWithNoDeployKey(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := ApplicationWithNoDeployKey(environmentVariables, suiteName)
+	err := ApplicationWithNoDeployKey(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

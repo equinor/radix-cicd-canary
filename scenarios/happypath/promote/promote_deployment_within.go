@@ -1,6 +1,7 @@
 package promote
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -13,44 +14,45 @@ import (
 const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
-func DeploymentWithinEnvironment(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func DeploymentWithinEnvironment(ctx context.Context, cfg config.Config, suiteName string) error {
+	appName := defaults.App2Name
+	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	// Get deployments
-	deploymentToPromote, err := getLastDeployment(cfg, environmentToPromoteWithin)
+	deploymentToPromote, err := getLastDeployment(appCtx, cfg, appName, environmentToPromoteWithin)
 	if err != nil {
 		return err
 	}
 
 	// Assert that we no deployments within environment
-	deploymentsInEnvironment, err := getDeployments(cfg, environmentToPromoteWithin)
+	deploymentsInEnvironment, err := getDeployments(appCtx, cfg, appName, environmentToPromoteWithin)
 	if err != nil {
 		return err
 	}
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
-	promoteJobName, err := promote(cfg, deploymentToPromote, environmentToPromoteWithin, environmentToPromoteWithin)
+	promoteJobName, err := promote(appCtx, cfg, deploymentToPromote, appName, environmentToPromoteWithin, environmentToPromoteWithin)
 	if err != nil {
 		return err
 	}
 
 	// Get job
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
-		return job.IsDone(cfg, defaults.App2Name, promoteJobName, logger)
-	}, logger)
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+		return job.IsDone(cfg, appName, promoteJobName, ctx)
+	}, appCtx)
 	if err != nil {
 		return err
 	}
 	if jobStatus != "Succeeded" {
 		return fmt.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
 	}
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return isNewDeploymentExist(cfg, numDeploymentsBefore)
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config, ctx context.Context) error {
+		return isNewDeploymentExist(ctx, cfg, appName, numDeploymentsBefore)
+	}, appCtx)
 }
 
-func isNewDeploymentExist(cfg config.Config, numDeploymentsBefore int) error {
-	deploymentsInEnvironment, err := getDeployments(cfg, environmentToPromoteWithin)
+func isNewDeploymentExist(ctx context.Context, cfg config.Config, appName string, numDeploymentsBefore int) error {
+	deploymentsInEnvironment, err := getDeployments(ctx, cfg, appName, environmentToPromoteWithin)
 	if err != nil {
 		return err
 	}

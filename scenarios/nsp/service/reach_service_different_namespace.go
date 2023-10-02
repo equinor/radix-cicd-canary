@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
@@ -14,12 +15,11 @@ import (
 var logger zerolog.Logger
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func Reach(ctx context.Context, cfg config.Config, suiteName string) error {
 
 	client := httpUtils.GetHTTPDefaultClient()
 	url := "http://www.radix-canary-golang-prod:5000/health"
-	logger.Info().Str("url", url).Msg("requesting data")
+	log.Ctx(ctx).Info().Str("url", url).Msg("requesting data")
 
 	// Run tests service
 	_, err := client.Get(url)

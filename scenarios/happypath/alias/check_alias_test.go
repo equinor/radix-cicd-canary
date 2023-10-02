@@ -1,6 +1,7 @@
 package alias
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,6 @@ func TestDefaultAliasResponding(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := DefaultResponding(environmentVariables, suiteName)
+	err := DefaultResponding(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }

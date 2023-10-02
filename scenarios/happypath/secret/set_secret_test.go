@@ -1,6 +1,7 @@
 package secret
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -19,6 +20,6 @@ func TestSetSecret(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Set(environmentVariables, suiteName)
+	err := Set(context.Background(), environmentVariables, suiteName)
 	assert.NoError(t, err)
 }
