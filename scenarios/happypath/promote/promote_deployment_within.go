@@ -14,7 +14,7 @@ import (
 const environmentToPromoteWithin = "qa"
 
 // DeploymentWithinEnvironment Checks that a deployment can be promoted within env
-func DeploymentWithinEnvironment(ctx context.Context, cfg config.Config, suiteName string) error {
+func DeploymentWithinEnvironment(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 

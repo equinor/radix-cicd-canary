@@ -10,7 +10,7 @@ import (
 )
 
 // TearDown Deletes applications
-func TearDown(ctx context.Context, cfg config.Config, suiteName string) error {
+func TearDown(ctx context.Context, cfg config.Config) error {
 	appCtx := log.Ctx(ctx).With().Str("app", defaults.App3Name).Logger().WithContext(ctx)
 	err := application.DeleteByServiceAccount(appCtx, cfg, defaults.App3Name)
 	if err != nil {

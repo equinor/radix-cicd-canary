@@ -21,7 +21,7 @@ const (
 )
 
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
-func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config, suiteName string) error {
+func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 

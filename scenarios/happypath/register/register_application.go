@@ -14,14 +14,14 @@ import (
 
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(ctx context.Context, cfg config.Config, suiteName string) error {
+func Application(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 	appRepo := defaults.App2Repository
 	appSharedSecret := defaults.App2SharedSecret
 	appCreator := defaults.App2Creator
 	appConfigBranch := defaults.App2ConfigBranch
 	appConfigurationItem := defaults.App2ConfigurationItem
-	appCtx := log.With().Str("suite", suiteName).Str("app", appName).Logger().WithContext(ctx)
+	appCtx := log.With().Str("app", appName).Logger().WithContext(ctx)
 
 	err := application.DeleteIfExist(appCtx, cfg, appName)
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(ctx context.Context, cfg config.Config, suiteName string) error {
+func Application(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App3Name
 	appRepo := defaults.App3Repository
 	appSharedSecret := defaults.App3SharedSecret

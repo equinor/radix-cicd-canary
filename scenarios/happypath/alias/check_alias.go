@@ -12,7 +12,7 @@ import (
 )
 
 // DefaultResponding Checks if default alias of application is responding
-func DefaultResponding(ctx context.Context, cfg config.Config, suiteName string) error {
+func DefaultResponding(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 

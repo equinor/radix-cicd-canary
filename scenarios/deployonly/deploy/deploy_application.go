@@ -22,7 +22,7 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
-func Application(ctx context.Context, cfg config.Config, suiteName string) error {
+func Application(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App3Name
 	toEnvironment := defaults.App3EnvironmentName
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)

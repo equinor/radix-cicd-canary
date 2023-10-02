@@ -13,7 +13,7 @@ import (
 )
 
 // GetJobList tests that we are able to retrieve job list from job scheduler
-func GetJobList(ctx context.Context, cfg config.Config, suiteName string) error {
+func GetJobList(ctx context.Context, cfg config.Config) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {

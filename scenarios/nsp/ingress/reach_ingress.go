@@ -13,7 +13,7 @@ import (
 )
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(ctx context.Context, cfg config.Config, suiteName string) error {
+func Reach(ctx context.Context, cfg config.Config) error {
 	baseUrl := fmt.Sprintf("%s.%s", "https://www-radix-canary-golang-prod", cfg.GetClusterFQDN())
 	url, _ := neturl.JoinPath(baseUrl, "health")
 	client := httpUtils.GetHTTPDefaultClient()

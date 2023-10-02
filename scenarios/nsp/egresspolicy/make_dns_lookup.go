@@ -12,13 +12,13 @@ import (
 )
 
 // LookupInternalDNS tests that we are able to make lookups to internal DNS
-func LookupInternalDNS(ctx context.Context, cfg config.Config, suiteName string) error {
+func LookupInternalDNS(ctx context.Context, cfg config.Config) error {
 	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(internalDnsUrl, ctx)
 }
 
 // LookupPublicDNS tests that we are able to make lookups to public DNS
-func LookupPublicDNS(ctx context.Context, cfg config.Config, suiteName string) error {
+func LookupPublicDNS(ctx context.Context, cfg config.Config) error {
 	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
 	return lookupDns(publicDnsUrl, ctx)
 }

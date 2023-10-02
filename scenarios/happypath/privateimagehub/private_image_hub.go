@@ -13,7 +13,7 @@ import (
 )
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
-func Set(ctx context.Context, cfg config.Config, suiteName string) error {
+func Set(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 

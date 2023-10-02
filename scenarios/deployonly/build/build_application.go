@@ -20,7 +20,7 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully build an application
-func Application(ctx context.Context, cfg config.Config, suiteName string) error {
+func Application(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App3Name
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,15 +20,17 @@ Its best use is when debugging a single test
 func TestPromoteDeploymentToAnotherEnvironment(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
+	ctx := log.With().Str("suite", suiteName).Logger().WithContext(context.Background())
 
-	err := DeploymentToAnotherEnvironment(context.Background(), environmentVariables, suiteName)
+	err := DeploymentToAnotherEnvironment(ctx, environmentVariables)
 	assert.NoError(t, err)
 }
 
 func TestPromoteDeploymentWithinEnvironment(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
+	ctx := log.With().Str("suite", suiteName).Logger().WithContext(context.Background())
 
-	err := DeploymentWithinEnvironment(context.Background(), environmentVariables, suiteName)
+	err := DeploymentWithinEnvironment(ctx, environmentVariables)
 	assert.NoError(t, err)
 }

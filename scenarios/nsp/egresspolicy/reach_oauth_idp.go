@@ -13,7 +13,7 @@ import (
 )
 
 // ReachOauthIdp tests that IDP endpoint can be reached from Oauth Aux pod
-func ReachOauthIdp(ctx context.Context, cfg config.Config, suiteName string) error {
+func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	appEnv := "oauthdenyall"
 	timeout := 15
 	oauthCallbackUrl := fmt.Sprintf("%s/oauth2/callback?code=bullshitcode", cfg.GetNetworkPolicyCanaryUrl(appEnv))

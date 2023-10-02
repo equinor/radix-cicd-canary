@@ -10,7 +10,7 @@ import (
 )
 
 // Applications Tests that we are able to delete applications
-func Applications(ctx context.Context, cfg config.Config, suiteName string) error {
+func Applications(ctx context.Context, cfg config.Config) error {
 	appCtx := log.Ctx(ctx).With().Str("app", defaults.App3Name).Logger().WithContext(ctx)
 	return application.DeleteByImpersonatedUser(appCtx, cfg, defaults.App3Name)
 }

@@ -10,7 +10,7 @@ import (
 )
 
 // Fn Prototype of a test function
-type Fn func(ctx context.Context, cfg config.Config, suiteName string) error
+type Fn func(ctx context.Context, cfg config.Config) error
 
 // ResultFn Prototype of result of a test function (success or fail)
 type ResultFn func(ctx context.Context, testName string)
@@ -153,7 +153,7 @@ func runTest(ctx context.Context, cfg config.Config, testToRun Spec, suiteName s
 
 	log.Ctx(ctx).Debug().Msg("Running test")
 
-	err := testToRun.Test(ctx, cfg, suiteName)
+	err := testToRun.Test(ctx, cfg)
 	if err != nil {
 		testToRun.FailFn(ctx, testToRun.Name)
 		log.Ctx(ctx).Error().Err(err).Msg("Test failed")

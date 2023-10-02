@@ -11,7 +11,7 @@ import (
 )
 
 // Applications Test that we are able to list applications
-func Applications(ctx context.Context, cfg config.Config, suiteName string) error {
+func Applications(ctx context.Context, cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 

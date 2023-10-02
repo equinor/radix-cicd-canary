@@ -23,7 +23,7 @@ type expectedStep struct {
 }
 
 // Change Tests that radixconfig is read from the branch defined as configBranch
-func Change(ctx context.Context, cfg config.Config, suiteName string) error {
+func Change(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App4Name
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 

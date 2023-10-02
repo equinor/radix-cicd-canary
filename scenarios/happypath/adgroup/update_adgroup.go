@@ -22,13 +22,13 @@ const (
 )
 
 // Update Tests that updates to AD group locks down an application
-func Update(ctx context.Context, cfg config.Config, suiteName string) error {
+func Update(ctx context.Context, cfg config.Config) error {
 	logger := log.Ctx(ctx)
 
 	logger.Debug().Msg("check that admin AD-Group has access")
 	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, hasAccess)
 	if err != nil {
-		return fmt.Errorf("failed to get update details of the suite %s: %w", suiteName, err)
+		return fmt.Errorf("failed to get update details of the suite: %w", err)
 	}
 	logger.Debug().Msg("admin AD-Group has access")
 

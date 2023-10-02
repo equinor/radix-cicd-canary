@@ -21,7 +21,7 @@ import (
 
 // Access Checks that we are not able to enter any application we should not
 // have access to
-func Access(ctx context.Context, cfg config.Config, suiteName string) error {
+func Access(ctx context.Context, cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -38,7 +38,7 @@ func Access(ctx context.Context, cfg config.Config, suiteName string) error {
 }
 
 // ReaderAccess Checks that we have appropriate access to the application as readers
-func ReaderAccess(ctx context.Context, cfg config.Config, suiteName string) error {
+func ReaderAccess(ctx context.Context, cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	readerGroup := cfg.GetAppReaderGroup()
 	appName := defaults.App2Name

@@ -15,7 +15,7 @@ import (
 )
 
 // StartAndCheckJobBatch starts a job batch and confirms that jobs were created
-func StartAndCheckJobBatch(ctx context.Context, cfg config.Config, suiteName string) error {
+func StartAndCheckJobBatch(ctx context.Context, cfg config.Config) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 
 	for _, appEnv := range appEnvs {

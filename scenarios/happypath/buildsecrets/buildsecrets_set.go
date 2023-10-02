@@ -17,7 +17,7 @@ import (
 )
 
 // Set Tests that we are able to successfully set build secrets
-func Set(ctx context.Context, cfg config.Config, suiteName string) error {
+func Set(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 	// Trigger build to apply RA with build secrets

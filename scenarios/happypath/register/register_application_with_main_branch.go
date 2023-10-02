@@ -13,7 +13,7 @@ import (
 )
 
 // ApplicationWithMainConfigBranch Tests that we are able to register the application
-func ApplicationWithMainConfigBranch(ctx context.Context, cfg config.Config, suiteName string) error {
+func ApplicationWithMainConfigBranch(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App4Name
 	appRepo := defaults.App4Repository
 	appSharedSecret := defaults.App4SharedSecret

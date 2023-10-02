@@ -14,7 +14,7 @@ import (
 
 // ApplicationWithNoDeployKey Tests that we are able to register application
 // with no deploy key and that deploy key is generated
-func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config, suiteName string) error {
+func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App1Name
 	appRepo := defaults.App1Repository
 	appSharedSecret := defaults.App1SharedSecret

@@ -18,7 +18,7 @@ const (
 )
 
 // ReachRadixSite tests that canary golang endpoint can be reached from networkpolicy canary with policy that allows it
-func ReachRadixSite(ctx context.Context, cfg config.Config, suiteName string) error {
+func ReachRadixSite(ctx context.Context, cfg config.Config) error {
 	appEnv := "allowradix"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -32,7 +32,7 @@ func ReachRadixSite(ctx context.Context, cfg config.Config, suiteName string) er
 }
 
 // NotReachRadixSite tests that canary golang endpoint can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachRadixSite(ctx context.Context, cfg config.Config, suiteName string) error {
+func NotReachRadixSite(ctx context.Context, cfg config.Config) error {
 	appEnv := "egressrulestopublicdns"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -46,7 +46,7 @@ func NotReachRadixSite(ctx context.Context, cfg config.Config, suiteName string)
 }
 
 // NotReachExternalSite tests that a list of external websites can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachExternalSite(ctx context.Context, cfg config.Config, suiteName string) error {
+func NotReachExternalSite(ctx context.Context, cfg config.Config) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {

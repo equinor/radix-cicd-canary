@@ -11,7 +11,7 @@ import (
 )
 
 // Applications Tests that we are able to delete applications
-func Applications(ctx context.Context, cfg config.Config, suiteName string) error {
+func Applications(ctx context.Context, cfg config.Config) error {
 	var errs []error
 	for _, appName := range []string{defaults.App1Name, defaults.App2Name, defaults.App4Name} {
 		appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)

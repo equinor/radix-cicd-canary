@@ -12,7 +12,7 @@ import (
 )
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(ctx context.Context, cfg config.Config, suiteName string) error {
+func Reach(ctx context.Context, cfg config.Config) error {
 
 	client := httpUtils.GetHTTPDefaultClient()
 	url := "http://www.radix-canary-golang-prod:5000/health"

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,15 +20,17 @@ Its best use is when debugging a single test
 func TestUnauthorizedAccess(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
+	ctx := log.With().Str("suite", suiteName).Logger().WithContext(context.Background())
 
-	err := Access(context.Background(), environmentVariables, suiteName)
+	err := Access(ctx, environmentVariables)
 	assert.NoError(t, err)
 }
 
 func TestUnauthorizedReaderAccess(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
+	ctx := log.With().Str("suite", suiteName).Logger().WithContext(context.Background())
 
-	err := ReaderAccess(context.Background(), environmentVariables, suiteName)
+	err := ReaderAccess(ctx, environmentVariables)
 	assert.NoError(t, err)
 }
