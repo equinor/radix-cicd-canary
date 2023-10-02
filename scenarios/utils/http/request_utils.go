@@ -22,7 +22,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
 )
 
 const basePath = "/api/v1"
@@ -58,7 +58,7 @@ func CreateRequest(url, method string, parameters interface{}) *http.Request {
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSecret string, logger *log.Entry) error {
+func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSecret string, logger zerolog.Logger) error {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -74,7 +74,7 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature-256", crypto.SHA256HMAC([]byte(sharedSecret), payload))
 
-	logger.Debugf("Trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
+	logger.Debug().Str("branch", branch).Str("repository", repository).Str("comit", commit).Msg("Trigger webhook push")
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -91,7 +91,7 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response, logger *log.Entry) error {
+func CheckResponse(resp *http.Response, logger zerolog.Logger) error {
 	defer resp.Body.Close()
 	_, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -99,7 +99,7 @@ func CheckResponse(resp *http.Response, logger *log.Entry) error {
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-		logger.Debugf("Response code: %d", resp.StatusCode)
+		logger.Debug().Int("statusCode", resp.StatusCode).Msg("Response code")
 		return nil
 	}
 
@@ -107,8 +107,8 @@ func CheckResponse(resp *http.Response, logger *log.Entry) error {
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
-func CheckUrl(url string, logger *log.Entry) error {
-	logger.Debugf("Sending request to %s", url)
+func CheckUrl(url string, logger zerolog.Logger) error {
+	logger.Debug().Str("url", url).Msg("Sending request")
 	response, err := http.Get(url)
 	if err != nil {
 		return err

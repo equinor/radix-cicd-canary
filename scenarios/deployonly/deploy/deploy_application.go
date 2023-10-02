@@ -12,7 +12,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	log "github.com/rs/zerolog/log"
 )
 
 type expectedStep struct {
@@ -22,7 +22,7 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
 func Application(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	appName := defaults.App3Name
 	toEnvironment := defaults.App3EnvironmentName
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/equinor/radix-cicd-canary/metrics"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // Fn Prototype of a test function
@@ -69,7 +69,7 @@ func (runner Runner) Run(suites ...Suite) {
 
 	for scenario, elapsed := range scenarioDuration {
 		metrics.AddScenarioDuration(scenario, elapsed)
-		log.Infof("%s elapsed time: %v", scenario, elapsed)
+		log.Info().Str("scenario", scenario).Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
 	}
 }
 
@@ -77,18 +77,18 @@ func runSuiteSetup(cfg config.Config, suite Suite, scenarioDuration map[string]t
 	suiteName := suite.Name
 	setupFailed := false
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
-	logger.Debugf("Setting-up suite '%s'", suiteName)
+	logger := log.With().Str("suite", suiteName).Logger()
+	logger.Debug().Str("suite", suiteName).Msgf("Setting-up suite '%s'", suiteName)
 
 	for _, setup := range suite.Setup {
-		logger.Info(setup.Description)
+		logger.Info().Msg(setup.Description)
 		success := runTest(cfg, setup, suiteName)
 		if !success {
 			setupFailed = true
-			logger.Errorf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
+			logger.Error().Str("suite", suite.Name).Str("setupname", setup.Name).Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
 			break
 		}
-		logger.Debugf("Setup success %s", setup.Description)
+		logger.Debug().Msgf("Setup success %s", setup.Description)
 	}
 
 	end := time.Now()
@@ -100,13 +100,13 @@ func runSuiteSetup(cfg config.Config, suite Suite, scenarioDuration map[string]t
 func runSuiteTests(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
 	suiteName := suite.Name
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 
 	for _, test := range suite.Tests {
-		logger.Info(test.Description)
+		logger.Info().Msg(test.Description)
 		success := runTest(cfg, test, suiteName)
 		if !success {
-			logger.Warnf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
+			logger.Warn().Str("test", test.Name).Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
 			break
 		}
 	}
@@ -119,14 +119,14 @@ func runSuiteTests(cfg config.Config, suite Suite, scenarioDuration map[string]t
 func runSuiteTeardown(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
 	suiteName := suite.Name
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 
-	logger.Debugf("Running teardown tests in suite %s", suite.Name)
+	logger.Debug().Msg("Running teardown tests in suite")
 	for _, test := range suite.Teardown {
-		logger.Info(test.Description)
+		logger.Info().Msg(test.Description)
 		runTest(cfg, test, suiteName)
 	}
-	logger.Debug("Teardown complete")
+	logger.Debug().Msg("Teardown complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -135,23 +135,23 @@ func runSuiteTeardown(cfg config.Config, suite Suite, scenarioDuration map[strin
 
 func runTest(cfg config.Config, testToRun Spec, suiteName string) bool {
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Str("test", testToRun.Name).Logger()
 
-	logger.Debugf("Running test '%s'", testToRun.Name)
+	logger.Debug().Msg("Running test")
 
 	err := testToRun.Test(cfg, suiteName)
 	if err != nil {
 		testToRun.FailFn(testToRun.Name)
-		logger.Errorf("Error calling %s: %v", testToRun.Name, err)
+		logger.Error().Err(err).Msg("Test failed")
 	} else {
 		testToRun.SuccessFn(testToRun.Name)
-		logger.Debug("Test success")
+		logger.Debug().Msg("Test success")
 	}
 
 	end := time.Now()
 	elapsed := end.Sub(start)
 
 	metrics.AddTestDuration(testToRun.Name, elapsed)
-	logger.Infof("Elapsed time: %v", elapsed)
+	log.Info().Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
 	return err == nil
 }

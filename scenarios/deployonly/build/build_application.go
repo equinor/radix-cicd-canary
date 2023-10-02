@@ -10,7 +10,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 type expectedStep struct {
@@ -20,7 +20,7 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully build an application
 func Application(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 
 	// Trigger build via web hook
 	err := httpUtils.TriggerWebhookPush(cfg, defaults.App3BranchToBuildFrom, defaults.App3CommitID, defaults.App3SSHRepository, defaults.App3SharedSecret, logger)

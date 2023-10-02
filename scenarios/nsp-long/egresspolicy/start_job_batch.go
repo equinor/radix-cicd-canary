@@ -10,15 +10,16 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
+var logger zerolog.Logger
 
 // StartAndCheckJobBatch starts a job batch and confirms that jobs were created
 func StartAndCheckJobBatch(cfg config.Config, suiteName string) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	for _, appEnv := range appEnvs {
 		baseUrl := cfg.GetNetworkPolicyCanaryUrl(appEnv)
@@ -65,7 +66,7 @@ func StartAndCheckJobBatchSuccess(testName string) {
 	nspMetrics.AddStartAndCheckJobBatchSuccess()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
 }
 
 // StartAndCheckJobBatchFail is a function after a call to Lookup failed
@@ -73,5 +74,5 @@ func StartAndCheckJobBatchFail(testName string) {
 	nspMetrics.AddStartAndCheckJobBatchFail()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	logger.Info().Str("test", testName).Msg("Test: FAIL")
 }

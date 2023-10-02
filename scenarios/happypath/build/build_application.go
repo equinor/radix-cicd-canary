@@ -13,10 +13,11 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
+var logger zerolog.Logger
 
 const (
 	Secret1            = "SECRET_1"
@@ -34,14 +35,14 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully build an application
 func Application(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	// Trigger build via web hook
 	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
 	if err != nil {
 		return err
 	}
-	logger.Infof("First job was triggered")
+	logger.Info().Msg("First job was triggered")
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
@@ -53,7 +54,7 @@ func Application(cfg config.Config, suiteName string) error {
 	}
 
 	jobName := jobSummary.Name
-	logger.Infof("First job name: %s", jobName)
+	logger.Info().Str("jobName", jobName).Msg("First job name")
 
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
@@ -62,7 +63,7 @@ func Application(cfg config.Config, suiteName string) error {
 	if err != nil {
 		return err
 	}
-	logger.Infof("Second job was triggered")
+	logger.Info().Msg("Second job was triggered")
 
 	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
 		_, err := job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Queued", logger)
@@ -73,7 +74,7 @@ func Application(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	logger.Info("Second job was queued")
+	logger.Info().Msg("Second job was queued")
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
 		return job.IsDone(cfg, defaults.App2Name, jobName, logger)
 	}, logger)
@@ -83,7 +84,7 @@ func Application(cfg config.Config, suiteName string) error {
 	if jobStatus != "Succeeded" {
 		return fmt.Errorf("expected job status was Success, but got %s", jobStatus)
 	}
-	logger.Info("First job was completed")
+	logger.Info().Msg("First job was completed")
 	steps := job.GetSteps(cfg, defaults.App2Name, jobName)
 
 	expectedSteps := []expectedStep{
@@ -126,7 +127,7 @@ func Application(cfg config.Config, suiteName string) error {
 
 	// Stop job and verify that it has been stopped
 	jobName = jobSummary.Name
-	logger.Infof("Second job name: %s", jobName)
+	logger.Info().Str("jobName", jobName).Msg("Second job name")
 	err = job.Stop(cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
@@ -140,6 +141,6 @@ func Application(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	logger.Info("Second job was stopped")
+	logger.Info().Msg("Second job was stopped")
 	return nil
 }

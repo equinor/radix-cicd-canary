@@ -13,10 +13,11 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
+var logger zerolog.Logger
 
 type expectedStep struct {
 	name       string
@@ -25,7 +26,7 @@ type expectedStep struct {
 
 // Change Tests that radixconfig is read from the branch defined as configBranch
 func Change(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	// Trigger first build via web hook
 	err := httpUtils.TriggerWebhookPush(cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, logger)
@@ -33,7 +34,7 @@ func Change(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	logger.Infof("First job was triggered")
+	logger.Info().Msgf("First job was triggered")
 	jobSummary, err := waitForJobRunning(cfg)
 
 	if err != nil {
@@ -41,13 +42,13 @@ func Change(cfg config.Config, suiteName string) error {
 	}
 
 	jobName := jobSummary.Name
-	logger.Infof("First job name: %s", jobName)
+	logger.Info().Str("jobName", jobName).Msg("First job name")
 
 	if err = waitForJobDone(cfg, jobName); err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
 	}
 
-	logger.Info("First job was completed")
+	logger.Info().Msg("First job was completed")
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -72,7 +73,7 @@ func Change(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	logger.Infof("Second job was triggered")
+	logger.Info().Msg("Second job was triggered")
 	jobSummary, err = waitForJobRunning(cfg)
 
 	if err != nil {
@@ -80,13 +81,13 @@ func Change(cfg config.Config, suiteName string) error {
 	}
 
 	jobName = jobSummary.Name
-	logger.Infof("Second job name: %s", jobName)
+	logger.Info().Str("jobName", jobName).Msg("Second job name")
 
 	if err = waitForJobDone(cfg, jobName); err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
 	}
 
-	logger.Info("Second job was completed")
+	logger.Info().Msg("Second job was completed")
 
 	expectedSteps = []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -126,7 +127,7 @@ func waitForJobDone(cfg config.Config, jobName string) error {
 }
 
 func patchConfigBranch(cfg config.Config, newConfigBranch string) error {
-	logger.Debugf("Set ConfigBranch to %v", newConfigBranch)
+	logger.Debug().Msgf("Set ConfigBranch to %v", newConfigBranch)
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			ConfigBranch: newConfigBranch,
@@ -142,7 +143,7 @@ func patchConfigBranch(cfg config.Config, newConfigBranch string) error {
 	if err != nil {
 		return err
 	}
-	logger.Debugf("ConfigBranch has been set to %v", newConfigBranch)
+	logger.Debug().Msgf("ConfigBranch has been set to %v", newConfigBranch)
 	return nil
 }
 

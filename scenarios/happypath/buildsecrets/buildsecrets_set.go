@@ -12,14 +12,15 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
+var logger zerolog.Logger
 
 // Set Tests that we are able to successfully set build secrets
 func Set(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	// Trigger build to apply RA with build secrets
 	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
@@ -27,7 +28,7 @@ func Set(cfg config.Config, suiteName string) error {
 		return err
 	}
 
-	logger.Info("Job was triggered to apply RA")
+	logger.Info().Msg("Job was triggered to apply RA")
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
@@ -95,12 +96,12 @@ func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) e
 		}
 	}
 
-	logger.Info("Build secrets are not listed yet")
+	logger.Info().Msg("Build secrets are not listed yet")
 	return fmt.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
 }
 
 func setSecret(cfg config.Config, secretName, secretValue string) error {
-	logger.Debugf("setSecret %s with value %s", secretName, secretValue)
+	logger.Debug().Msgf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 

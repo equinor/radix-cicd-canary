@@ -11,7 +11,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -21,7 +21,7 @@ const (
 
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
 func DeploymentToAnotherEnvironment(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(cfg, envToDeployFrom)
@@ -34,7 +34,7 @@ func DeploymentToAnotherEnvironment(cfg config.Config, suiteName string) error {
 	if err != nil {
 		return err
 	}
-	logger.Debug("no deployments within environment")
+	logger.Debug().Msg("no deployments within environment")
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
 	promoteJobName, err := promote(cfg, deploymentToPromote, envToDeployFrom, envToDeployTo)

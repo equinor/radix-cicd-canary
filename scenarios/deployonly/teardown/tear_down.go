@@ -4,15 +4,15 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // TearDown Deletes applications
 func TearDown(cfg config.Config, suiteName string) error {
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
+	logger := log.With().Str("suite", suiteName).Logger()
 	err := application.DeleteByServiceAccount(cfg, defaults.App3Name, logger)
 	if err != nil {
-		logger.Debug(err)
+		logger.Debug().Err(err).Msg("Teardown failure")
 	}
 	return nil
 }
