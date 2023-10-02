@@ -89,14 +89,13 @@ func (runner Runner) Run(ctx context.Context, suites ...Suite) {
 }
 
 func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) bool {
-	suiteName := suite.Name
 	setupFailed := false
 	start := time.Now()
 	log.Ctx(ctx).Debug().Msg("Setting-up suite")
 
 	for _, setup := range suite.Setup {
 		log.Ctx(ctx).Info().Msg(setup.Description)
-		success := runTest(ctx, cfg, setup, suiteName)
+		success := runTest(ctx, cfg, setup)
 		if !success {
 			setupFailed = true
 			log.Ctx(ctx).Error().Str("setupname", setup.Name).Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
@@ -112,14 +111,13 @@ func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenario
 }
 
 func runSuiteTests(ctx context.Context, cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
-	suiteName := suite.Name
 	start := time.Now()
 
 	for _, test := range suite.Tests {
 		testCtx := log.Ctx(ctx).With().Str("test", test.Name).Logger().WithContext(ctx)
 		log.Ctx(testCtx).Info().Msg(test.Description)
 
-		success := runTest(ctx, cfg, test, suiteName)
+		success := runTest(ctx, cfg, test)
 		if !success {
 			log.Ctx(testCtx).Warn().Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
 			break
@@ -132,14 +130,13 @@ func runSuiteTests(ctx context.Context, cfg config.Config, suite Suite, scenario
 }
 
 func runSuiteTeardown(ctx context.Context, cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
-	suiteName := suite.Name
 	start := time.Now()
 
 	log.Ctx(ctx).Debug().Msg("Running teardown tests in suite")
 	for _, test := range suite.Teardown {
 		testCtx := log.Ctx(ctx).With().Str("test", test.Name).Logger().WithContext(ctx)
 		log.Ctx(testCtx).Info().Msg(test.Description)
-		runTest(testCtx, cfg, test, suiteName)
+		runTest(testCtx, cfg, test)
 	}
 	log.Ctx(ctx).Debug().Msg("Teardown complete")
 
@@ -148,7 +145,7 @@ func runSuiteTeardown(ctx context.Context, cfg config.Config, suite Suite, scena
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runTest(ctx context.Context, cfg config.Config, testToRun Spec, suiteName string) bool {
+func runTest(ctx context.Context, cfg config.Config, testToRun Spec) bool {
 	start := time.Now()
 
 	log.Ctx(ctx).Debug().Msg("Running test")
