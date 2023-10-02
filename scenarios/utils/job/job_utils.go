@@ -22,7 +22,7 @@ func GetLastPipelineJobWithStatus(ctx context.Context, cfg config.Config, appNam
 		return nil, fmt.Errorf("method GetLastPipelineJobWithStatus for application %s expected status '%s', but it received '%s'",
 			appName, expectedStatus, lastJobSummary.Status)
 	}
-	log.Ctx(ctx).Debug().Str("expectedStatus", expectedStatus).Msg("method GetLastPipelineJobWithStatus for application received expected status")
+	log.Ctx(ctx).Debug().Str("app", appName).Str("expectedStatus", expectedStatus).Msg("method GetLastPipelineJobWithStatus for application received expected status")
 	return lastJobSummary, nil
 }
 
@@ -34,7 +34,7 @@ func GetAnyPipelineJobWithStatus(ctx context.Context, cfg config.Config, appName
 	}
 	for _, jobSummary := range jobSummaries {
 		if jobSummary.Status == expectedStatus {
-			log.Ctx(ctx).Debug().Str("expectedStatus", expectedStatus).Msg("method GetAnyPipelineJobWithStatus for application received expected status")
+			log.Ctx(ctx).Debug().Str("app", appName).Str("expectedStatus", expectedStatus).Msg("method GetAnyPipelineJobWithStatus for application received expected status")
 			return jobSummary, nil
 		}
 	}
@@ -90,10 +90,10 @@ func IsDone(cfg config.Config, appName, jobName string, ctx context.Context) (st
 		return "", err
 	}
 	if jobStatus == "Succeeded" || jobStatus == "Failed" {
-		log.Ctx(ctx).Debug().Str("jobName", jobName).Str("jobStatus", jobStatus).Msg("Job is done")
+		log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Str("jobStatus", jobStatus).Msg("Job is done")
 		return jobStatus, nil
 	}
-	log.Ctx(ctx).Debug().Str("jobName", jobName).Msg("Job is not done yet")
+	log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Msg("Job is not done yet")
 	return "", fmt.Errorf("job %s for an app %s is not complete yet, Status %s", jobName, appName, jobStatus)
 }
 
@@ -106,7 +106,7 @@ func GetStatus(cfg config.Config, appName, jobName string, ctx context.Context) 
 	if job != nil {
 		return job.Status, nil
 	}
-	log.Ctx(ctx).Debug().Str("jobName", jobName).Msg("Job was not listed yet")
+	log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Msg("Job was not listed yet")
 	return "", fmt.Errorf("job %s does not exist", jobName)
 }
 

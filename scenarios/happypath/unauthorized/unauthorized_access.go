@@ -32,7 +32,7 @@ func Access(ctx context.Context, cfg config.Config) error {
 		WithAppName(defaults.RestrictedApplicationName)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	log.Ctx(ctx).Debug().Msgf("check that impersonated user has no access to the application %s", defaults.RestrictedApplicationName)
+	log.Ctx(ctx).Debug().Str("app", defaults.RestrictedApplicationName).Msg("check that impersonated user has no access to the application")
 	_, err := client.GetApplication(params, nil)
 	return givesAccessError(err)
 }

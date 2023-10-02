@@ -125,7 +125,7 @@ func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName str
 }
 
 func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfigBranch string) error {
-	log.Ctx(ctx).Debug().Msgf("Set ConfigBranch to %v", newConfigBranch)
+	log.Ctx(ctx).Debug().Str("app", appName).Msgf("Set ConfigBranch to %v", newConfigBranch)
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			ConfigBranch: newConfigBranch,
@@ -142,7 +142,7 @@ func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfi
 	if err != nil {
 		return err
 	}
-	log.Ctx(ctx).Debug().Msgf("ConfigBranch has been set to %v", newConfigBranch)
+	log.Ctx(ctx).Debug().Str("app", appName).Msgf("ConfigBranch has been set to %v", newConfigBranch)
 	return nil
 }
 

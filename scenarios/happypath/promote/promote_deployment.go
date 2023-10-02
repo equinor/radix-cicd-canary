@@ -35,7 +35,7 @@ func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) erro
 	if err != nil {
 		return err
 	}
-	log.Ctx(ctx).Debug().Msg("no deployments within environment")
+	log.Ctx(ctx).Debug().Str("app", appName).Msg("no deployments within environment")
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
 	promoteJobName, err := promote(ctx, cfg, deploymentToPromote, appName, envToDeployFrom, envToDeployTo)

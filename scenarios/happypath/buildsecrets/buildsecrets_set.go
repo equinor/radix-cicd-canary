@@ -98,7 +98,7 @@ func buildSecretsAreListedWithStatus(ctx context.Context, cfg config.Config, app
 }
 
 func setSecret(ctx context.Context, cfg config.Config, appName, secretName, secretValue string) error {
-	log.Ctx(ctx).Debug().Msgf("setSecret %s with value %s", secretName, secretValue)
+	log.Ctx(ctx).Debug().Str("app", appName).Msgf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
