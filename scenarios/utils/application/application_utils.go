@@ -73,7 +73,7 @@ func DeleteByServiceAccount(ctx context.Context, cfg config.Config, appName stri
 	if err != nil {
 		return err
 	}
-	log.Ctx(ctx).Debug().Msg("delete an application by the service account")
+	log.Ctx(ctx).Debug().Msgf("delete an application by the service account: %f", appName)
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithContext(ctx).

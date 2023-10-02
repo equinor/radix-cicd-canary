@@ -23,7 +23,6 @@ const (
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
 func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
-	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	// Get deployments
 	deploymentToPromote, err := getLastDeployment(ctx, cfg, appName, envToDeployFrom)
@@ -36,7 +35,7 @@ func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) erro
 	if err != nil {
 		return err
 	}
-	log.Ctx(appCtx).Debug().Msg("no deployments within environment")
+	log.Ctx(ctx).Debug().Msg("no deployments within environment")
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
 	promoteJobName, err := promote(ctx, cfg, deploymentToPromote, appName, envToDeployFrom, envToDeployTo)
@@ -45,7 +44,7 @@ func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) erro
 	}
 
 	// Get job
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
 		return job.IsDone(cfg, appName, promoteJobName, ctx)
 	})
 	if err != nil {

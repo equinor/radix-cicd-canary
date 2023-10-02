@@ -59,7 +59,7 @@ func CreateRequest(url, method string, parameters interface{}) *http.Request {
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSecret string, ctx context.Context) error {
+func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, repository, sharedSecret string) error {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,

@@ -13,7 +13,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/rs/zerolog/log"
 )
 
 type expectedStep struct {
@@ -23,19 +22,16 @@ type expectedStep struct {
 
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
 func Application(ctx context.Context, cfg config.Config) error {
-	appName := defaults.App3Name
-	toEnvironment := defaults.App3EnvironmentName
-	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	// Trigger deploy via Radix API
-	_, err := application.Deploy(ctx, cfg, appName, toEnvironment)
+	_, err := application.Deploy(ctx, cfg, defaults.App3Name, defaults.App3EnvironmentName)
 	if err != nil {
-		return fmt.Errorf("failed to deploy the application %s:  %v", appName, err)
+		return fmt.Errorf("failed to deploy the application %s:  %v", defaults.App3Name, err)
 	}
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		jobSummary, err := job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Succeeded")
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		jobSummary, err := job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App3Name, "Succeeded")
 		if err != nil {
 			return nil, err
 		}
@@ -49,7 +45,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	jobName := jobSummary.Name
-	steps := job.GetSteps(appCtx, cfg, appName, jobName)
+	steps := job.GetSteps(ctx, cfg, defaults.App3Name, jobName)
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},

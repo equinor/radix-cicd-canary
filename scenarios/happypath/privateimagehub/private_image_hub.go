@@ -15,41 +15,40 @@ import (
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
 func Set(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
-	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	err := privateimagehub.PasswordNotSet(cfg, appName)
 	if err != nil {
 		return err
 	}
-	log.Ctx(appCtx).Info().Msg("SUCCESS: private image hub is not set")
+	log.Ctx(ctx).Info().Msg("SUCCESS: private image hub is not set")
 
-	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return podNotLoaded(cfg, appName)
 	})
 	if err != nil {
 		return fmt.Errorf("%s component is running before private image hub password was set. %v", defaults.App2ComponentPrivateImageHubName, err)
 	}
-	log.Ctx(appCtx).Info().Msg("SUCCESS: container is not loaded")
+	log.Ctx(ctx).Info().Msg("SUCCESS: container is not loaded")
 
 	err = privateimagehub.SetPassword(cfg, appName)
 	if err != nil {
 		return fmt.Errorf("failed to set private image hub password. %v", err)
 	}
-	log.Ctx(appCtx).Info().Msg("SUCCESS: set private image hub password")
+	log.Ctx(ctx).Info().Msg("SUCCESS: set private image hub password")
 
-	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return podLoaded(cfg, appName)
 	})
 	if err != nil {
 		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", defaults.App2ComponentPrivateImageHubName, err.Error())
 	}
-	log.Ctx(appCtx).Info().Msg("SUCCESS: container is loaded with updated image hub password")
+	log.Ctx(ctx).Info().Msg("SUCCESS: container is loaded with updated image hub password")
 
 	err = privateimagehub.PasswordSet(cfg, appName)
 	if err != nil {
 		return err
 	}
-	log.Ctx(appCtx).Info().Msg("SUCCESS: private image hub is verified set")
+	log.Ctx(ctx).Info().Msg("SUCCESS: private image hub is verified set")
 
 	return nil
 }

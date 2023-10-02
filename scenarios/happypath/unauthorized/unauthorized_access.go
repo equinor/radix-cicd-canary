@@ -42,7 +42,6 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	readerGroup := cfg.GetAppReaderGroup()
 	appName := defaults.App2Name
-	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	type impersonateParam interface {
 		SetImpersonateUser(*string)
@@ -196,7 +195,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 	}
 
 	for _, scenario := range scenarios {
-		scenarioCtx := log.Ctx(appCtx).With().Str("scenario", scenario.name).Logger().WithContext(appCtx)
+		scenarioCtx := log.Ctx(ctx).With().Str("scenario", scenario.name).Logger().WithContext(ctx)
 		log.Ctx(scenarioCtx).Debug().Msg(scenario.logMsg)
 		err := scenario.testFunc(scenarioCtx, setImpersonation)
 		if !errors.Is(err, scenario.expectedError) {

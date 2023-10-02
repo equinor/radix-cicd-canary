@@ -18,26 +18,24 @@ import (
 
 // Set Tests that we are able to successfully set build secrets
 func Set(ctx context.Context, cfg config.Config) error {
-	appName := defaults.App2Name
-	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 	// Trigger build to apply RA with build secrets
-	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, appCtx)
+	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret)
 	if err != nil {
 		return err
 	}
 
-	log.Ctx(appCtx).Info().Msg("Job was triggered to apply RA")
+	log.Ctx(ctx).Info().Msg("Job was triggered to apply RA")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(ctx, cfg, appName, "Failed")
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Failed")
 	})
 	if err != nil {
 		return err
 	}
 
 	jobName := jobSummary.Name
-	job, err := job.Get(ctx, cfg, appName, jobName)
+	job, err := job.Get(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
 	}
@@ -52,26 +50,26 @@ func Set(ctx context.Context, cfg config.Config) error {
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	err = test.WaitForCheckFuncOrTimeout(appCtx, cfg, func(cfg config.Config, ctx context.Context) error {
-		return buildSecretsAreListedWithStatus(ctx, cfg, appName, "Pending")
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return buildSecretsAreListedWithStatus(ctx, cfg, defaults.App2Name, "Pending")
 	})
 
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(appCtx, cfg, appName, build.Secret1, build.Secret1Value)
+	err = setSecret(ctx, cfg, defaults.App2Name, build.Secret1, build.Secret1Value)
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(appCtx, cfg, appName, build.Secret2, build.Secret2Value)
+	err = setSecret(ctx, cfg, defaults.App2Name, build.Secret2, build.Secret2Value)
 	if err != nil {
 		return err
 	}
 
 	return test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
-		return buildSecretsAreListedWithStatus(ctx, cfg, appName, "Consistent")
+		return buildSecretsAreListedWithStatus(ctx, cfg, defaults.App2Name, "Consistent")
 	})
 }
 

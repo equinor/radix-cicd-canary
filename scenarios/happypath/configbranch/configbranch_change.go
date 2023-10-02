@@ -25,29 +25,28 @@ type expectedStep struct {
 // Change Tests that radixconfig is read from the branch defined as configBranch
 func Change(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App4Name
-	appCtx := log.Ctx(ctx).With().Str("app", appName).Logger().WithContext(ctx)
 
 	// Trigger first build via web hook
-	err := httpUtils.TriggerWebhookPush(cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, appCtx)
+	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret)
 	if err != nil {
 		return err
 	}
 
-	log.Ctx(appCtx).Info().Msgf("First job was triggered")
-	jobSummary, err := waitForJobRunning(appCtx, cfg, appName)
+	log.Ctx(ctx).Info().Msgf("First job was triggered")
+	jobSummary, err := waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
 	}
 
 	jobName := jobSummary.Name
-	log.Ctx(appCtx).Info().Str("jobName", jobName).Msg("First job name")
+	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("First job name")
 
-	if err = waitForJobDone(appCtx, cfg, appName, jobName); err != nil {
+	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
 	}
 
-	log.Ctx(appCtx).Info().Msg("First job was completed")
+	log.Ctx(ctx).Info().Msg("First job was completed")
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -58,35 +57,35 @@ func Change(ctx context.Context, cfg config.Config) error {
 		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(appCtx, cfg, jobName, appName, expectedSteps); !ok {
+	if ok, err := validateJobSteps(ctx, cfg, jobName, appName, expectedSteps); !ok {
 		return err
 	}
 
 	// Change config branch, trigger second webhook and verify job
-	if err := patchConfigBranch(appCtx, cfg, appName, defaults.App4NewConfigBranch); err != nil {
+	if err := patchConfigBranch(ctx, cfg, appName, defaults.App4NewConfigBranch); err != nil {
 		return err
 	}
 
-	err = httpUtils.TriggerWebhookPush(cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, appCtx)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, defaults.App4SharedSecret)
 	if err != nil {
 		return err
 	}
 
-	log.Ctx(appCtx).Info().Msg("Second job was triggered")
-	jobSummary, err = waitForJobRunning(appCtx, cfg, appName)
+	log.Ctx(ctx).Info().Msg("Second job was triggered")
+	jobSummary, err = waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
 	}
 
 	jobName = jobSummary.Name
-	log.Ctx(appCtx).Info().Str("jobName", jobName).Msg("Second job name")
+	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("Second job name")
 
-	if err = waitForJobDone(appCtx, cfg, appName, jobName); err != nil {
+	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
 		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
 	}
 
-	log.Ctx(appCtx).Info().Msg("Second job was completed")
+	log.Ctx(ctx).Info().Msg("Second job was completed")
 
 	expectedSteps = []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -97,7 +96,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(appCtx, cfg, appName, jobName, expectedSteps); !ok {
+	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
 	}
 
