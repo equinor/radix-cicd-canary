@@ -15,7 +15,7 @@ var logger zerolog.Logger
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
 func Reach(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suiteName", suiteName).Logger()
+	logger = log.With().Str("suite", suiteName).Logger()
 
 	client := httpUtils.GetHTTPDefaultClient()
 	url := "http://www.radix-canary-golang-prod:5000/health"
