@@ -10,6 +10,7 @@ import (
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-common/utils/errors"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -69,49 +70,49 @@ func getReachRadixSiteUrl(cfg config.Config, appEnv string) string {
 }
 
 // ReachRadixSiteSuccess is a function after a call to ReachRadixSite succeeds
-func ReachRadixSiteSuccess(testName string) {
+func ReachRadixSiteSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddRadixSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // ReachRadixSiteFail is a function after a call to ReachRadixSite failed
-func ReachRadixSiteFail(testName string) {
+func ReachRadixSiteFail(ctx context.Context, testName string) {
 	nspMetrics.AddRadixSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: FAIL")
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }
 
 // NotReachRadixSiteSuccess is a function after a call to NotReachRadixSite succeeds
-func NotReachRadixSiteSuccess(testName string) {
+func NotReachRadixSiteSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddNotRadixSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // NotReachRadixSiteFail is a function after a call to NotReachRadixSite failed
-func NotReachRadixSiteFail(testName string) {
+func NotReachRadixSiteFail(ctx context.Context, testName string) {
 	nspMetrics.AddNotRadixSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: FAIL")
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }
 
 // NotReachExternalSiteSuccess is a function after a call to NotReachExternalSite failed
-func NotReachExternalSiteSuccess(testName string) {
+func NotReachExternalSiteSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddNotExternalSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // NotReachExternalSiteFail is a function after a call to NotReachExternalSite failed
-func NotReachExternalSiteFail(testName string) {
+func NotReachExternalSiteFail(ctx context.Context, testName string) {
 	nspMetrics.AddNotExternalSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: FAIL")
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }

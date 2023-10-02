@@ -1,6 +1,8 @@
 package happypath
 
 import (
+	"context"
+
 	"github.com/equinor/radix-cicd-canary/metrics"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/adgroup"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/alias"
@@ -150,12 +152,12 @@ func TestSuite() test.Suite {
 	}
 }
 
-func successFunction(testName string) {
+func successFunction(ctx context.Context, testName string) {
 	metrics.AddTestOne(testName, metrics.Success)
 	metrics.AddTestZero(testName, metrics.Errors)
 }
 
-func failFunction(testName string) {
+func failFunction(ctx context.Context, testName string) {
 	metrics.AddTestZero(testName, metrics.Success)
 	metrics.AddTestOne(testName, metrics.Errors)
 }

@@ -8,11 +8,8 @@ import (
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
-
-var logger zerolog.Logger
 
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
 func Reach(ctx context.Context, cfg config.Config, suiteName string) error {
@@ -33,17 +30,17 @@ func Reach(ctx context.Context, cfg config.Config, suiteName string) error {
 }
 
 // Success is a function after a call to Reach succeeds
-func Success(testName string) {
+func Success(ctx context.Context, testName string) {
 	nspMetrics.AddServiceUnreachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // Fail is a function after a call to Reach failed
-func Fail(testName string) {
+func Fail(ctx context.Context, testName string) {
 	nspMetrics.AddServiceReachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: FAIL")
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }

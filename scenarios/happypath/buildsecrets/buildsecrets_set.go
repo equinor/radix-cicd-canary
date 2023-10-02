@@ -13,11 +13,8 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
-
-var logger zerolog.Logger
 
 // Set Tests that we are able to successfully set build secrets
 func Set(ctx context.Context, cfg config.Config, suiteName string) error {

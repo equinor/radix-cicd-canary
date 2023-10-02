@@ -10,11 +10,8 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
-
-var logger zerolog.Logger
 
 // Set Test that we are able to set secret
 func Set(ctx context.Context, cfg config.Config, suiteName string) error {

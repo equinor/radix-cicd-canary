@@ -13,7 +13,7 @@ import (
 type Fn func(ctx context.Context, cfg config.Config, suiteName string) error
 
 // ResultFn Prototype of result of a test function (success or fail)
-type ResultFn func(testName string)
+type ResultFn func(ctx context.Context, testName string)
 
 // Suite Holds a list of tests
 type Suite struct {
@@ -137,8 +137,9 @@ func runSuiteTeardown(ctx context.Context, cfg config.Config, suite Suite, scena
 
 	log.Ctx(ctx).Debug().Msg("Running teardown tests in suite")
 	for _, test := range suite.Teardown {
-		log.Ctx(ctx).Info().Msg(test.Description)
-		runTest(ctx, cfg, test, suiteName)
+		testCtx := log.Ctx(ctx).With().Str("test", test.Name).Logger().WithContext(ctx)
+		log.Ctx(testCtx).Info().Msg(test.Description)
+		runTest(testCtx, cfg, test, suiteName)
 	}
 	log.Ctx(ctx).Debug().Msg("Teardown complete")
 
@@ -154,10 +155,10 @@ func runTest(ctx context.Context, cfg config.Config, testToRun Spec, suiteName s
 
 	err := testToRun.Test(ctx, cfg, suiteName)
 	if err != nil {
-		testToRun.FailFn(testToRun.Name)
+		testToRun.FailFn(ctx, testToRun.Name)
 		log.Ctx(ctx).Error().Err(err).Msg("Test failed")
 	} else {
-		testToRun.SuccessFn(testToRun.Name)
+		testToRun.SuccessFn(ctx, testToRun.Name)
 		log.Ctx(ctx).Debug().Msg("Test success")
 	}
 

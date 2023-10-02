@@ -9,6 +9,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
+	"github.com/rs/zerolog/log"
 )
 
 // ReachOauthIdp tests that IDP endpoint can be reached from Oauth Aux pod
@@ -27,17 +28,17 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config, suiteName string) err
 }
 
 // ReachOauthIdpSuccess is a function after a call to ReachOauthIdp succeeds
-func ReachOauthIdpSuccess(testName string) {
+func ReachOauthIdpSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddOauthIdpReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // ReachOauthIdpFail is a function after a call to ReachOauthIdp failed
-func ReachOauthIdpFail(testName string) {
+func ReachOauthIdpFail(ctx context.Context, testName string) {
 	nspMetrics.AddOauthIdpUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: FAIL")
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }
