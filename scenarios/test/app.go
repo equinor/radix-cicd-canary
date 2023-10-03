@@ -99,7 +99,7 @@ func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenario
 		success := runTest(testCtx, cfg, setup)
 		if !success {
 			setupFailed = true
-			log.Ctx(ctx).Error().Str("setup", setup.Name).Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
+			log.Ctx(testCtx).Error().Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
 			break
 		}
 		log.Ctx(testCtx).Debug().Msgf("Setup success %s", setup.Description)
