@@ -104,6 +104,7 @@ func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenario
 		}
 		log.Ctx(ctx).Debug().Msgf("Setup success %s", setup.Description)
 	}
+	log.Ctx(ctx).Info().Msgf("suite setup complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -124,6 +125,7 @@ func runSuiteTests(ctx context.Context, cfg config.Config, suite Suite, scenario
 			break
 		}
 	}
+	log.Ctx(ctx).Info().Msgf("Test suite complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
