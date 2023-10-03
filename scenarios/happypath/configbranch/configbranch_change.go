@@ -56,7 +56,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(ctx, cfg, jobName, appName, expectedSteps); !ok {
+	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
 	}
 
