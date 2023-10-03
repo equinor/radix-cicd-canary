@@ -5,11 +5,8 @@ import (
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
-
-const suiteName = "NSP"
 
 /*
 Allow us to run this as a single test. Note that we need the previous tests of the suite to have passed for this to work.
@@ -20,8 +17,7 @@ Its best use is when debugging a single test
 func TestReachIngress(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
-	ctx := log.With().Str("suite", suiteName).Logger().WithContext(context.Background())
 
-	err := Reach(ctx, environmentVariables)
+	err := Reach(context.Background(), environmentVariables)
 	assert.NoError(t, err)
 }
