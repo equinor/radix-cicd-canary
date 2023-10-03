@@ -150,7 +150,7 @@ func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName s
 	steps := job.GetSteps(ctx, cfg, appName, jobName)
 
 	if len(steps) != len(expectedSteps) {
-		return false, errors.Errorf("number of pipeline steps was not as expected")
+		return false, errors.Errorf("number of pipeline steps was not as expected. Expected: %d, actuall: %d", len(expectedSteps), len(steps))
 	}
 
 	for index, step := range steps {
