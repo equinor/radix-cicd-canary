@@ -28,7 +28,7 @@ func Update(ctx context.Context, cfg config.Config) error {
 	logger.Debug().Msg("check that admin AD-Group has access")
 	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, hasAccess)
 	if err != nil {
-		return errors.Errorf("failed to get update details of the suite: %w", err)
+		return errors.Wrapf(err, "failed to get update details of the suite")
 	}
 	logger.Debug().Msg("admin AD-Group has access")
 
@@ -42,7 +42,7 @@ func Update(ctx context.Context, cfg config.Config) error {
 	logger.Debug().Msg("check that the application cannot be accessed with current impersonation")
 	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, hasNoAccess)
 	if err != nil {
-		return errors.Errorf("failed to get patchAdGroup update details: %w", err)
+		return errors.Wrap(err, "failed to get patchAdGroup update details")
 	}
 	logger.Debug().Msg("application cannot be accessed with current impersonation")
 
