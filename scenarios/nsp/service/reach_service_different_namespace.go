@@ -16,7 +16,7 @@ func Reach(ctx context.Context, cfg config.Config) error {
 
 	client := httpUtils.GetHTTPDefaultClient()
 	url := "http://www.radix-canary-golang-prod:5000/health"
-	log.Ctx(ctx).Info().Str("url", url).Msg("requesting data")
+	log.Ctx(ctx).Debug().Msgf("requesting data from url %s", url)
 
 	// Run tests service
 	_, err := client.Get(url)
