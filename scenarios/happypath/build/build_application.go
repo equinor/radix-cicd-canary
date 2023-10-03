@@ -2,10 +2,10 @@ package build
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
@@ -78,7 +78,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return fmt.Errorf("expected job status was Success, but got %s", jobStatus)
+		return errors.Errorf("expected job status was Success, but got %s", jobStatus)
 	}
 	log.Ctx(ctx).Info().Msg("First job was completed")
 	steps := job.GetSteps(ctx, cfg, defaults.App2Name, jobName)
@@ -98,11 +98,11 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return fmt.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
+			return errors.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return fmt.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
+			return errors.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
 		}
 	}
 

@@ -2,8 +2,6 @@ package application
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -15,6 +13,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	errors "github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -100,7 +99,7 @@ func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privat
 	client := httpUtils.GetApplicationClient(cfg)
 	_, err := client.RegenerateDeployKey(params, nil)
 	if err != nil {
-		return fmt.Errorf("failed regenerating deploy key for the application %s: %v", appName, err)
+		return errors.Wrapf(err, "failed regenerating deploy key for the application %s", appName)
 	}
 	return nil
 }
@@ -112,7 +111,7 @@ func HasDeployKey(ctx context.Context, cfg config.Config, appName, expectedDeplo
 	}
 
 	if strings.TrimSpace(expectedDeployKey) != strings.TrimSpace(actualDeployKey) {
-		return fmt.Errorf("application %s does not have the expected deploy key", appName)
+		return errors.Errorf("application %s does not have the expected deploy key", appName)
 	}
 
 	return nil
@@ -125,7 +124,7 @@ func IsDeployKeyDefined(ctx context.Context, cfg config.Config, appName string) 
 	}
 
 	if strings.TrimSpace(actualDeployKey) == "" {
-		return fmt.Errorf("deploy key for application %s is not defined", appName)
+		return errors.Errorf("deploy key for application %s is not defined", appName)
 	}
 
 	return nil
@@ -145,7 +144,7 @@ func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (strin
 	client := httpUtils.GetApplicationClient(cfg)
 	response, err := client.GetDeployKeyAndSecret(params, nil)
 	if err != nil {
-		return "", fmt.Errorf("failed getting deploy key for the application %s: %v", appName, err)
+		return "", errors.Wrapf(err, "failed getting deploy key for the application %s", appName)
 	}
 	return *response.Payload.PublicDeployKey, nil
 }
@@ -154,7 +153,7 @@ func deleteApplication(cfg config.Config, appName string, params *applicationcli
 	client := httpUtils.GetApplicationClient(cfg)
 	_, err := client.DeleteApplication(params, nil)
 	if err != nil {
-		return fmt.Errorf("failed deleting the application %s: %v", appName, err)
+		return errors.Wrapf(err, "failed deleting the application %s: %v", appName)
 	}
 	return nil
 }
@@ -185,7 +184,7 @@ func IsDefined(ctx context.Context, cfg config.Config, appName string) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("application %s is not defined", appName)
+	return errors.Errorf("application %s is not defined", appName)
 }
 
 func appNamespacesDoNotExist(ctx context.Context, appName string) error {
@@ -193,10 +192,10 @@ func appNamespacesDoNotExist(ctx context.Context, appName string) error {
 		LabelSelector: labels.Set{"radix-app": appName}.String(),
 	})
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	if len(nsList.Items) > 0 {
-		return fmt.Errorf("there are %d namespaces for the application %s", len(nsList.Items), appName)
+		return errors.Errorf("there are %d namespaces for the application %s", len(nsList.Items), appName)
 	}
 	return nil
 }
@@ -222,7 +221,7 @@ func Get(ctx context.Context, cfg config.Config, appName string) (*models.Applic
 	client := httpUtils.GetApplicationClient(cfg)
 	result, err := client.GetApplication(params, nil)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 	return result.Payload, nil
 }
@@ -236,7 +235,7 @@ func IsAliasDefined(ctx context.Context, cfg config.Config, appName string) erro
 	}
 
 	log.Ctx(ctx).Info().Msg("App alias for application is not yet defined")
-	return fmt.Errorf("public alias for application %s is not defined", appName)
+	return errors.Errorf("public alias for application %s is not defined", appName)
 }
 
 func getAlias(ctx context.Context, cfg config.Config, appName string) *string {
@@ -266,7 +265,7 @@ func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool
 func TryGetPublicDomainName(ctx context.Context, cfg config.Config, appName, environmentName, componentName string) (string, error) {
 	publicDomainName := getEnvVariable(ctx, cfg, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
 	if publicDomainName == "" {
-		return "", fmt.Errorf("public domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
+		return "", errors.Errorf("public domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
 	return publicDomainName, nil
 }
@@ -275,7 +274,7 @@ func TryGetPublicDomainName(ctx context.Context, cfg config.Config, appName, env
 func TryGetCanonicalDomainName(ctx context.Context, cfg config.Config, appName, environmentName, componentName string) (string, error) {
 	canonicalDomainName := getEnvVariable(ctx, cfg, appName, environmentName, componentName, canonicalEndpointEnvironmentVariable)
 	if canonicalDomainName == "" {
-		return "", fmt.Errorf("canonical domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
+		return "", errors.Errorf("canonical domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
 	}
 	return canonicalDomainName, nil
 }

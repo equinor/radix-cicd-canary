@@ -2,13 +2,13 @@ package privateimagehub
 
 import (
 	"context"
-	"fmt"
 	"math/rand"
 	"time"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -24,7 +24,7 @@ func Set(ctx context.Context, cfg config.Config) error {
 	log.Ctx(ctx).Debug().Str("app", defaults.App3Name).Msg("set privateimagehub passford for application")
 	err := privateimagehub.SetPassword(cfg, defaults.App3Name)
 	if err != nil {
-		return fmt.Errorf("failed to set private image hub password. %v", err)
+		return errors.Errorf("failed to set private image hub password. %v", err)
 	}
 
 	return nil

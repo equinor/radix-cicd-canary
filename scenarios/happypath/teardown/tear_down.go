@@ -14,7 +14,7 @@ func TearDown(ctx context.Context, cfg config.Config) error {
 	for _, appName := range []string{defaults.App1Name, defaults.App2Name, defaults.App4Name} {
 		err := application.DeleteByServiceAccount(ctx, cfg, appName)
 		if err != nil {
-			log.Ctx(ctx).Debug().Str("app", appName).Err(err).Msgf("Teardown failed")
+			log.Ctx(ctx).Debug().Str("app", appName).Stack().Err(err).Msgf("Teardown failed")
 		}
 	}
 	return nil

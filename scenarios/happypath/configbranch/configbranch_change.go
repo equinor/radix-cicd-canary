@@ -119,7 +119,7 @@ func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName str
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return fmt.Errorf("job %s completed with status %s", jobName, jobStatus)
+		return errors.Errorf("job %s completed with status %s", jobName, jobStatus)
 	}
 	return nil
 }
@@ -150,16 +150,16 @@ func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName s
 	steps := job.GetSteps(ctx, cfg, appName, jobName)
 
 	if len(steps) != len(expectedSteps) {
-		return false, fmt.Errorf("number of pipeline steps was not as expected")
+		return false, errors.Errorf("number of pipeline steps was not as expected")
 	}
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return false, fmt.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
+			return false, errors.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return false, fmt.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
+			return false, errors.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
 		}
 	}
 

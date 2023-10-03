@@ -2,8 +2,9 @@ package unauthorized
 
 import (
 	"context"
-	"errors"
 	"fmt"
+
+	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -199,7 +200,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 		log.Ctx(scenarioCtx).Debug().Msg(scenario.logMsg)
 		err := scenario.testFunc(scenarioCtx, setImpersonation)
 		if !errors.Is(err, scenario.expectedError) {
-			return fmt.Errorf("incorrect response on scenario %s: Got %v, expected %v", scenario.name, err, scenario.expectedError)
+			return errors.Errorf("incorrect response on scenario %s: Got %v, expected %v", scenario.name, err, scenario.expectedError)
 		}
 	}
 	return nil

@@ -2,11 +2,11 @@ package list
 
 import (
 	"context"
-	"fmt"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/platform"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -29,7 +29,7 @@ func Applications(ctx context.Context, cfg config.Config) error {
 	}
 
 	if len(showAppOk.Payload) == 0 {
-		return fmt.Errorf("list of applications returned an empty list")
+		return errors.Errorf("list of applications returned an empty list")
 	}
 	return err
 }

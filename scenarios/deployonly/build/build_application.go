@@ -2,8 +2,8 @@ package build
 
 import (
 	"context"
-	"errors"
-	"fmt"
+
+	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -24,7 +24,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	// Trigger build via web hook
 	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App3BranchToBuildFrom, defaults.App3CommitID, defaults.App3SSHRepository, defaults.App3SharedSecret)
 	if err != nil {
-		return fmt.Errorf("failed to push webhook push for App3, error %v", err)
+		return errors.Errorf("failed to push webhook push for App3, error %v", err)
 	}
 
 	// Get job
@@ -40,7 +40,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 	if jobSummary == nil {
-		return fmt.Errorf("could not get listed job for application %s status '%s'", defaults.App3Name, "Succeeded")
+		return errors.Errorf("could not get listed job for application %s status '%s'", defaults.App3Name, "Succeeded")
 	}
 
 	jobName := jobSummary.Name

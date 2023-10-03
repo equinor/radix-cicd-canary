@@ -9,6 +9,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -22,7 +23,7 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	}
 	_, err := client.Get(oauthCallbackUrl)
 	if err == http.ErrHandlerTimeout {
-		return fmt.Errorf("got no response from /oauth/callback within %d seconds, which likely means oauth pod could not connect to IDP. should be allowed by nsp", timeout)
+		return errors.Errorf("got no response from /oauth/callback within %d seconds, which likely means oauth pod could not connect to IDP. should be allowed by nsp", timeout)
 	}
 	return nil
 }

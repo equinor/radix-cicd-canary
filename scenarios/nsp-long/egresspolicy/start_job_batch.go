@@ -11,6 +11,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -39,7 +40,7 @@ func startJobBatch(baseUrl string, password string, appEnv string) error {
 		return err
 	}
 	if response.StatusCode != 200 {
-		return fmt.Errorf("got non-200 OK from %s", jobBatchUrl)
+		return errors.Errorf("got non-200 OK from %s", jobBatchUrl)
 	}
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
@@ -52,7 +53,7 @@ func startJobBatch(baseUrl string, password string, appEnv string) error {
 		return unMarshalErr
 	}
 	if batchStatus.Name == nil || *batchStatus.Name == "" {
-		err = fmt.Errorf("no name attribute in job batch creation response. appEnv %s", appEnv)
+		err = errors.Errorf("no name attribute in job batch creation response. appEnv %s", appEnv)
 		return err
 	}
 	return nil

@@ -13,7 +13,7 @@ import (
 func TearDown(ctx context.Context, cfg config.Config) error {
 	err := application.DeleteByServiceAccount(ctx, cfg, defaults.App3Name)
 	if err != nil {
-		log.Ctx(ctx).Debug().Str("app", defaults.App3Name).Err(err).Msg("Teardown failure")
+		log.Ctx(ctx).Debug().Str("app", defaults.App3Name).Stack().Err(err).Msg("Teardown failure")
 	}
 	return nil
 }

@@ -104,7 +104,7 @@ func CheckResponse(resp *http.Response, ctx context.Context) error {
 		return nil
 	}
 
-	return fmt.Errorf("response status code is %d", resp.StatusCode)
+	return errors.Errorf("response status code is %d", resp.StatusCode)
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
@@ -116,7 +116,7 @@ func CheckUrl(url string, ctx context.Context) error {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	return CheckResponse(response, ctx)
 }

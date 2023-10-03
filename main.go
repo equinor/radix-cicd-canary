@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/pkgerrors"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
@@ -22,7 +23,7 @@ func init() {
 	// If you get GOAWAY calling API with token using:
 	// az account get-access-token
 	// ...enable this line
-	// os.Setenv("GODEBUG", "http2server=0,http2client=0")
+	os.Setenv("GODEBUG", "http2server=0,http2client=0")
 }
 
 func main() {
@@ -33,6 +34,8 @@ func main() {
 	pretty := cfg.GetPrettyPrint()
 	zerolog.SetGlobalLevel(logLevel)
 	zerolog.DurationFieldInteger = true
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+
 	if pretty {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.TimeOnly})
 	}
@@ -59,7 +62,7 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	err := http.ListenAndServe(":5000", nil)
 	if err != nil {
-		log.Err(err).Msg("Failed to listen")
+		log.Fatal().Stack().Err(err).Msg("Failed to listen")
 		return
 	}
 	log.Info().Msg("Complete.")

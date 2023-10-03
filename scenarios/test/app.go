@@ -154,7 +154,7 @@ func runTest(ctx context.Context, cfg config.Config, testToRun Spec) bool {
 	err := testToRun.Test(ctx, cfg)
 	if err != nil {
 		testToRun.FailFn(ctx, testToRun.Name)
-		log.Ctx(ctx).Error().Err(err).Msg("Test failed")
+		log.Ctx(ctx).Error().Stack().Err(err).Msg("Test failed")
 	} else {
 		testToRun.SuccessFn(ctx, testToRun.Name)
 		log.Ctx(ctx).Debug().Msg("Test success")

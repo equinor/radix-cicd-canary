@@ -2,7 +2,6 @@ package promote
 
 import (
 	"context"
-	"fmt"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -12,6 +11,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -51,7 +51,7 @@ func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) erro
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return fmt.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
+		return errors.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
 	}
 	deploymentsInEnvironment, err = getDeployments(ctx, cfg, appName, envToDeployTo)
 	if err != nil {
@@ -61,7 +61,7 @@ func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) erro
 	numDeploymentsAfter := len(deploymentsInEnvironment)
 	newDeploymentCount := numDeploymentsAfter - numDeploymentsBefore
 	if newDeploymentCount != 1 {
-		return fmt.Errorf("new expected deployment does not exist")
+		return errors.Errorf("new expected deployment does not exist")
 	}
 	return nil
 }

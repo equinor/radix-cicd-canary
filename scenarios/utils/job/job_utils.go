@@ -2,12 +2,12 @@ package job
 
 import (
 	"context"
-	"fmt"
 
 	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -19,7 +19,7 @@ func GetLastPipelineJobWithStatus(ctx context.Context, cfg config.Config, appNam
 	}
 	lastJobSummary := jobSummaries[0]
 	if lastJobSummary.Status != expectedStatus {
-		return nil, fmt.Errorf("method GetLastPipelineJobWithStatus for application %s expected status '%s', but it received '%s'",
+		return nil, errors.Errorf("method GetLastPipelineJobWithStatus for application %s expected status '%s', but it received '%s'",
 			appName, expectedStatus, lastJobSummary.Status)
 	}
 	log.Ctx(ctx).Debug().Str("app", appName).Str("expectedStatus", expectedStatus).Msg("method GetLastPipelineJobWithStatus for application received expected status")
@@ -38,7 +38,7 @@ func GetAnyPipelineJobWithStatus(ctx context.Context, cfg config.Config, appName
 			return jobSummary, nil
 		}
 	}
-	return nil, fmt.Errorf("method GetAnyPipelineJobWithStatus for application %s expected any job with the status '%s', but it does not exist",
+	return nil, errors.Errorf("method GetAnyPipelineJobWithStatus for application %s expected any job with the status '%s', but it does not exist",
 		appName, expectedStatus)
 }
 
@@ -54,10 +54,10 @@ func getPipelineJobs(ctx context.Context, cfg config.Config, appName string) ([]
 	client := httpUtils.GetJobClient(cfg)
 	applicationJobs, err := client.GetApplicationJobs(params, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error calling GetApplicationJobs for application %s: %v", appName, err)
+		return nil, errors.Wrapf(err, "error calling GetApplicationJobs for application %s", appName)
 	}
 	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
-		return nil, fmt.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
+		return nil, errors.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
 	}
 	jobSummaries := applicationJobs.Payload
 	return jobSummaries, nil
@@ -80,7 +80,7 @@ func Stop(ctx context.Context, cfg config.Config, appName, jobName string) error
 		return nil
 	}
 
-	return fmt.Errorf("failed to stop job %s for an app %s. Error: %w", jobName, appName, err)
+	return errors.Wrapf(err, "failed to stop job %s for an app %s", jobName, appName)
 }
 
 // IsDone Checks if job is done
@@ -94,7 +94,7 @@ func IsDone(cfg config.Config, appName, jobName string, ctx context.Context) (st
 		return jobStatus, nil
 	}
 	log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Msg("Job is not done yet")
-	return "", fmt.Errorf("job %s for an app %s is not complete yet, Status %s", jobName, appName, jobStatus)
+	return "", errors.Errorf("job %s for an app %s is not complete yet, Status %s", jobName, appName, jobStatus)
 }
 
 // GetStatus Gets status of job
@@ -107,7 +107,7 @@ func GetStatus(cfg config.Config, appName, jobName string, ctx context.Context) 
 		return job.Status, nil
 	}
 	log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Msg("Job was not listed yet")
-	return "", fmt.Errorf("job %s does not exist", jobName)
+	return "", errors.Errorf("job %s does not exist", jobName)
 }
 
 // Get gets job from job name
@@ -125,12 +125,12 @@ func Get(ctx context.Context, cfg config.Config, appName, jobName string) (*mode
 	client := httpUtils.GetJobClient(cfg)
 	applicationJob, err := client.GetApplicationJob(params, nil)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 	if applicationJob.Payload != nil {
 		return applicationJob.Payload, nil
 	}
-	return nil, fmt.Errorf("failed to get job %s", jobName)
+	return nil, errors.Errorf("failed to get job %s", jobName)
 }
 
 // GetSteps gets job from job name
