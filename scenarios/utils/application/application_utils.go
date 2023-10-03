@@ -330,7 +330,7 @@ func IsResponding(ctx context.Context, url string) bool {
 	}
 
 	if err != nil {
-		logger.Debug().Str("url", url).Msgf("Failed request to the alias: %v", err)
+		logger.Debug().Msgf("Failed request to %s with the alias: %v", url, err)
 	}
 
 	if resp != nil {
@@ -338,9 +338,9 @@ func IsResponding(ctx context.Context, url string) bool {
 	}
 
 	if err == nil && resp == nil {
-		logger.Debug().Str("url", url).Msg("Request to alias returned, no response and no err")
+		logger.Debug().Msgf("Request to alias returned, no response and no err: %s", url)
 	}
 
-	logger.Info().Str("url", url).Msgf("Alias is still not responding")
+	logger.Info().Msgf("Alias is still not responding: %s", url)
 	return false
 }
