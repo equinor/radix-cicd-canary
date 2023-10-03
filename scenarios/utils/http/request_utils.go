@@ -83,7 +83,7 @@ func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, 
 			"error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 	}
 
-	if err := CheckResponse(resp, ctx); err != nil {
+	if err := CheckResponse(ctx, resp); err != nil {
 		return errors.Wrapf(err, "error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 	}
 
@@ -91,7 +91,7 @@ func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, 
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response, ctx context.Context) error {
+func CheckResponse(ctx context.Context, resp *http.Response) error {
 	defer resp.Body.Close()
 	_, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -117,7 +117,7 @@ func CheckUrl(url string, ctx context.Context) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	return CheckResponse(response, ctx)
+	return CheckResponse(ctx, response)
 }
 
 // GetPlatformClient Gets the Platform API client

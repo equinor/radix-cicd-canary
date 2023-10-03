@@ -53,10 +53,10 @@ func main() {
 	nspSuite := nsp.TestSuite()
 	nspLongSuite := nsplong.TestSuite()
 
-	go runSuites(cfg, ctx, sleepInterval, happyPathSuite)
-	go runSuites(cfg, ctx, sleepInterval, deployOnlySuite)
-	go runSuites(cfg, ctx, nspSleepInterval, nspSuite)
-	go runSuites(cfg, ctx, nspLongSleepInterval, nspLongSuite)
+	go runSuites(ctx, cfg, sleepInterval, happyPathSuite)
+	go runSuites(ctx, cfg, sleepInterval, deployOnlySuite)
+	go runSuites(ctx, cfg, nspSleepInterval, nspSuite)
+	go runSuites(ctx, cfg, nspLongSleepInterval, nspLongSuite)
 
 	log.Info().Msg("Started suites. Start metrics service.")
 	http.Handle("/metrics", promhttp.Handler())
@@ -68,7 +68,7 @@ func main() {
 	log.Info().Msg("Complete.")
 }
 
-func runSuites(environmentVariables config.Config, ctx context.Context, sleepInterval time.Duration, suites ...test.Suite) {
+func runSuites(ctx context.Context, environmentVariables config.Config, sleepInterval time.Duration, suites ...test.Suite) {
 	log.Debug().Int("suites", len(suites)).Msg("Prepare to run suite(s)")
 	suites = filterSuites(suites, environmentVariables)
 	if len(suites) == 0 {
