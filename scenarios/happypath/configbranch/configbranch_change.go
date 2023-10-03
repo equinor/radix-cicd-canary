@@ -112,7 +112,7 @@ func waitForJobRunning(ctx context.Context, cfg config.Config, appName string) (
 
 func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName string) error {
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
-		return job.IsDone(cfg, appName, jobName, ctx)
+		return job.IsDone(ctx, cfg, appName, jobName)
 	})
 	if err != nil {
 		return err

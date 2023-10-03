@@ -72,7 +72,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	log.Ctx(ctx).Info().Msg("Second job was queued")
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
-		return job.IsDone(cfg, defaults.App2Name, jobName, ctx)
+		return job.IsDone(ctx, cfg, defaults.App2Name, jobName)
 	})
 	if err != nil {
 		return err

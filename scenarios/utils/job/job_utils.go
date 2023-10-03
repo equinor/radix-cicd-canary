@@ -84,8 +84,8 @@ func Stop(ctx context.Context, cfg config.Config, appName, jobName string) error
 }
 
 // IsDone Checks if job is done
-func IsDone(cfg config.Config, appName, jobName string, ctx context.Context) (string, error) {
-	jobStatus, err := GetStatus(cfg, appName, jobName, ctx)
+func IsDone(ctx context.Context, cfg config.Config, appName, jobName string) (string, error) {
+	jobStatus, err := GetStatus(ctx, cfg, appName, jobName)
 	if err != nil {
 		return "", err
 	}
@@ -98,7 +98,7 @@ func IsDone(cfg config.Config, appName, jobName string, ctx context.Context) (st
 }
 
 // GetStatus Gets status of job
-func GetStatus(cfg config.Config, appName, jobName string, ctx context.Context) (string, error) {
+func GetStatus(ctx context.Context, cfg config.Config, appName, jobName string) (string, error) {
 	job, err := Get(ctx, cfg, appName, jobName)
 	if err != nil {
 		return "", err

@@ -36,7 +36,7 @@ func DeploymentWithinEnvironment(ctx context.Context, cfg config.Config) error {
 
 	// Get job
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
-		return job.IsDone(cfg, appName, promoteJobName, ctx)
+		return job.IsDone(ctx, cfg, appName, promoteJobName)
 	})
 	if err != nil {
 		return err
