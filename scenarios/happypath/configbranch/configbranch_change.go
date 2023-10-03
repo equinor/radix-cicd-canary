@@ -2,7 +2,6 @@ package configbranch
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
@@ -36,14 +35,14 @@ func Change(ctx context.Context, cfg config.Config) error {
 	jobSummary, err := waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
+		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
 	}
 
 	jobName := jobSummary.Name
 	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("First job name")
 
 	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
+		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
 	}
 
 	log.Ctx(ctx).Info().Msg("First job was completed")
@@ -75,14 +74,14 @@ func Change(ctx context.Context, cfg config.Config) error {
 	jobSummary, err = waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
+		return errors.Wrapf(err, "second job for application %s", defaults.App4Name)
 	}
 
 	jobName = jobSummary.Name
 	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("Second job name")
 
 	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
+		return errors.Wrapf(err, "second job for application %s", defaults.App4Name)
 	}
 
 	log.Ctx(ctx).Info().Msg("Second job was completed")

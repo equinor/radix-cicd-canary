@@ -79,13 +79,12 @@ func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, 
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return errors.WithMessage(err,
-			fmt.Sprintf("error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit))
+		return errors.Wrapf(err,
+			"error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 	}
 
 	if err := CheckResponse(resp, ctx); err != nil {
-		return errors.WithMessage(err,
-			fmt.Sprintf("error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit))
+		return errors.Wrapf(err, "error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 	}
 
 	return nil
@@ -96,7 +95,7 @@ func CheckResponse(resp *http.Response, ctx context.Context) error {
 	defer resp.Body.Close()
 	_, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return errors.WithMessage(err, "error reading response body")
+		return errors.Wrap(err, "error reading response body")
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {

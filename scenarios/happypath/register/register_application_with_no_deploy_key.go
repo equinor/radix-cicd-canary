@@ -2,7 +2,6 @@ package register
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -28,7 +27,7 @@ func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config) error {
 
 	_, err = application.Register(ctx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
+		return errors.Wrapf(err, "failed to register application %s", appName)
 	}
 
 	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
