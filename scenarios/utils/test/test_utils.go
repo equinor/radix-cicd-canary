@@ -33,7 +33,7 @@ func WaitForCheckFuncWithValueOrTimeout[T any](ctx context.Context, cfg config.C
 	err := wait.PollUntilContextCancel(timeoutCtx, sleepInterval, true, func(ctx context.Context) (done bool, err error) {
 		tmp, err := checkFunc(cfg, ctx)
 		if err != nil {
-			log.Ctx(ctx).Debug().Err(err).Msg("check function fails in WaitForCheck")
+			log.Ctx(ctx).Debug().Msgf("check function fails in WaitForCheck: %v", err)
 			return false, nil
 		}
 

@@ -76,11 +76,9 @@ func hasProperAccess(ctx context.Context, cfg config.Config, properAccess bool) 
 
 	err = setSecret(cfg)
 	accessToSecret := !isChangeComponentSecretForbidden(ctx, err)
-
-	log.Ctx(ctx).Debug().Msgf(" - accessToApplication: %v, accessToBuild: %v, accessToSecret: %v", accessToApplication, accessToBuild, accessToSecret)
-
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
-	log.Ctx(ctx).Debug().Msgf(" - hasProperAccess: %v", hasProperAccess)
+
+	log.Ctx(ctx).Debug().Msgf("AccessToApplication: %v, accessToBuild: %v, accessToSecret: %v, HasProperAccess: %v", accessToApplication, accessToBuild, accessToSecret, hasProperAccess)
 
 	if !hasProperAccess {
 		return fmt.Errorf("proper access hasn't been granted yet")
@@ -179,7 +177,7 @@ func isChangeComponentSecretForbidden(ctx context.Context, err error) bool {
 	if errors.Is(err, &environmentclient.ChangeComponentSecretForbidden{}) {
 		return true
 	}
-	log.Ctx(ctx).Debug().Err(err).Msg("ChangeComponentSecret")
+	log.Ctx(ctx).Debug().Msgf("ChangeComponentSecret: %v", err)
 	return false
 }
 

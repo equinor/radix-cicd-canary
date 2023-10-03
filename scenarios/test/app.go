@@ -84,7 +84,7 @@ func (runner Runner) Run(ctx context.Context, suites ...Suite) {
 
 	for scenario, elapsed := range scenarioDuration {
 		metrics.AddScenarioDuration(scenario, elapsed)
-		log.Info().Str("scenario", scenario).Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
+		log.Ctx(ctx).Info().Str("scenario", scenario).Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
 	}
 }
 
@@ -94,8 +94,9 @@ func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenario
 	log.Ctx(ctx).Debug().Msg("Setting-up suite")
 
 	for _, setup := range suite.Setup {
-		log.Ctx(ctx).Info().Msg(setup.Description)
-		success := runTest(ctx, cfg, setup)
+		testCtx := log.Ctx(ctx).With().Str("test", setup.Name).Logger().WithContext(ctx)
+		log.Ctx(testCtx).Info().Msg(setup.Description)
+		success := runTest(testCtx, cfg, setup)
 		if !success {
 			setupFailed = true
 			log.Ctx(ctx).Error().Str("setup", setup.Name).Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
@@ -117,7 +118,7 @@ func runSuiteTests(ctx context.Context, cfg config.Config, suite Suite, scenario
 		testCtx := log.Ctx(ctx).With().Str("test", test.Name).Logger().WithContext(ctx)
 		log.Ctx(testCtx).Info().Msg(test.Description)
 
-		success := runTest(ctx, cfg, test)
+		success := runTest(testCtx, cfg, test)
 		if !success {
 			log.Ctx(testCtx).Warn().Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
 			break
@@ -163,6 +164,6 @@ func runTest(ctx context.Context, cfg config.Config, testToRun Spec) bool {
 	elapsed := end.Sub(start)
 
 	metrics.AddTestDuration(testToRun.Name, elapsed)
-	log.Info().Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
+	log.Ctx(ctx).Info().Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
 	return err == nil
 }

@@ -331,7 +331,7 @@ func IsResponding(ctx context.Context, url string) bool {
 	}
 
 	if err != nil {
-		logger.Debug().Err(err).Str("url", url).Msg("Failed request to the alias")
+		logger.Debug().Str("url", url).Msgf("Failed request to the alias: %v", err)
 	}
 
 	if resp != nil {
