@@ -50,7 +50,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	jobName := jobSummary.Name
-	log.Ctx(ctx).Info().Msgf("First job name %s", jobName)
+	log.Ctx(ctx).Info().Msgf("First job name: %s", jobName)
 
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
