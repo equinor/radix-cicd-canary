@@ -177,8 +177,7 @@ func getClientAuthInfoWriter(cfg config.Config) runtime.ClientAuthInfoWriter {
 			if err != nil {
 				return err
 			}
-			_ = cr.SetHeaderParam(runtime.HeaderAuthorization, "Bearer "+token.AccessToken)
-			return nil
+			return cr.SetHeaderParam(runtime.HeaderAuthorization, "Bearer "+token.AccessToken)
 		})
 	}
 
