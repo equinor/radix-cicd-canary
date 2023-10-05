@@ -1,20 +1,18 @@
 package register
 
 import (
-	"fmt"
+	"context"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func Application(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 	appRepo := defaults.App2Repository
 	appSharedSecret := defaults.App2SharedSecret
@@ -22,29 +20,29 @@ func Application(cfg config.Config, suiteName string) error {
 	appConfigBranch := defaults.App2ConfigBranch
 	appConfigurationItem := defaults.App2ConfigurationItem
 
-	err := application.DeleteIfExist(cfg, appName, logger)
+	err := application.DeleteIfExist(ctx, cfg, appName)
 	if err != nil {
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(ctx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("failed to register application %s", appName))
+		return errors.Wrapf(err, "failed to register application %s", appName)
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, appName)
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsDefined(ctx, cfg, appName)
+	})
 	if err != nil {
 		return err
 	}
 
-	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKey(), "", logger)
+	err = application.RegenerateDeployKey(ctx, cfg, appName, cfg.GetPrivateKey(), "")
 	if err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("failed to regenerate deploy key for application %s", appName))
+		return errors.Wrapf(err, "failed to regenerate deploy key for application %s", appName)
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.HasDeployKey(cfg, appName, cfg.GetPublicKey(), logger)
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.HasDeployKey(ctx, cfg, appName, cfg.GetPublicKey())
+	})
 }

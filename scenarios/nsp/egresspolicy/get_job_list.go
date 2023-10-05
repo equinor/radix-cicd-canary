@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
@@ -12,13 +13,12 @@ import (
 )
 
 // GetJobList tests that we are able to retrieve job list from job scheduler
-func GetJobList(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func GetJobList(ctx context.Context, cfg config.Config) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {
 		jobListUrl := fmt.Sprintf("%s/testjobscheduler", cfg.GetNetworkPolicyCanaryUrl(appEnv))
-		err := httpUtils.CheckUrl(jobListUrl, logger)
+		err := httpUtils.CheckUrl(jobListUrl, ctx)
 		if err != nil {
 			errs = append(errs, err)
 		}
@@ -30,17 +30,17 @@ func GetJobList(cfg config.Config, suiteName string) error {
 }
 
 // GetJobListSuccess is a function after a call to GetJobList succeeds
-func GetJobListSuccess(testName string) {
+func GetJobListSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddGetJobListSuccess()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: SUCCESS")
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // GetJobListFail is a function after a call to GetJobList failed
-func GetJobListFail(testName string) {
+func GetJobListFail(ctx context.Context, testName string) {
 	nspMetrics.AddGetJobListFail()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Info().Str("test", testName).Msg("Test: FAIL")
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }

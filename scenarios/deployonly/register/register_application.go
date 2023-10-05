@@ -1,17 +1,17 @@
 package register
 
 import (
+	"context"
+
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/rs/zerolog/log"
 )
 
 // Application Tests that we are able to register application
 // with deploy key set
-func Application(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func Application(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App3Name
 	appRepo := defaults.App3Repository
 	appSharedSecret := defaults.App3SharedSecret
@@ -19,29 +19,29 @@ func Application(cfg config.Config, suiteName string) error {
 	appConfigurationItem := defaults.App3ConfigurationItem
 	appConfigBranch := defaults.App3ConfigBranch
 
-	err := application.DeleteIfExist(cfg, appName, logger)
+	err := application.DeleteIfExist(ctx, cfg, appName)
 	if err != nil {
 		return err
 	}
 
-	_, err = application.Register(cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(ctx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
 		return err
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.IsDefined(cfg, defaults.App3Name)
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsDefined(ctx, cfg, defaults.App3Name)
+	})
 	if err != nil {
 		return err
 	}
 
-	err = application.RegenerateDeployKey(cfg, appName, cfg.GetPrivateKeyCanary3(), "", logger)
+	err = application.RegenerateDeployKey(ctx, cfg, appName, cfg.GetPrivateKeyCanary3(), "")
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return application.HasDeployKey(cfg, appName, cfg.GetPublicKeyCanary3(), logger)
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.HasDeployKey(ctx, cfg, appName, cfg.GetPublicKeyCanary3())
+	})
 }

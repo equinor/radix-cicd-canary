@@ -1,7 +1,7 @@
 package buildsecrets
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
 	applicationClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
@@ -12,34 +12,30 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/rs/zerolog"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
-var logger zerolog.Logger
-
 // Set Tests that we are able to successfully set build secrets
-func Set(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
-
+func Set(ctx context.Context, cfg config.Config) error {
 	// Trigger build to apply RA with build secrets
-	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
+	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret)
 	if err != nil {
 		return err
 	}
 
-	logger.Info().Msg("Job was triggered to apply RA")
+	log.Ctx(ctx).Info().Msg("Job was triggered to apply RA")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Failed", logger)
-	}, logger)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Failed")
+	})
 	if err != nil {
 		return err
 	}
 
 	jobName := jobSummary.Name
-	job, err := job.Get(cfg, defaults.App2Name, jobName)
+	job, err := job.Get(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
 	}
@@ -49,40 +45,41 @@ func Set(cfg config.Config, suiteName string) error {
 		"radix-pipeline"}
 
 	if len(job.Steps) != len(expectedSteps) {
-		return fmt.Errorf("job should not contain any build step")
+		return errors.Errorf("job should not contain any build step")
 	}
 
 	// First job failed, due to missing build secrets, as expected in test
 	// Set build secrets
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return buildSecretsAreListedWithStatus(cfg, "Pending")
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return buildSecretsAreListedWithStatus(ctx, cfg, defaults.App2Name, "Pending")
+	})
 
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(cfg, build.Secret1, build.Secret1Value)
+	err = setSecret(ctx, cfg, defaults.App2Name, build.Secret1, build.Secret1Value)
 	if err != nil {
 		return err
 	}
 
-	err = setSecret(cfg, build.Secret2, build.Secret2Value)
+	err = setSecret(ctx, cfg, defaults.App2Name, build.Secret2, build.Secret2Value)
 	if err != nil {
 		return err
 	}
 
-	return test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return buildSecretsAreListedWithStatus(cfg, "Consistent")
-	}, logger)
+	return test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return buildSecretsAreListedWithStatus(ctx, cfg, defaults.App2Name, "Consistent")
+	})
 }
 
-func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) error {
+func buildSecretsAreListedWithStatus(ctx context.Context, cfg config.Config, appName, expectedStatus string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := applicationClient.NewGetBuildSecretsParams().
-		WithAppName(defaults.App2Name).
+		WithAppName(appName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetApplicationClient(cfg)
@@ -96,12 +93,12 @@ func buildSecretsAreListedWithStatus(cfg config.Config, expectedStatus string) e
 		}
 	}
 
-	logger.Info().Msg("Build secrets are not listed yet")
-	return fmt.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
+	log.Ctx(ctx).Info().Msg("Build secrets are not listed yet")
+	return errors.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
 }
 
-func setSecret(cfg config.Config, secretName, secretValue string) error {
-	logger.Debug().Msgf("setSecret %s with value %s", secretName, secretValue)
+func setSecret(ctx context.Context, cfg config.Config, appName, secretName, secretValue string) error {
+	log.Ctx(ctx).Debug().Str("app", appName).Msgf("setSecret %s with value %s", secretName, secretValue)
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -110,7 +107,8 @@ func setSecret(cfg config.Config, secretName, secretValue string) error {
 	}
 
 	params := applicationClient.NewUpdateBuildSecretsSecretValueParams().
-		WithAppName(defaults.App2Name).
+		WithAppName(appName).
+		WithContext(ctx).
 		WithSecretName(secretName).
 		WithSecretValue(&secretParameters).
 		WithImpersonateUser(impersonateUser).
@@ -119,7 +117,7 @@ func setSecret(cfg config.Config, secretName, secretValue string) error {
 	client := httpUtils.GetApplicationClient(cfg)
 	_, err := client.UpdateBuildSecretsSecretValue(params, nil)
 	if err != nil {
-		return fmt.Errorf("failed to set secret %s. Error: %v", secretName, err)
+		return errors.Errorf("failed to set secret %s. Error: %v", secretName, err)
 	}
 
 	return nil

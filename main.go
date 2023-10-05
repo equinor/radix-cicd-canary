@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/pkgerrors"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath"
@@ -25,15 +27,19 @@ func init() {
 }
 
 func main() {
-
 	cfg := config.NewConfig()
+	ctx := context.Background()
+
 	logLevel := cfg.GetLogLevel()
 	pretty := cfg.GetPrettyPrint()
 	zerolog.SetGlobalLevel(logLevel)
 	zerolog.DurationFieldInteger = true
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+
 	if pretty {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.TimeOnly})
 	}
+	ctx = log.Logger.WithContext(ctx)
 
 	log.Info().Msg("Starting...")
 	log.Info().Msgf("Log level: %s", logLevel.String())
@@ -47,22 +53,22 @@ func main() {
 	nspSuite := nsp.TestSuite()
 	nspLongSuite := nsplong.TestSuite()
 
-	go runSuites(cfg, sleepInterval, happyPathSuite)
-	go runSuites(cfg, sleepInterval, deployOnlySuite)
-	go runSuites(cfg, nspSleepInterval, nspSuite)
-	go runSuites(cfg, nspLongSleepInterval, nspLongSuite)
+	go runSuites(ctx, cfg, sleepInterval, happyPathSuite)
+	go runSuites(ctx, cfg, sleepInterval, deployOnlySuite)
+	go runSuites(ctx, cfg, nspSleepInterval, nspSuite)
+	go runSuites(ctx, cfg, nspLongSleepInterval, nspLongSuite)
 
 	log.Info().Msg("Started suites. Start metrics service.")
 	http.Handle("/metrics", promhttp.Handler())
 	err := http.ListenAndServe(":5000", nil)
 	if err != nil {
-		log.Err(err).Msg("Failed to listen")
+		log.Fatal().Stack().Err(err).Msg("Failed to listen")
 		return
 	}
 	log.Info().Msg("Complete.")
 }
 
-func runSuites(environmentVariables config.Config, sleepInterval time.Duration, suites ...test.Suite) {
+func runSuites(ctx context.Context, environmentVariables config.Config, sleepInterval time.Duration, suites ...test.Suite) {
 	log.Debug().Int("suites", len(suites)).Msg("Prepare to run suite(s)")
 	suites = filterSuites(suites, environmentVariables)
 	if len(suites) == 0 {
@@ -73,7 +79,7 @@ func runSuites(environmentVariables config.Config, sleepInterval time.Duration, 
 	log.Debug().Int("suites", len(suites)).Msg("Run suite(s)")
 	runner := test.NewRunner(environmentVariables)
 	for {
-		runner.Run(suites...)
+		runner.Run(ctx, suites...)
 		time.Sleep(sleepInterval)
 	}
 }

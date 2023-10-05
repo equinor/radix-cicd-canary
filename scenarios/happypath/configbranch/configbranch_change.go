@@ -1,7 +1,7 @@
 package configbranch
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
@@ -13,11 +13,8 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
-
-var logger zerolog.Logger
 
 type expectedStep struct {
 	name       string
@@ -25,30 +22,30 @@ type expectedStep struct {
 }
 
 // Change Tests that radixconfig is read from the branch defined as configBranch
-func Change(cfg config.Config, suiteName string) error {
-	logger = log.With().Str("suite", suiteName).Logger()
+func Change(ctx context.Context, cfg config.Config) error {
+	appName := defaults.App4Name
 
 	// Trigger first build via web hook
-	err := httpUtils.TriggerWebhookPush(cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, logger)
+	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret)
 	if err != nil {
 		return err
 	}
 
-	logger.Info().Msgf("First job was triggered")
-	jobSummary, err := waitForJobRunning(cfg)
+	log.Ctx(ctx).Info().Msgf("First job was triggered")
+	jobSummary, err := waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
+		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
 	}
 
 	jobName := jobSummary.Name
-	logger.Info().Str("jobName", jobName).Msg("First job name")
+	log.Ctx(ctx).Info().Msgf("First job name: %s", jobName)
 
-	if err = waitForJobDone(cfg, jobName); err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("first job for application %s", defaults.App4Name))
+	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
+		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
 	}
 
-	logger.Info().Msg("First job was completed")
+	log.Ctx(ctx).Info().Msg("First job was completed")
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -59,35 +56,35 @@ func Change(cfg config.Config, suiteName string) error {
 		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(cfg, jobName, expectedSteps); !ok {
+	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
 	}
 
 	// Change config branch, trigger second webhook and verify job
-	if err := patchConfigBranch(cfg, defaults.App4NewConfigBranch); err != nil {
+	if err := patchConfigBranch(ctx, cfg, appName, defaults.App4NewConfigBranch); err != nil {
 		return err
 	}
 
-	err = httpUtils.TriggerWebhookPush(cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, defaults.App4SharedSecret, logger)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, defaults.App4SharedSecret)
 	if err != nil {
 		return err
 	}
 
-	logger.Info().Msg("Second job was triggered")
-	jobSummary, err = waitForJobRunning(cfg)
+	log.Ctx(ctx).Info().Msg("Second job was triggered")
+	jobSummary, err = waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
+		return errors.Wrapf(err, "second job for application %s", defaults.App4Name)
 	}
 
 	jobName = jobSummary.Name
-	logger.Info().Str("jobName", jobName).Msg("Second job name")
+	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("Second job name")
 
-	if err = waitForJobDone(cfg, jobName); err != nil {
-		return errors.WithMessage(err, fmt.Sprintf("second job for application %s", defaults.App4Name))
+	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
+		return errors.Wrapf(err, "second job for application %s", defaults.App4Name)
 	}
 
-	logger.Info().Msg("Second job was completed")
+	log.Ctx(ctx).Info().Msg("Second job was completed")
 
 	expectedSteps = []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -98,36 +95,36 @@ func Change(cfg config.Config, suiteName string) error {
 		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
 	}
 
-	if ok, err := validateJobSteps(cfg, jobName, expectedSteps); !ok {
+	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
 	}
 
 	return nil
 }
 
-func waitForJobRunning(cfg config.Config) (*models.JobSummary, error) {
+func waitForJobRunning(ctx context.Context, cfg config.Config, appName string) (*models.JobSummary, error) {
 	status := "Running"
 
-	return test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, defaults.App4Name, status, logger)
-	}, logger)
+	return test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, appName, status)
+	})
 }
 
-func waitForJobDone(cfg config.Config, jobName string) error {
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
-		return job.IsDone(cfg, defaults.App4Name, jobName, logger)
-	}, logger)
+func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName string) error {
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+		return job.IsDone(ctx, cfg, appName, jobName)
+	})
 	if err != nil {
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return fmt.Errorf("job %s completed with status %s", jobName, jobStatus)
+		return errors.Errorf("job %s completed with status %s", jobName, jobStatus)
 	}
 	return nil
 }
 
-func patchConfigBranch(cfg config.Config, newConfigBranch string) error {
-	logger.Debug().Msgf("Set ConfigBranch to %v", newConfigBranch)
+func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfigBranch string) error {
+	log.Ctx(ctx).Debug().Str("app", appName).Msgf("Set ConfigBranch to %v", newConfigBranch)
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			ConfigBranch: newConfigBranch,
@@ -135,7 +132,8 @@ func patchConfigBranch(cfg config.Config, newConfigBranch string) error {
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().
-		WithAppName(defaults.App4Name).
+		WithAppName(appName).
+		WithContext(ctx).
 		WithPatchRequest(&patchRequest)
 
 	client := httpUtils.GetApplicationClient(cfg)
@@ -143,24 +141,24 @@ func patchConfigBranch(cfg config.Config, newConfigBranch string) error {
 	if err != nil {
 		return err
 	}
-	logger.Debug().Msgf("ConfigBranch has been set to %v", newConfigBranch)
+	log.Ctx(ctx).Debug().Str("app", appName).Msgf("ConfigBranch has been set to %v", newConfigBranch)
 	return nil
 }
 
-func validateJobSteps(cfg config.Config, jobName string, expectedSteps []expectedStep) (bool, error) {
-	steps := job.GetSteps(cfg, defaults.App4Name, jobName)
+func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps []expectedStep) (bool, error) {
+	steps := job.GetSteps(ctx, cfg, appName, jobName)
 
 	if len(steps) != len(expectedSteps) {
-		return false, fmt.Errorf("number of pipeline steps was not as expected")
+		return false, errors.Errorf("number of pipeline steps was not as expected. Expected: %d, actuall: %d", len(expectedSteps), len(steps))
 	}
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return false, fmt.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
+			return false, errors.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return false, fmt.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
+			return false, errors.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
 		}
 	}
 

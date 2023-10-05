@@ -1,13 +1,12 @@
 package unauthorized
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/stretchr/testify/assert"
 )
-
-const suiteName = "Happy path"
 
 /*
 Allow us to run this as a single test. Note that we need the previous tests of the suite to have passed for this to work.
@@ -19,7 +18,7 @@ func TestUnauthorizedAccess(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Access(environmentVariables, suiteName)
+	err := Access(context.Background(), environmentVariables)
 	assert.NoError(t, err)
 }
 
@@ -27,6 +26,6 @@ func TestUnauthorizedReaderAccess(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := ReaderAccess(environmentVariables, suiteName)
+	err := ReaderAccess(context.Background(), environmentVariables)
 	assert.NoError(t, err)
 }

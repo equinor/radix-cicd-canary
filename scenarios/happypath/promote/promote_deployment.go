@@ -1,7 +1,7 @@
 package promote
 
 import (
-	"fmt"
+	"context"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -11,6 +11,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -20,39 +21,39 @@ const (
 )
 
 // DeploymentToAnotherEnvironment Checks that deployment can be promoted to other environment
-func DeploymentToAnotherEnvironment(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func DeploymentToAnotherEnvironment(ctx context.Context, cfg config.Config) error {
+	appName := defaults.App2Name
 
 	// Get deployments
-	deploymentToPromote, err := getLastDeployment(cfg, envToDeployFrom)
+	deploymentToPromote, err := getLastDeployment(ctx, cfg, appName, envToDeployFrom)
 	if err != nil {
 		return err
 	}
 
 	// Assert that we have no deployments within environment
-	deploymentsInEnvironment, err := getDeployments(cfg, envToDeployTo)
+	deploymentsInEnvironment, err := getDeployments(ctx, cfg, appName, envToDeployTo)
 	if err != nil {
 		return err
 	}
-	logger.Debug().Msg("no deployments within environment")
+	log.Ctx(ctx).Debug().Str("app", appName).Msg("no deployments within environment")
 
 	numDeploymentsBefore := len(deploymentsInEnvironment)
-	promoteJobName, err := promote(cfg, deploymentToPromote, envToDeployFrom, envToDeployTo)
+	promoteJobName, err := promote(ctx, cfg, deploymentToPromote, appName, envToDeployFrom, envToDeployTo)
 	if err != nil {
 		return err
 	}
 
 	// Get job
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
-		return job.IsDone(cfg, defaults.App2Name, promoteJobName, logger)
-	}, logger)
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+		return job.IsDone(ctx, cfg, appName, promoteJobName)
+	})
 	if err != nil {
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return fmt.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
+		return errors.Errorf("job %s completed with status %s", promoteJobName, jobStatus)
 	}
-	deploymentsInEnvironment, err = getDeployments(cfg, envToDeployTo)
+	deploymentsInEnvironment, err = getDeployments(ctx, cfg, appName, envToDeployTo)
 	if err != nil {
 		return err
 	}
@@ -60,13 +61,13 @@ func DeploymentToAnotherEnvironment(cfg config.Config, suiteName string) error {
 	numDeploymentsAfter := len(deploymentsInEnvironment)
 	newDeploymentCount := numDeploymentsAfter - numDeploymentsBefore
 	if newDeploymentCount != 1 {
-		return fmt.Errorf("new expected deployment does not exist")
+		return errors.Errorf("new expected deployment does not exist")
 	}
 	return nil
 }
 
-func getLastDeployment(cfg config.Config, environment string) (*models.DeploymentSummary, error) {
-	deployments, err := getDeployments(cfg, environment)
+func getLastDeployment(ctx context.Context, cfg config.Config, appName string, environment string) (*models.DeploymentSummary, error) {
+	deployments, err := getDeployments(ctx, cfg, appName, environment)
 	if err != nil || len(deployments) == 0 {
 		return nil, err
 	}
@@ -75,12 +76,12 @@ func getLastDeployment(cfg config.Config, environment string) (*models.Deploymen
 	return deployments[0], nil
 }
 
-func getDeployments(cfg config.Config, environment string) ([]*models.DeploymentSummary, error) {
+func getDeployments(ctx context.Context, cfg config.Config, appName string, environment string) ([]*models.DeploymentSummary, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewGetApplicationEnvironmentDeploymentsParams().
-		WithAppName(defaults.App2Name).
+		WithAppName(appName).
 		WithEnvName(environment).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
@@ -93,7 +94,7 @@ func getDeployments(cfg config.Config, environment string) ([]*models.Deployment
 	return deployments.Payload, nil
 }
 
-func promote(cfg config.Config, deployment *models.DeploymentSummary, from, to string) (string, error) {
+func promote(ctx context.Context, cfg config.Config, deployment *models.DeploymentSummary, appName string, from, to string) (string, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -104,7 +105,8 @@ func promote(cfg config.Config, deployment *models.DeploymentSummary, from, to s
 	}
 
 	params := applicationclient.NewTriggerPipelinePromoteParams().
-		WithAppName(defaults.App2Name).
+		WithAppName(appName).
+		WithContext(ctx).
 		WithPipelineParametersPromote(&bodyParameters).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)

@@ -1,78 +1,78 @@
 package privateimagehub
 
 import (
-	"fmt"
+	"context"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/environment"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
-func Set(cfg config.Config, suiteName string) error {
-	logger := log.With().Str("suite", suiteName).Logger()
+func Set(ctx context.Context, cfg config.Config) error {
+	appName := defaults.App2Name
 
-	err := privateimagehub.PasswordNotSet(cfg, defaults.App2Name)
+	err := privateimagehub.PasswordNotSet(cfg, appName)
 	if err != nil {
 		return err
 	}
-	logger.Info().Msg("SUCCESS: private image hub is not set")
+	log.Ctx(ctx).Info().Msg("SUCCESS: private image hub is not set")
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return podNotLoaded(cfg)
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return podNotLoaded(cfg, appName)
+	})
 	if err != nil {
-		return fmt.Errorf("%s component is running before private image hub password was set. %v", defaults.App2ComponentPrivateImageHubName, err)
+		return errors.Errorf("%s component is running before private image hub password was set. %v", defaults.App2ComponentPrivateImageHubName, err)
 	}
-	logger.Info().Msg("SUCCESS: container is not loaded")
+	log.Ctx(ctx).Info().Msg("SUCCESS: container is not loaded")
 
-	err = privateimagehub.SetPassword(cfg, defaults.App2Name)
+	err = privateimagehub.SetPassword(cfg, appName)
 	if err != nil {
-		return fmt.Errorf("failed to set private image hub password. %v", err)
+		return errors.Errorf("failed to set private image hub password. %v", err)
 	}
-	logger.Info().Msg("SUCCESS: set private image hub password")
+	log.Ctx(ctx).Info().Msg("SUCCESS: set private image hub password")
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		return podLoaded(cfg)
-	}, logger)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return podLoaded(cfg, appName)
+	})
 	if err != nil {
-		return fmt.Errorf("%s component does not run after setting private image hub password. Error %v", defaults.App2ComponentPrivateImageHubName, err.Error())
+		return errors.Errorf("%s component does not run after setting private image hub password. Error %v", defaults.App2ComponentPrivateImageHubName, err.Error())
 	}
-	logger.Info().Msg("SUCCESS: container is loaded with updated image hub password")
+	log.Ctx(ctx).Info().Msg("SUCCESS: container is loaded with updated image hub password")
 
-	err = privateimagehub.PasswordSet(cfg, defaults.App2Name)
+	err = privateimagehub.PasswordSet(cfg, appName)
 	if err != nil {
 		return err
 	}
-	logger.Info().Msg("SUCCESS: private image hub is verified set")
+	log.Ctx(ctx).Info().Msg("SUCCESS: private image hub is verified set")
 
 	return nil
 }
 
-func podNotLoaded(cfg config.Config) error {
-	return verifyPrivateImageHubPodStatus(cfg, "Failing")
+func podNotLoaded(cfg config.Config, appName string) error {
+	return verifyPrivateImageHubPodStatus(cfg, appName, "Failing")
 }
 
-func podLoaded(cfg config.Config) error {
-	return verifyPrivateImageHubPodStatus(cfg, "Running")
+func podLoaded(cfg config.Config, appName string) error {
+	return verifyPrivateImageHubPodStatus(cfg, appName, "Running")
 }
 
-func verifyPrivateImageHubPodStatus(cfg config.Config, expectedStatus string) error {
-	actualStatus, err := getPrivateImageHubComponentStatus(cfg)
+func verifyPrivateImageHubPodStatus(cfg config.Config, appName string, expectedStatus string) error {
+	actualStatus, err := getPrivateImageHubComponentStatus(cfg, appName)
 	if err != nil {
 		return err
 	}
 	if actualStatus != expectedStatus {
-		return fmt.Errorf("expected status %s on component %s - was %s", expectedStatus, defaults.App2ComponentPrivateImageHubName, actualStatus)
+		return errors.Errorf("expected status %s on component %s - was %s", expectedStatus, defaults.App2ComponentPrivateImageHubName, actualStatus)
 	}
 	return nil
 }
 
-func getPrivateImageHubComponentStatus(cfg config.Config) (string, error) {
-	appName := defaults.App2Name
+func getPrivateImageHubComponentStatus(cfg config.Config, appName string) (string, error) {
 	envQA, err := environment.GetEnvironment(cfg, appName, defaults.App2EnvironmentName)
 	if err != nil {
 		return "", err

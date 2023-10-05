@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -22,7 +23,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 const basePath = "/api/v1"
@@ -58,7 +59,7 @@ func CreateRequest(url, method string, parameters interface{}) *http.Request {
 }
 
 // TriggerWebhookPush Makes call to webhook
-func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSecret string, logger zerolog.Logger) error {
+func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, repository, sharedSecret string) error {
 	parameters := WebhookPayload{
 		Ref:   fmt.Sprintf("refs/heads/%s", branch),
 		After: commit,
@@ -74,46 +75,49 @@ func TriggerWebhookPush(cfg config.Config, branch, commit, repository, sharedSec
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature-256", crypto.SHA256HMAC([]byte(sharedSecret), payload))
 
-	logger.Debug().Str("branch", branch).Str("repository", repository).Str("comit", commit).Msg("Trigger webhook push")
+	log.Ctx(ctx).Debug().Str("branch", branch).Str("repository", repository).Str("commit", commit).Msg("Trigger webhook push")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return errors.WithMessage(err,
-			fmt.Sprintf("error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit))
+		return errors.Wrapf(err,
+			"error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 	}
 
-	if err := CheckResponse(resp, logger); err != nil {
-		return errors.WithMessage(err,
-			fmt.Sprintf("error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit))
+	if err := CheckResponse(ctx, resp); err != nil {
+		return errors.Wrapf(err, "error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit)
 	}
 
 	return nil
 }
 
 // CheckResponse Checks that the response was successful
-func CheckResponse(resp *http.Response, logger zerolog.Logger) error {
+func CheckResponse(ctx context.Context, resp *http.Response) error {
 	defer resp.Body.Close()
 	_, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return errors.WithMessage(err, "error reading response body")
+		return errors.Wrap(err, "error reading response body")
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
-		logger.Debug().Int("statusCode", resp.StatusCode).Msg("Response code")
+		log.Ctx(ctx).Debug().Int("statusCode", resp.StatusCode).Msg("Response code")
 		return nil
 	}
 
-	return fmt.Errorf("response status code is %d", resp.StatusCode)
+	return errors.Errorf("response status code is %d", resp.StatusCode)
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
-func CheckUrl(url string, logger zerolog.Logger) error {
-	logger.Debug().Str("url", url).Msg("Sending request")
-	response, err := http.Get(url)
+func CheckUrl(url string, ctx context.Context) error {
+	log.Ctx(ctx).Debug().Str("url", url).Msg("Sending request")
+
+	request, _ := http.NewRequest("GET", url, nil)
+	request = request.WithContext(ctx)
+
+	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
-	return CheckResponse(response, logger)
+	return CheckResponse(ctx, response)
 }
 
 // GetPlatformClient Gets the Platform API client
@@ -173,8 +177,7 @@ func getClientAuthInfoWriter(cfg config.Config) runtime.ClientAuthInfoWriter {
 			if err != nil {
 				return err
 			}
-			cr.SetHeaderParam(runtime.HeaderAuthorization, "Bearer "+token.AccessToken)
-			return nil
+			return cr.SetHeaderParam(runtime.HeaderAuthorization, "Bearer "+token.AccessToken)
 		})
 	}
 

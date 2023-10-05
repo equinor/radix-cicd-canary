@@ -1,12 +1,11 @@
 package privateimagehub
 
 import (
-	"fmt"
-
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/pkg/errors"
 )
 
 // PasswordSet Checks if password is set
@@ -27,7 +26,7 @@ func verifyStatus(cfg config.Config, appName, expectStatus string) error {
 	imageHub := imageHubs[0]
 
 	if imageHub.Status != expectStatus {
-		return fmt.Errorf("private image hub status is %s, expected %s", imageHub.Status, expectStatus)
+		return errors.Errorf("private image hub status is %s, expected %s", imageHub.Status, expectStatus)
 	}
 	return nil
 }
@@ -66,5 +65,5 @@ func List(cfg config.Config, appName string) ([]*models.ImageHubSecret, error) {
 
 	client := httpUtils.GetApplicationClient(cfg)
 	privateImageHub, err := client.GetPrivateImageHubs(params, nil)
-	return privateImageHub.Payload, err
+	return privateImageHub.Payload, errors.WithStack(err)
 }

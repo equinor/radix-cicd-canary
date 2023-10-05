@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -12,6 +11,7 @@ import (
 
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/tokensource"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
@@ -87,7 +87,7 @@ func init() {
 	kubeClient := kubeUtils.GetKubernetesClient()
 	cm, err := kubeClient.CoreV1().ConfigMaps(namespace).Get(context.Background(), configMapName, metav1.GetOptions{})
 	if err != nil {
-		log.Fatal().Err(err).Msg("error reading config map")
+		log.Fatal().Stack().Err(err).Msg("error reading config map")
 	}
 	configmap = cm
 }
@@ -278,7 +278,7 @@ func getTokenSource() oauth2.TokenSource {
 	if _, err := os.Stat(serviceAccountTokenFile); err == nil {
 		ts = tokensource.FromJwtCallback(func() (string, error) {
 			token, err := os.ReadFile(serviceAccountTokenFile)
-			return string(token), err
+			return string(token), errors.WithStack(err)
 		})
 	} else if envToken := os.Getenv("BEARER_TOKEN"); len(envToken) > 0 {
 		ts = tokensource.FromJwtCallback(func() (string, error) {
@@ -355,7 +355,7 @@ func getNetworkPolicyCanaryPassword() string {
 func timeoutOfTest() time.Duration {
 	timeout, err := strconv.Atoi(getConfigFromMap(timeoutOfTestConfig))
 	if err != nil {
-		log.Fatal().Err(err).Str("key", timeoutOfTestConfig).Msg("Could not read config")
+		log.Fatal().Stack().Err(err).Str("key", timeoutOfTestConfig).Msg("Could not read config")
 	}
 
 	return time.Duration(timeout) * time.Second
@@ -364,7 +364,7 @@ func timeoutOfTest() time.Duration {
 func getSleepIntervalBetweenCheckFunc() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalBetweenChecksConfig))
 	if err != nil {
-		log.Fatal().Err(err).Str("key", sleepIntervalBetweenChecksConfig).Msg("Could not read config")
+		log.Fatal().Stack().Err(err).Str("key", sleepIntervalBetweenChecksConfig).Msg("Could not read config")
 	}
 
 	return time.Duration(sleepInterval) * time.Second
@@ -373,7 +373,7 @@ func getSleepIntervalBetweenCheckFunc() time.Duration {
 func getSleepIntervalBetweenTestRuns() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalTestRunsConfig))
 	if err != nil {
-		log.Fatal().Err(err).Str("key", sleepIntervalTestRunsConfig).Msg("Could not read config")
+		log.Fatal().Stack().Err(err).Str("key", sleepIntervalTestRunsConfig).Msg("Could not read config")
 	}
 
 	return time.Duration(sleepInterval) * time.Second
@@ -398,7 +398,7 @@ func getNetworkPolicyCanaryJobComponentName() string {
 func getNSPSleepInterval() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(nspSleepIntervalConfig))
 	if err != nil {
-		log.Fatal().Err(err).Str("key", nspSleepIntervalConfig).Msg("Could not read from configmap")
+		log.Fatal().Stack().Err(err).Str("key", nspSleepIntervalConfig).Msg("Could not read from configmap")
 	}
 
 	return time.Duration(sleepInterval) * time.Second
@@ -407,7 +407,7 @@ func getNSPSleepInterval() time.Duration {
 func GetNSPLongSleepInterval() time.Duration {
 	sleepInterval, err := strconv.Atoi(getConfigFromMap(nspLongSleepIntervalConfig))
 	if err != nil {
-		log.Fatal().Err(err).Str("key", nspLongSleepIntervalConfig).Msg("Could not read config")
+		log.Fatal().Stack().Err(err).Str("key", nspLongSleepIntervalConfig).Msg("Could not read config")
 	}
 
 	return time.Duration(sleepInterval) * time.Second
