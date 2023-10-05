@@ -84,7 +84,7 @@ func (runner Runner) Run(ctx context.Context, suites ...Suite) {
 
 	for scenario, elapsed := range scenarioDuration {
 		metrics.AddScenarioDuration(scenario, elapsed)
-		log.Ctx(ctx).Info().Str("scenario", scenario).Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
+		log.Ctx(ctx).Info().Str("suite", scenario).Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
 	}
 }
 
