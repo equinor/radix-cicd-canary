@@ -230,7 +230,7 @@ func Get(ctx context.Context, cfg config.Config, appName string) (*models.Applic
 func IsAliasDefined(ctx context.Context, cfg config.Config, appName string) error {
 	appAlias := getAlias(ctx, cfg, appName)
 	if appAlias != nil {
-		log.Ctx(ctx).Info().Str("appAlias", *appAlias).Msg("App alias for application is defined. Now we can try to hit it to see if it responds")
+		log.Ctx(ctx).Info().Msgf("App alias for application %s is defined: %s", appName, *appAlias)
 		return nil
 	}
 
