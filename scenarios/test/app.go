@@ -91,7 +91,7 @@ func (runner Runner) Run(ctx context.Context, suites ...Suite) {
 func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) bool {
 	setupFailed := false
 	start := time.Now()
-	log.Ctx(ctx).Debug().Msg("Setting-up suite")
+	log.Ctx(ctx).Debug().Msg("Setting up suite")
 
 	for _, setup := range suite.Setup {
 		testCtx := log.Ctx(ctx).With().Str("test", setup.Name).Logger().WithContext(ctx)
