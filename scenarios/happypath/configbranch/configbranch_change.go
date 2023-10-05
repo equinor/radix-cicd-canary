@@ -39,7 +39,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 	}
 
 	jobName := jobSummary.Name
-	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("First job name")
+	log.Ctx(ctx).Info().Msgf("First job name: %s", jobName)
 
 	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
 		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
