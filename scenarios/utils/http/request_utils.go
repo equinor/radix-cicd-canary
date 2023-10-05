@@ -75,7 +75,7 @@ func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, 
 	req.Header.Add("X-GitHub-Event", "push")
 	req.Header.Add("X-Hub-Signature-256", crypto.SHA256HMAC([]byte(sharedSecret), payload))
 
-	log.Ctx(ctx).Debug().Str("branch", branch).Str("repository", repository).Str("comit", commit).Msg("Trigger webhook push")
+	log.Ctx(ctx).Debug().Str("branch", branch).Str("repository", repository).Str("commit", commit).Msg("Trigger webhook push")
 
 	resp, err := client.Do(req)
 	if err != nil {
