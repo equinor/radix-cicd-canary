@@ -1,20 +1,17 @@
 package list
 
 import (
-	"fmt"
+	"context"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/platform"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
-
 // Applications Test that we are able to list applications
-func Applications(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
-
+func Applications(ctx context.Context, cfg config.Config) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -25,14 +22,14 @@ func Applications(cfg config.Config, suiteName string) error {
 	client := httpUtils.GetPlatformClient(cfg)
 	showAppOk, err := client.ShowApplications(params, nil)
 	if err == nil {
-		logger.Infof("Response length: %v", len(showAppOk.Payload))
+		log.Ctx(ctx).Info().Msgf("Response length: %v", len(showAppOk.Payload))
 		for i, appSummary := range showAppOk.Payload {
-			logger.Infof("App %v: %s", i, appSummary.Name)
+			log.Ctx(ctx).Info().Msgf("App %v: %s", i, appSummary.Name)
 		}
 	}
 
 	if len(showAppOk.Payload) == 0 {
-		return fmt.Errorf("list of applications returned an empty list")
+		return errors.Errorf("list of applications returned an empty list")
 	}
 	return err
 }

@@ -1,9 +1,10 @@
 package kubernetes
 
 import (
-	"log"
 	"os"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"k8s.io/client-go/kubernetes"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/azure"
 	"k8s.io/client-go/rest"
@@ -22,7 +23,8 @@ func getKubernetesClientConfig() *rest.Config {
 	if err != nil {
 		config, err = rest.InClusterConfig()
 		if err != nil {
-			log.Fatalf("getClusterConfig InClusterConfig: %v", err)
+			err := errors.WithStack(err)
+			log.Fatal().Stack().Err(err).Msg("getClusterConfig InClusterConfig")
 		}
 	}
 
@@ -32,7 +34,8 @@ func getKubernetesClientConfig() *rest.Config {
 func getKubernetesClientFromConfig(config *rest.Config) kubernetes.Interface {
 	client, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		log.Fatalf("getClusterConfig k8s client: %v", err)
+		err := errors.WithStack(err)
+		log.Fatal().Stack().Err(err).Msg("getClusterConfig k8s client")
 	}
 
 	return client

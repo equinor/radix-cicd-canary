@@ -1,10 +1,9 @@
+[![Build Status](https://github.com/equinor/radix-cicd-canary/workflows/radix-cicd-canary-build/badge.svg)](https://github.com/equinor/radix-cicd-canary/actions?query=workflow%3Aradix-cicd-canary-build)  
 # Radix CI/CD Canary
 
 This application is an automated end-to-end test tool to be run continuously in a [Radix](https://www.radix.equinor.com) cluster to verify that the most important functionalities are behaving as expected. This document is for Radix developers, or anyone interested in poking around.
 
 Radix CI/CD Canary is not deployed as a standard Radix application (it requires custom setup not provided by the platform), but is deployed to cluster through a Helm release using the [Flux Operator](https://github.com/weaveworks/flux) whenever a new image is pushed to the container registry for the corresponding branch, or a change has been made to the Helm chart. Build is done using Github actions. There are secrets defined for the actions to be able to push to radixdev, radixprod and radixus. These are the corresponding credentials for radix-cr-cicd-dev and radix-cr-cicd-prod service accounts.
-
-[![Build Status](https://github.com/equinor/radix-cicd-canary/workflows/radix-cicd-canary-build/badge.svg)](https://github.com/equinor/radix-cicd-canary/actions?query=workflow%3Aradix-cicd-canary-build).
 
 The application is implemented in [Go](https://golang.org/). It provides metrics to the Radix [external monitoring solution](https://github.com/equinor/radix-monitoring/tree/master/cluster-external-monitoring) via [Prometheus](https://prometheus.io/). It relies on being able to impersonate users (test users and groups are defined in the Helm chart), and it interacts with the [Radix API](https://github.com/equinor/radix-api/) and the [Radix GitHub Webhook](https://github.com/equinor/radix-github-webhook) in the cluster it runs.
 
@@ -105,8 +104,9 @@ Unit tests can be debugged individually by setting the `BEARER_TOKEN` value in t
 By default `Info` and `Error` messages have being logged. This can be configured via environment variable `LOG_LEVEL` (pods need to be restarted after changes)
 * `LOG_LEVEL=ERROR` - log only `Error` messages
 * `LOG_LEVEL=INFO` or not set - log `Info` and `Error` messages
-* `LOG_LEVEL=WARNING` or not set - log `Info`, `Warning` and `Error` messages
+* `LOG_LEVEL=WARN` or not set - log `Info`, `Warning` and `Error` messages
 * `LOG_LEVEL=DEBUG` - log `Debug`, `Warning`, `Info` and `Error` messages
+* `PRETTY_PRINT=yes` - Print human readable text instead of json messages
 
 By default, all suites are running. This can be configured with environment variables
 * `SUITE_LIST` - list of suite names, separated by `:`
@@ -121,3 +121,11 @@ To debug locally with connecting to the local services - set following environme
 * `USE_LOCAL_RADIX_API`
   * `false`, `no` or not set - connecting to in-cluster `radix-api`
   * `true` or `yes` - connecting to `radix-api`, running on `http://localhost:3002`
+
+## Contribution
+
+Want to contribute? Read our [contributing guidelines](./CONTRIBUTING.md)
+
+## Security
+
+This is how we handle [security issues](./SECURITY.md)

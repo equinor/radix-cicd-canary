@@ -2,7 +2,8 @@ package tokensource
 
 import (
 	"github.com/golang-jwt/jwt/v4"
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 )
 
@@ -17,20 +18,20 @@ type jwtCallbackTokenSource struct {
 }
 
 func (s *jwtCallbackTokenSource) Token() (*oauth2.Token, error) {
-	log.Debug("Getting new token from callback")
+	log.Debug().Msg("Getting new token from callback")
 	tokenString, err := s.callback()
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 	c := jwt.RegisteredClaims{}
 	_, _, err = jwt.NewParser(jwt.WithoutClaimsValidation()).ParseUnverified(tokenString, &c)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 	token := oauth2.Token{
 		AccessToken: tokenString,
 		Expiry:      c.ExpiresAt.Time,
 	}
-	log.Debugf("New token expires on %v", token.Expiry)
+	log.Debug().Msgf("New token expires on %v", token.Expiry)
 	return &token, nil
 }

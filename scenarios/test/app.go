@@ -1,18 +1,19 @@
 package test
 
 import (
+	"context"
 	"time"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // Fn Prototype of a test function
-type Fn func(cfg config.Config, suiteName string) error
+type Fn func(ctx context.Context, cfg config.Config) error
 
 // ResultFn Prototype of result of a test function (success or fail)
-type ResultFn func(testName string)
+type ResultFn func(ctx context.Context, testName string)
 
 // Suite Holds a list of tests
 type Suite struct {
@@ -44,13 +45,18 @@ func NewRunner(cfg config.Config) Runner {
 }
 
 // Run the suite
-func (runner Runner) Run(suites ...Suite) {
+func (runner Runner) Run(ctx context.Context, suites ...Suite) {
 	setupFailed := false
 	scenarioDuration := make(map[string]time.Duration)
 
 	// Run all suite setup
 	for _, suite := range suites {
-		setupFailed = runSuiteSetup(runner.cfg, suite, scenarioDuration)
+		setupCtx := log.Ctx(ctx).With().
+			Str("stage", "setup").
+			Str("suite", suite.Name).
+			Logger().WithContext(ctx)
+
+		setupFailed = runSuiteSetup(setupCtx, runner.cfg, suite, scenarioDuration)
 		if setupFailed {
 			break
 		}
@@ -58,38 +64,47 @@ func (runner Runner) Run(suites ...Suite) {
 
 	if !setupFailed {
 		for _, suite := range suites {
-			runSuiteTests(runner.cfg, suite, scenarioDuration)
+			testCtx := log.Ctx(ctx).With().
+				Str("stage", "test").
+				Str("suite", suite.Name).
+				Logger().WithContext(ctx)
+
+			runSuiteTests(testCtx, runner.cfg, suite, scenarioDuration)
 		}
 	}
 
 	// Run all suite teardown
 	for _, suite := range suites {
-		runSuiteTeardown(runner.cfg, suite, scenarioDuration)
+		teardownCtx := log.Ctx(ctx).With().
+			Str("stage", "teardown").
+			Str("suite", suite.Name).
+			Logger().WithContext(ctx)
+		runSuiteTeardown(teardownCtx, runner.cfg, suite, scenarioDuration)
 	}
 
 	for scenario, elapsed := range scenarioDuration {
 		metrics.AddScenarioDuration(scenario, elapsed)
-		log.Infof("%s elapsed time: %v", scenario, elapsed)
+		log.Ctx(ctx).Info().Str("suite", scenario).Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
 	}
 }
 
-func runSuiteSetup(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) bool {
-	suiteName := suite.Name
+func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) bool {
 	setupFailed := false
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
-	logger.Debugf("Setting-up suite '%s'", suiteName)
+	log.Ctx(ctx).Debug().Msg("Setting up suite")
 
 	for _, setup := range suite.Setup {
-		logger.Info(setup.Description)
-		success := runTest(cfg, setup, suiteName)
+		testCtx := log.Ctx(ctx).With().Str("test", setup.Name).Logger().WithContext(ctx)
+		log.Ctx(testCtx).Info().Msg(setup.Description)
+		success := runTest(testCtx, cfg, setup)
 		if !success {
 			setupFailed = true
-			logger.Errorf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
+			log.Ctx(testCtx).Error().Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Setup %s fail in suite %s. Will escape tests, and just run teardowns !!!!!!!!!!!!!!!!!!!!!!!!!", setup.Name, suite.Name)
 			break
 		}
-		logger.Debugf("Setup success %s", setup.Description)
+		log.Ctx(testCtx).Debug().Msgf("Setup success %s", setup.Description)
 	}
+	log.Ctx(ctx).Info().Msgf("suite setup complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -97,61 +112,60 @@ func runSuiteSetup(cfg config.Config, suite Suite, scenarioDuration map[string]t
 	return setupFailed
 }
 
-func runSuiteTests(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
-	suiteName := suite.Name
+func runSuiteTests(ctx context.Context, cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
 	for _, test := range suite.Tests {
-		logger.Info(test.Description)
-		success := runTest(cfg, test, suiteName)
+		testCtx := log.Ctx(ctx).With().Str("test", test.Name).Logger().WithContext(ctx)
+		log.Ctx(testCtx).Info().Msg(test.Description)
+
+		success := runTest(testCtx, cfg, test)
 		if !success {
-			logger.Warnf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
+			log.Ctx(testCtx).Warn().Msgf("!!!!!!!!!!!!!!!!!!!!!!!!! Test %s fail. Will escape remaining tests in the suite !!!!!!!!!!!!!!!!!!!!!!!!!!!", test.Name)
 			break
 		}
 	}
+	log.Ctx(ctx).Info().Msgf("Test suite complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runSuiteTeardown(cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
-	suiteName := suite.Name
+func runSuiteTeardown(ctx context.Context, cfg config.Config, suite Suite, scenarioDuration map[string]time.Duration) {
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
-	logger.Debugf("Running teardown tests in suite %s", suite.Name)
+	log.Ctx(ctx).Debug().Msg("Running teardown tests in suite")
 	for _, test := range suite.Teardown {
-		logger.Info(test.Description)
-		runTest(cfg, test, suiteName)
+		testCtx := log.Ctx(ctx).With().Str("test", test.Name).Logger().WithContext(ctx)
+		log.Ctx(testCtx).Info().Msg(test.Description)
+		runTest(testCtx, cfg, test)
 	}
-	logger.Debug("Teardown complete")
+	log.Ctx(ctx).Debug().Msg("Teardown complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
 	scenarioDuration[suite.Name] = scenarioDuration[suite.Name] + elapsed
 }
 
-func runTest(cfg config.Config, testToRun Spec, suiteName string) bool {
+func runTest(ctx context.Context, cfg config.Config, testToRun Spec) bool {
 	start := time.Now()
-	logger := log.WithFields(log.Fields{"Suite": suiteName})
 
-	logger.Debugf("Running test '%s'", testToRun.Name)
+	log.Ctx(ctx).Debug().Msg("Running test")
 
-	err := testToRun.Test(cfg, suiteName)
+	err := testToRun.Test(ctx, cfg)
 	if err != nil {
-		testToRun.FailFn(testToRun.Name)
-		logger.Errorf("Error calling %s: %v", testToRun.Name, err)
+		testToRun.FailFn(ctx, testToRun.Name)
+		log.Ctx(ctx).Error().Stack().Err(err).Msg("Test failed")
 	} else {
-		testToRun.SuccessFn(testToRun.Name)
-		logger.Debug("Test success")
+		testToRun.SuccessFn(ctx, testToRun.Name)
+		log.Ctx(ctx).Debug().Msg("Test success")
 	}
 
 	end := time.Now()
 	elapsed := end.Sub(start)
 
 	metrics.AddTestDuration(testToRun.Name, elapsed)
-	logger.Infof("Elapsed time: %v", elapsed)
+	log.Ctx(ctx).Info().Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
 	return err == nil
 }

@@ -1,6 +1,7 @@
 package ingress
 
 import (
+	"context"
 	"fmt"
 	neturl "net/url"
 
@@ -8,19 +9,15 @@ import (
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
-
 // Reach tests that we are able to reach radix-canary-golang-prod endpoint
-func Reach(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
-
+func Reach(ctx context.Context, cfg config.Config) error {
 	baseUrl := fmt.Sprintf("%s.%s", "https://www-radix-canary-golang-prod", cfg.GetClusterFQDN())
 	url, _ := neturl.JoinPath(baseUrl, "health")
 	client := httpUtils.GetHTTPDefaultClient()
-	logger.Debugf("Requesting data from %s", url)
+	log.Ctx(ctx).Debug().Str("url", url).Msg("Requesting data")
 
 	// Run tests ingress
 	_, err := client.Get(url)
@@ -34,17 +31,17 @@ func Reach(cfg config.Config, suiteName string) error {
 }
 
 // Success is a function after a call to Reach succeeds
-func Success(testName string) {
+func Success(ctx context.Context, testName string) {
 	nspMetrics.AddIngressReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // Fail is a function after a call to Reach failed
-func Fail(testName string) {
+func Fail(ctx context.Context, testName string) {
 	nspMetrics.AddIngressUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }

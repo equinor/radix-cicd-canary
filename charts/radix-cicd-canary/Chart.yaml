@@ -1,7 +1,7 @@
 apiVersion: v1
 name: radix-cicd-canary
-version: 1.1.26
-appVersion: 1.1.26
+version: 1.1.27
+appVersion: 1.1.27
 kubeVersion: ">=1.24.0"
 description: Radix CICD Canary
 keywords:
@@ -9,7 +9,7 @@ keywords:
 home: radix.equinor.com
 sources:
   - https://github.com/equinor/radix-cicd-canary
-maintainers: 
+maintainers:
   - name: Omnia Radix
     email: Radix@StatoilSRM.onmicrosoft.com
 deprecated: false

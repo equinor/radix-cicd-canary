@@ -1,10 +1,9 @@
 package adgroup
 
 import (
-	"errors"
-	"fmt"
+	"context"
 
-	commonUtils "github.com/equinor/radix-common/utils"
+	"github.com/pkg/errors"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -13,86 +12,81 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	commonUtils "github.com/equinor/radix-common/utils"
 	"github.com/go-openapi/runtime"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
-
-type step struct {
-	logger *log.Entry
-}
 
 const (
 	adGroupWithNoAccess = "12345678-9012-3456-7890-123456789012"
 )
 
 // Update Tests that updates to AD group locks down an application
-func Update(cfg config.Config, suiteName string) error {
-	s := &step{logger: log.WithFields(log.Fields{"Suite": suiteName})}
+func Update(ctx context.Context, cfg config.Config) error {
+	logger := log.Ctx(ctx)
 
-	s.logger.Debugf("check that admin AD-Group has access")
-	err := test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
+	logger.Debug().Msg("check that admin AD-Group has access")
+	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, hasAccess)
 	if err != nil {
-		return fmt.Errorf("failed to get update details of the suite %s: %w", suiteName, err)
+		return errors.Wrapf(err, "failed to get update details of the suite")
 	}
-	s.logger.Debugf("admin AD-Group has access")
+	logger.Debug().Msg("admin AD-Group has access")
 
-	s.logger.Debugf("patch the RR and set new admin AD group, which the impersonated user is not member of")
-	err = patchAdGroup(cfg, adGroupWithNoAccess)
-	if err != nil {
-		return err
-	}
-	s.logger.Debugf("RR's admin AD-Group is patched")
-
-	s.logger.Debugf("check that the application cannot be accessed with current impersonation")
-	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasNoAccess, s.logger)
-	if err != nil {
-		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
-	}
-	s.logger.Debugf("application cannot be accessed with current impersonation")
-
-	s.logger.Debugf("patch the RR and set oroginal admin AD group, which the impersonated user is member of")
-	err = patchAdGroup(cfg, cfg.GetAppAdminGroup())
+	logger.Debug().Msg("patch the RR and set new admin AD group, which the impersonated user is not member of")
+	err = patchAdGroup(ctx, cfg, defaults.App2Name, adGroupWithNoAccess)
 	if err != nil {
 		return err
 	}
-	s.logger.Debugf("admin AD-Group is patched")
+	logger.Debug().Msg("RR's admin AD-Group is patched")
 
-	s.logger.Debugf("check that the application can be accessed with current impersonation")
-	err = test.WaitForCheckFuncOrTimeout(cfg, s.hasAccess, s.logger)
-	s.logger.Debugf("application can be accessed with current impersonation")
+	logger.Debug().Msg("check that the application cannot be accessed with current impersonation")
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, hasNoAccess)
+	if err != nil {
+		return errors.Wrap(err, "failed to get patchAdGroup update details")
+	}
+	logger.Debug().Msg("application cannot be accessed with current impersonation")
+
+	logger.Debug().Msg("patch the RR and set oroginal admin AD group, which the impersonated user is member of")
+	err = patchAdGroup(ctx, cfg, defaults.App2Name, cfg.GetAppAdminGroup())
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	logger.Debug().Msg("admin AD-Group is patched")
+
+	logger.Debug().Msg("check that the application can be accessed with current impersonation")
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, hasAccess)
+	logger.Debug().Msg("application can be accessed with current impersonation")
 	return err
 }
 
-func (s *step) hasNoAccess(cfg config.Config) error {
-	return s.hasProperAccess(cfg, false)
+func hasNoAccess(cfg config.Config, ctx context.Context) error {
+	return hasProperAccess(ctx, cfg, false)
 }
 
-func (s *step) hasAccess(cfg config.Config) error {
-	return s.hasProperAccess(cfg, true)
+func hasAccess(cfg config.Config, ctx context.Context) error {
+	return hasProperAccess(ctx, cfg, true)
 }
 
-func (s *step) hasProperAccess(cfg config.Config, properAccess bool) error {
-	_, err := getApplication(cfg)
+func hasProperAccess(ctx context.Context, cfg config.Config, properAccess bool) error {
+	_, err := getApplication(ctx, cfg)
 	accessToApplication := !isGetApplicationForbidden(err)
 
 	err = buildApp(cfg)
-	accessToBuild := !s.isTriggerPipelineBuildForbidden(err)
+	accessToBuild := !isTriggerPipelineBuildForbidden(ctx, err)
 
 	err = setSecret(cfg)
-	accessToSecret := !s.isChangeComponentSecretForbidden(err)
-
-	s.logger.Debugf(" - accessToApplication: %v, accessToBuild: %v, accessToSecret: %v", accessToApplication, accessToBuild, accessToSecret)
-
+	accessToSecret := !isChangeComponentSecretForbidden(ctx, err)
 	hasProperAccess := accessToApplication == properAccess && accessToBuild == properAccess && accessToSecret == properAccess
-	s.logger.Debugf(" - hasProperAccess: %v", hasProperAccess)
+
+	log.Ctx(ctx).Debug().Msgf("AccessToApplication: %v, accessToBuild: %v, accessToSecret: %v, HasProperAccess: %v", accessToApplication, accessToBuild, accessToSecret, hasProperAccess)
 
 	if !hasProperAccess {
-		return fmt.Errorf("proper access hasn't been granted yet")
+		return errors.Errorf("proper access hasn't been granted yet")
 	}
 	return nil
 }
 
-func patchAdGroup(cfg config.Config, adGroup string) error {
+func patchAdGroup(ctx context.Context, cfg config.Config, appName string, adGroup string) error {
 	patchRequest := models.ApplicationRegistrationPatchRequest{
 		ApplicationRegistrationPatch: &models.ApplicationRegistrationPatch{
 			AdGroups: []string{adGroup},
@@ -100,7 +94,8 @@ func patchAdGroup(cfg config.Config, adGroup string) error {
 	}
 
 	params := apiclient.NewModifyRegistrationDetailsParams().
-		WithAppName(defaults.App2Name).
+		WithAppName(appName).
+		WithContext(ctx).
 		WithPatchRequest(&patchRequest)
 
 	client := httpUtils.GetApplicationClient(cfg)
@@ -112,12 +107,13 @@ func patchAdGroup(cfg config.Config, adGroup string) error {
 	return nil
 }
 
-func getApplication(cfg config.Config) (*models.Application, error) {
+func getApplication(ctx context.Context, cfg config.Config) (*models.Application, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := apiclient.NewGetApplicationParams().
 		WithImpersonateUser(impersonateUser).
+		WithContext(ctx).
 		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name)
 
@@ -172,16 +168,16 @@ func setSecret(cfg config.Config) error {
 	client := httpUtils.GetEnvironmentClient(cfg)
 	_, err := client.ChangeComponentSecret(params, nil)
 	if err != nil {
-		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", defaults.App2Name, err)
+		return errors.Wrapf(err, "error calling ChangeComponentSecret for application %s", defaults.App2Name)
 	}
 	return nil
 }
 
-func (s *step) isChangeComponentSecretForbidden(err error) bool {
+func isChangeComponentSecretForbidden(ctx context.Context, err error) bool {
 	if errors.Is(err, &environmentclient.ChangeComponentSecretForbidden{}) {
 		return true
 	}
-	s.logger.Debugf("ChangeComponentSecret err: %v", err)
+	log.Ctx(ctx).Debug().Msgf("ChangeComponentSecret: %v", err)
 	return false
 }
 
@@ -194,20 +190,20 @@ func isGetApplicationForbidden(err error) bool {
 	return false
 }
 
-func (s *step) isTriggerPipelineBuildForbidden(err error) bool {
-	return err != nil && s.checkErrorResponse(err, 403)
+func isTriggerPipelineBuildForbidden(ctx context.Context, err error) bool {
+	return err != nil && checkErrorResponse(ctx, err, 403)
 }
 
-func (s *step) checkErrorResponse(err error, expectedStatusCode int) bool {
+func checkErrorResponse(ctx context.Context, err error, expectedStatusCode int) bool {
 	switch err := err.(type) {
 	case *apiclient.TriggerPipelineBuildForbidden:
-		s.logger.Debugf("checkErrorResponse err code: %d", 403)
+		log.Ctx(ctx).Debug().Int("errorCode", 403).Msg("checkErrorResponse err code")
 		return true
 	case *runtime.APIError:
-		s.logger.Debugf("checkErrorResponse err code: %d", err.Code)
+		log.Ctx(ctx).Debug().Int("errorCode", err.Code).Msg("checkErrorResponse err code")
 		return err.Code == expectedStatusCode
 	default:
-		s.logger.Debugf("checkErrorResponse err is not an expected type")
+		log.Ctx(ctx).Debug().Msg("checkErrorResponse err is not an expected type")
 		return false
 	}
 }

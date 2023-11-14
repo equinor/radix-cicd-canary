@@ -1,74 +1,77 @@
 package job
 
 import (
-	"fmt"
+	"context"
 
 	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 // GetLastPipelineJobWithStatus Checks if a last pipeline job exists with status
-func GetLastPipelineJobWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
-	jobSummaries, err := getPipelineJobs(cfg, appName)
+func GetLastPipelineJobWithStatus(ctx context.Context, cfg config.Config, appName, expectedStatus string) (*models.JobSummary, error) {
+	jobSummaries, err := getPipelineJobs(ctx, cfg, appName)
 	if err != nil {
 		return nil, err
 	}
 	lastJobSummary := jobSummaries[0]
 	if lastJobSummary.Status != expectedStatus {
-		return nil, fmt.Errorf("method GetLastPipelineJobWithStatus for application %s expected status '%s', but it received '%s'",
+		return nil, errors.Errorf("method GetLastPipelineJobWithStatus for application %s expected status '%s', but it received '%s'",
 			appName, expectedStatus, lastJobSummary.Status)
 	}
-	logger.Debugf("method GetLastPipelineJobWithStatus for application %s received expected status '%s'", appName, expectedStatus)
+	log.Ctx(ctx).Debug().Str("app", appName).Str("expectedStatus", expectedStatus).Msg("method GetLastPipelineJobWithStatus for application received expected status")
 	return lastJobSummary, nil
 }
 
 // GetAnyPipelineJobWithStatus Checks if any pipeline job exists with status
-func GetAnyPipelineJobWithStatus(cfg config.Config, appName, expectedStatus string, logger *log.Entry) (*models.JobSummary, error) {
-	jobSummaries, err := getPipelineJobs(cfg, appName)
+func GetAnyPipelineJobWithStatus(ctx context.Context, cfg config.Config, appName, expectedStatus string) (*models.JobSummary, error) {
+	jobSummaries, err := getPipelineJobs(ctx, cfg, appName)
 	if err != nil {
 		return nil, err
 	}
 	for _, jobSummary := range jobSummaries {
 		if jobSummary.Status == expectedStatus {
-			logger.Debugf("method GetAnyPipelineJobWithStatus for application %s received expected status '%s'", appName, expectedStatus)
+			log.Ctx(ctx).Debug().Str("app", appName).Str("expectedStatus", expectedStatus).Msg("method GetAnyPipelineJobWithStatus for application received expected status")
 			return jobSummary, nil
 		}
 	}
-	return nil, fmt.Errorf("method GetAnyPipelineJobWithStatus for application %s expected any job with the status '%s', but it does not exist",
+	return nil, errors.Errorf("method GetAnyPipelineJobWithStatus for application %s expected any job with the status '%s', but it does not exist",
 		appName, expectedStatus)
 }
 
-func getPipelineJobs(cfg config.Config, appName string) ([]*models.JobSummary, error) {
+func getPipelineJobs(ctx context.Context, cfg config.Config, appName string) ([]*models.JobSummary, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobsParams().
 		WithAppName(appName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetJobClient(cfg)
 	applicationJobs, err := client.GetApplicationJobs(params, nil)
 	if err != nil {
-		return nil, fmt.Errorf("error calling GetApplicationJobs for application %s: %v", appName, err)
+		return nil, errors.Wrapf(err, "error calling GetApplicationJobs for application %s", appName)
 	}
 	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
-		return nil, fmt.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
+		return nil, errors.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
 	}
 	jobSummaries := applicationJobs.Payload
 	return jobSummaries, nil
 }
 
 // Stop Stops a job
-func Stop(cfg config.Config, appName, jobName string) error {
+func Stop(ctx context.Context, cfg config.Config, appName, jobName string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	client := httpUtils.GetJobClient(cfg)
 	params := pipelineJobClient.NewStopApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
@@ -77,66 +80,68 @@ func Stop(cfg config.Config, appName, jobName string) error {
 		return nil
 	}
 
-	return fmt.Errorf("failed to stop job %s for an app %s. Error: %w", jobName, appName, err)
+	return errors.Wrapf(err, "failed to stop job %s for an app %s", jobName, appName)
 }
 
 // IsDone Checks if job is done
-func IsDone(cfg config.Config, appName, jobName string, logger *log.Entry) (string, error) {
-	jobStatus, err := GetStatus(cfg, appName, jobName, logger)
+func IsDone(ctx context.Context, cfg config.Config, appName, jobName string) (string, error) {
+	jobStatus, err := GetStatus(ctx, cfg, appName, jobName)
 	if err != nil {
 		return "", err
 	}
 	if jobStatus == "Succeeded" || jobStatus == "Failed" {
-		logger.Debugf("Job %s for an app %s is done with status: %s", jobName, appName, jobStatus)
+		log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Str("jobStatus", jobStatus).Msg("Job is done")
 		return jobStatus, nil
 	}
-	logger.Debugf("Job %s for an app %s is not done yet", jobName, appName)
-	return "", fmt.Errorf("job %s for an app %s is not complete yet, Status %s", jobName, appName, jobStatus)
+	log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Msg("Job is not done yet")
+	return "", errors.Errorf("job %s for an app %s is not complete yet, Status %s", jobName, appName, jobStatus)
 }
 
 // GetStatus Gets status of job
-func GetStatus(cfg config.Config, appName, jobName string, logger *log.Entry) (string, error) {
-	job, err := Get(cfg, appName, jobName)
+func GetStatus(ctx context.Context, cfg config.Config, appName, jobName string) (string, error) {
+	job, err := Get(ctx, cfg, appName, jobName)
 	if err != nil {
 		return "", err
 	}
 	if job != nil {
 		return job.Status, nil
 	}
-	logger.Debugf("Job %s was not listed yet", jobName)
-	return "", fmt.Errorf("job %s does not exist", jobName)
+	log.Ctx(ctx).Debug().Str("app", appName).Str("jobName", jobName).Msg("Job was not listed yet")
+	return "", errors.Errorf("job %s does not exist", jobName)
 }
 
 // Get gets job from job name
-func Get(cfg config.Config, appName, jobName string) (*models.Job, error) {
+func Get(ctx context.Context, cfg config.Config, appName, jobName string) (*models.Job, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
 	applicationJob, err := client.GetApplicationJob(params, nil)
 	if err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 	if applicationJob.Payload != nil {
 		return applicationJob.Payload, nil
 	}
-	return nil, fmt.Errorf("failed to get job %s", jobName)
+	return nil, errors.Errorf("failed to get job %s", jobName)
 }
 
 // GetSteps gets job from job name
-func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
+func GetSteps(ctx context.Context, cfg config.Config, appName, jobName string) []*models.Step {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
@@ -153,7 +158,7 @@ func GetSteps(cfg config.Config, appName, jobName string) []*models.Step {
 }
 
 // GetLogForStep gets log for step
-func GetLogForStep(cfg config.Config, appName, jobName, stepName string, logger *log.Entry) string {
+func GetLogForStep(ctx context.Context, cfg config.Config, appName, jobName, stepName string) string {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 
@@ -161,13 +166,14 @@ func GetLogForStep(cfg config.Config, appName, jobName, stepName string, logger 
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithStepName(stepName).
+		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
 	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, nil)
 	if err != nil {
-		logger.Errorf("failed to get pipeline log for the app %s, job %s, step %s", appName, jobName, stepName)
+		log.Ctx(ctx).Error().Str("jobName", jobName).Str("stepName", stepName).Msg("failed to get pipeline log for the app")
 		return ""
 	}
 	return applicationJobLogs.Payload

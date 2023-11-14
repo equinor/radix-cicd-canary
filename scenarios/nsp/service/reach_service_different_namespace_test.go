@@ -1,13 +1,12 @@
 package service
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/stretchr/testify/assert"
 )
-
-const suiteName = "NSP"
 
 /*
 Allow us to run this as a single test. Note that we need the previous tests of the suite to have passed for this to work.
@@ -19,6 +18,6 @@ func TestReachServiceDifferentNamespace(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Reach(environmentVariables, suiteName)
+	err := Reach(context.Background(), environmentVariables)
 	assert.NoError(t, err)
 }

@@ -1,7 +1,7 @@
 package secret
 
 import (
-	"fmt"
+	"context"
 
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
 	models "github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
@@ -9,16 +9,14 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
-var logger *log.Entry
-
 // Set Test that we are able to set secret
-func Set(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func Set(ctx context.Context, cfg config.Config) error {
 
-	err := test.WaitForCheckFuncOrTimeout(cfg, isDeploymentConsistent, logger)
+	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, isDeploymentConsistent)
 	if err != nil {
 		return err
 	}
@@ -41,21 +39,21 @@ func Set(cfg config.Config, suiteName string) error {
 	client := httpUtils.GetEnvironmentClient(cfg)
 	_, err = client.ChangeComponentSecret(params, nil)
 	if err != nil {
-		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %v", defaults.App2Name, err)
+		return errors.Wrapf(err, "error calling ChangeComponentSecret for application %s", defaults.App2Name)
 	}
 	return nil
 }
 
-func isDeploymentConsistent(cfg config.Config) error {
+func isDeploymentConsistent(cfg config.Config, ctx context.Context) error {
 	environmentDetails := getEnvironmentDetails(cfg)
 	if environmentDetails != nil &&
 		environmentDetails.ActiveDeployment != nil &&
 		environmentDetails.Status != "" &&
 		len(environmentDetails.Secrets) > 0 {
-		logger.Info("Deployment is consistent. We can set the secret.")
+		log.Ctx(ctx).Info().Msg("Deployment is consistent. We can set the secret.")
 		return nil
 	}
-	return fmt.Errorf("deployment is not consistent")
+	return errors.Errorf("deployment is not consistent")
 }
 
 func getEnvironmentDetails(cfg config.Config) *models.Environment {

@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -8,12 +9,12 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 // ReachOauthIdp tests that IDP endpoint can be reached from Oauth Aux pod
-func ReachOauthIdp(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	appEnv := "oauthdenyall"
 	timeout := 15
 	oauthCallbackUrl := fmt.Sprintf("%s/oauth2/callback?code=bullshitcode", cfg.GetNetworkPolicyCanaryUrl(appEnv))
@@ -22,23 +23,23 @@ func ReachOauthIdp(cfg config.Config, suiteName string) error {
 	}
 	_, err := client.Get(oauthCallbackUrl)
 	if err == http.ErrHandlerTimeout {
-		return fmt.Errorf("got no response from /oauth/callback within %d seconds, which likely means oauth pod could not connect to IDP. should be allowed by nsp", timeout)
+		return errors.Errorf("got no response from /oauth/callback within %d seconds, which likely means oauth pod could not connect to IDP. should be allowed by nsp", timeout)
 	}
 	return nil
 }
 
 // ReachOauthIdpSuccess is a function after a call to ReachOauthIdp succeeds
-func ReachOauthIdpSuccess(testName string) {
+func ReachOauthIdpSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddOauthIdpReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // ReachOauthIdpFail is a function after a call to ReachOauthIdp failed
-func ReachOauthIdpFail(testName string) {
+func ReachOauthIdpFail(ctx context.Context, testName string) {
 	nspMetrics.AddOauthIdpUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }

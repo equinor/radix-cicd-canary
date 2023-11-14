@@ -1,10 +1,11 @@
 package build
 
 import (
-	"errors"
-	"fmt"
+	"context"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
@@ -13,10 +14,8 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	log "github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
-
-var logger *log.Entry
 
 const (
 	Secret1            = "SECRET_1"
@@ -33,58 +32,56 @@ type expectedStep struct {
 }
 
 // Application Tests that we are able to successfully build an application
-func Application(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
-
+func Application(ctx context.Context, cfg config.Config) error {
 	// Trigger build via web hook
-	err := httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
+	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret)
 	if err != nil {
 		return err
 	}
-	logger.Infof("First job was triggered")
+	log.Ctx(ctx).Info().Msg("First job was triggered")
 
 	// Get job
-	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Running", logger)
-	}, logger)
+	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Running")
+	})
 
 	if err != nil {
 		return err
 	}
 
 	jobName := jobSummary.Name
-	logger.Infof("First job name: %s", jobName)
+	log.Ctx(ctx).Info().Msgf("First job name: %s", jobName)
 
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
 	time.Sleep(1 * time.Second)
-	err = httpUtils.TriggerWebhookPush(cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret, logger)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret)
 	if err != nil {
 		return err
 	}
-	logger.Infof("Second job was triggered")
+	log.Ctx(ctx).Info().Msg("Second job was triggered")
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		_, err := job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Queued", logger)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		_, err := job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Queued")
 		return err
-	}, logger)
+	})
 
 	if err != nil {
 		return err
 	}
 
-	logger.Info("Second job was queued")
-	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (string, error) {
-		return job.IsDone(cfg, defaults.App2Name, jobName, logger)
-	}, logger)
+	log.Ctx(ctx).Info().Msg("Second job was queued")
+	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+		return job.IsDone(ctx, cfg, defaults.App2Name, jobName)
+	})
 	if err != nil {
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return fmt.Errorf("expected job status was Success, but got %s", jobStatus)
+		return errors.Errorf("expected job status was Success, but got %s", jobStatus)
 	}
-	logger.Info("First job was completed")
-	steps := job.GetSteps(cfg, defaults.App2Name, jobName)
+	log.Ctx(ctx).Info().Msg("First job was completed")
+	steps := job.GetSteps(ctx, cfg, defaults.App2Name, jobName)
 
 	expectedSteps := []expectedStep{
 		{name: "clone-config", components: []string{}},
@@ -101,24 +98,24 @@ func Application(cfg config.Config, suiteName string) error {
 
 	for index, step := range steps {
 		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return fmt.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
+			return errors.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
 		}
 
 		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return fmt.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
+			return errors.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
 		}
 	}
 
-	stepLog := job.GetLogForStep(cfg, defaults.App2Name, jobName, "build-app", logger)
+	stepLog := job.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "build-app")
 	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
 		return errors.New("build secrets are not contained in build log")
 	}
 
-	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(cfg, func(cfg config.Config) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Running", logger)
-	}, logger)
+	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
+		return job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Running")
+	})
 
 	if err != nil {
 		return err
@@ -126,20 +123,20 @@ func Application(cfg config.Config, suiteName string) error {
 
 	// Stop job and verify that it has been stopped
 	jobName = jobSummary.Name
-	logger.Infof("Second job name: %s", jobName)
-	err = job.Stop(cfg, defaults.App2Name, jobName)
+	log.Ctx(ctx).Info().Msgf("Second job name: %s", jobName)
+	err = job.Stop(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
 	}
 
-	err = test.WaitForCheckFuncOrTimeout(cfg, func(cfg config.Config) error {
-		_, err := job.GetLastPipelineJobWithStatus(cfg, defaults.App2Name, "Stopped", logger)
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		_, err := job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Stopped")
 		return err
-	}, logger)
+	})
 	if err != nil {
 		return err
 	}
 
-	logger.Info("Second job was stopped")
+	log.Ctx(ctx).Info().Msg("Second job was stopped")
 	return nil
 }

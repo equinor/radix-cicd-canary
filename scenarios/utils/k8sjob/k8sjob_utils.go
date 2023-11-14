@@ -1,11 +1,10 @@
 package k8sjob
 
 import (
-	"fmt"
-
 	jobClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	"github.com/pkg/errors"
 )
 
 // IsListedWithStatus Checks if job exists with status
@@ -23,7 +22,7 @@ func IsListedWithStatus(cfg config.Config, appName string, appEnv string, jobCom
 	batches, err := client.GetBatches(params, nil)
 
 	if err != nil {
-		return fmt.Errorf("error calling GetBatches for application %s in environment %s: %v", appName, appEnv, err)
+		return errors.Wrapf(err, "error calling GetBatches for application %s in environment %s", appName, appEnv)
 	}
 
 	for _, batchSummary := range batches.Payload {
@@ -32,5 +31,5 @@ func IsListedWithStatus(cfg config.Config, appName string, appEnv string, jobCom
 		}
 	}
 
-	return fmt.Errorf("could not find batch job %s with expected status %s", batchName, expectedStatus)
+	return errors.Errorf("could not find batch job %s with expected status %s", batchName, expectedStatus)
 }

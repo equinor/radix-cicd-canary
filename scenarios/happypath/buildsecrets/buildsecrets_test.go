@@ -1,13 +1,12 @@
 package buildsecrets
 
 import (
+	"context"
 	"testing"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/stretchr/testify/assert"
 )
-
-const suiteName = "Happy path"
 
 /*
 Allow us to run this as a single test. Note that we need the previous tests of the suite to have passed for this to work.
@@ -19,6 +18,6 @@ func TestSetBuildSecret(t *testing.T) {
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
-	err := Set(environmentVariables, suiteName)
+	err := Set(context.Background(), environmentVariables)
 	assert.NoError(t, err)
 }

@@ -1,6 +1,7 @@
 package egresspolicy
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -8,8 +9,9 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	"github.com/equinor/radix-common/utils/errors"
-	log "github.com/sirupsen/logrus"
+	radixErrors "github.com/equinor/radix-common/utils/errors"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -17,8 +19,7 @@ const (
 )
 
 // ReachRadixSite tests that canary golang endpoint can be reached from networkpolicy canary with policy that allows it
-func ReachRadixSite(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func ReachRadixSite(ctx context.Context, cfg config.Config) error {
 	appEnv := "allowradix"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -32,8 +33,7 @@ func ReachRadixSite(cfg config.Config, suiteName string) error {
 }
 
 // NotReachRadixSite tests that canary golang endpoint can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachRadixSite(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func NotReachRadixSite(ctx context.Context, cfg config.Config) error {
 	appEnv := "egressrulestopublicdns"
 	reachRadixSiteUrl := getReachRadixSiteUrl(cfg, appEnv)
 	client := http.Client{
@@ -41,14 +41,13 @@ func NotReachRadixSite(cfg config.Config, suiteName string) error {
 	}
 	res, err := client.Get(reachRadixSiteUrl)
 	if err == nil && res.StatusCode == 200 {
-		return fmt.Errorf("request to %s from canary should have been blocked by network policy", reachRadixSiteUrl)
+		return errors.Errorf("request to %s from canary should have been blocked by network policy", reachRadixSiteUrl)
 	}
 	return nil
 }
 
 // NotReachExternalSite tests that a list of external websites can not be reached from networkpolicy canary with policy that prohibits it
-func NotReachExternalSite(cfg config.Config, suiteName string) error {
-	logger = log.WithFields(log.Fields{"Suite": suiteName})
+func NotReachExternalSite(ctx context.Context, cfg config.Config) error {
 	appEnvs := []string{"egressrulestopublicdns", "allowradix"}
 	var errs []error
 	for _, appEnv := range appEnvs {
@@ -58,11 +57,11 @@ func NotReachExternalSite(cfg config.Config, suiteName string) error {
 		}
 		res, err := client.Get(reachExternalSiteUrl)
 		if err == nil && res.StatusCode == 200 {
-			errs = append(errs, fmt.Errorf("requests to external websites from canary in environment %s should have been blocked by network policy", appEnv))
+			errs = append(errs, errors.Errorf("requests to external websites from canary in environment %s should have been blocked by network policy", appEnv))
 		}
 	}
 	if len(errs) > 0 {
-		return errors.Concat(errs)
+		return radixErrors.Concat(errs)
 	}
 	return nil
 }
@@ -72,49 +71,49 @@ func getReachRadixSiteUrl(cfg config.Config, appEnv string) string {
 }
 
 // ReachRadixSiteSuccess is a function after a call to ReachRadixSite succeeds
-func ReachRadixSiteSuccess(testName string) {
+func ReachRadixSiteSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddRadixSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // ReachRadixSiteFail is a function after a call to ReachRadixSite failed
-func ReachRadixSiteFail(testName string) {
+func ReachRadixSiteFail(ctx context.Context, testName string) {
 	nspMetrics.AddRadixSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }
 
 // NotReachRadixSiteSuccess is a function after a call to NotReachRadixSite succeeds
-func NotReachRadixSiteSuccess(testName string) {
+func NotReachRadixSiteSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddNotRadixSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // NotReachRadixSiteFail is a function after a call to NotReachRadixSite failed
-func NotReachRadixSiteFail(testName string) {
+func NotReachRadixSiteFail(ctx context.Context, testName string) {
 	nspMetrics.AddNotRadixSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }
 
 // NotReachExternalSiteSuccess is a function after a call to NotReachExternalSite failed
-func NotReachExternalSiteSuccess(testName string) {
+func NotReachExternalSiteSuccess(ctx context.Context, testName string) {
 	nspMetrics.AddNotExternalSiteReachable()
 	metrics.AddTestOne(testName, nspMetrics.Success)
 	metrics.AddTestZero(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: SUCCESS", testName)
+	log.Ctx(ctx).Info().Msg("Test: SUCCESS")
 }
 
 // NotReachExternalSiteFail is a function after a call to NotReachExternalSite failed
-func NotReachExternalSiteFail(testName string) {
+func NotReachExternalSiteFail(ctx context.Context, testName string) {
 	nspMetrics.AddNotExternalSiteUnreachable()
 	metrics.AddTestZero(testName, nspMetrics.Success)
 	metrics.AddTestOne(testName, nspMetrics.Errors)
-	logger.Infof("Test %s: FAIL", testName)
+	log.Ctx(ctx).Info().Msg("Test: FAIL")
 }
