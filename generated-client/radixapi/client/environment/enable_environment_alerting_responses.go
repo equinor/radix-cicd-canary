@@ -60,7 +60,7 @@ func (o *EnableEnvironmentAlertingReader) ReadResponse(response runtime.ClientRe
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/alerting/enable] enableEnvironmentAlerting", response, response.Code())
 	}
 }
 
@@ -69,7 +69,8 @@ func NewEnableEnvironmentAlertingOK() *EnableEnvironmentAlertingOK {
 	return &EnableEnvironmentAlertingOK{}
 }
 
-/* EnableEnvironmentAlertingOK describes a response with status code 200, with default header values.
+/*
+EnableEnvironmentAlertingOK describes a response with status code 200, with default header values.
 
 Successful enable alerting
 */
@@ -77,9 +78,44 @@ type EnableEnvironmentAlertingOK struct {
 	Payload *models.AlertingConfig
 }
 
+// IsSuccess returns true when this enable environment alerting o k response has a 2xx status code
+func (o *EnableEnvironmentAlertingOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this enable environment alerting o k response has a 3xx status code
+func (o *EnableEnvironmentAlertingOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable environment alerting o k response has a 4xx status code
+func (o *EnableEnvironmentAlertingOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this enable environment alerting o k response has a 5xx status code
+func (o *EnableEnvironmentAlertingOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable environment alerting o k response a status code equal to that given
+func (o *EnableEnvironmentAlertingOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the enable environment alerting o k response
+func (o *EnableEnvironmentAlertingOK) Code() int {
+	return 200
+}
+
 func (o *EnableEnvironmentAlertingOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingOK  %+v", 200, o.Payload)
 }
+
+func (o *EnableEnvironmentAlertingOK) String() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingOK  %+v", 200, o.Payload)
+}
+
 func (o *EnableEnvironmentAlertingOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -101,14 +137,49 @@ func NewEnableEnvironmentAlertingBadRequest() *EnableEnvironmentAlertingBadReque
 	return &EnableEnvironmentAlertingBadRequest{}
 }
 
-/* EnableEnvironmentAlertingBadRequest describes a response with status code 400, with default header values.
+/*
+EnableEnvironmentAlertingBadRequest describes a response with status code 400, with default header values.
 
 Alerting already enabled
 */
 type EnableEnvironmentAlertingBadRequest struct {
 }
 
+// IsSuccess returns true when this enable environment alerting bad request response has a 2xx status code
+func (o *EnableEnvironmentAlertingBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable environment alerting bad request response has a 3xx status code
+func (o *EnableEnvironmentAlertingBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable environment alerting bad request response has a 4xx status code
+func (o *EnableEnvironmentAlertingBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable environment alerting bad request response has a 5xx status code
+func (o *EnableEnvironmentAlertingBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable environment alerting bad request response a status code equal to that given
+func (o *EnableEnvironmentAlertingBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the enable environment alerting bad request response
+func (o *EnableEnvironmentAlertingBadRequest) Code() int {
+	return 400
+}
+
 func (o *EnableEnvironmentAlertingBadRequest) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingBadRequest ", 400)
+}
+
+func (o *EnableEnvironmentAlertingBadRequest) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingBadRequest ", 400)
 }
 
@@ -122,14 +193,49 @@ func NewEnableEnvironmentAlertingUnauthorized() *EnableEnvironmentAlertingUnauth
 	return &EnableEnvironmentAlertingUnauthorized{}
 }
 
-/* EnableEnvironmentAlertingUnauthorized describes a response with status code 401, with default header values.
+/*
+EnableEnvironmentAlertingUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type EnableEnvironmentAlertingUnauthorized struct {
 }
 
+// IsSuccess returns true when this enable environment alerting unauthorized response has a 2xx status code
+func (o *EnableEnvironmentAlertingUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable environment alerting unauthorized response has a 3xx status code
+func (o *EnableEnvironmentAlertingUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable environment alerting unauthorized response has a 4xx status code
+func (o *EnableEnvironmentAlertingUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable environment alerting unauthorized response has a 5xx status code
+func (o *EnableEnvironmentAlertingUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable environment alerting unauthorized response a status code equal to that given
+func (o *EnableEnvironmentAlertingUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the enable environment alerting unauthorized response
+func (o *EnableEnvironmentAlertingUnauthorized) Code() int {
+	return 401
+}
+
 func (o *EnableEnvironmentAlertingUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingUnauthorized ", 401)
+}
+
+func (o *EnableEnvironmentAlertingUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingUnauthorized ", 401)
 }
 
@@ -143,14 +249,49 @@ func NewEnableEnvironmentAlertingForbidden() *EnableEnvironmentAlertingForbidden
 	return &EnableEnvironmentAlertingForbidden{}
 }
 
-/* EnableEnvironmentAlertingForbidden describes a response with status code 403, with default header values.
+/*
+EnableEnvironmentAlertingForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type EnableEnvironmentAlertingForbidden struct {
 }
 
+// IsSuccess returns true when this enable environment alerting forbidden response has a 2xx status code
+func (o *EnableEnvironmentAlertingForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable environment alerting forbidden response has a 3xx status code
+func (o *EnableEnvironmentAlertingForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable environment alerting forbidden response has a 4xx status code
+func (o *EnableEnvironmentAlertingForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable environment alerting forbidden response has a 5xx status code
+func (o *EnableEnvironmentAlertingForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable environment alerting forbidden response a status code equal to that given
+func (o *EnableEnvironmentAlertingForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the enable environment alerting forbidden response
+func (o *EnableEnvironmentAlertingForbidden) Code() int {
+	return 403
+}
+
 func (o *EnableEnvironmentAlertingForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingForbidden ", 403)
+}
+
+func (o *EnableEnvironmentAlertingForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingForbidden ", 403)
 }
 
@@ -164,14 +305,49 @@ func NewEnableEnvironmentAlertingNotFound() *EnableEnvironmentAlertingNotFound {
 	return &EnableEnvironmentAlertingNotFound{}
 }
 
-/* EnableEnvironmentAlertingNotFound describes a response with status code 404, with default header values.
+/*
+EnableEnvironmentAlertingNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type EnableEnvironmentAlertingNotFound struct {
 }
 
+// IsSuccess returns true when this enable environment alerting not found response has a 2xx status code
+func (o *EnableEnvironmentAlertingNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable environment alerting not found response has a 3xx status code
+func (o *EnableEnvironmentAlertingNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable environment alerting not found response has a 4xx status code
+func (o *EnableEnvironmentAlertingNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable environment alerting not found response has a 5xx status code
+func (o *EnableEnvironmentAlertingNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable environment alerting not found response a status code equal to that given
+func (o *EnableEnvironmentAlertingNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the enable environment alerting not found response
+func (o *EnableEnvironmentAlertingNotFound) Code() int {
+	return 404
+}
+
 func (o *EnableEnvironmentAlertingNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingNotFound ", 404)
+}
+
+func (o *EnableEnvironmentAlertingNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingNotFound ", 404)
 }
 
@@ -185,14 +361,49 @@ func NewEnableEnvironmentAlertingInternalServerError() *EnableEnvironmentAlertin
 	return &EnableEnvironmentAlertingInternalServerError{}
 }
 
-/* EnableEnvironmentAlertingInternalServerError describes a response with status code 500, with default header values.
+/*
+EnableEnvironmentAlertingInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type EnableEnvironmentAlertingInternalServerError struct {
 }
 
+// IsSuccess returns true when this enable environment alerting internal server error response has a 2xx status code
+func (o *EnableEnvironmentAlertingInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable environment alerting internal server error response has a 3xx status code
+func (o *EnableEnvironmentAlertingInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable environment alerting internal server error response has a 4xx status code
+func (o *EnableEnvironmentAlertingInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this enable environment alerting internal server error response has a 5xx status code
+func (o *EnableEnvironmentAlertingInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this enable environment alerting internal server error response a status code equal to that given
+func (o *EnableEnvironmentAlertingInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the enable environment alerting internal server error response
+func (o *EnableEnvironmentAlertingInternalServerError) Code() int {
+	return 500
+}
+
 func (o *EnableEnvironmentAlertingInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingInternalServerError ", 500)
+}
+
+func (o *EnableEnvironmentAlertingInternalServerError) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/alerting/enable][%d] enableEnvironmentAlertingInternalServerError ", 500)
 }
 

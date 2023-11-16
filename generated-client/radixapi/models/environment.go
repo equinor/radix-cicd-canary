@@ -216,6 +216,11 @@ func (m *Environment) contextValidateDeployments(ctx context.Context, formats st
 	for i := 0; i < len(m.Deployments); i++ {
 
 		if m.Deployments[i] != nil {
+
+			if swag.IsZero(m.Deployments[i]) { // not required
+				return nil
+			}
+
 			if err := m.Deployments[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
@@ -236,6 +241,11 @@ func (m *Environment) contextValidateSecrets(ctx context.Context, formats strfmt
 	for i := 0; i < len(m.Secrets); i++ {
 
 		if m.Secrets[i] != nil {
+
+			if swag.IsZero(m.Secrets[i]) { // not required
+				return nil
+			}
+
 			if err := m.Secrets[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("secrets" + "." + strconv.Itoa(i))
@@ -254,6 +264,11 @@ func (m *Environment) contextValidateSecrets(ctx context.Context, formats strfmt
 func (m *Environment) contextValidateActiveDeployment(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ActiveDeployment != nil {
+
+		if swag.IsZero(m.ActiveDeployment) { // not required
+			return nil
+		}
+
 		if err := m.ActiveDeployment.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("activeDeployment")

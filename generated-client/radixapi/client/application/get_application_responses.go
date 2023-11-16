@@ -60,7 +60,7 @@ func (o *GetApplicationReader) ReadResponse(response runtime.ClientResponse, con
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}] getApplication", response, response.Code())
 	}
 }
 
@@ -69,7 +69,8 @@ func NewGetApplicationOK() *GetApplicationOK {
 	return &GetApplicationOK{}
 }
 
-/* GetApplicationOK describes a response with status code 200, with default header values.
+/*
+GetApplicationOK describes a response with status code 200, with default header values.
 
 Successful get application
 */
@@ -77,9 +78,44 @@ type GetApplicationOK struct {
 	Payload *models.Application
 }
 
+// IsSuccess returns true when this get application o k response has a 2xx status code
+func (o *GetApplicationOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get application o k response has a 3xx status code
+func (o *GetApplicationOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application o k response has a 4xx status code
+func (o *GetApplicationOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get application o k response has a 5xx status code
+func (o *GetApplicationOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application o k response a status code equal to that given
+func (o *GetApplicationOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get application o k response
+func (o *GetApplicationOK) Code() int {
+	return 200
+}
+
 func (o *GetApplicationOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationOK  %+v", 200, o.Payload)
 }
+
+func (o *GetApplicationOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationOK  %+v", 200, o.Payload)
+}
+
 func (o *GetApplicationOK) GetPayload() *models.Application {
 	return o.Payload
 }
@@ -101,14 +137,49 @@ func NewGetApplicationUnauthorized() *GetApplicationUnauthorized {
 	return &GetApplicationUnauthorized{}
 }
 
-/* GetApplicationUnauthorized describes a response with status code 401, with default header values.
+/*
+GetApplicationUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetApplicationUnauthorized struct {
 }
 
+// IsSuccess returns true when this get application unauthorized response has a 2xx status code
+func (o *GetApplicationUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get application unauthorized response has a 3xx status code
+func (o *GetApplicationUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application unauthorized response has a 4xx status code
+func (o *GetApplicationUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get application unauthorized response has a 5xx status code
+func (o *GetApplicationUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application unauthorized response a status code equal to that given
+func (o *GetApplicationUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get application unauthorized response
+func (o *GetApplicationUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetApplicationUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationUnauthorized ", 401)
+}
+
+func (o *GetApplicationUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationUnauthorized ", 401)
 }
 
@@ -122,14 +193,49 @@ func NewGetApplicationForbidden() *GetApplicationForbidden {
 	return &GetApplicationForbidden{}
 }
 
-/* GetApplicationForbidden describes a response with status code 403, with default header values.
+/*
+GetApplicationForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type GetApplicationForbidden struct {
 }
 
+// IsSuccess returns true when this get application forbidden response has a 2xx status code
+func (o *GetApplicationForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get application forbidden response has a 3xx status code
+func (o *GetApplicationForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application forbidden response has a 4xx status code
+func (o *GetApplicationForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get application forbidden response has a 5xx status code
+func (o *GetApplicationForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application forbidden response a status code equal to that given
+func (o *GetApplicationForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the get application forbidden response
+func (o *GetApplicationForbidden) Code() int {
+	return 403
+}
+
 func (o *GetApplicationForbidden) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationForbidden ", 403)
+}
+
+func (o *GetApplicationForbidden) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationForbidden ", 403)
 }
 
@@ -143,14 +249,49 @@ func NewGetApplicationNotFound() *GetApplicationNotFound {
 	return &GetApplicationNotFound{}
 }
 
-/* GetApplicationNotFound describes a response with status code 404, with default header values.
+/*
+GetApplicationNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetApplicationNotFound struct {
 }
 
+// IsSuccess returns true when this get application not found response has a 2xx status code
+func (o *GetApplicationNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get application not found response has a 3xx status code
+func (o *GetApplicationNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application not found response has a 4xx status code
+func (o *GetApplicationNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get application not found response has a 5xx status code
+func (o *GetApplicationNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application not found response a status code equal to that given
+func (o *GetApplicationNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get application not found response
+func (o *GetApplicationNotFound) Code() int {
+	return 404
+}
+
 func (o *GetApplicationNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationNotFound ", 404)
+}
+
+func (o *GetApplicationNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationNotFound ", 404)
 }
 
@@ -164,14 +305,49 @@ func NewGetApplicationConflict() *GetApplicationConflict {
 	return &GetApplicationConflict{}
 }
 
-/* GetApplicationConflict describes a response with status code 409, with default header values.
+/*
+GetApplicationConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type GetApplicationConflict struct {
 }
 
+// IsSuccess returns true when this get application conflict response has a 2xx status code
+func (o *GetApplicationConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get application conflict response has a 3xx status code
+func (o *GetApplicationConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application conflict response has a 4xx status code
+func (o *GetApplicationConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get application conflict response has a 5xx status code
+func (o *GetApplicationConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application conflict response a status code equal to that given
+func (o *GetApplicationConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the get application conflict response
+func (o *GetApplicationConflict) Code() int {
+	return 409
+}
+
 func (o *GetApplicationConflict) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationConflict ", 409)
+}
+
+func (o *GetApplicationConflict) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationConflict ", 409)
 }
 
@@ -185,14 +361,49 @@ func NewGetApplicationInternalServerError() *GetApplicationInternalServerError {
 	return &GetApplicationInternalServerError{}
 }
 
-/* GetApplicationInternalServerError describes a response with status code 500, with default header values.
+/*
+GetApplicationInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type GetApplicationInternalServerError struct {
 }
 
+// IsSuccess returns true when this get application internal server error response has a 2xx status code
+func (o *GetApplicationInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get application internal server error response has a 3xx status code
+func (o *GetApplicationInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application internal server error response has a 4xx status code
+func (o *GetApplicationInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get application internal server error response has a 5xx status code
+func (o *GetApplicationInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get application internal server error response a status code equal to that given
+func (o *GetApplicationInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the get application internal server error response
+func (o *GetApplicationInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetApplicationInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationInternalServerError ", 500)
+}
+
+func (o *GetApplicationInternalServerError) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}][%d] getApplicationInternalServerError ", 500)
 }
 

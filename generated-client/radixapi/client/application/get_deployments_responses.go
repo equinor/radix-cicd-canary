@@ -42,7 +42,7 @@ func (o *GetDeploymentsReader) ReadResponse(response runtime.ClientResponse, con
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/deployments] getDeployments", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetDeploymentsOK() *GetDeploymentsOK {
 	return &GetDeploymentsOK{}
 }
 
-/* GetDeploymentsOK describes a response with status code 200, with default header values.
+/*
+GetDeploymentsOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -59,9 +60,44 @@ type GetDeploymentsOK struct {
 	Payload []*models.DeploymentSummary
 }
 
+// IsSuccess returns true when this get deployments o k response has a 2xx status code
+func (o *GetDeploymentsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get deployments o k response has a 3xx status code
+func (o *GetDeploymentsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get deployments o k response has a 4xx status code
+func (o *GetDeploymentsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get deployments o k response has a 5xx status code
+func (o *GetDeploymentsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get deployments o k response a status code equal to that given
+func (o *GetDeploymentsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get deployments o k response
+func (o *GetDeploymentsOK) Code() int {
+	return 200
+}
+
 func (o *GetDeploymentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments][%d] getDeploymentsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetDeploymentsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deployments][%d] getDeploymentsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetDeploymentsOK) GetPayload() []*models.DeploymentSummary {
 	return o.Payload
 }
@@ -81,14 +117,49 @@ func NewGetDeploymentsUnauthorized() *GetDeploymentsUnauthorized {
 	return &GetDeploymentsUnauthorized{}
 }
 
-/* GetDeploymentsUnauthorized describes a response with status code 401, with default header values.
+/*
+GetDeploymentsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetDeploymentsUnauthorized struct {
 }
 
+// IsSuccess returns true when this get deployments unauthorized response has a 2xx status code
+func (o *GetDeploymentsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get deployments unauthorized response has a 3xx status code
+func (o *GetDeploymentsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get deployments unauthorized response has a 4xx status code
+func (o *GetDeploymentsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get deployments unauthorized response has a 5xx status code
+func (o *GetDeploymentsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get deployments unauthorized response a status code equal to that given
+func (o *GetDeploymentsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get deployments unauthorized response
+func (o *GetDeploymentsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetDeploymentsUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deployments][%d] getDeploymentsUnauthorized ", 401)
+}
+
+func (o *GetDeploymentsUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments][%d] getDeploymentsUnauthorized ", 401)
 }
 
@@ -102,14 +173,49 @@ func NewGetDeploymentsNotFound() *GetDeploymentsNotFound {
 	return &GetDeploymentsNotFound{}
 }
 
-/* GetDeploymentsNotFound describes a response with status code 404, with default header values.
+/*
+GetDeploymentsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetDeploymentsNotFound struct {
 }
 
+// IsSuccess returns true when this get deployments not found response has a 2xx status code
+func (o *GetDeploymentsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get deployments not found response has a 3xx status code
+func (o *GetDeploymentsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get deployments not found response has a 4xx status code
+func (o *GetDeploymentsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get deployments not found response has a 5xx status code
+func (o *GetDeploymentsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get deployments not found response a status code equal to that given
+func (o *GetDeploymentsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get deployments not found response
+func (o *GetDeploymentsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetDeploymentsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deployments][%d] getDeploymentsNotFound ", 404)
+}
+
+func (o *GetDeploymentsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments][%d] getDeploymentsNotFound ", 404)
 }
 

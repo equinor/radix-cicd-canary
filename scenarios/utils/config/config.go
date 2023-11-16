@@ -38,6 +38,9 @@ const (
 	sleepIntervalTestRunsConfig               = "sleepIntervalTestRuns"
 	nspSleepIntervalConfig                    = "nspSleepInterval"
 	nspLongSleepIntervalConfig                = "nspLongSleepInterval"
+	nspDNSLookupTimeoutConfig                 = "nspDNSLookupTimeout"
+	nspNSPReachIngressTimeoutConfig           = "nspNSPReachIngressTimeout"
+	nspNSPReachServiceTimeoutConfig           = "nspNSPReachServiceTimeout"
 	privateImageHubPasswordConfig             = "privateImageHubPassword"
 	networkPolicyCanaryPasswordConfig         = "networkPolicyCanaryPassword"
 	networkPolicyCanaryAppNameConfig          = "networkPolicyCanaryAppName"
@@ -72,6 +75,9 @@ type Config struct {
 	sleepIntervalBetweenTestRuns        time.Duration
 	nspSleepInterval                    time.Duration
 	nspLongSleepInterval                time.Duration
+	nspDNSLookupTimeout                 time.Duration
+	nspNSPReachIngressTimeout           time.Duration
+	nspNSPReachServiceTimeout           time.Duration
 	suiteList                           []string
 	suiteListIsBlacklist                bool // suiteList is a whitelist by default
 	networkPolicyCanaryAppName          string
@@ -111,7 +117,10 @@ func NewConfig() Config {
 		getSleepIntervalBetweenCheckFunc(),
 		getSleepIntervalBetweenTestRuns(),
 		getNSPSleepInterval(),
-		GetNSPLongSleepInterval(),
+		getNSPSleepInterval(),
+		getNSPDNSLookupTimeout(),
+		getNSPReachIngressTimeout(),
+		getNSPReachServiceTimeout(),
 		getSuiteList(),
 		getIsBlacklist(),
 		getNetworkPolicyCanaryAppName(),
@@ -396,21 +405,31 @@ func getNetworkPolicyCanaryJobComponentName() string {
 }
 
 func getNSPSleepInterval() time.Duration {
-	sleepInterval, err := strconv.Atoi(getConfigFromMap(nspSleepIntervalConfig))
-	if err != nil {
-		log.Fatal().Stack().Err(err).Str("key", nspSleepIntervalConfig).Msg("Could not read from configmap")
-	}
+	return time.Duration(getConfigMapInt(nspSleepIntervalConfig)) * time.Second
+}
 
-	return time.Duration(sleepInterval) * time.Second
+func getNSPDNSLookupTimeout() time.Duration {
+	return time.Duration(getConfigMapInt(nspDNSLookupTimeoutConfig)) * time.Second
+}
+
+func getNSPReachIngressTimeout() time.Duration {
+	return time.Duration(getConfigMapInt(nspNSPReachIngressTimeoutConfig)) * time.Second
+}
+
+func getNSPReachServiceTimeout() time.Duration {
+	return time.Duration(getConfigMapInt(nspNSPReachServiceTimeoutConfig)) * time.Second
 }
 
 func GetNSPLongSleepInterval() time.Duration {
-	sleepInterval, err := strconv.Atoi(getConfigFromMap(nspLongSleepIntervalConfig))
-	if err != nil {
-		log.Fatal().Stack().Err(err).Str("key", nspLongSleepIntervalConfig).Msg("Could not read config")
-	}
+	return time.Duration(getConfigMapInt(nspLongSleepIntervalConfig)) * time.Second
+}
 
-	return time.Duration(sleepInterval) * time.Second
+func getConfigMapInt(key string) int {
+	value, err := strconv.Atoi(getConfigFromMap(key))
+	if err != nil {
+		log.Fatal().Stack().Err(err).Str("key", key).Msg("Could not read config")
+	}
+	return value
 }
 
 // SetRequiredEnvironmentVariablesForTest Sets test environment variables, that would come from
@@ -452,6 +471,21 @@ func (cfg *Config) getWebHookPrefix() string {
 
 func (cfg *Config) GetAppReaderGroup() string {
 	return cfg.appReaderGroup
+}
+
+// GetNSPDNSLookupTimeout Get DNS lookup timeout
+func (cfg *Config) GetNSPDNSLookupTimeout() time.Duration {
+	return cfg.nspDNSLookupTimeout
+}
+
+// GetNSPReachIngressTimeout Get reach ingress timeout
+func (cfg *Config) GetNSPReachIngressTimeout() time.Duration {
+	return cfg.nspNSPReachIngressTimeout
+}
+
+// GetNSPReachServiceTimeout Get reach service timeout
+func (cfg *Config) GetNSPReachServiceTimeout() time.Duration {
+	return cfg.nspNSPReachServiceTimeout
 }
 
 func useLocalRadixApi() bool {

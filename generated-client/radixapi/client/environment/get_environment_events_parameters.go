@@ -53,10 +53,12 @@ func NewGetEnvironmentEventsParamsWithHTTPClient(client *http.Client) *GetEnviro
 	}
 }
 
-/* GetEnvironmentEventsParams contains all the parameters to send to the API endpoint
-   for the get environment events operation.
+/*
+GetEnvironmentEventsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get environment events operation.
+
+	Typically these are written to a http.Request.
 */
 type GetEnvironmentEventsParams struct {
 

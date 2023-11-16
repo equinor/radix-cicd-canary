@@ -36,7 +36,7 @@ func (o *ComponentsReader) ReadResponse(response runtime.ClientResponse, consume
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/deployments/{deploymentName}/components] components", response, response.Code())
 	}
 }
 
@@ -45,7 +45,8 @@ func NewComponentsOK() *ComponentsOK {
 	return &ComponentsOK{}
 }
 
-/* ComponentsOK describes a response with status code 200, with default header values.
+/*
+ComponentsOK describes a response with status code 200, with default header values.
 
 pod log
 */
@@ -53,9 +54,44 @@ type ComponentsOK struct {
 	Payload []*models.Component
 }
 
+// IsSuccess returns true when this components o k response has a 2xx status code
+func (o *ComponentsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this components o k response has a 3xx status code
+func (o *ComponentsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this components o k response has a 4xx status code
+func (o *ComponentsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this components o k response has a 5xx status code
+func (o *ComponentsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this components o k response a status code equal to that given
+func (o *ComponentsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the components o k response
+func (o *ComponentsOK) Code() int {
+	return 200
+}
+
 func (o *ComponentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components][%d] componentsOK  %+v", 200, o.Payload)
 }
+
+func (o *ComponentsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components][%d] componentsOK  %+v", 200, o.Payload)
+}
+
 func (o *ComponentsOK) GetPayload() []*models.Component {
 	return o.Payload
 }
@@ -75,14 +111,49 @@ func NewComponentsNotFound() *ComponentsNotFound {
 	return &ComponentsNotFound{}
 }
 
-/* ComponentsNotFound describes a response with status code 404, with default header values.
+/*
+ComponentsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type ComponentsNotFound struct {
 }
 
+// IsSuccess returns true when this components not found response has a 2xx status code
+func (o *ComponentsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this components not found response has a 3xx status code
+func (o *ComponentsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this components not found response has a 4xx status code
+func (o *ComponentsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this components not found response has a 5xx status code
+func (o *ComponentsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this components not found response a status code equal to that given
+func (o *ComponentsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the components not found response
+func (o *ComponentsNotFound) Code() int {
+	return 404
+}
+
 func (o *ComponentsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components][%d] componentsNotFound ", 404)
+}
+
+func (o *ComponentsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components][%d] componentsNotFound ", 404)
 }
 

@@ -45,7 +45,7 @@ func (o *RestartEnvironmentReader) ReadResponse(response runtime.ClientResponse,
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/restart] restartEnvironment", response, response.Code())
 	}
 }
 
@@ -54,14 +54,49 @@ func NewRestartEnvironmentOK() *RestartEnvironmentOK {
 	return &RestartEnvironmentOK{}
 }
 
-/* RestartEnvironmentOK describes a response with status code 200, with default header values.
+/*
+RestartEnvironmentOK describes a response with status code 200, with default header values.
 
 Environment started ok
 */
 type RestartEnvironmentOK struct {
 }
 
+// IsSuccess returns true when this restart environment o k response has a 2xx status code
+func (o *RestartEnvironmentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this restart environment o k response has a 3xx status code
+func (o *RestartEnvironmentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart environment o k response has a 4xx status code
+func (o *RestartEnvironmentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this restart environment o k response has a 5xx status code
+func (o *RestartEnvironmentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart environment o k response a status code equal to that given
+func (o *RestartEnvironmentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the restart environment o k response
+func (o *RestartEnvironmentOK) Code() int {
+	return 200
+}
+
 func (o *RestartEnvironmentOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentOK ", 200)
+}
+
+func (o *RestartEnvironmentOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentOK ", 200)
 }
 
@@ -75,14 +110,49 @@ func NewRestartEnvironmentUnauthorized() *RestartEnvironmentUnauthorized {
 	return &RestartEnvironmentUnauthorized{}
 }
 
-/* RestartEnvironmentUnauthorized describes a response with status code 401, with default header values.
+/*
+RestartEnvironmentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type RestartEnvironmentUnauthorized struct {
 }
 
+// IsSuccess returns true when this restart environment unauthorized response has a 2xx status code
+func (o *RestartEnvironmentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart environment unauthorized response has a 3xx status code
+func (o *RestartEnvironmentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart environment unauthorized response has a 4xx status code
+func (o *RestartEnvironmentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart environment unauthorized response has a 5xx status code
+func (o *RestartEnvironmentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart environment unauthorized response a status code equal to that given
+func (o *RestartEnvironmentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the restart environment unauthorized response
+func (o *RestartEnvironmentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *RestartEnvironmentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentUnauthorized ", 401)
+}
+
+func (o *RestartEnvironmentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentUnauthorized ", 401)
 }
 
@@ -96,14 +166,49 @@ func NewRestartEnvironmentForbidden() *RestartEnvironmentForbidden {
 	return &RestartEnvironmentForbidden{}
 }
 
-/* RestartEnvironmentForbidden describes a response with status code 403, with default header values.
+/*
+RestartEnvironmentForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type RestartEnvironmentForbidden struct {
 }
 
+// IsSuccess returns true when this restart environment forbidden response has a 2xx status code
+func (o *RestartEnvironmentForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart environment forbidden response has a 3xx status code
+func (o *RestartEnvironmentForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart environment forbidden response has a 4xx status code
+func (o *RestartEnvironmentForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart environment forbidden response has a 5xx status code
+func (o *RestartEnvironmentForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart environment forbidden response a status code equal to that given
+func (o *RestartEnvironmentForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the restart environment forbidden response
+func (o *RestartEnvironmentForbidden) Code() int {
+	return 403
+}
+
 func (o *RestartEnvironmentForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentForbidden ", 403)
+}
+
+func (o *RestartEnvironmentForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentForbidden ", 403)
 }
 
@@ -117,14 +222,49 @@ func NewRestartEnvironmentNotFound() *RestartEnvironmentNotFound {
 	return &RestartEnvironmentNotFound{}
 }
 
-/* RestartEnvironmentNotFound describes a response with status code 404, with default header values.
+/*
+RestartEnvironmentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type RestartEnvironmentNotFound struct {
 }
 
+// IsSuccess returns true when this restart environment not found response has a 2xx status code
+func (o *RestartEnvironmentNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart environment not found response has a 3xx status code
+func (o *RestartEnvironmentNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart environment not found response has a 4xx status code
+func (o *RestartEnvironmentNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart environment not found response has a 5xx status code
+func (o *RestartEnvironmentNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart environment not found response a status code equal to that given
+func (o *RestartEnvironmentNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the restart environment not found response
+func (o *RestartEnvironmentNotFound) Code() int {
+	return 404
+}
+
 func (o *RestartEnvironmentNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentNotFound ", 404)
+}
+
+func (o *RestartEnvironmentNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/restart][%d] restartEnvironmentNotFound ", 404)
 }
 

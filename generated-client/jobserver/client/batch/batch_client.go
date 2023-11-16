@@ -48,7 +48,7 @@ type ClientService interface {
 }
 
 /*
-  CreateBatch creates batch
+CreateBatch creates batch
 */
 func (a *Client) CreateBatch(params *CreateBatchParams, opts ...ClientOption) (*CreateBatchOK, error) {
 	// TODO: Validate the params before sending
@@ -86,7 +86,7 @@ func (a *Client) CreateBatch(params *CreateBatchParams, opts ...ClientOption) (*
 }
 
 /*
-  DeleteBatch deletes batch
+DeleteBatch deletes batch
 */
 func (a *Client) DeleteBatch(params *DeleteBatchParams, opts ...ClientOption) (*DeleteBatchOK, error) {
 	// TODO: Validate the params before sending
@@ -124,7 +124,7 @@ func (a *Client) DeleteBatch(params *DeleteBatchParams, opts ...ClientOption) (*
 }
 
 /*
-  GetBatch gets batch
+GetBatch gets batch
 */
 func (a *Client) GetBatch(params *GetBatchParams, opts ...ClientOption) (*GetBatchOK, error) {
 	// TODO: Validate the params before sending
@@ -162,7 +162,7 @@ func (a *Client) GetBatch(params *GetBatchParams, opts ...ClientOption) (*GetBat
 }
 
 /*
-  GetBatchJob gets batch job
+GetBatchJob gets batch job
 */
 func (a *Client) GetBatchJob(params *GetBatchJobParams, opts ...ClientOption) (*GetBatchJobOK, error) {
 	// TODO: Validate the params before sending
@@ -200,7 +200,7 @@ func (a *Client) GetBatchJob(params *GetBatchJobParams, opts ...ClientOption) (*
 }
 
 /*
-  GetBatches gets batches
+GetBatches gets batches
 */
 func (a *Client) GetBatches(params *GetBatchesParams, opts ...ClientOption) (*GetBatchesOK, error) {
 	// TODO: Validate the params before sending
@@ -238,7 +238,7 @@ func (a *Client) GetBatches(params *GetBatchesParams, opts ...ClientOption) (*Ge
 }
 
 /*
-  StopBatch stops batch
+StopBatch stops batch
 */
 func (a *Client) StopBatch(params *StopBatchParams, opts ...ClientOption) (*StopBatchOK, error) {
 	// TODO: Validate the params before sending
@@ -276,7 +276,7 @@ func (a *Client) StopBatch(params *StopBatchParams, opts ...ClientOption) (*Stop
 }
 
 /*
-  StopBatchJob stops batch job
+StopBatchJob stops batch job
 */
 func (a *Client) StopBatchJob(params *StopBatchJobParams, opts ...ClientOption) (*StopBatchJobOK, error) {
 	// TODO: Validate the params before sending

@@ -53,10 +53,12 @@ func NewGetTektonPipelineRunTaskParamsWithHTTPClient(client *http.Client) *GetTe
 	}
 }
 
-/* GetTektonPipelineRunTaskParams contains all the parameters to send to the API endpoint
-   for the get tekton pipeline run task operation.
+/*
+GetTektonPipelineRunTaskParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get tekton pipeline run task operation.
+
+	Typically these are written to a http.Request.
 */
 type GetTektonPipelineRunTaskParams struct {
 

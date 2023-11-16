@@ -28,9 +28,6 @@ type ApplicationRegistrationPatch struct {
 	// Ref: https://en.wikipedia.org/wiki/Configuration_item
 	ConfigurationItem string `json:"configurationItem,omitempty"`
 
-	// MachineUser is used for interacting directly with Radix API
-	MachineUser *bool `json:"machineUser,omitempty"`
-
 	// Owner of the application - should be an email
 	Owner string `json:"owner,omitempty"`
 
@@ -38,7 +35,7 @@ type ApplicationRegistrationPatch struct {
 	RadixConfigFullName string `json:"radixConfigFullName,omitempty"`
 
 	// ReaderAdGroups the groups that should be able to read the application
-	ReaderAdGroups []string `json:"ReaderAdGroups"`
+	ReaderAdGroups []string `json:"readerAdGroups"`
 
 	// Repository the github repository
 	Repository string `json:"repository,omitempty"`

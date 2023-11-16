@@ -72,6 +72,11 @@ func (m *ObjectState) ContextValidate(ctx context.Context, formats strfmt.Regist
 func (m *ObjectState) contextValidatePod(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Pod != nil {
+
+		if swag.IsZero(m.Pod) { // not required
+			return nil
+		}
+
 		if err := m.Pod.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("pod")

@@ -17,10 +17,13 @@ import (
 // swagger:model RadixNode
 type RadixNode struct {
 
-	// Gpu Optional. Holds lists of node GPU types, with dashed types to exclude
+	// Defines rules for allowed GPU types.
+	// More info: https://www.radix.equinor.com/references/reference-radix-config/#gpu
+	// +optional
 	Gpu string `json:"gpu,omitempty"`
 
-	// GpuCount Optional. Holds minimum count of GPU on node
+	// Defines minimum number of required GPUs.
+	// +optional
 	GpuCount string `json:"gpuCount,omitempty"`
 }
 

@@ -42,7 +42,7 @@ func (o *GetDeployKeyAndSecretReader) ReadResponse(response runtime.ClientRespon
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/deploy-key-and-secret] getDeployKeyAndSecret", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetDeployKeyAndSecretOK() *GetDeployKeyAndSecretOK {
 	return &GetDeployKeyAndSecretOK{}
 }
 
-/* GetDeployKeyAndSecretOK describes a response with status code 200, with default header values.
+/*
+GetDeployKeyAndSecretOK describes a response with status code 200, with default header values.
 
 Successful get deploy key and secret
 */
@@ -59,9 +60,44 @@ type GetDeployKeyAndSecretOK struct {
 	Payload *models.DeployKeyAndSecret
 }
 
+// IsSuccess returns true when this get deploy key and secret o k response has a 2xx status code
+func (o *GetDeployKeyAndSecretOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get deploy key and secret o k response has a 3xx status code
+func (o *GetDeployKeyAndSecretOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get deploy key and secret o k response has a 4xx status code
+func (o *GetDeployKeyAndSecretOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get deploy key and secret o k response has a 5xx status code
+func (o *GetDeployKeyAndSecretOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get deploy key and secret o k response a status code equal to that given
+func (o *GetDeployKeyAndSecretOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get deploy key and secret o k response
+func (o *GetDeployKeyAndSecretOK) Code() int {
+	return 200
+}
+
 func (o *GetDeployKeyAndSecretOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deploy-key-and-secret][%d] getDeployKeyAndSecretOK  %+v", 200, o.Payload)
 }
+
+func (o *GetDeployKeyAndSecretOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deploy-key-and-secret][%d] getDeployKeyAndSecretOK  %+v", 200, o.Payload)
+}
+
 func (o *GetDeployKeyAndSecretOK) GetPayload() *models.DeployKeyAndSecret {
 	return o.Payload
 }
@@ -83,14 +119,49 @@ func NewGetDeployKeyAndSecretUnauthorized() *GetDeployKeyAndSecretUnauthorized {
 	return &GetDeployKeyAndSecretUnauthorized{}
 }
 
-/* GetDeployKeyAndSecretUnauthorized describes a response with status code 401, with default header values.
+/*
+GetDeployKeyAndSecretUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetDeployKeyAndSecretUnauthorized struct {
 }
 
+// IsSuccess returns true when this get deploy key and secret unauthorized response has a 2xx status code
+func (o *GetDeployKeyAndSecretUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get deploy key and secret unauthorized response has a 3xx status code
+func (o *GetDeployKeyAndSecretUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get deploy key and secret unauthorized response has a 4xx status code
+func (o *GetDeployKeyAndSecretUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get deploy key and secret unauthorized response has a 5xx status code
+func (o *GetDeployKeyAndSecretUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get deploy key and secret unauthorized response a status code equal to that given
+func (o *GetDeployKeyAndSecretUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get deploy key and secret unauthorized response
+func (o *GetDeployKeyAndSecretUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetDeployKeyAndSecretUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deploy-key-and-secret][%d] getDeployKeyAndSecretUnauthorized ", 401)
+}
+
+func (o *GetDeployKeyAndSecretUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deploy-key-and-secret][%d] getDeployKeyAndSecretUnauthorized ", 401)
 }
 
@@ -104,14 +175,49 @@ func NewGetDeployKeyAndSecretNotFound() *GetDeployKeyAndSecretNotFound {
 	return &GetDeployKeyAndSecretNotFound{}
 }
 
-/* GetDeployKeyAndSecretNotFound describes a response with status code 404, with default header values.
+/*
+GetDeployKeyAndSecretNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetDeployKeyAndSecretNotFound struct {
 }
 
+// IsSuccess returns true when this get deploy key and secret not found response has a 2xx status code
+func (o *GetDeployKeyAndSecretNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get deploy key and secret not found response has a 3xx status code
+func (o *GetDeployKeyAndSecretNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get deploy key and secret not found response has a 4xx status code
+func (o *GetDeployKeyAndSecretNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get deploy key and secret not found response has a 5xx status code
+func (o *GetDeployKeyAndSecretNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get deploy key and secret not found response a status code equal to that given
+func (o *GetDeployKeyAndSecretNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get deploy key and secret not found response
+func (o *GetDeployKeyAndSecretNotFound) Code() int {
+	return 404
+}
+
 func (o *GetDeployKeyAndSecretNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deploy-key-and-secret][%d] getDeployKeyAndSecretNotFound ", 404)
+}
+
+func (o *GetDeployKeyAndSecretNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deploy-key-and-secret][%d] getDeployKeyAndSecretNotFound ", 404)
 }
 

@@ -53,10 +53,12 @@ func NewStartComponentParamsWithHTTPClient(client *http.Client) *StartComponentP
 	}
 }
 
-/* StartComponentParams contains all the parameters to send to the API endpoint
-   for the start component operation.
+/*
+StartComponentParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the start component operation.
+
+	Typically these are written to a http.Request.
 */
 type StartComponentParams struct {
 

@@ -60,7 +60,7 @@ func (o *EnableApplicationAlertingReader) ReadResponse(response runtime.ClientRe
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/alerting/enable] enableApplicationAlerting", response, response.Code())
 	}
 }
 
@@ -69,7 +69,8 @@ func NewEnableApplicationAlertingOK() *EnableApplicationAlertingOK {
 	return &EnableApplicationAlertingOK{}
 }
 
-/* EnableApplicationAlertingOK describes a response with status code 200, with default header values.
+/*
+EnableApplicationAlertingOK describes a response with status code 200, with default header values.
 
 Successful enable alerting
 */
@@ -77,9 +78,44 @@ type EnableApplicationAlertingOK struct {
 	Payload *models.AlertingConfig
 }
 
+// IsSuccess returns true when this enable application alerting o k response has a 2xx status code
+func (o *EnableApplicationAlertingOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this enable application alerting o k response has a 3xx status code
+func (o *EnableApplicationAlertingOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable application alerting o k response has a 4xx status code
+func (o *EnableApplicationAlertingOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this enable application alerting o k response has a 5xx status code
+func (o *EnableApplicationAlertingOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable application alerting o k response a status code equal to that given
+func (o *EnableApplicationAlertingOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the enable application alerting o k response
+func (o *EnableApplicationAlertingOK) Code() int {
+	return 200
+}
+
 func (o *EnableApplicationAlertingOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingOK  %+v", 200, o.Payload)
 }
+
+func (o *EnableApplicationAlertingOK) String() string {
+	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingOK  %+v", 200, o.Payload)
+}
+
 func (o *EnableApplicationAlertingOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -101,14 +137,49 @@ func NewEnableApplicationAlertingBadRequest() *EnableApplicationAlertingBadReque
 	return &EnableApplicationAlertingBadRequest{}
 }
 
-/* EnableApplicationAlertingBadRequest describes a response with status code 400, with default header values.
+/*
+EnableApplicationAlertingBadRequest describes a response with status code 400, with default header values.
 
 Alerting already enabled
 */
 type EnableApplicationAlertingBadRequest struct {
 }
 
+// IsSuccess returns true when this enable application alerting bad request response has a 2xx status code
+func (o *EnableApplicationAlertingBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable application alerting bad request response has a 3xx status code
+func (o *EnableApplicationAlertingBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable application alerting bad request response has a 4xx status code
+func (o *EnableApplicationAlertingBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable application alerting bad request response has a 5xx status code
+func (o *EnableApplicationAlertingBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable application alerting bad request response a status code equal to that given
+func (o *EnableApplicationAlertingBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the enable application alerting bad request response
+func (o *EnableApplicationAlertingBadRequest) Code() int {
+	return 400
+}
+
 func (o *EnableApplicationAlertingBadRequest) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingBadRequest ", 400)
+}
+
+func (o *EnableApplicationAlertingBadRequest) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingBadRequest ", 400)
 }
 
@@ -122,14 +193,49 @@ func NewEnableApplicationAlertingUnauthorized() *EnableApplicationAlertingUnauth
 	return &EnableApplicationAlertingUnauthorized{}
 }
 
-/* EnableApplicationAlertingUnauthorized describes a response with status code 401, with default header values.
+/*
+EnableApplicationAlertingUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type EnableApplicationAlertingUnauthorized struct {
 }
 
+// IsSuccess returns true when this enable application alerting unauthorized response has a 2xx status code
+func (o *EnableApplicationAlertingUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable application alerting unauthorized response has a 3xx status code
+func (o *EnableApplicationAlertingUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable application alerting unauthorized response has a 4xx status code
+func (o *EnableApplicationAlertingUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable application alerting unauthorized response has a 5xx status code
+func (o *EnableApplicationAlertingUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable application alerting unauthorized response a status code equal to that given
+func (o *EnableApplicationAlertingUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the enable application alerting unauthorized response
+func (o *EnableApplicationAlertingUnauthorized) Code() int {
+	return 401
+}
+
 func (o *EnableApplicationAlertingUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingUnauthorized ", 401)
+}
+
+func (o *EnableApplicationAlertingUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingUnauthorized ", 401)
 }
 
@@ -143,14 +249,49 @@ func NewEnableApplicationAlertingForbidden() *EnableApplicationAlertingForbidden
 	return &EnableApplicationAlertingForbidden{}
 }
 
-/* EnableApplicationAlertingForbidden describes a response with status code 403, with default header values.
+/*
+EnableApplicationAlertingForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type EnableApplicationAlertingForbidden struct {
 }
 
+// IsSuccess returns true when this enable application alerting forbidden response has a 2xx status code
+func (o *EnableApplicationAlertingForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable application alerting forbidden response has a 3xx status code
+func (o *EnableApplicationAlertingForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable application alerting forbidden response has a 4xx status code
+func (o *EnableApplicationAlertingForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable application alerting forbidden response has a 5xx status code
+func (o *EnableApplicationAlertingForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable application alerting forbidden response a status code equal to that given
+func (o *EnableApplicationAlertingForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the enable application alerting forbidden response
+func (o *EnableApplicationAlertingForbidden) Code() int {
+	return 403
+}
+
 func (o *EnableApplicationAlertingForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingForbidden ", 403)
+}
+
+func (o *EnableApplicationAlertingForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingForbidden ", 403)
 }
 
@@ -164,14 +305,49 @@ func NewEnableApplicationAlertingNotFound() *EnableApplicationAlertingNotFound {
 	return &EnableApplicationAlertingNotFound{}
 }
 
-/* EnableApplicationAlertingNotFound describes a response with status code 404, with default header values.
+/*
+EnableApplicationAlertingNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type EnableApplicationAlertingNotFound struct {
 }
 
+// IsSuccess returns true when this enable application alerting not found response has a 2xx status code
+func (o *EnableApplicationAlertingNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable application alerting not found response has a 3xx status code
+func (o *EnableApplicationAlertingNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable application alerting not found response has a 4xx status code
+func (o *EnableApplicationAlertingNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this enable application alerting not found response has a 5xx status code
+func (o *EnableApplicationAlertingNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this enable application alerting not found response a status code equal to that given
+func (o *EnableApplicationAlertingNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the enable application alerting not found response
+func (o *EnableApplicationAlertingNotFound) Code() int {
+	return 404
+}
+
 func (o *EnableApplicationAlertingNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingNotFound ", 404)
+}
+
+func (o *EnableApplicationAlertingNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingNotFound ", 404)
 }
 
@@ -185,14 +361,49 @@ func NewEnableApplicationAlertingInternalServerError() *EnableApplicationAlertin
 	return &EnableApplicationAlertingInternalServerError{}
 }
 
-/* EnableApplicationAlertingInternalServerError describes a response with status code 500, with default header values.
+/*
+EnableApplicationAlertingInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type EnableApplicationAlertingInternalServerError struct {
 }
 
+// IsSuccess returns true when this enable application alerting internal server error response has a 2xx status code
+func (o *EnableApplicationAlertingInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this enable application alerting internal server error response has a 3xx status code
+func (o *EnableApplicationAlertingInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this enable application alerting internal server error response has a 4xx status code
+func (o *EnableApplicationAlertingInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this enable application alerting internal server error response has a 5xx status code
+func (o *EnableApplicationAlertingInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this enable application alerting internal server error response a status code equal to that given
+func (o *EnableApplicationAlertingInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the enable application alerting internal server error response
+func (o *EnableApplicationAlertingInternalServerError) Code() int {
+	return 500
+}
+
 func (o *EnableApplicationAlertingInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingInternalServerError ", 500)
+}
+
+func (o *EnableApplicationAlertingInternalServerError) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/alerting/enable][%d] enableApplicationAlertingInternalServerError ", 500)
 }
 

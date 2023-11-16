@@ -21,6 +21,9 @@ data:
   sleepIntervalBetweenChecks: {{ .Values.sleepIntervalBetweenChecks | quote }}
   sleepIntervalTestRuns: {{ .Values.sleepIntervalTestRuns | quote }}
   nspSleepInterval: {{ .Values.nspSleepInterval | quote }}
+  nspDNSLookupTimeout: {{ .Values.nspDNSLookupTimeout | quote }}
+  nspNSPReachIngressTimeout: {{ .Values.nspNSPReachIngressTimeout | quote }}
+  nspNSPReachServiceTimeout: {{ .Values.nspNSPReachServiceTimeout | quote }}
   privateImageHubPassword: {{ .Values.privateImageHub.password }}
   nspLongSleepInterval: {{ .Values.nspLongSleepInterval | quote }}
   networkPolicyCanaryAppName: {{ .Values.networkPolicyCanaryAppName }}

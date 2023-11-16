@@ -53,10 +53,12 @@ func NewDeleteEnvironmentParamsWithHTTPClient(client *http.Client) *DeleteEnviro
 	}
 }
 
-/* DeleteEnvironmentParams contains all the parameters to send to the API endpoint
-   for the delete environment operation.
+/*
+DeleteEnvironmentParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the delete environment operation.
+
+	Typically these are written to a http.Request.
 */
 type DeleteEnvironmentParams struct {
 

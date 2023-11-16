@@ -51,7 +51,7 @@ func (o *RestartJobReader) ReadResponse(response runtime.ClientResponse, consume
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart] restartJob", response, response.Code())
 	}
 }
 
@@ -60,14 +60,49 @@ func NewRestartJobNoContent() *RestartJobNoContent {
 	return &RestartJobNoContent{}
 }
 
-/* RestartJobNoContent describes a response with status code 204, with default header values.
+/*
+RestartJobNoContent describes a response with status code 204, with default header values.
 
 Success
 */
 type RestartJobNoContent struct {
 }
 
+// IsSuccess returns true when this restart job no content response has a 2xx status code
+func (o *RestartJobNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this restart job no content response has a 3xx status code
+func (o *RestartJobNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart job no content response has a 4xx status code
+func (o *RestartJobNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this restart job no content response has a 5xx status code
+func (o *RestartJobNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart job no content response a status code equal to that given
+func (o *RestartJobNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+// Code gets the status code for the restart job no content response
+func (o *RestartJobNoContent) Code() int {
+	return 204
+}
+
 func (o *RestartJobNoContent) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobNoContent ", 204)
+}
+
+func (o *RestartJobNoContent) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobNoContent ", 204)
 }
 
@@ -81,14 +116,49 @@ func NewRestartJobBadRequest() *RestartJobBadRequest {
 	return &RestartJobBadRequest{}
 }
 
-/* RestartJobBadRequest describes a response with status code 400, with default header values.
+/*
+RestartJobBadRequest describes a response with status code 400, with default header values.
 
 Invalid job
 */
 type RestartJobBadRequest struct {
 }
 
+// IsSuccess returns true when this restart job bad request response has a 2xx status code
+func (o *RestartJobBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart job bad request response has a 3xx status code
+func (o *RestartJobBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart job bad request response has a 4xx status code
+func (o *RestartJobBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart job bad request response has a 5xx status code
+func (o *RestartJobBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart job bad request response a status code equal to that given
+func (o *RestartJobBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the restart job bad request response
+func (o *RestartJobBadRequest) Code() int {
+	return 400
+}
+
 func (o *RestartJobBadRequest) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobBadRequest ", 400)
+}
+
+func (o *RestartJobBadRequest) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobBadRequest ", 400)
 }
 
@@ -102,14 +172,49 @@ func NewRestartJobUnauthorized() *RestartJobUnauthorized {
 	return &RestartJobUnauthorized{}
 }
 
-/* RestartJobUnauthorized describes a response with status code 401, with default header values.
+/*
+RestartJobUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type RestartJobUnauthorized struct {
 }
 
+// IsSuccess returns true when this restart job unauthorized response has a 2xx status code
+func (o *RestartJobUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart job unauthorized response has a 3xx status code
+func (o *RestartJobUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart job unauthorized response has a 4xx status code
+func (o *RestartJobUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart job unauthorized response has a 5xx status code
+func (o *RestartJobUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart job unauthorized response a status code equal to that given
+func (o *RestartJobUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the restart job unauthorized response
+func (o *RestartJobUnauthorized) Code() int {
+	return 401
+}
+
 func (o *RestartJobUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobUnauthorized ", 401)
+}
+
+func (o *RestartJobUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobUnauthorized ", 401)
 }
 
@@ -123,14 +228,49 @@ func NewRestartJobForbidden() *RestartJobForbidden {
 	return &RestartJobForbidden{}
 }
 
-/* RestartJobForbidden describes a response with status code 403, with default header values.
+/*
+RestartJobForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type RestartJobForbidden struct {
 }
 
+// IsSuccess returns true when this restart job forbidden response has a 2xx status code
+func (o *RestartJobForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart job forbidden response has a 3xx status code
+func (o *RestartJobForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart job forbidden response has a 4xx status code
+func (o *RestartJobForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart job forbidden response has a 5xx status code
+func (o *RestartJobForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart job forbidden response a status code equal to that given
+func (o *RestartJobForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the restart job forbidden response
+func (o *RestartJobForbidden) Code() int {
+	return 403
+}
+
 func (o *RestartJobForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobForbidden ", 403)
+}
+
+func (o *RestartJobForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobForbidden ", 403)
 }
 
@@ -144,14 +284,49 @@ func NewRestartJobNotFound() *RestartJobNotFound {
 	return &RestartJobNotFound{}
 }
 
-/* RestartJobNotFound describes a response with status code 404, with default header values.
+/*
+RestartJobNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type RestartJobNotFound struct {
 }
 
+// IsSuccess returns true when this restart job not found response has a 2xx status code
+func (o *RestartJobNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart job not found response has a 3xx status code
+func (o *RestartJobNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart job not found response has a 4xx status code
+func (o *RestartJobNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart job not found response has a 5xx status code
+func (o *RestartJobNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart job not found response a status code equal to that given
+func (o *RestartJobNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the restart job not found response
+func (o *RestartJobNotFound) Code() int {
+	return 404
+}
+
 func (o *RestartJobNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobNotFound ", 404)
+}
+
+func (o *RestartJobNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/restart][%d] restartJobNotFound ", 404)
 }
 

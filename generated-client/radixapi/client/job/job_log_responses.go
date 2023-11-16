@@ -34,7 +34,7 @@ func (o *JobLogReader) ReadResponse(response runtime.ClientResponse, consumer ru
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs] jobLog", response, response.Code())
 	}
 }
 
@@ -43,7 +43,8 @@ func NewJobLogOK() *JobLogOK {
 	return &JobLogOK{}
 }
 
-/* JobLogOK describes a response with status code 200, with default header values.
+/*
+JobLogOK describes a response with status code 200, with default header values.
 
 scheduled job log
 */
@@ -51,9 +52,44 @@ type JobLogOK struct {
 	Payload string
 }
 
+// IsSuccess returns true when this job log o k response has a 2xx status code
+func (o *JobLogOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this job log o k response has a 3xx status code
+func (o *JobLogOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this job log o k response has a 4xx status code
+func (o *JobLogOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this job log o k response has a 5xx status code
+func (o *JobLogOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this job log o k response a status code equal to that given
+func (o *JobLogOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the job log o k response
+func (o *JobLogOK) Code() int {
+	return 200
+}
+
 func (o *JobLogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs][%d] jobLogOK  %+v", 200, o.Payload)
 }
+
+func (o *JobLogOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs][%d] jobLogOK  %+v", 200, o.Payload)
+}
+
 func (o *JobLogOK) GetPayload() string {
 	return o.Payload
 }
@@ -73,14 +109,49 @@ func NewJobLogNotFound() *JobLogNotFound {
 	return &JobLogNotFound{}
 }
 
-/* JobLogNotFound describes a response with status code 404, with default header values.
+/*
+JobLogNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type JobLogNotFound struct {
 }
 
+// IsSuccess returns true when this job log not found response has a 2xx status code
+func (o *JobLogNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this job log not found response has a 3xx status code
+func (o *JobLogNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this job log not found response has a 4xx status code
+func (o *JobLogNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this job log not found response has a 5xx status code
+func (o *JobLogNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this job log not found response a status code equal to that given
+func (o *JobLogNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the job log not found response
+func (o *JobLogNotFound) Code() int {
+	return 404
+}
+
 func (o *JobLogNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs][%d] jobLogNotFound ", 404)
+}
+
+func (o *JobLogNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/scheduledjobs/{scheduledJobName}/logs][%d] jobLogNotFound ", 404)
 }
 

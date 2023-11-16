@@ -64,6 +64,9 @@ sleepIntervalBetweenChecks: 10
 sleepIntervalTestRuns: 300
 nspSleepInterval: 15
 nspLongSleepInterval: 600
+nspDNSLookupTimeout: 12
+nspNSPReachIngressTimeout: 5
+nspNSPReachServiceTimeout: 5
 networkPolicyCanaryAppName: "radix-networkpolicy-canary"
 networkPolicyCanaryJobComponentName: "myjob"
 

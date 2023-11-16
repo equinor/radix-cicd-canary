@@ -53,10 +53,12 @@ func NewGetJobComponentDeploymentsParamsWithHTTPClient(client *http.Client) *Get
 	}
 }
 
-/* GetJobComponentDeploymentsParams contains all the parameters to send to the API endpoint
-   for the get job component deployments operation.
+/*
+GetJobComponentDeploymentsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get job component deployments operation.
+
+	Typically these are written to a http.Request.
 */
 type GetJobComponentDeploymentsParams struct {
 

@@ -39,7 +39,7 @@ func (o *StartComponentReader) ReadResponse(response runtime.ClientResponse, con
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/components/{componentName}/start] startComponent", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewStartComponentOK() *StartComponentOK {
 	return &StartComponentOK{}
 }
 
-/* StartComponentOK describes a response with status code 200, with default header values.
+/*
+StartComponentOK describes a response with status code 200, with default header values.
 
 Component started ok
 */
 type StartComponentOK struct {
 }
 
+// IsSuccess returns true when this start component o k response has a 2xx status code
+func (o *StartComponentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this start component o k response has a 3xx status code
+func (o *StartComponentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start component o k response has a 4xx status code
+func (o *StartComponentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this start component o k response has a 5xx status code
+func (o *StartComponentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start component o k response a status code equal to that given
+func (o *StartComponentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the start component o k response
+func (o *StartComponentOK) Code() int {
+	return 200
+}
+
 func (o *StartComponentOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/start][%d] startComponentOK ", 200)
+}
+
+func (o *StartComponentOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/start][%d] startComponentOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewStartComponentUnauthorized() *StartComponentUnauthorized {
 	return &StartComponentUnauthorized{}
 }
 
-/* StartComponentUnauthorized describes a response with status code 401, with default header values.
+/*
+StartComponentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type StartComponentUnauthorized struct {
 }
 
+// IsSuccess returns true when this start component unauthorized response has a 2xx status code
+func (o *StartComponentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this start component unauthorized response has a 3xx status code
+func (o *StartComponentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start component unauthorized response has a 4xx status code
+func (o *StartComponentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this start component unauthorized response has a 5xx status code
+func (o *StartComponentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start component unauthorized response a status code equal to that given
+func (o *StartComponentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the start component unauthorized response
+func (o *StartComponentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *StartComponentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/start][%d] startComponentUnauthorized ", 401)
+}
+
+func (o *StartComponentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/start][%d] startComponentUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewStartComponentNotFound() *StartComponentNotFound {
 	return &StartComponentNotFound{}
 }
 
-/* StartComponentNotFound describes a response with status code 404, with default header values.
+/*
+StartComponentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type StartComponentNotFound struct {
 }
 
+// IsSuccess returns true when this start component not found response has a 2xx status code
+func (o *StartComponentNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this start component not found response has a 3xx status code
+func (o *StartComponentNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start component not found response has a 4xx status code
+func (o *StartComponentNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this start component not found response has a 5xx status code
+func (o *StartComponentNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start component not found response a status code equal to that given
+func (o *StartComponentNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the start component not found response
+func (o *StartComponentNotFound) Code() int {
+	return 404
+}
+
 func (o *StartComponentNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/start][%d] startComponentNotFound ", 404)
+}
+
+func (o *StartComponentNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/start][%d] startComponentNotFound ", 404)
 }
 

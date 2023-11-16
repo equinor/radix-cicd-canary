@@ -53,10 +53,12 @@ func NewGetPrivateImageHubsParamsWithHTTPClient(client *http.Client) *GetPrivate
 	}
 }
 
-/* GetPrivateImageHubsParams contains all the parameters to send to the API endpoint
-   for the get private image hubs operation.
+/*
+GetPrivateImageHubsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get private image hubs operation.
+
+	Typically these are written to a http.Request.
 */
 type GetPrivateImageHubsParams struct {
 

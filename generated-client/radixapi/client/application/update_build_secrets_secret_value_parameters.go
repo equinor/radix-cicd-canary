@@ -55,10 +55,12 @@ func NewUpdateBuildSecretsSecretValueParamsWithHTTPClient(client *http.Client) *
 	}
 }
 
-/* UpdateBuildSecretsSecretValueParams contains all the parameters to send to the API endpoint
-   for the update build secrets secret value operation.
+/*
+UpdateBuildSecretsSecretValueParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the update build secrets secret value operation.
+
+	Typically these are written to a http.Request.
 */
 type UpdateBuildSecretsSecretValueParams struct {
 

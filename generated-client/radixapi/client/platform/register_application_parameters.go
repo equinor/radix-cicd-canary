@@ -55,10 +55,12 @@ func NewRegisterApplicationParamsWithHTTPClient(client *http.Client) *RegisterAp
 	}
 }
 
-/* RegisterApplicationParams contains all the parameters to send to the API endpoint
-   for the register application operation.
+/*
+RegisterApplicationParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the register application operation.
+
+	Typically these are written to a http.Request.
 */
 type RegisterApplicationParams struct {
 

@@ -53,10 +53,12 @@ func NewRestartBatchParamsWithHTTPClient(client *http.Client) *RestartBatchParam
 	}
 }
 
-/* RestartBatchParams contains all the parameters to send to the API endpoint
-   for the restart batch operation.
+/*
+RestartBatchParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the restart batch operation.
+
+	Typically these are written to a http.Request.
 */
 type RestartBatchParams struct {
 

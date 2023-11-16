@@ -19,6 +19,10 @@ import (
 // swagger:model ReplicaSummary
 type ReplicaSummary struct {
 
+	// Container started timestamp
+	// Example: 2006-01-02T15:04:05Z
+	ContainerStarted string `json:"containerStarted,omitempty"`
+
 	// Created timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Created string `json:"created,omitempty"`
@@ -139,6 +143,11 @@ func (m *ReplicaSummary) ContextValidate(ctx context.Context, formats strfmt.Reg
 func (m *ReplicaSummary) contextValidateReplicaStatus(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ReplicaStatus != nil {
+
+		if swag.IsZero(m.ReplicaStatus) { // not required
+			return nil
+		}
+
 		if err := m.ReplicaStatus.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replicaStatus")
@@ -155,6 +164,11 @@ func (m *ReplicaSummary) contextValidateReplicaStatus(ctx context.Context, forma
 func (m *ReplicaSummary) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Resources != nil {
+
+		if swag.IsZero(m.Resources) { // not required
+			return nil
+		}
+
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")

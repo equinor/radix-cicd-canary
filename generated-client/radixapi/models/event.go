@@ -100,6 +100,11 @@ func (m *Event) ContextValidate(ctx context.Context, formats strfmt.Registry) er
 func (m *Event) contextValidateInvolvedObjectState(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.InvolvedObjectState != nil {
+
+		if swag.IsZero(m.InvolvedObjectState) { // not required
+			return nil
+		}
+
 		if err := m.InvolvedObjectState.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("involvedObjectState")

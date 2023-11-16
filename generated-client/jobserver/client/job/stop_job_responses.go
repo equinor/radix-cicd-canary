@@ -42,7 +42,7 @@ func (o *StopJobReader) ReadResponse(response runtime.ClientResponse, consumer r
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /jobs/{jobName}/stop] stopJob", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewStopJobOK() *StopJobOK {
 	return &StopJobOK{}
 }
 
-/* StopJobOK describes a response with status code 200, with default header values.
+/*
+StopJobOK describes a response with status code 200, with default header values.
 
 Successful delete job
 */
@@ -59,9 +60,44 @@ type StopJobOK struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this stop job o k response has a 2xx status code
+func (o *StopJobOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this stop job o k response has a 3xx status code
+func (o *StopJobOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job o k response has a 4xx status code
+func (o *StopJobOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stop job o k response has a 5xx status code
+func (o *StopJobOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job o k response a status code equal to that given
+func (o *StopJobOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the stop job o k response
+func (o *StopJobOK) Code() int {
+	return 200
+}
+
 func (o *StopJobOK) Error() string {
 	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobOK  %+v", 200, o.Payload)
 }
+
+func (o *StopJobOK) String() string {
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobOK  %+v", 200, o.Payload)
+}
+
 func (o *StopJobOK) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -83,7 +119,8 @@ func NewStopJobNotFound() *StopJobNotFound {
 	return &StopJobNotFound{}
 }
 
-/* StopJobNotFound describes a response with status code 404, with default header values.
+/*
+StopJobNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -91,9 +128,44 @@ type StopJobNotFound struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this stop job not found response has a 2xx status code
+func (o *StopJobNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop job not found response has a 3xx status code
+func (o *StopJobNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job not found response has a 4xx status code
+func (o *StopJobNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop job not found response has a 5xx status code
+func (o *StopJobNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job not found response a status code equal to that given
+func (o *StopJobNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the stop job not found response
+func (o *StopJobNotFound) Code() int {
+	return 404
+}
+
 func (o *StopJobNotFound) Error() string {
 	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobNotFound  %+v", 404, o.Payload)
 }
+
+func (o *StopJobNotFound) String() string {
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobNotFound  %+v", 404, o.Payload)
+}
+
 func (o *StopJobNotFound) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -115,7 +187,8 @@ func NewStopJobInternalServerError() *StopJobInternalServerError {
 	return &StopJobInternalServerError{}
 }
 
-/* StopJobInternalServerError describes a response with status code 500, with default header values.
+/*
+StopJobInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
@@ -123,9 +196,44 @@ type StopJobInternalServerError struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this stop job internal server error response has a 2xx status code
+func (o *StopJobInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop job internal server error response has a 3xx status code
+func (o *StopJobInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job internal server error response has a 4xx status code
+func (o *StopJobInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stop job internal server error response has a 5xx status code
+func (o *StopJobInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this stop job internal server error response a status code equal to that given
+func (o *StopJobInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the stop job internal server error response
+func (o *StopJobInternalServerError) Code() int {
+	return 500
+}
+
 func (o *StopJobInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobInternalServerError  %+v", 500, o.Payload)
 }
+
+func (o *StopJobInternalServerError) String() string {
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobInternalServerError  %+v", 500, o.Payload)
+}
+
 func (o *StopJobInternalServerError) GetPayload() *models.Status {
 	return o.Payload
 }

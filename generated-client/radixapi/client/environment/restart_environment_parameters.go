@@ -53,10 +53,12 @@ func NewRestartEnvironmentParamsWithHTTPClient(client *http.Client) *RestartEnvi
 	}
 }
 
-/* RestartEnvironmentParams contains all the parameters to send to the API endpoint
-   for the restart environment operation.
+/*
+RestartEnvironmentParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the restart environment operation.
+
+	Typically these are written to a http.Request.
 */
 type RestartEnvironmentParams struct {
 

@@ -64,7 +64,7 @@ type ClientService interface {
 }
 
 /*
-  ChangeComponentSecret updates an application environment component secret
+ChangeComponentSecret updates an application environment component secret
 */
 func (a *Client) ChangeComponentSecret(params *ChangeComponentSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeComponentSecretOK, error) {
 	// TODO: Validate the params before sending
@@ -103,7 +103,7 @@ func (a *Client) ChangeComponentSecret(params *ChangeComponentSecretParams, auth
 }
 
 /*
-  CreateEnvironment creates application environment
+CreateEnvironment creates application environment
 */
 func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -142,7 +142,7 @@ func (a *Client) CreateEnvironment(params *CreateEnvironmentParams, authInfo run
 }
 
 /*
-  DeleteEnvironment deletes application environment
+DeleteEnvironment deletes application environment
 */
 func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -181,7 +181,7 @@ func (a *Client) DeleteEnvironment(params *DeleteEnvironmentParams, authInfo run
 }
 
 /*
-  DisableEnvironmentAlerting disables alerting for an environment
+DisableEnvironmentAlerting disables alerting for an environment
 */
 func (a *Client) DisableEnvironmentAlerting(params *DisableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableEnvironmentAlertingOK, error) {
 	// TODO: Validate the params before sending
@@ -220,7 +220,7 @@ func (a *Client) DisableEnvironmentAlerting(params *DisableEnvironmentAlertingPa
 }
 
 /*
-  EnableEnvironmentAlerting enables alerting for an environment
+EnableEnvironmentAlerting enables alerting for an environment
 */
 func (a *Client) EnableEnvironmentAlerting(params *EnableEnvironmentAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableEnvironmentAlertingOK, error) {
 	// TODO: Validate the params before sending
@@ -259,7 +259,7 @@ func (a *Client) EnableEnvironmentAlerting(params *EnableEnvironmentAlertingPara
 }
 
 /*
-  GetApplicationEnvironmentDeployments lists the application environment deployments
+GetApplicationEnvironmentDeployments lists the application environment deployments
 */
 func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvironmentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationEnvironmentDeploymentsOK, error) {
 	// TODO: Validate the params before sending
@@ -298,7 +298,7 @@ func (a *Client) GetApplicationEnvironmentDeployments(params *GetApplicationEnvi
 }
 
 /*
-  GetAzureKeyVaultSecretVersions gets azure key vault secret versions for a component
+GetAzureKeyVaultSecretVersions gets azure key vault secret versions for a component
 */
 func (a *Client) GetAzureKeyVaultSecretVersions(params *GetAzureKeyVaultSecretVersionsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetAzureKeyVaultSecretVersionsOK, error) {
 	// TODO: Validate the params before sending
@@ -337,7 +337,7 @@ func (a *Client) GetAzureKeyVaultSecretVersions(params *GetAzureKeyVaultSecretVe
 }
 
 /*
-  GetEnvironment gets details for an application environment
+GetEnvironment gets details for an application environment
 */
 func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -376,7 +376,7 @@ func (a *Client) GetEnvironment(params *GetEnvironmentParams, authInfo runtime.C
 }
 
 /*
-  GetEnvironmentAlertingConfig gets alerts configuration for an environment
+GetEnvironmentAlertingConfig gets alerts configuration for an environment
 */
 func (a *Client) GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentAlertingConfigOK, error) {
 	// TODO: Validate the params before sending
@@ -415,7 +415,7 @@ func (a *Client) GetEnvironmentAlertingConfig(params *GetEnvironmentAlertingConf
 }
 
 /*
-  GetEnvironmentEvents lists events for an application environment
+GetEnvironmentEvents lists events for an application environment
 */
 func (a *Client) GetEnvironmentEvents(params *GetEnvironmentEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentEventsOK, error) {
 	// TODO: Validate the params before sending
@@ -454,7 +454,7 @@ func (a *Client) GetEnvironmentEvents(params *GetEnvironmentEventsParams, authIn
 }
 
 /*
-  GetEnvironmentSummary lists the environments for an application
+GetEnvironmentSummary lists the environments for an application
 */
 func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEnvironmentSummaryOK, error) {
 	// TODO: Validate the params before sending
@@ -493,7 +493,7 @@ func (a *Client) GetEnvironmentSummary(params *GetEnvironmentSummaryParams, auth
 }
 
 /*
-  RestartEnvironment restarts all components in the environment stops all running components in the environment pulls new images from image hub in radix configuration starts all components in the environment again using up to date image
+RestartEnvironment restarts all components in the environment stops all running components in the environment pulls new images from image hub in radix configuration starts all components in the environment again using up to date image
 */
 func (a *Client) RestartEnvironment(params *RestartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -532,7 +532,7 @@ func (a *Client) RestartEnvironment(params *RestartEnvironmentParams, authInfo r
 }
 
 /*
-  StartEnvironment starts all components in the environment
+StartEnvironment starts all components in the environment
 */
 func (a *Client) StartEnvironment(params *StartEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -571,7 +571,7 @@ func (a *Client) StartEnvironment(params *StartEnvironmentParams, authInfo runti
 }
 
 /*
-  StopEnvironment stops all components in the environment
+StopEnvironment stops all components in the environment
 */
 func (a *Client) StopEnvironment(params *StopEnvironmentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopEnvironmentOK, error) {
 	// TODO: Validate the params before sending
@@ -610,7 +610,7 @@ func (a *Client) StopEnvironment(params *StopEnvironmentParams, authInfo runtime
 }
 
 /*
-  UpdateEnvironmentAlertingConfig updates alerts configuration for an environment
+UpdateEnvironmentAlertingConfig updates alerts configuration for an environment
 */
 func (a *Client) UpdateEnvironmentAlertingConfig(params *UpdateEnvironmentAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEnvironmentAlertingConfigOK, error) {
 	// TODO: Validate the params before sending

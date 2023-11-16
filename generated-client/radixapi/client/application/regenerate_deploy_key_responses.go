@@ -38,8 +38,14 @@ func (o *RegenerateDeployKeyReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return nil, result
+	case 409:
+		result := NewRegenerateDeployKeyConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/regenerate-deploy-key] regenerateDeployKey", response, response.Code())
 	}
 }
 
@@ -48,14 +54,49 @@ func NewRegenerateDeployKeyNoContent() *RegenerateDeployKeyNoContent {
 	return &RegenerateDeployKeyNoContent{}
 }
 
-/* RegenerateDeployKeyNoContent describes a response with status code 204, with default header values.
+/*
+RegenerateDeployKeyNoContent describes a response with status code 204, with default header values.
 
 Successfully regenerated deploy key and set shared secret
 */
 type RegenerateDeployKeyNoContent struct {
 }
 
+// IsSuccess returns true when this regenerate deploy key no content response has a 2xx status code
+func (o *RegenerateDeployKeyNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this regenerate deploy key no content response has a 3xx status code
+func (o *RegenerateDeployKeyNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this regenerate deploy key no content response has a 4xx status code
+func (o *RegenerateDeployKeyNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this regenerate deploy key no content response has a 5xx status code
+func (o *RegenerateDeployKeyNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this regenerate deploy key no content response a status code equal to that given
+func (o *RegenerateDeployKeyNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+// Code gets the status code for the regenerate deploy key no content response
+func (o *RegenerateDeployKeyNoContent) Code() int {
+	return 204
+}
+
 func (o *RegenerateDeployKeyNoContent) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyNoContent ", 204)
+}
+
+func (o *RegenerateDeployKeyNoContent) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyNoContent ", 204)
 }
 
@@ -69,14 +110,49 @@ func NewRegenerateDeployKeyUnauthorized() *RegenerateDeployKeyUnauthorized {
 	return &RegenerateDeployKeyUnauthorized{}
 }
 
-/* RegenerateDeployKeyUnauthorized describes a response with status code 401, with default header values.
+/*
+RegenerateDeployKeyUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type RegenerateDeployKeyUnauthorized struct {
 }
 
+// IsSuccess returns true when this regenerate deploy key unauthorized response has a 2xx status code
+func (o *RegenerateDeployKeyUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this regenerate deploy key unauthorized response has a 3xx status code
+func (o *RegenerateDeployKeyUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this regenerate deploy key unauthorized response has a 4xx status code
+func (o *RegenerateDeployKeyUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this regenerate deploy key unauthorized response has a 5xx status code
+func (o *RegenerateDeployKeyUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this regenerate deploy key unauthorized response a status code equal to that given
+func (o *RegenerateDeployKeyUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the regenerate deploy key unauthorized response
+func (o *RegenerateDeployKeyUnauthorized) Code() int {
+	return 401
+}
+
 func (o *RegenerateDeployKeyUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyUnauthorized ", 401)
+}
+
+func (o *RegenerateDeployKeyUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyUnauthorized ", 401)
 }
 
@@ -90,18 +166,109 @@ func NewRegenerateDeployKeyNotFound() *RegenerateDeployKeyNotFound {
 	return &RegenerateDeployKeyNotFound{}
 }
 
-/* RegenerateDeployKeyNotFound describes a response with status code 404, with default header values.
+/*
+RegenerateDeployKeyNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type RegenerateDeployKeyNotFound struct {
 }
 
+// IsSuccess returns true when this regenerate deploy key not found response has a 2xx status code
+func (o *RegenerateDeployKeyNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this regenerate deploy key not found response has a 3xx status code
+func (o *RegenerateDeployKeyNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this regenerate deploy key not found response has a 4xx status code
+func (o *RegenerateDeployKeyNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this regenerate deploy key not found response has a 5xx status code
+func (o *RegenerateDeployKeyNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this regenerate deploy key not found response a status code equal to that given
+func (o *RegenerateDeployKeyNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the regenerate deploy key not found response
+func (o *RegenerateDeployKeyNotFound) Code() int {
+	return 404
+}
+
 func (o *RegenerateDeployKeyNotFound) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyNotFound ", 404)
 }
 
+func (o *RegenerateDeployKeyNotFound) String() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyNotFound ", 404)
+}
+
 func (o *RegenerateDeployKeyNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewRegenerateDeployKeyConflict creates a RegenerateDeployKeyConflict with default headers values
+func NewRegenerateDeployKeyConflict() *RegenerateDeployKeyConflict {
+	return &RegenerateDeployKeyConflict{}
+}
+
+/*
+RegenerateDeployKeyConflict describes a response with status code 409, with default header values.
+
+Conflict
+*/
+type RegenerateDeployKeyConflict struct {
+}
+
+// IsSuccess returns true when this regenerate deploy key conflict response has a 2xx status code
+func (o *RegenerateDeployKeyConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this regenerate deploy key conflict response has a 3xx status code
+func (o *RegenerateDeployKeyConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this regenerate deploy key conflict response has a 4xx status code
+func (o *RegenerateDeployKeyConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this regenerate deploy key conflict response has a 5xx status code
+func (o *RegenerateDeployKeyConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this regenerate deploy key conflict response a status code equal to that given
+func (o *RegenerateDeployKeyConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the regenerate deploy key conflict response
+func (o *RegenerateDeployKeyConflict) Code() int {
+	return 409
+}
+
+func (o *RegenerateDeployKeyConflict) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyConflict ", 409)
+}
+
+func (o *RegenerateDeployKeyConflict) String() string {
+	return fmt.Sprintf("[POST /applications/{appName}/regenerate-deploy-key][%d] regenerateDeployKeyConflict ", 409)
+}
+
+func (o *RegenerateDeployKeyConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

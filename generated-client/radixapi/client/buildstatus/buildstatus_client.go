@@ -36,7 +36,7 @@ type ClientService interface {
 }
 
 /*
-  GetBuildStatus shows the application build status
+GetBuildStatus shows the application build status
 */
 func (a *Client) GetBuildStatus(params *GetBuildStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBuildStatusOK, error) {
 	// TODO: Validate the params before sending

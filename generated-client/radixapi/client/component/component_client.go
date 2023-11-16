@@ -56,7 +56,7 @@ type ClientService interface {
 }
 
 /*
-  ChangeEnvVar updates an environment variable
+ChangeEnvVar updates an environment variable
 */
 func (a *Client) ChangeEnvVar(params *ChangeEnvVarParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeEnvVarOK, error) {
 	// TODO: Validate the params before sending
@@ -95,7 +95,7 @@ func (a *Client) ChangeEnvVar(params *ChangeEnvVarParams, authInfo runtime.Clien
 }
 
 /*
-  Components gets components for a deployment
+Components gets components for a deployment
 */
 func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ComponentsOK, error) {
 	// TODO: Validate the params before sending
@@ -134,7 +134,7 @@ func (a *Client) Components(params *ComponentsParams, authInfo runtime.ClientAut
 }
 
 /*
-  EnvVars gets environment variables for component
+EnvVars gets environment variables for component
 */
 func (a *Client) EnvVars(params *EnvVarsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnvVarsOK, error) {
 	// TODO: Validate the params before sending
@@ -173,7 +173,7 @@ func (a *Client) EnvVars(params *EnvVarsParams, authInfo runtime.ClientAuthInfoW
 }
 
 /*
-  GetOAuthPodLog gets logs for an oauth auxiliary resource pod
+GetOAuthPodLog gets logs for an oauth auxiliary resource pod
 */
 func (a *Client) GetOAuthPodLog(params *GetOAuthPodLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetOAuthPodLogOK, error) {
 	// TODO: Validate the params before sending
@@ -212,7 +212,7 @@ func (a *Client) GetOAuthPodLog(params *GetOAuthPodLogParams, authInfo runtime.C
 }
 
 /*
-  Log gets logs from a deployed pod
+Log gets logs from a deployed pod
 */
 func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*LogOK, error) {
 	// TODO: Validate the params before sending
@@ -251,7 +251,7 @@ func (a *Client) Log(params *LogParams, authInfo runtime.ClientAuthInfoWriter, o
 }
 
 /*
-  ReplicaLog gets logs from a deployed pod
+ReplicaLog gets logs from a deployed pod
 */
 func (a *Client) ReplicaLog(params *ReplicaLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ReplicaLogOK, error) {
 	// TODO: Validate the params before sending
@@ -290,7 +290,7 @@ func (a *Client) ReplicaLog(params *ReplicaLogParams, authInfo runtime.ClientAut
 }
 
 /*
-  RestartComponent restarts a component stops running the component container pulls new image from image hub in radix configuration starts the container again using an up to date image
+RestartComponent restarts a component stops running the component container pulls new image from image hub in radix configuration starts the container again using an up to date image
 */
 func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartComponentOK, error) {
 	// TODO: Validate the params before sending
@@ -329,7 +329,7 @@ func (a *Client) RestartComponent(params *RestartComponentParams, authInfo runti
 }
 
 /*
-  RestartOAuthAuxiliaryResource restarts an auxiliary resource for a component
+RestartOAuthAuxiliaryResource restarts an auxiliary resource for a component
 */
 func (a *Client) RestartOAuthAuxiliaryResource(params *RestartOAuthAuxiliaryResourceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartOAuthAuxiliaryResourceOK, error) {
 	// TODO: Validate the params before sending
@@ -368,7 +368,7 @@ func (a *Client) RestartOAuthAuxiliaryResource(params *RestartOAuthAuxiliaryReso
 }
 
 /*
-  ScaleComponent scales a component replicas
+ScaleComponent scales a component replicas
 */
 func (a *Client) ScaleComponent(params *ScaleComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ScaleComponentNoContent, error) {
 	// TODO: Validate the params before sending
@@ -407,7 +407,7 @@ func (a *Client) ScaleComponent(params *ScaleComponentParams, authInfo runtime.C
 }
 
 /*
-  StartComponent starts component
+StartComponent starts component
 */
 func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartComponentOK, error) {
 	// TODO: Validate the params before sending
@@ -446,7 +446,7 @@ func (a *Client) StartComponent(params *StartComponentParams, authInfo runtime.C
 }
 
 /*
-  StopComponent stops component
+StopComponent stops component
 */
 func (a *Client) StopComponent(params *StopComponentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopComponentOK, error) {
 	// TODO: Validate the params before sending

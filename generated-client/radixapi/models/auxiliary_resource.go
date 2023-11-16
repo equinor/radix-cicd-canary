@@ -72,6 +72,11 @@ func (m *AuxiliaryResource) ContextValidate(ctx context.Context, formats strfmt.
 func (m *AuxiliaryResource) contextValidateOauth2(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Oauth2 != nil {
+
+		if swag.IsZero(m.Oauth2) { // not required
+			return nil
+		}
+
 		if err := m.Oauth2.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("oauth2")

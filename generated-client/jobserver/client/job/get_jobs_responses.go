@@ -36,7 +36,7 @@ func (o *GetJobsReader) ReadResponse(response runtime.ClientResponse, consumer r
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /jobs/] getJobs", response, response.Code())
 	}
 }
 
@@ -45,7 +45,8 @@ func NewGetJobsOK() *GetJobsOK {
 	return &GetJobsOK{}
 }
 
-/* GetJobsOK describes a response with status code 200, with default header values.
+/*
+GetJobsOK describes a response with status code 200, with default header values.
 
 Successful get jobs
 */
@@ -53,9 +54,44 @@ type GetJobsOK struct {
 	Payload []*models.JobStatus
 }
 
+// IsSuccess returns true when this get jobs o k response has a 2xx status code
+func (o *GetJobsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get jobs o k response has a 3xx status code
+func (o *GetJobsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get jobs o k response has a 4xx status code
+func (o *GetJobsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get jobs o k response has a 5xx status code
+func (o *GetJobsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get jobs o k response a status code equal to that given
+func (o *GetJobsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get jobs o k response
+func (o *GetJobsOK) Code() int {
+	return 200
+}
+
 func (o *GetJobsOK) Error() string {
 	return fmt.Sprintf("[GET /jobs/][%d] getJobsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetJobsOK) String() string {
+	return fmt.Sprintf("[GET /jobs/][%d] getJobsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetJobsOK) GetPayload() []*models.JobStatus {
 	return o.Payload
 }
@@ -75,7 +111,8 @@ func NewGetJobsInternalServerError() *GetJobsInternalServerError {
 	return &GetJobsInternalServerError{}
 }
 
-/* GetJobsInternalServerError describes a response with status code 500, with default header values.
+/*
+GetJobsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
@@ -83,9 +120,44 @@ type GetJobsInternalServerError struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this get jobs internal server error response has a 2xx status code
+func (o *GetJobsInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get jobs internal server error response has a 3xx status code
+func (o *GetJobsInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get jobs internal server error response has a 4xx status code
+func (o *GetJobsInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get jobs internal server error response has a 5xx status code
+func (o *GetJobsInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get jobs internal server error response a status code equal to that given
+func (o *GetJobsInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the get jobs internal server error response
+func (o *GetJobsInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetJobsInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /jobs/][%d] getJobsInternalServerError  %+v", 500, o.Payload)
 }
+
+func (o *GetJobsInternalServerError) String() string {
+	return fmt.Sprintf("[GET /jobs/][%d] getJobsInternalServerError  %+v", 500, o.Payload)
+}
+
 func (o *GetJobsInternalServerError) GetPayload() *models.Status {
 	return o.Payload
 }

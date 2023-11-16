@@ -63,7 +63,7 @@ func (o *ChangeEnvVarReader) ReadResponse(response runtime.ClientResponse, consu
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars] changeEnvVar", response, response.Code())
 	}
 }
 
@@ -72,14 +72,49 @@ func NewChangeEnvVarOK() *ChangeEnvVarOK {
 	return &ChangeEnvVarOK{}
 }
 
-/* ChangeEnvVarOK describes a response with status code 200, with default header values.
+/*
+ChangeEnvVarOK describes a response with status code 200, with default header values.
 
 success
 */
 type ChangeEnvVarOK struct {
 }
 
+// IsSuccess returns true when this change env var o k response has a 2xx status code
+func (o *ChangeEnvVarOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this change env var o k response has a 3xx status code
+func (o *ChangeEnvVarOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change env var o k response has a 4xx status code
+func (o *ChangeEnvVarOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this change env var o k response has a 5xx status code
+func (o *ChangeEnvVarOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change env var o k response a status code equal to that given
+func (o *ChangeEnvVarOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the change env var o k response
+func (o *ChangeEnvVarOK) Code() int {
+	return 200
+}
+
 func (o *ChangeEnvVarOK) Error() string {
+	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarOK ", 200)
+}
+
+func (o *ChangeEnvVarOK) String() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarOK ", 200)
 }
 
@@ -93,14 +128,49 @@ func NewChangeEnvVarBadRequest() *ChangeEnvVarBadRequest {
 	return &ChangeEnvVarBadRequest{}
 }
 
-/* ChangeEnvVarBadRequest describes a response with status code 400, with default header values.
+/*
+ChangeEnvVarBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
 type ChangeEnvVarBadRequest struct {
 }
 
+// IsSuccess returns true when this change env var bad request response has a 2xx status code
+func (o *ChangeEnvVarBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change env var bad request response has a 3xx status code
+func (o *ChangeEnvVarBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change env var bad request response has a 4xx status code
+func (o *ChangeEnvVarBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change env var bad request response has a 5xx status code
+func (o *ChangeEnvVarBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change env var bad request response a status code equal to that given
+func (o *ChangeEnvVarBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the change env var bad request response
+func (o *ChangeEnvVarBadRequest) Code() int {
+	return 400
+}
+
 func (o *ChangeEnvVarBadRequest) Error() string {
+	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarBadRequest ", 400)
+}
+
+func (o *ChangeEnvVarBadRequest) String() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarBadRequest ", 400)
 }
 
@@ -114,14 +184,49 @@ func NewChangeEnvVarUnauthorized() *ChangeEnvVarUnauthorized {
 	return &ChangeEnvVarUnauthorized{}
 }
 
-/* ChangeEnvVarUnauthorized describes a response with status code 401, with default header values.
+/*
+ChangeEnvVarUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type ChangeEnvVarUnauthorized struct {
 }
 
+// IsSuccess returns true when this change env var unauthorized response has a 2xx status code
+func (o *ChangeEnvVarUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change env var unauthorized response has a 3xx status code
+func (o *ChangeEnvVarUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change env var unauthorized response has a 4xx status code
+func (o *ChangeEnvVarUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change env var unauthorized response has a 5xx status code
+func (o *ChangeEnvVarUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change env var unauthorized response a status code equal to that given
+func (o *ChangeEnvVarUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the change env var unauthorized response
+func (o *ChangeEnvVarUnauthorized) Code() int {
+	return 401
+}
+
 func (o *ChangeEnvVarUnauthorized) Error() string {
+	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarUnauthorized ", 401)
+}
+
+func (o *ChangeEnvVarUnauthorized) String() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarUnauthorized ", 401)
 }
 
@@ -135,14 +240,49 @@ func NewChangeEnvVarForbidden() *ChangeEnvVarForbidden {
 	return &ChangeEnvVarForbidden{}
 }
 
-/* ChangeEnvVarForbidden describes a response with status code 403, with default header values.
+/*
+ChangeEnvVarForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type ChangeEnvVarForbidden struct {
 }
 
+// IsSuccess returns true when this change env var forbidden response has a 2xx status code
+func (o *ChangeEnvVarForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change env var forbidden response has a 3xx status code
+func (o *ChangeEnvVarForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change env var forbidden response has a 4xx status code
+func (o *ChangeEnvVarForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change env var forbidden response has a 5xx status code
+func (o *ChangeEnvVarForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change env var forbidden response a status code equal to that given
+func (o *ChangeEnvVarForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the change env var forbidden response
+func (o *ChangeEnvVarForbidden) Code() int {
+	return 403
+}
+
 func (o *ChangeEnvVarForbidden) Error() string {
+	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarForbidden ", 403)
+}
+
+func (o *ChangeEnvVarForbidden) String() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarForbidden ", 403)
 }
 
@@ -156,14 +296,49 @@ func NewChangeEnvVarNotFound() *ChangeEnvVarNotFound {
 	return &ChangeEnvVarNotFound{}
 }
 
-/* ChangeEnvVarNotFound describes a response with status code 404, with default header values.
+/*
+ChangeEnvVarNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type ChangeEnvVarNotFound struct {
 }
 
+// IsSuccess returns true when this change env var not found response has a 2xx status code
+func (o *ChangeEnvVarNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change env var not found response has a 3xx status code
+func (o *ChangeEnvVarNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change env var not found response has a 4xx status code
+func (o *ChangeEnvVarNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change env var not found response has a 5xx status code
+func (o *ChangeEnvVarNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change env var not found response a status code equal to that given
+func (o *ChangeEnvVarNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the change env var not found response
+func (o *ChangeEnvVarNotFound) Code() int {
+	return 404
+}
+
 func (o *ChangeEnvVarNotFound) Error() string {
+	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarNotFound ", 404)
+}
+
+func (o *ChangeEnvVarNotFound) String() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarNotFound ", 404)
 }
 
@@ -177,14 +352,49 @@ func NewChangeEnvVarConflict() *ChangeEnvVarConflict {
 	return &ChangeEnvVarConflict{}
 }
 
-/* ChangeEnvVarConflict describes a response with status code 409, with default header values.
+/*
+ChangeEnvVarConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type ChangeEnvVarConflict struct {
 }
 
+// IsSuccess returns true when this change env var conflict response has a 2xx status code
+func (o *ChangeEnvVarConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change env var conflict response has a 3xx status code
+func (o *ChangeEnvVarConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change env var conflict response has a 4xx status code
+func (o *ChangeEnvVarConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change env var conflict response has a 5xx status code
+func (o *ChangeEnvVarConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change env var conflict response a status code equal to that given
+func (o *ChangeEnvVarConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the change env var conflict response
+func (o *ChangeEnvVarConflict) Code() int {
+	return 409
+}
+
 func (o *ChangeEnvVarConflict) Error() string {
+	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarConflict ", 409)
+}
+
+func (o *ChangeEnvVarConflict) String() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarConflict ", 409)
 }
 
@@ -198,14 +408,49 @@ func NewChangeEnvVarInternalServerError() *ChangeEnvVarInternalServerError {
 	return &ChangeEnvVarInternalServerError{}
 }
 
-/* ChangeEnvVarInternalServerError describes a response with status code 500, with default header values.
+/*
+ChangeEnvVarInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type ChangeEnvVarInternalServerError struct {
 }
 
+// IsSuccess returns true when this change env var internal server error response has a 2xx status code
+func (o *ChangeEnvVarInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change env var internal server error response has a 3xx status code
+func (o *ChangeEnvVarInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change env var internal server error response has a 4xx status code
+func (o *ChangeEnvVarInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this change env var internal server error response has a 5xx status code
+func (o *ChangeEnvVarInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this change env var internal server error response a status code equal to that given
+func (o *ChangeEnvVarInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the change env var internal server error response
+func (o *ChangeEnvVarInternalServerError) Code() int {
+	return 500
+}
+
 func (o *ChangeEnvVarInternalServerError) Error() string {
+	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarInternalServerError ", 500)
+}
+
+func (o *ChangeEnvVarInternalServerError) String() string {
 	return fmt.Sprintf("[PATCH /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] changeEnvVarInternalServerError ", 500)
 }
 

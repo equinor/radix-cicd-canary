@@ -41,8 +41,8 @@ type Repository struct {
 }
 
 // GetHTTPDefaultClient returns a new simple HTTP client
-func GetHTTPDefaultClient() *http.Client {
-	return &http.Client{Timeout: time.Second * 5}
+func GetHTTPDefaultClient(timeout time.Duration) *http.Client {
+	return &http.Client{Timeout: time.Second * time.Duration(timeout)}
 }
 
 // CreateRequest setup correct header for running tests

@@ -39,7 +39,7 @@ func (o *StartApplicationReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/start] startApplication", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewStartApplicationOK() *StartApplicationOK {
 	return &StartApplicationOK{}
 }
 
-/* StartApplicationOK describes a response with status code 200, with default header values.
+/*
+StartApplicationOK describes a response with status code 200, with default header values.
 
 Application started ok
 */
 type StartApplicationOK struct {
 }
 
+// IsSuccess returns true when this start application o k response has a 2xx status code
+func (o *StartApplicationOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this start application o k response has a 3xx status code
+func (o *StartApplicationOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start application o k response has a 4xx status code
+func (o *StartApplicationOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this start application o k response has a 5xx status code
+func (o *StartApplicationOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start application o k response a status code equal to that given
+func (o *StartApplicationOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the start application o k response
+func (o *StartApplicationOK) Code() int {
+	return 200
+}
+
 func (o *StartApplicationOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/start][%d] startApplicationOK ", 200)
+}
+
+func (o *StartApplicationOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/start][%d] startApplicationOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewStartApplicationUnauthorized() *StartApplicationUnauthorized {
 	return &StartApplicationUnauthorized{}
 }
 
-/* StartApplicationUnauthorized describes a response with status code 401, with default header values.
+/*
+StartApplicationUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type StartApplicationUnauthorized struct {
 }
 
+// IsSuccess returns true when this start application unauthorized response has a 2xx status code
+func (o *StartApplicationUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this start application unauthorized response has a 3xx status code
+func (o *StartApplicationUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start application unauthorized response has a 4xx status code
+func (o *StartApplicationUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this start application unauthorized response has a 5xx status code
+func (o *StartApplicationUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start application unauthorized response a status code equal to that given
+func (o *StartApplicationUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the start application unauthorized response
+func (o *StartApplicationUnauthorized) Code() int {
+	return 401
+}
+
 func (o *StartApplicationUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/start][%d] startApplicationUnauthorized ", 401)
+}
+
+func (o *StartApplicationUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/start][%d] startApplicationUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewStartApplicationNotFound() *StartApplicationNotFound {
 	return &StartApplicationNotFound{}
 }
 
-/* StartApplicationNotFound describes a response with status code 404, with default header values.
+/*
+StartApplicationNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type StartApplicationNotFound struct {
 }
 
+// IsSuccess returns true when this start application not found response has a 2xx status code
+func (o *StartApplicationNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this start application not found response has a 3xx status code
+func (o *StartApplicationNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start application not found response has a 4xx status code
+func (o *StartApplicationNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this start application not found response has a 5xx status code
+func (o *StartApplicationNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start application not found response a status code equal to that given
+func (o *StartApplicationNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the start application not found response
+func (o *StartApplicationNotFound) Code() int {
+	return 404
+}
+
 func (o *StartApplicationNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/start][%d] startApplicationNotFound ", 404)
+}
+
+func (o *StartApplicationNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/start][%d] startApplicationNotFound ", 404)
 }
 

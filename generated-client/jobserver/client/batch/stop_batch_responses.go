@@ -42,7 +42,7 @@ func (o *StopBatchReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /batches/{batchName}/stop] stopBatch", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewStopBatchOK() *StopBatchOK {
 	return &StopBatchOK{}
 }
 
-/* StopBatchOK describes a response with status code 200, with default header values.
+/*
+StopBatchOK describes a response with status code 200, with default header values.
 
 Successful stop batch
 */
@@ -59,9 +60,44 @@ type StopBatchOK struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this stop batch o k response has a 2xx status code
+func (o *StopBatchOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this stop batch o k response has a 3xx status code
+func (o *StopBatchOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop batch o k response has a 4xx status code
+func (o *StopBatchOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stop batch o k response has a 5xx status code
+func (o *StopBatchOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop batch o k response a status code equal to that given
+func (o *StopBatchOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the stop batch o k response
+func (o *StopBatchOK) Code() int {
+	return 200
+}
+
 func (o *StopBatchOK) Error() string {
 	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchOK  %+v", 200, o.Payload)
 }
+
+func (o *StopBatchOK) String() string {
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchOK  %+v", 200, o.Payload)
+}
+
 func (o *StopBatchOK) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -83,7 +119,8 @@ func NewStopBatchNotFound() *StopBatchNotFound {
 	return &StopBatchNotFound{}
 }
 
-/* StopBatchNotFound describes a response with status code 404, with default header values.
+/*
+StopBatchNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -91,9 +128,44 @@ type StopBatchNotFound struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this stop batch not found response has a 2xx status code
+func (o *StopBatchNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop batch not found response has a 3xx status code
+func (o *StopBatchNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop batch not found response has a 4xx status code
+func (o *StopBatchNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop batch not found response has a 5xx status code
+func (o *StopBatchNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop batch not found response a status code equal to that given
+func (o *StopBatchNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the stop batch not found response
+func (o *StopBatchNotFound) Code() int {
+	return 404
+}
+
 func (o *StopBatchNotFound) Error() string {
 	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchNotFound  %+v", 404, o.Payload)
 }
+
+func (o *StopBatchNotFound) String() string {
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchNotFound  %+v", 404, o.Payload)
+}
+
 func (o *StopBatchNotFound) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -115,7 +187,8 @@ func NewStopBatchInternalServerError() *StopBatchInternalServerError {
 	return &StopBatchInternalServerError{}
 }
 
-/* StopBatchInternalServerError describes a response with status code 500, with default header values.
+/*
+StopBatchInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
@@ -123,9 +196,44 @@ type StopBatchInternalServerError struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this stop batch internal server error response has a 2xx status code
+func (o *StopBatchInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop batch internal server error response has a 3xx status code
+func (o *StopBatchInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop batch internal server error response has a 4xx status code
+func (o *StopBatchInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stop batch internal server error response has a 5xx status code
+func (o *StopBatchInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this stop batch internal server error response a status code equal to that given
+func (o *StopBatchInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the stop batch internal server error response
+func (o *StopBatchInternalServerError) Code() int {
+	return 500
+}
+
 func (o *StopBatchInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchInternalServerError  %+v", 500, o.Payload)
 }
+
+func (o *StopBatchInternalServerError) String() string {
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchInternalServerError  %+v", 500, o.Payload)
+}
+
 func (o *StopBatchInternalServerError) GetPayload() *models.Status {
 	return o.Payload
 }

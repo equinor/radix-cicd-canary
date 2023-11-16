@@ -12,6 +12,7 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Application Application details of an application
@@ -29,6 +30,10 @@ type Application struct {
 	// Example: radix-canary-golang
 	Name string `json:"name,omitempty"`
 
+	// UserIsAdmin if user is member of application's admin groups
+	// Required: true
+	UserIsAdmin *bool `json:"userIsAdmin"`
+
 	// app alias
 	AppAlias *ApplicationAlias `json:"appAlias,omitempty"`
 
@@ -45,6 +50,10 @@ func (m *Application) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateJobs(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUserIsAdmin(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -109,6 +118,15 @@ func (m *Application) validateJobs(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *Application) validateUserIsAdmin(formats strfmt.Registry) error {
+
+	if err := validate.Required("userIsAdmin", "body", m.UserIsAdmin); err != nil {
+		return err
 	}
 
 	return nil
@@ -183,6 +201,11 @@ func (m *Application) contextValidateEnvironments(ctx context.Context, formats s
 	for i := 0; i < len(m.Environments); i++ {
 
 		if m.Environments[i] != nil {
+
+			if swag.IsZero(m.Environments[i]) { // not required
+				return nil
+			}
+
 			if err := m.Environments[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("environments" + "." + strconv.Itoa(i))
@@ -203,6 +226,11 @@ func (m *Application) contextValidateJobs(ctx context.Context, formats strfmt.Re
 	for i := 0; i < len(m.Jobs); i++ {
 
 		if m.Jobs[i] != nil {
+
+			if swag.IsZero(m.Jobs[i]) { // not required
+				return nil
+			}
+
 			if err := m.Jobs[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobs" + "." + strconv.Itoa(i))
@@ -221,6 +249,11 @@ func (m *Application) contextValidateJobs(ctx context.Context, formats strfmt.Re
 func (m *Application) contextValidateAppAlias(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.AppAlias != nil {
+
+		if swag.IsZero(m.AppAlias) { // not required
+			return nil
+		}
+
 		if err := m.AppAlias.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("appAlias")
@@ -237,6 +270,11 @@ func (m *Application) contextValidateAppAlias(ctx context.Context, formats strfm
 func (m *Application) contextValidateRegistration(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Registration != nil {
+
+		if swag.IsZero(m.Registration) { // not required
+			return nil
+		}
+
 		if err := m.Registration.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("registration")

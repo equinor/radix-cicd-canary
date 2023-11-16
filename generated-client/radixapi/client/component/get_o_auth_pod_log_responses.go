@@ -52,7 +52,7 @@ func (o *GetOAuthPodLogReader) ReadResponse(response runtime.ClientResponse, con
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs] getOAuthPodLog", response, response.Code())
 	}
 }
 
@@ -61,7 +61,8 @@ func NewGetOAuthPodLogOK() *GetOAuthPodLogOK {
 	return &GetOAuthPodLogOK{}
 }
 
-/* GetOAuthPodLogOK describes a response with status code 200, with default header values.
+/*
+GetOAuthPodLogOK describes a response with status code 200, with default header values.
 
 pod log
 */
@@ -69,9 +70,44 @@ type GetOAuthPodLogOK struct {
 	Payload string
 }
 
+// IsSuccess returns true when this get o auth pod log o k response has a 2xx status code
+func (o *GetOAuthPodLogOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get o auth pod log o k response has a 3xx status code
+func (o *GetOAuthPodLogOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get o auth pod log o k response has a 4xx status code
+func (o *GetOAuthPodLogOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get o auth pod log o k response has a 5xx status code
+func (o *GetOAuthPodLogOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get o auth pod log o k response a status code equal to that given
+func (o *GetOAuthPodLogOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get o auth pod log o k response
+func (o *GetOAuthPodLogOK) Code() int {
+	return 200
+}
+
 func (o *GetOAuthPodLogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogOK  %+v", 200, o.Payload)
 }
+
+func (o *GetOAuthPodLogOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogOK  %+v", 200, o.Payload)
+}
+
 func (o *GetOAuthPodLogOK) GetPayload() string {
 	return o.Payload
 }
@@ -91,14 +127,49 @@ func NewGetOAuthPodLogUnauthorized() *GetOAuthPodLogUnauthorized {
 	return &GetOAuthPodLogUnauthorized{}
 }
 
-/* GetOAuthPodLogUnauthorized describes a response with status code 401, with default header values.
+/*
+GetOAuthPodLogUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetOAuthPodLogUnauthorized struct {
 }
 
+// IsSuccess returns true when this get o auth pod log unauthorized response has a 2xx status code
+func (o *GetOAuthPodLogUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get o auth pod log unauthorized response has a 3xx status code
+func (o *GetOAuthPodLogUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get o auth pod log unauthorized response has a 4xx status code
+func (o *GetOAuthPodLogUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get o auth pod log unauthorized response has a 5xx status code
+func (o *GetOAuthPodLogUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get o auth pod log unauthorized response a status code equal to that given
+func (o *GetOAuthPodLogUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get o auth pod log unauthorized response
+func (o *GetOAuthPodLogUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetOAuthPodLogUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogUnauthorized ", 401)
+}
+
+func (o *GetOAuthPodLogUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogUnauthorized ", 401)
 }
 
@@ -112,14 +183,49 @@ func NewGetOAuthPodLogForbidden() *GetOAuthPodLogForbidden {
 	return &GetOAuthPodLogForbidden{}
 }
 
-/* GetOAuthPodLogForbidden describes a response with status code 403, with default header values.
+/*
+GetOAuthPodLogForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type GetOAuthPodLogForbidden struct {
 }
 
+// IsSuccess returns true when this get o auth pod log forbidden response has a 2xx status code
+func (o *GetOAuthPodLogForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get o auth pod log forbidden response has a 3xx status code
+func (o *GetOAuthPodLogForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get o auth pod log forbidden response has a 4xx status code
+func (o *GetOAuthPodLogForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get o auth pod log forbidden response has a 5xx status code
+func (o *GetOAuthPodLogForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get o auth pod log forbidden response a status code equal to that given
+func (o *GetOAuthPodLogForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the get o auth pod log forbidden response
+func (o *GetOAuthPodLogForbidden) Code() int {
+	return 403
+}
+
 func (o *GetOAuthPodLogForbidden) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogForbidden ", 403)
+}
+
+func (o *GetOAuthPodLogForbidden) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogForbidden ", 403)
 }
 
@@ -133,14 +239,49 @@ func NewGetOAuthPodLogNotFound() *GetOAuthPodLogNotFound {
 	return &GetOAuthPodLogNotFound{}
 }
 
-/* GetOAuthPodLogNotFound describes a response with status code 404, with default header values.
+/*
+GetOAuthPodLogNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetOAuthPodLogNotFound struct {
 }
 
+// IsSuccess returns true when this get o auth pod log not found response has a 2xx status code
+func (o *GetOAuthPodLogNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get o auth pod log not found response has a 3xx status code
+func (o *GetOAuthPodLogNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get o auth pod log not found response has a 4xx status code
+func (o *GetOAuthPodLogNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get o auth pod log not found response has a 5xx status code
+func (o *GetOAuthPodLogNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get o auth pod log not found response a status code equal to that given
+func (o *GetOAuthPodLogNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get o auth pod log not found response
+func (o *GetOAuthPodLogNotFound) Code() int {
+	return 404
+}
+
 func (o *GetOAuthPodLogNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogNotFound ", 404)
+}
+
+func (o *GetOAuthPodLogNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogNotFound ", 404)
 }
 
@@ -154,14 +295,49 @@ func NewGetOAuthPodLogInternalServerError() *GetOAuthPodLogInternalServerError {
 	return &GetOAuthPodLogInternalServerError{}
 }
 
-/* GetOAuthPodLogInternalServerError describes a response with status code 500, with default header values.
+/*
+GetOAuthPodLogInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type GetOAuthPodLogInternalServerError struct {
 }
 
+// IsSuccess returns true when this get o auth pod log internal server error response has a 2xx status code
+func (o *GetOAuthPodLogInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get o auth pod log internal server error response has a 3xx status code
+func (o *GetOAuthPodLogInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get o auth pod log internal server error response has a 4xx status code
+func (o *GetOAuthPodLogInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get o auth pod log internal server error response has a 5xx status code
+func (o *GetOAuthPodLogInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get o auth pod log internal server error response a status code equal to that given
+func (o *GetOAuthPodLogInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the get o auth pod log internal server error response
+func (o *GetOAuthPodLogInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetOAuthPodLogInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogInternalServerError ", 500)
+}
+
+func (o *GetOAuthPodLogInternalServerError) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/replicas/{podName}/logs][%d] getOAuthPodLogInternalServerError ", 500)
 }
 

@@ -28,7 +28,7 @@ func (o *ListPipelinesReader) ReadResponse(response runtime.ClientResponse, cons
 		}
 		return result, nil
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/pipelines] listPipelines", response, response.Code())
 	}
 }
 
@@ -37,7 +37,8 @@ func NewListPipelinesOK() *ListPipelinesOK {
 	return &ListPipelinesOK{}
 }
 
-/* ListPipelinesOK describes a response with status code 200, with default header values.
+/*
+ListPipelinesOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -45,9 +46,44 @@ type ListPipelinesOK struct {
 	Payload []string
 }
 
+// IsSuccess returns true when this list pipelines o k response has a 2xx status code
+func (o *ListPipelinesOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this list pipelines o k response has a 3xx status code
+func (o *ListPipelinesOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this list pipelines o k response has a 4xx status code
+func (o *ListPipelinesOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this list pipelines o k response has a 5xx status code
+func (o *ListPipelinesOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this list pipelines o k response a status code equal to that given
+func (o *ListPipelinesOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the list pipelines o k response
+func (o *ListPipelinesOK) Code() int {
+	return 200
+}
+
 func (o *ListPipelinesOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/pipelines][%d] listPipelinesOK  %+v", 200, o.Payload)
 }
+
+func (o *ListPipelinesOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/pipelines][%d] listPipelinesOK  %+v", 200, o.Payload)
+}
+
 func (o *ListPipelinesOK) GetPayload() []string {
 	return o.Payload
 }

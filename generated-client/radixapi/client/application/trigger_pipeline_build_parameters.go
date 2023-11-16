@@ -55,10 +55,12 @@ func NewTriggerPipelineBuildParamsWithHTTPClient(client *http.Client) *TriggerPi
 	}
 }
 
-/* TriggerPipelineBuildParams contains all the parameters to send to the API endpoint
-   for the trigger pipeline build operation.
+/*
+TriggerPipelineBuildParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the trigger pipeline build operation.
+
+	Typically these are written to a http.Request.
 */
 type TriggerPipelineBuildParams struct {
 
