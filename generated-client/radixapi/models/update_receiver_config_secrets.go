@@ -72,6 +72,11 @@ func (m *UpdateReceiverConfigSecrets) ContextValidate(ctx context.Context, forma
 func (m *UpdateReceiverConfigSecrets) contextValidateSlackConfig(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.SlackConfig != nil {
+
+		if swag.IsZero(m.SlackConfig) { // not required
+			return nil
+		}
+
 		if err := m.SlackConfig.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("slackConfig")

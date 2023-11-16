@@ -39,7 +39,7 @@ func (o *StopEnvironmentReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/stop] stopEnvironment", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewStopEnvironmentOK() *StopEnvironmentOK {
 	return &StopEnvironmentOK{}
 }
 
-/* StopEnvironmentOK describes a response with status code 200, with default header values.
+/*
+StopEnvironmentOK describes a response with status code 200, with default header values.
 
 Environment stopped ok
 */
 type StopEnvironmentOK struct {
 }
 
+// IsSuccess returns true when this stop environment o k response has a 2xx status code
+func (o *StopEnvironmentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this stop environment o k response has a 3xx status code
+func (o *StopEnvironmentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop environment o k response has a 4xx status code
+func (o *StopEnvironmentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stop environment o k response has a 5xx status code
+func (o *StopEnvironmentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop environment o k response a status code equal to that given
+func (o *StopEnvironmentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the stop environment o k response
+func (o *StopEnvironmentOK) Code() int {
+	return 200
+}
+
 func (o *StopEnvironmentOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/stop][%d] stopEnvironmentOK ", 200)
+}
+
+func (o *StopEnvironmentOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/stop][%d] stopEnvironmentOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewStopEnvironmentUnauthorized() *StopEnvironmentUnauthorized {
 	return &StopEnvironmentUnauthorized{}
 }
 
-/* StopEnvironmentUnauthorized describes a response with status code 401, with default header values.
+/*
+StopEnvironmentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type StopEnvironmentUnauthorized struct {
 }
 
+// IsSuccess returns true when this stop environment unauthorized response has a 2xx status code
+func (o *StopEnvironmentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop environment unauthorized response has a 3xx status code
+func (o *StopEnvironmentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop environment unauthorized response has a 4xx status code
+func (o *StopEnvironmentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop environment unauthorized response has a 5xx status code
+func (o *StopEnvironmentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop environment unauthorized response a status code equal to that given
+func (o *StopEnvironmentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the stop environment unauthorized response
+func (o *StopEnvironmentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *StopEnvironmentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/stop][%d] stopEnvironmentUnauthorized ", 401)
+}
+
+func (o *StopEnvironmentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/stop][%d] stopEnvironmentUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewStopEnvironmentNotFound() *StopEnvironmentNotFound {
 	return &StopEnvironmentNotFound{}
 }
 
-/* StopEnvironmentNotFound describes a response with status code 404, with default header values.
+/*
+StopEnvironmentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type StopEnvironmentNotFound struct {
 }
 
+// IsSuccess returns true when this stop environment not found response has a 2xx status code
+func (o *StopEnvironmentNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop environment not found response has a 3xx status code
+func (o *StopEnvironmentNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop environment not found response has a 4xx status code
+func (o *StopEnvironmentNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop environment not found response has a 5xx status code
+func (o *StopEnvironmentNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop environment not found response a status code equal to that given
+func (o *StopEnvironmentNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the stop environment not found response
+func (o *StopEnvironmentNotFound) Code() int {
+	return 404
+}
+
 func (o *StopEnvironmentNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/stop][%d] stopEnvironmentNotFound ", 404)
+}
+
+func (o *StopEnvironmentNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/stop][%d] stopEnvironmentNotFound ", 404)
 }
 

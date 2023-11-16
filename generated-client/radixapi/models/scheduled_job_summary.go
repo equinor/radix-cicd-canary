@@ -284,6 +284,11 @@ func (m *ScheduledJobSummary) contextValidateReplicaList(ctx context.Context, fo
 	for i := 0; i < len(m.ReplicaList); i++ {
 
 		if m.ReplicaList[i] != nil {
+
+			if swag.IsZero(m.ReplicaList[i]) { // not required
+				return nil
+			}
+
 			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
@@ -302,6 +307,11 @@ func (m *ScheduledJobSummary) contextValidateReplicaList(ctx context.Context, fo
 func (m *ScheduledJobSummary) contextValidateNode(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Node != nil {
+
+		if swag.IsZero(m.Node) { // not required
+			return nil
+		}
+
 		if err := m.Node.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("node")
@@ -318,6 +328,11 @@ func (m *ScheduledJobSummary) contextValidateNode(ctx context.Context, formats s
 func (m *ScheduledJobSummary) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Resources != nil {
+
+		if swag.IsZero(m.Resources) { // not required
+			return nil
+		}
+
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")

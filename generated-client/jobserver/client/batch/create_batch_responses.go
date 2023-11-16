@@ -54,7 +54,7 @@ func (o *CreateBatchReader) ReadResponse(response runtime.ClientResponse, consum
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /batches] createBatch", response, response.Code())
 	}
 }
 
@@ -63,7 +63,8 @@ func NewCreateBatchOK() *CreateBatchOK {
 	return &CreateBatchOK{}
 }
 
-/* CreateBatchOK describes a response with status code 200, with default header values.
+/*
+CreateBatchOK describes a response with status code 200, with default header values.
 
 Successful create batch
 */
@@ -71,9 +72,44 @@ type CreateBatchOK struct {
 	Payload *models.BatchStatus
 }
 
+// IsSuccess returns true when this create batch o k response has a 2xx status code
+func (o *CreateBatchOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this create batch o k response has a 3xx status code
+func (o *CreateBatchOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create batch o k response has a 4xx status code
+func (o *CreateBatchOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this create batch o k response has a 5xx status code
+func (o *CreateBatchOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create batch o k response a status code equal to that given
+func (o *CreateBatchOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the create batch o k response
+func (o *CreateBatchOK) Code() int {
+	return 200
+}
+
 func (o *CreateBatchOK) Error() string {
 	return fmt.Sprintf("[POST /batches][%d] createBatchOK  %+v", 200, o.Payload)
 }
+
+func (o *CreateBatchOK) String() string {
+	return fmt.Sprintf("[POST /batches][%d] createBatchOK  %+v", 200, o.Payload)
+}
+
 func (o *CreateBatchOK) GetPayload() *models.BatchStatus {
 	return o.Payload
 }
@@ -95,7 +131,8 @@ func NewCreateBatchBadRequest() *CreateBatchBadRequest {
 	return &CreateBatchBadRequest{}
 }
 
-/* CreateBatchBadRequest describes a response with status code 400, with default header values.
+/*
+CreateBatchBadRequest describes a response with status code 400, with default header values.
 
 Bad request
 */
@@ -103,9 +140,44 @@ type CreateBatchBadRequest struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this create batch bad request response has a 2xx status code
+func (o *CreateBatchBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create batch bad request response has a 3xx status code
+func (o *CreateBatchBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create batch bad request response has a 4xx status code
+func (o *CreateBatchBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create batch bad request response has a 5xx status code
+func (o *CreateBatchBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create batch bad request response a status code equal to that given
+func (o *CreateBatchBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the create batch bad request response
+func (o *CreateBatchBadRequest) Code() int {
+	return 400
+}
+
 func (o *CreateBatchBadRequest) Error() string {
 	return fmt.Sprintf("[POST /batches][%d] createBatchBadRequest  %+v", 400, o.Payload)
 }
+
+func (o *CreateBatchBadRequest) String() string {
+	return fmt.Sprintf("[POST /batches][%d] createBatchBadRequest  %+v", 400, o.Payload)
+}
+
 func (o *CreateBatchBadRequest) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -127,7 +199,8 @@ func NewCreateBatchNotFound() *CreateBatchNotFound {
 	return &CreateBatchNotFound{}
 }
 
-/* CreateBatchNotFound describes a response with status code 404, with default header values.
+/*
+CreateBatchNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -135,9 +208,44 @@ type CreateBatchNotFound struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this create batch not found response has a 2xx status code
+func (o *CreateBatchNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create batch not found response has a 3xx status code
+func (o *CreateBatchNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create batch not found response has a 4xx status code
+func (o *CreateBatchNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create batch not found response has a 5xx status code
+func (o *CreateBatchNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create batch not found response a status code equal to that given
+func (o *CreateBatchNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the create batch not found response
+func (o *CreateBatchNotFound) Code() int {
+	return 404
+}
+
 func (o *CreateBatchNotFound) Error() string {
 	return fmt.Sprintf("[POST /batches][%d] createBatchNotFound  %+v", 404, o.Payload)
 }
+
+func (o *CreateBatchNotFound) String() string {
+	return fmt.Sprintf("[POST /batches][%d] createBatchNotFound  %+v", 404, o.Payload)
+}
+
 func (o *CreateBatchNotFound) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -159,7 +267,8 @@ func NewCreateBatchUnprocessableEntity() *CreateBatchUnprocessableEntity {
 	return &CreateBatchUnprocessableEntity{}
 }
 
-/* CreateBatchUnprocessableEntity describes a response with status code 422, with default header values.
+/*
+CreateBatchUnprocessableEntity describes a response with status code 422, with default header values.
 
 Invalid data in request
 */
@@ -167,9 +276,44 @@ type CreateBatchUnprocessableEntity struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this create batch unprocessable entity response has a 2xx status code
+func (o *CreateBatchUnprocessableEntity) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create batch unprocessable entity response has a 3xx status code
+func (o *CreateBatchUnprocessableEntity) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create batch unprocessable entity response has a 4xx status code
+func (o *CreateBatchUnprocessableEntity) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create batch unprocessable entity response has a 5xx status code
+func (o *CreateBatchUnprocessableEntity) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create batch unprocessable entity response a status code equal to that given
+func (o *CreateBatchUnprocessableEntity) IsCode(code int) bool {
+	return code == 422
+}
+
+// Code gets the status code for the create batch unprocessable entity response
+func (o *CreateBatchUnprocessableEntity) Code() int {
+	return 422
+}
+
 func (o *CreateBatchUnprocessableEntity) Error() string {
 	return fmt.Sprintf("[POST /batches][%d] createBatchUnprocessableEntity  %+v", 422, o.Payload)
 }
+
+func (o *CreateBatchUnprocessableEntity) String() string {
+	return fmt.Sprintf("[POST /batches][%d] createBatchUnprocessableEntity  %+v", 422, o.Payload)
+}
+
 func (o *CreateBatchUnprocessableEntity) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -191,7 +335,8 @@ func NewCreateBatchInternalServerError() *CreateBatchInternalServerError {
 	return &CreateBatchInternalServerError{}
 }
 
-/* CreateBatchInternalServerError describes a response with status code 500, with default header values.
+/*
+CreateBatchInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
@@ -199,9 +344,44 @@ type CreateBatchInternalServerError struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this create batch internal server error response has a 2xx status code
+func (o *CreateBatchInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create batch internal server error response has a 3xx status code
+func (o *CreateBatchInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create batch internal server error response has a 4xx status code
+func (o *CreateBatchInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this create batch internal server error response has a 5xx status code
+func (o *CreateBatchInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this create batch internal server error response a status code equal to that given
+func (o *CreateBatchInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the create batch internal server error response
+func (o *CreateBatchInternalServerError) Code() int {
+	return 500
+}
+
 func (o *CreateBatchInternalServerError) Error() string {
 	return fmt.Sprintf("[POST /batches][%d] createBatchInternalServerError  %+v", 500, o.Payload)
 }
+
+func (o *CreateBatchInternalServerError) String() string {
+	return fmt.Sprintf("[POST /batches][%d] createBatchInternalServerError  %+v", 500, o.Payload)
+}
+
 func (o *CreateBatchInternalServerError) GetPayload() *models.Status {
 	return o.Payload
 }

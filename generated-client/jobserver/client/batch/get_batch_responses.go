@@ -42,7 +42,7 @@ func (o *GetBatchReader) ReadResponse(response runtime.ClientResponse, consumer 
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /batches/{batchName}] getBatch", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetBatchOK() *GetBatchOK {
 	return &GetBatchOK{}
 }
 
-/* GetBatchOK describes a response with status code 200, with default header values.
+/*
+GetBatchOK describes a response with status code 200, with default header values.
 
 Successful get batch
 */
@@ -59,9 +60,44 @@ type GetBatchOK struct {
 	Payload *models.BatchStatus
 }
 
+// IsSuccess returns true when this get batch o k response has a 2xx status code
+func (o *GetBatchOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get batch o k response has a 3xx status code
+func (o *GetBatchOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get batch o k response has a 4xx status code
+func (o *GetBatchOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get batch o k response has a 5xx status code
+func (o *GetBatchOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get batch o k response a status code equal to that given
+func (o *GetBatchOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get batch o k response
+func (o *GetBatchOK) Code() int {
+	return 200
+}
+
 func (o *GetBatchOK) Error() string {
 	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchOK  %+v", 200, o.Payload)
 }
+
+func (o *GetBatchOK) String() string {
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchOK  %+v", 200, o.Payload)
+}
+
 func (o *GetBatchOK) GetPayload() *models.BatchStatus {
 	return o.Payload
 }
@@ -83,7 +119,8 @@ func NewGetBatchNotFound() *GetBatchNotFound {
 	return &GetBatchNotFound{}
 }
 
-/* GetBatchNotFound describes a response with status code 404, with default header values.
+/*
+GetBatchNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -91,9 +128,44 @@ type GetBatchNotFound struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this get batch not found response has a 2xx status code
+func (o *GetBatchNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get batch not found response has a 3xx status code
+func (o *GetBatchNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get batch not found response has a 4xx status code
+func (o *GetBatchNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get batch not found response has a 5xx status code
+func (o *GetBatchNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get batch not found response a status code equal to that given
+func (o *GetBatchNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get batch not found response
+func (o *GetBatchNotFound) Code() int {
+	return 404
+}
+
 func (o *GetBatchNotFound) Error() string {
 	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchNotFound  %+v", 404, o.Payload)
 }
+
+func (o *GetBatchNotFound) String() string {
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchNotFound  %+v", 404, o.Payload)
+}
+
 func (o *GetBatchNotFound) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -115,7 +187,8 @@ func NewGetBatchInternalServerError() *GetBatchInternalServerError {
 	return &GetBatchInternalServerError{}
 }
 
-/* GetBatchInternalServerError describes a response with status code 500, with default header values.
+/*
+GetBatchInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
@@ -123,9 +196,44 @@ type GetBatchInternalServerError struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this get batch internal server error response has a 2xx status code
+func (o *GetBatchInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get batch internal server error response has a 3xx status code
+func (o *GetBatchInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get batch internal server error response has a 4xx status code
+func (o *GetBatchInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get batch internal server error response has a 5xx status code
+func (o *GetBatchInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get batch internal server error response a status code equal to that given
+func (o *GetBatchInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the get batch internal server error response
+func (o *GetBatchInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetBatchInternalServerError) Error() string {
 	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchInternalServerError  %+v", 500, o.Payload)
 }
+
+func (o *GetBatchInternalServerError) String() string {
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchInternalServerError  %+v", 500, o.Payload)
+}
+
 func (o *GetBatchInternalServerError) GetPayload() *models.Status {
 	return o.Payload
 }

@@ -53,10 +53,12 @@ func NewGetAzureKeyVaultSecretVersionsParamsWithHTTPClient(client *http.Client) 
 	}
 }
 
-/* GetAzureKeyVaultSecretVersionsParams contains all the parameters to send to the API endpoint
-   for the get azure key vault secret versions operation.
+/*
+GetAzureKeyVaultSecretVersionsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get azure key vault secret versions operation.
+
+	Typically these are written to a http.Request.
 */
 type GetAzureKeyVaultSecretVersionsParams struct {
 

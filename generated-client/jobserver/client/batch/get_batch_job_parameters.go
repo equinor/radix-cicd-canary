@@ -52,10 +52,12 @@ func NewGetBatchJobParamsWithHTTPClient(client *http.Client) *GetBatchJobParams 
 	}
 }
 
-/* GetBatchJobParams contains all the parameters to send to the API endpoint
-   for the get batch job operation.
+/*
+GetBatchJobParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get batch job operation.
+
+	Typically these are written to a http.Request.
 */
 type GetBatchJobParams struct {
 

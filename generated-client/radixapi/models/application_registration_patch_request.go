@@ -78,6 +78,7 @@ func (m *ApplicationRegistrationPatchRequest) ContextValidate(ctx context.Contex
 func (m *ApplicationRegistrationPatchRequest) contextValidateApplicationRegistrationPatch(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ApplicationRegistrationPatch != nil {
+
 		if err := m.ApplicationRegistrationPatch.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("applicationRegistrationPatch")

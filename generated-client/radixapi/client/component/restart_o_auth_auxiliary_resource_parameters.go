@@ -53,10 +53,12 @@ func NewRestartOAuthAuxiliaryResourceParamsWithHTTPClient(client *http.Client) *
 	}
 }
 
-/* RestartOAuthAuxiliaryResourceParams contains all the parameters to send to the API endpoint
-   for the restart o auth auxiliary resource operation.
+/*
+RestartOAuthAuxiliaryResourceParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the restart o auth auxiliary resource operation.
+
+	Typically these are written to a http.Request.
 */
 type RestartOAuthAuxiliaryResourceParams struct {
 

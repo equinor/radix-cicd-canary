@@ -53,10 +53,12 @@ func NewGetApplicationEnvironmentDeploymentsParamsWithHTTPClient(client *http.Cl
 	}
 }
 
-/* GetApplicationEnvironmentDeploymentsParams contains all the parameters to send to the API endpoint
-   for the get application environment deployments operation.
+/*
+GetApplicationEnvironmentDeploymentsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get application environment deployments operation.
+
+	Typically these are written to a http.Request.
 */
 type GetApplicationEnvironmentDeploymentsParams struct {
 

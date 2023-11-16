@@ -51,7 +51,7 @@ func (o *StopJobReader) ReadResponse(response runtime.ClientResponse, consumer r
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop] stopJob", response, response.Code())
 	}
 }
 
@@ -60,14 +60,49 @@ func NewStopJobNoContent() *StopJobNoContent {
 	return &StopJobNoContent{}
 }
 
-/* StopJobNoContent describes a response with status code 204, with default header values.
+/*
+StopJobNoContent describes a response with status code 204, with default header values.
 
 Success
 */
 type StopJobNoContent struct {
 }
 
+// IsSuccess returns true when this stop job no content response has a 2xx status code
+func (o *StopJobNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this stop job no content response has a 3xx status code
+func (o *StopJobNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job no content response has a 4xx status code
+func (o *StopJobNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stop job no content response has a 5xx status code
+func (o *StopJobNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job no content response a status code equal to that given
+func (o *StopJobNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+// Code gets the status code for the stop job no content response
+func (o *StopJobNoContent) Code() int {
+	return 204
+}
+
 func (o *StopJobNoContent) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobNoContent ", 204)
+}
+
+func (o *StopJobNoContent) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobNoContent ", 204)
 }
 
@@ -81,14 +116,49 @@ func NewStopJobBadRequest() *StopJobBadRequest {
 	return &StopJobBadRequest{}
 }
 
-/* StopJobBadRequest describes a response with status code 400, with default header values.
+/*
+StopJobBadRequest describes a response with status code 400, with default header values.
 
 Invalid job
 */
 type StopJobBadRequest struct {
 }
 
+// IsSuccess returns true when this stop job bad request response has a 2xx status code
+func (o *StopJobBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop job bad request response has a 3xx status code
+func (o *StopJobBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job bad request response has a 4xx status code
+func (o *StopJobBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop job bad request response has a 5xx status code
+func (o *StopJobBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job bad request response a status code equal to that given
+func (o *StopJobBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the stop job bad request response
+func (o *StopJobBadRequest) Code() int {
+	return 400
+}
+
 func (o *StopJobBadRequest) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobBadRequest ", 400)
+}
+
+func (o *StopJobBadRequest) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobBadRequest ", 400)
 }
 
@@ -102,14 +172,49 @@ func NewStopJobUnauthorized() *StopJobUnauthorized {
 	return &StopJobUnauthorized{}
 }
 
-/* StopJobUnauthorized describes a response with status code 401, with default header values.
+/*
+StopJobUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type StopJobUnauthorized struct {
 }
 
+// IsSuccess returns true when this stop job unauthorized response has a 2xx status code
+func (o *StopJobUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop job unauthorized response has a 3xx status code
+func (o *StopJobUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job unauthorized response has a 4xx status code
+func (o *StopJobUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop job unauthorized response has a 5xx status code
+func (o *StopJobUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job unauthorized response a status code equal to that given
+func (o *StopJobUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the stop job unauthorized response
+func (o *StopJobUnauthorized) Code() int {
+	return 401
+}
+
 func (o *StopJobUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobUnauthorized ", 401)
+}
+
+func (o *StopJobUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobUnauthorized ", 401)
 }
 
@@ -123,14 +228,49 @@ func NewStopJobForbidden() *StopJobForbidden {
 	return &StopJobForbidden{}
 }
 
-/* StopJobForbidden describes a response with status code 403, with default header values.
+/*
+StopJobForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type StopJobForbidden struct {
 }
 
+// IsSuccess returns true when this stop job forbidden response has a 2xx status code
+func (o *StopJobForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop job forbidden response has a 3xx status code
+func (o *StopJobForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job forbidden response has a 4xx status code
+func (o *StopJobForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop job forbidden response has a 5xx status code
+func (o *StopJobForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job forbidden response a status code equal to that given
+func (o *StopJobForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the stop job forbidden response
+func (o *StopJobForbidden) Code() int {
+	return 403
+}
+
 func (o *StopJobForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobForbidden ", 403)
+}
+
+func (o *StopJobForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobForbidden ", 403)
 }
 
@@ -144,14 +284,49 @@ func NewStopJobNotFound() *StopJobNotFound {
 	return &StopJobNotFound{}
 }
 
-/* StopJobNotFound describes a response with status code 404, with default header values.
+/*
+StopJobNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type StopJobNotFound struct {
 }
 
+// IsSuccess returns true when this stop job not found response has a 2xx status code
+func (o *StopJobNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop job not found response has a 3xx status code
+func (o *StopJobNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job not found response has a 4xx status code
+func (o *StopJobNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop job not found response has a 5xx status code
+func (o *StopJobNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job not found response a status code equal to that given
+func (o *StopJobNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the stop job not found response
+func (o *StopJobNotFound) Code() int {
+	return 404
+}
+
 func (o *StopJobNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobNotFound ", 404)
+}
+
+func (o *StopJobNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/stop][%d] stopJobNotFound ", 404)
 }
 

@@ -54,10 +54,12 @@ func NewCreateBatchParamsWithHTTPClient(client *http.Client) *CreateBatchParams 
 	}
 }
 
-/* CreateBatchParams contains all the parameters to send to the API endpoint
-   for the create batch operation.
+/*
+CreateBatchParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the create batch operation.
+
+	Typically these are written to a http.Request.
 */
 type CreateBatchParams struct {
 

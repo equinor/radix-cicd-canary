@@ -39,7 +39,7 @@ func (o *StartEnvironmentReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/start] startEnvironment", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewStartEnvironmentOK() *StartEnvironmentOK {
 	return &StartEnvironmentOK{}
 }
 
-/* StartEnvironmentOK describes a response with status code 200, with default header values.
+/*
+StartEnvironmentOK describes a response with status code 200, with default header values.
 
 Environment started ok
 */
 type StartEnvironmentOK struct {
 }
 
+// IsSuccess returns true when this start environment o k response has a 2xx status code
+func (o *StartEnvironmentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this start environment o k response has a 3xx status code
+func (o *StartEnvironmentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start environment o k response has a 4xx status code
+func (o *StartEnvironmentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this start environment o k response has a 5xx status code
+func (o *StartEnvironmentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start environment o k response a status code equal to that given
+func (o *StartEnvironmentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the start environment o k response
+func (o *StartEnvironmentOK) Code() int {
+	return 200
+}
+
 func (o *StartEnvironmentOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/start][%d] startEnvironmentOK ", 200)
+}
+
+func (o *StartEnvironmentOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/start][%d] startEnvironmentOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewStartEnvironmentUnauthorized() *StartEnvironmentUnauthorized {
 	return &StartEnvironmentUnauthorized{}
 }
 
-/* StartEnvironmentUnauthorized describes a response with status code 401, with default header values.
+/*
+StartEnvironmentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type StartEnvironmentUnauthorized struct {
 }
 
+// IsSuccess returns true when this start environment unauthorized response has a 2xx status code
+func (o *StartEnvironmentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this start environment unauthorized response has a 3xx status code
+func (o *StartEnvironmentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start environment unauthorized response has a 4xx status code
+func (o *StartEnvironmentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this start environment unauthorized response has a 5xx status code
+func (o *StartEnvironmentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start environment unauthorized response a status code equal to that given
+func (o *StartEnvironmentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the start environment unauthorized response
+func (o *StartEnvironmentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *StartEnvironmentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/start][%d] startEnvironmentUnauthorized ", 401)
+}
+
+func (o *StartEnvironmentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/start][%d] startEnvironmentUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewStartEnvironmentNotFound() *StartEnvironmentNotFound {
 	return &StartEnvironmentNotFound{}
 }
 
-/* StartEnvironmentNotFound describes a response with status code 404, with default header values.
+/*
+StartEnvironmentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type StartEnvironmentNotFound struct {
 }
 
+// IsSuccess returns true when this start environment not found response has a 2xx status code
+func (o *StartEnvironmentNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this start environment not found response has a 3xx status code
+func (o *StartEnvironmentNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this start environment not found response has a 4xx status code
+func (o *StartEnvironmentNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this start environment not found response has a 5xx status code
+func (o *StartEnvironmentNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this start environment not found response a status code equal to that given
+func (o *StartEnvironmentNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the start environment not found response
+func (o *StartEnvironmentNotFound) Code() int {
+	return 404
+}
+
 func (o *StartEnvironmentNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/start][%d] startEnvironmentNotFound ", 404)
+}
+
+func (o *StartEnvironmentNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/start][%d] startEnvironmentNotFound ", 404)
 }
 

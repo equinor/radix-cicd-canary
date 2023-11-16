@@ -34,7 +34,7 @@ func (o *ReplicaLogReader) ReadResponse(response runtime.ClientResponse, consume
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/components/{componentName}/replicas/{podName}/logs] replicaLog", response, response.Code())
 	}
 }
 
@@ -43,7 +43,8 @@ func NewReplicaLogOK() *ReplicaLogOK {
 	return &ReplicaLogOK{}
 }
 
-/* ReplicaLogOK describes a response with status code 200, with default header values.
+/*
+ReplicaLogOK describes a response with status code 200, with default header values.
 
 pod log
 */
@@ -51,9 +52,44 @@ type ReplicaLogOK struct {
 	Payload string
 }
 
+// IsSuccess returns true when this replica log o k response has a 2xx status code
+func (o *ReplicaLogOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this replica log o k response has a 3xx status code
+func (o *ReplicaLogOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this replica log o k response has a 4xx status code
+func (o *ReplicaLogOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this replica log o k response has a 5xx status code
+func (o *ReplicaLogOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this replica log o k response a status code equal to that given
+func (o *ReplicaLogOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the replica log o k response
+func (o *ReplicaLogOK) Code() int {
+	return 200
+}
+
 func (o *ReplicaLogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/replicas/{podName}/logs][%d] replicaLogOK  %+v", 200, o.Payload)
 }
+
+func (o *ReplicaLogOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/replicas/{podName}/logs][%d] replicaLogOK  %+v", 200, o.Payload)
+}
+
 func (o *ReplicaLogOK) GetPayload() string {
 	return o.Payload
 }
@@ -73,14 +109,49 @@ func NewReplicaLogNotFound() *ReplicaLogNotFound {
 	return &ReplicaLogNotFound{}
 }
 
-/* ReplicaLogNotFound describes a response with status code 404, with default header values.
+/*
+ReplicaLogNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type ReplicaLogNotFound struct {
 }
 
+// IsSuccess returns true when this replica log not found response has a 2xx status code
+func (o *ReplicaLogNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this replica log not found response has a 3xx status code
+func (o *ReplicaLogNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this replica log not found response has a 4xx status code
+func (o *ReplicaLogNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this replica log not found response has a 5xx status code
+func (o *ReplicaLogNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this replica log not found response a status code equal to that given
+func (o *ReplicaLogNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the replica log not found response
+func (o *ReplicaLogNotFound) Code() int {
+	return 404
+}
+
 func (o *ReplicaLogNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/replicas/{podName}/logs][%d] replicaLogNotFound ", 404)
+}
+
+func (o *ReplicaLogNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/replicas/{podName}/logs][%d] replicaLogNotFound ", 404)
 }
 

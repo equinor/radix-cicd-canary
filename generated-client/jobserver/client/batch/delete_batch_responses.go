@@ -42,7 +42,7 @@ func (o *DeleteBatchReader) ReadResponse(response runtime.ClientResponse, consum
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[DELETE /batches/{batchName}] deleteBatch", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewDeleteBatchOK() *DeleteBatchOK {
 	return &DeleteBatchOK{}
 }
 
-/* DeleteBatchOK describes a response with status code 200, with default header values.
+/*
+DeleteBatchOK describes a response with status code 200, with default header values.
 
 Successful delete batch
 */
@@ -59,9 +60,44 @@ type DeleteBatchOK struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this delete batch o k response has a 2xx status code
+func (o *DeleteBatchOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this delete batch o k response has a 3xx status code
+func (o *DeleteBatchOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch o k response has a 4xx status code
+func (o *DeleteBatchOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete batch o k response has a 5xx status code
+func (o *DeleteBatchOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete batch o k response a status code equal to that given
+func (o *DeleteBatchOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the delete batch o k response
+func (o *DeleteBatchOK) Code() int {
+	return 200
+}
+
 func (o *DeleteBatchOK) Error() string {
 	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchOK  %+v", 200, o.Payload)
 }
+
+func (o *DeleteBatchOK) String() string {
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchOK  %+v", 200, o.Payload)
+}
+
 func (o *DeleteBatchOK) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -83,7 +119,8 @@ func NewDeleteBatchNotFound() *DeleteBatchNotFound {
 	return &DeleteBatchNotFound{}
 }
 
-/* DeleteBatchNotFound describes a response with status code 404, with default header values.
+/*
+DeleteBatchNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
@@ -91,9 +128,44 @@ type DeleteBatchNotFound struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this delete batch not found response has a 2xx status code
+func (o *DeleteBatchNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete batch not found response has a 3xx status code
+func (o *DeleteBatchNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch not found response has a 4xx status code
+func (o *DeleteBatchNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete batch not found response has a 5xx status code
+func (o *DeleteBatchNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete batch not found response a status code equal to that given
+func (o *DeleteBatchNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the delete batch not found response
+func (o *DeleteBatchNotFound) Code() int {
+	return 404
+}
+
 func (o *DeleteBatchNotFound) Error() string {
 	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchNotFound  %+v", 404, o.Payload)
 }
+
+func (o *DeleteBatchNotFound) String() string {
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchNotFound  %+v", 404, o.Payload)
+}
+
 func (o *DeleteBatchNotFound) GetPayload() *models.Status {
 	return o.Payload
 }
@@ -115,7 +187,8 @@ func NewDeleteBatchInternalServerError() *DeleteBatchInternalServerError {
 	return &DeleteBatchInternalServerError{}
 }
 
-/* DeleteBatchInternalServerError describes a response with status code 500, with default header values.
+/*
+DeleteBatchInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
@@ -123,9 +196,44 @@ type DeleteBatchInternalServerError struct {
 	Payload *models.Status
 }
 
+// IsSuccess returns true when this delete batch internal server error response has a 2xx status code
+func (o *DeleteBatchInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete batch internal server error response has a 3xx status code
+func (o *DeleteBatchInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch internal server error response has a 4xx status code
+func (o *DeleteBatchInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete batch internal server error response has a 5xx status code
+func (o *DeleteBatchInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this delete batch internal server error response a status code equal to that given
+func (o *DeleteBatchInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the delete batch internal server error response
+func (o *DeleteBatchInternalServerError) Code() int {
+	return 500
+}
+
 func (o *DeleteBatchInternalServerError) Error() string {
 	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchInternalServerError  %+v", 500, o.Payload)
 }
+
+func (o *DeleteBatchInternalServerError) String() string {
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchInternalServerError  %+v", 500, o.Payload)
+}
+
 func (o *DeleteBatchInternalServerError) GetPayload() *models.Status {
 	return o.Payload
 }

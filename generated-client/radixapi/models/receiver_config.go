@@ -75,6 +75,7 @@ func (m *ReceiverConfig) ContextValidate(ctx context.Context, formats strfmt.Reg
 func (m *ReceiverConfig) contextValidateSlackConfig(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.SlackConfig != nil {
+
 		if err := m.SlackConfig.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("slackConfig")

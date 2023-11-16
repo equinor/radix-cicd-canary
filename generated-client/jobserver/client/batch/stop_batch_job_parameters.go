@@ -52,10 +52,12 @@ func NewStopBatchJobParamsWithHTTPClient(client *http.Client) *StopBatchJobParam
 	}
 }
 
-/* StopBatchJobParams contains all the parameters to send to the API endpoint
-   for the stop batch job operation.
+/*
+StopBatchJobParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the stop batch job operation.
+
+	Typically these are written to a http.Request.
 */
 type StopBatchJobParams struct {
 

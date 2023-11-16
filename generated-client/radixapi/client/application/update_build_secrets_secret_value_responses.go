@@ -57,7 +57,7 @@ func (o *UpdateBuildSecretsSecretValueReader) ReadResponse(response runtime.Clie
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[PUT /applications/{appName}/buildsecrets/{secretName}] updateBuildSecretsSecretValue", response, response.Code())
 	}
 }
 
@@ -66,14 +66,49 @@ func NewUpdateBuildSecretsSecretValueOK() *UpdateBuildSecretsSecretValueOK {
 	return &UpdateBuildSecretsSecretValueOK{}
 }
 
-/* UpdateBuildSecretsSecretValueOK describes a response with status code 200, with default header values.
+/*
+UpdateBuildSecretsSecretValueOK describes a response with status code 200, with default header values.
 
 success
 */
 type UpdateBuildSecretsSecretValueOK struct {
 }
 
+// IsSuccess returns true when this update build secrets secret value o k response has a 2xx status code
+func (o *UpdateBuildSecretsSecretValueOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this update build secrets secret value o k response has a 3xx status code
+func (o *UpdateBuildSecretsSecretValueOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update build secrets secret value o k response has a 4xx status code
+func (o *UpdateBuildSecretsSecretValueOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update build secrets secret value o k response has a 5xx status code
+func (o *UpdateBuildSecretsSecretValueOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update build secrets secret value o k response a status code equal to that given
+func (o *UpdateBuildSecretsSecretValueOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the update build secrets secret value o k response
+func (o *UpdateBuildSecretsSecretValueOK) Code() int {
+	return 200
+}
+
 func (o *UpdateBuildSecretsSecretValueOK) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueOK ", 200)
+}
+
+func (o *UpdateBuildSecretsSecretValueOK) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueOK ", 200)
 }
 
@@ -87,14 +122,49 @@ func NewUpdateBuildSecretsSecretValueBadRequest() *UpdateBuildSecretsSecretValue
 	return &UpdateBuildSecretsSecretValueBadRequest{}
 }
 
-/* UpdateBuildSecretsSecretValueBadRequest describes a response with status code 400, with default header values.
+/*
+UpdateBuildSecretsSecretValueBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
 type UpdateBuildSecretsSecretValueBadRequest struct {
 }
 
+// IsSuccess returns true when this update build secrets secret value bad request response has a 2xx status code
+func (o *UpdateBuildSecretsSecretValueBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update build secrets secret value bad request response has a 3xx status code
+func (o *UpdateBuildSecretsSecretValueBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update build secrets secret value bad request response has a 4xx status code
+func (o *UpdateBuildSecretsSecretValueBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update build secrets secret value bad request response has a 5xx status code
+func (o *UpdateBuildSecretsSecretValueBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update build secrets secret value bad request response a status code equal to that given
+func (o *UpdateBuildSecretsSecretValueBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the update build secrets secret value bad request response
+func (o *UpdateBuildSecretsSecretValueBadRequest) Code() int {
+	return 400
+}
+
 func (o *UpdateBuildSecretsSecretValueBadRequest) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueBadRequest ", 400)
+}
+
+func (o *UpdateBuildSecretsSecretValueBadRequest) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueBadRequest ", 400)
 }
 
@@ -108,14 +178,49 @@ func NewUpdateBuildSecretsSecretValueUnauthorized() *UpdateBuildSecretsSecretVal
 	return &UpdateBuildSecretsSecretValueUnauthorized{}
 }
 
-/* UpdateBuildSecretsSecretValueUnauthorized describes a response with status code 401, with default header values.
+/*
+UpdateBuildSecretsSecretValueUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type UpdateBuildSecretsSecretValueUnauthorized struct {
 }
 
+// IsSuccess returns true when this update build secrets secret value unauthorized response has a 2xx status code
+func (o *UpdateBuildSecretsSecretValueUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update build secrets secret value unauthorized response has a 3xx status code
+func (o *UpdateBuildSecretsSecretValueUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update build secrets secret value unauthorized response has a 4xx status code
+func (o *UpdateBuildSecretsSecretValueUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update build secrets secret value unauthorized response has a 5xx status code
+func (o *UpdateBuildSecretsSecretValueUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update build secrets secret value unauthorized response a status code equal to that given
+func (o *UpdateBuildSecretsSecretValueUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the update build secrets secret value unauthorized response
+func (o *UpdateBuildSecretsSecretValueUnauthorized) Code() int {
+	return 401
+}
+
 func (o *UpdateBuildSecretsSecretValueUnauthorized) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueUnauthorized ", 401)
+}
+
+func (o *UpdateBuildSecretsSecretValueUnauthorized) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueUnauthorized ", 401)
 }
 
@@ -129,14 +234,49 @@ func NewUpdateBuildSecretsSecretValueForbidden() *UpdateBuildSecretsSecretValueF
 	return &UpdateBuildSecretsSecretValueForbidden{}
 }
 
-/* UpdateBuildSecretsSecretValueForbidden describes a response with status code 403, with default header values.
+/*
+UpdateBuildSecretsSecretValueForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type UpdateBuildSecretsSecretValueForbidden struct {
 }
 
+// IsSuccess returns true when this update build secrets secret value forbidden response has a 2xx status code
+func (o *UpdateBuildSecretsSecretValueForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update build secrets secret value forbidden response has a 3xx status code
+func (o *UpdateBuildSecretsSecretValueForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update build secrets secret value forbidden response has a 4xx status code
+func (o *UpdateBuildSecretsSecretValueForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update build secrets secret value forbidden response has a 5xx status code
+func (o *UpdateBuildSecretsSecretValueForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update build secrets secret value forbidden response a status code equal to that given
+func (o *UpdateBuildSecretsSecretValueForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the update build secrets secret value forbidden response
+func (o *UpdateBuildSecretsSecretValueForbidden) Code() int {
+	return 403
+}
+
 func (o *UpdateBuildSecretsSecretValueForbidden) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueForbidden ", 403)
+}
+
+func (o *UpdateBuildSecretsSecretValueForbidden) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueForbidden ", 403)
 }
 
@@ -150,14 +290,49 @@ func NewUpdateBuildSecretsSecretValueNotFound() *UpdateBuildSecretsSecretValueNo
 	return &UpdateBuildSecretsSecretValueNotFound{}
 }
 
-/* UpdateBuildSecretsSecretValueNotFound describes a response with status code 404, with default header values.
+/*
+UpdateBuildSecretsSecretValueNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type UpdateBuildSecretsSecretValueNotFound struct {
 }
 
+// IsSuccess returns true when this update build secrets secret value not found response has a 2xx status code
+func (o *UpdateBuildSecretsSecretValueNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update build secrets secret value not found response has a 3xx status code
+func (o *UpdateBuildSecretsSecretValueNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update build secrets secret value not found response has a 4xx status code
+func (o *UpdateBuildSecretsSecretValueNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update build secrets secret value not found response has a 5xx status code
+func (o *UpdateBuildSecretsSecretValueNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update build secrets secret value not found response a status code equal to that given
+func (o *UpdateBuildSecretsSecretValueNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the update build secrets secret value not found response
+func (o *UpdateBuildSecretsSecretValueNotFound) Code() int {
+	return 404
+}
+
 func (o *UpdateBuildSecretsSecretValueNotFound) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueNotFound ", 404)
+}
+
+func (o *UpdateBuildSecretsSecretValueNotFound) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueNotFound ", 404)
 }
 
@@ -171,14 +346,49 @@ func NewUpdateBuildSecretsSecretValueConflict() *UpdateBuildSecretsSecretValueCo
 	return &UpdateBuildSecretsSecretValueConflict{}
 }
 
-/* UpdateBuildSecretsSecretValueConflict describes a response with status code 409, with default header values.
+/*
+UpdateBuildSecretsSecretValueConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type UpdateBuildSecretsSecretValueConflict struct {
 }
 
+// IsSuccess returns true when this update build secrets secret value conflict response has a 2xx status code
+func (o *UpdateBuildSecretsSecretValueConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update build secrets secret value conflict response has a 3xx status code
+func (o *UpdateBuildSecretsSecretValueConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update build secrets secret value conflict response has a 4xx status code
+func (o *UpdateBuildSecretsSecretValueConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update build secrets secret value conflict response has a 5xx status code
+func (o *UpdateBuildSecretsSecretValueConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update build secrets secret value conflict response a status code equal to that given
+func (o *UpdateBuildSecretsSecretValueConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the update build secrets secret value conflict response
+func (o *UpdateBuildSecretsSecretValueConflict) Code() int {
+	return 409
+}
+
 func (o *UpdateBuildSecretsSecretValueConflict) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueConflict ", 409)
+}
+
+func (o *UpdateBuildSecretsSecretValueConflict) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/buildsecrets/{secretName}][%d] updateBuildSecretsSecretValueConflict ", 409)
 }
 

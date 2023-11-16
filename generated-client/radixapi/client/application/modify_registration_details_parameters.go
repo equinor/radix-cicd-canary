@@ -55,10 +55,12 @@ func NewModifyRegistrationDetailsParamsWithHTTPClient(client *http.Client) *Modi
 	}
 }
 
-/* ModifyRegistrationDetailsParams contains all the parameters to send to the API endpoint
-   for the modify registration details operation.
+/*
+ModifyRegistrationDetailsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the modify registration details operation.
+
+	Typically these are written to a http.Request.
 */
 type ModifyRegistrationDetailsParams struct {
 

@@ -60,7 +60,7 @@ func (o *SearchApplicationsReader) ReadResponse(response runtime.ClientResponse,
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/_search] searchApplications", response, response.Code())
 	}
 }
 
@@ -69,7 +69,8 @@ func NewSearchApplicationsOK() *SearchApplicationsOK {
 	return &SearchApplicationsOK{}
 }
 
-/* SearchApplicationsOK describes a response with status code 200, with default header values.
+/*
+SearchApplicationsOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -77,9 +78,44 @@ type SearchApplicationsOK struct {
 	Payload []*models.ApplicationSummary
 }
 
+// IsSuccess returns true when this search applications o k response has a 2xx status code
+func (o *SearchApplicationsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this search applications o k response has a 3xx status code
+func (o *SearchApplicationsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this search applications o k response has a 4xx status code
+func (o *SearchApplicationsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this search applications o k response has a 5xx status code
+func (o *SearchApplicationsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this search applications o k response a status code equal to that given
+func (o *SearchApplicationsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the search applications o k response
+func (o *SearchApplicationsOK) Code() int {
+	return 200
+}
+
 func (o *SearchApplicationsOK) Error() string {
 	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsOK  %+v", 200, o.Payload)
 }
+
+func (o *SearchApplicationsOK) String() string {
+	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsOK  %+v", 200, o.Payload)
+}
+
 func (o *SearchApplicationsOK) GetPayload() []*models.ApplicationSummary {
 	return o.Payload
 }
@@ -99,14 +135,49 @@ func NewSearchApplicationsUnauthorized() *SearchApplicationsUnauthorized {
 	return &SearchApplicationsUnauthorized{}
 }
 
-/* SearchApplicationsUnauthorized describes a response with status code 401, with default header values.
+/*
+SearchApplicationsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type SearchApplicationsUnauthorized struct {
 }
 
+// IsSuccess returns true when this search applications unauthorized response has a 2xx status code
+func (o *SearchApplicationsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this search applications unauthorized response has a 3xx status code
+func (o *SearchApplicationsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this search applications unauthorized response has a 4xx status code
+func (o *SearchApplicationsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this search applications unauthorized response has a 5xx status code
+func (o *SearchApplicationsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this search applications unauthorized response a status code equal to that given
+func (o *SearchApplicationsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the search applications unauthorized response
+func (o *SearchApplicationsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *SearchApplicationsUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsUnauthorized ", 401)
+}
+
+func (o *SearchApplicationsUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsUnauthorized ", 401)
 }
 
@@ -120,14 +191,49 @@ func NewSearchApplicationsForbidden() *SearchApplicationsForbidden {
 	return &SearchApplicationsForbidden{}
 }
 
-/* SearchApplicationsForbidden describes a response with status code 403, with default header values.
+/*
+SearchApplicationsForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type SearchApplicationsForbidden struct {
 }
 
+// IsSuccess returns true when this search applications forbidden response has a 2xx status code
+func (o *SearchApplicationsForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this search applications forbidden response has a 3xx status code
+func (o *SearchApplicationsForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this search applications forbidden response has a 4xx status code
+func (o *SearchApplicationsForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this search applications forbidden response has a 5xx status code
+func (o *SearchApplicationsForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this search applications forbidden response a status code equal to that given
+func (o *SearchApplicationsForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the search applications forbidden response
+func (o *SearchApplicationsForbidden) Code() int {
+	return 403
+}
+
 func (o *SearchApplicationsForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsForbidden ", 403)
+}
+
+func (o *SearchApplicationsForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsForbidden ", 403)
 }
 
@@ -141,14 +247,49 @@ func NewSearchApplicationsNotFound() *SearchApplicationsNotFound {
 	return &SearchApplicationsNotFound{}
 }
 
-/* SearchApplicationsNotFound describes a response with status code 404, with default header values.
+/*
+SearchApplicationsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type SearchApplicationsNotFound struct {
 }
 
+// IsSuccess returns true when this search applications not found response has a 2xx status code
+func (o *SearchApplicationsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this search applications not found response has a 3xx status code
+func (o *SearchApplicationsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this search applications not found response has a 4xx status code
+func (o *SearchApplicationsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this search applications not found response has a 5xx status code
+func (o *SearchApplicationsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this search applications not found response a status code equal to that given
+func (o *SearchApplicationsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the search applications not found response
+func (o *SearchApplicationsNotFound) Code() int {
+	return 404
+}
+
 func (o *SearchApplicationsNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsNotFound ", 404)
+}
+
+func (o *SearchApplicationsNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsNotFound ", 404)
 }
 
@@ -162,14 +303,49 @@ func NewSearchApplicationsConflict() *SearchApplicationsConflict {
 	return &SearchApplicationsConflict{}
 }
 
-/* SearchApplicationsConflict describes a response with status code 409, with default header values.
+/*
+SearchApplicationsConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type SearchApplicationsConflict struct {
 }
 
+// IsSuccess returns true when this search applications conflict response has a 2xx status code
+func (o *SearchApplicationsConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this search applications conflict response has a 3xx status code
+func (o *SearchApplicationsConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this search applications conflict response has a 4xx status code
+func (o *SearchApplicationsConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this search applications conflict response has a 5xx status code
+func (o *SearchApplicationsConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this search applications conflict response a status code equal to that given
+func (o *SearchApplicationsConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the search applications conflict response
+func (o *SearchApplicationsConflict) Code() int {
+	return 409
+}
+
 func (o *SearchApplicationsConflict) Error() string {
+	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsConflict ", 409)
+}
+
+func (o *SearchApplicationsConflict) String() string {
 	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsConflict ", 409)
 }
 
@@ -183,14 +359,49 @@ func NewSearchApplicationsInternalServerError() *SearchApplicationsInternalServe
 	return &SearchApplicationsInternalServerError{}
 }
 
-/* SearchApplicationsInternalServerError describes a response with status code 500, with default header values.
+/*
+SearchApplicationsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type SearchApplicationsInternalServerError struct {
 }
 
+// IsSuccess returns true when this search applications internal server error response has a 2xx status code
+func (o *SearchApplicationsInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this search applications internal server error response has a 3xx status code
+func (o *SearchApplicationsInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this search applications internal server error response has a 4xx status code
+func (o *SearchApplicationsInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this search applications internal server error response has a 5xx status code
+func (o *SearchApplicationsInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this search applications internal server error response a status code equal to that given
+func (o *SearchApplicationsInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the search applications internal server error response
+func (o *SearchApplicationsInternalServerError) Code() int {
+	return 500
+}
+
 func (o *SearchApplicationsInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsInternalServerError ", 500)
+}
+
+func (o *SearchApplicationsInternalServerError) String() string {
 	return fmt.Sprintf("[POST /applications/_search][%d] searchApplicationsInternalServerError ", 500)
 }
 

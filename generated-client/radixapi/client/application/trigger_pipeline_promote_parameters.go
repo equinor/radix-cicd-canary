@@ -55,10 +55,12 @@ func NewTriggerPipelinePromoteParamsWithHTTPClient(client *http.Client) *Trigger
 	}
 }
 
-/* TriggerPipelinePromoteParams contains all the parameters to send to the API endpoint
-   for the trigger pipeline promote operation.
+/*
+TriggerPipelinePromoteParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the trigger pipeline promote operation.
+
+	Typically these are written to a http.Request.
 */
 type TriggerPipelinePromoteParams struct {
 

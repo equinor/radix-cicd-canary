@@ -40,7 +40,7 @@ func (o *GetPipelineJobStepLogsReader) ReadResponse(response runtime.ClientRespo
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/jobs/{jobName}/logs/{stepName}] getPipelineJobStepLogs", response, response.Code())
 	}
 }
 
@@ -49,7 +49,8 @@ func NewGetPipelineJobStepLogsOK() *GetPipelineJobStepLogsOK {
 	return &GetPipelineJobStepLogsOK{}
 }
 
-/* GetPipelineJobStepLogsOK describes a response with status code 200, with default header values.
+/*
+GetPipelineJobStepLogsOK describes a response with status code 200, with default header values.
 
 Job step log
 */
@@ -57,9 +58,44 @@ type GetPipelineJobStepLogsOK struct {
 	Payload string
 }
 
+// IsSuccess returns true when this get pipeline job step logs o k response has a 2xx status code
+func (o *GetPipelineJobStepLogsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get pipeline job step logs o k response has a 3xx status code
+func (o *GetPipelineJobStepLogsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get pipeline job step logs o k response has a 4xx status code
+func (o *GetPipelineJobStepLogsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get pipeline job step logs o k response has a 5xx status code
+func (o *GetPipelineJobStepLogsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get pipeline job step logs o k response a status code equal to that given
+func (o *GetPipelineJobStepLogsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get pipeline job step logs o k response
+func (o *GetPipelineJobStepLogsOK) Code() int {
+	return 200
+}
+
 func (o *GetPipelineJobStepLogsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/logs/{stepName}][%d] getPipelineJobStepLogsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetPipelineJobStepLogsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/logs/{stepName}][%d] getPipelineJobStepLogsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetPipelineJobStepLogsOK) GetPayload() string {
 	return o.Payload
 }
@@ -79,14 +115,49 @@ func NewGetPipelineJobStepLogsUnauthorized() *GetPipelineJobStepLogsUnauthorized
 	return &GetPipelineJobStepLogsUnauthorized{}
 }
 
-/* GetPipelineJobStepLogsUnauthorized describes a response with status code 401, with default header values.
+/*
+GetPipelineJobStepLogsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetPipelineJobStepLogsUnauthorized struct {
 }
 
+// IsSuccess returns true when this get pipeline job step logs unauthorized response has a 2xx status code
+func (o *GetPipelineJobStepLogsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get pipeline job step logs unauthorized response has a 3xx status code
+func (o *GetPipelineJobStepLogsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get pipeline job step logs unauthorized response has a 4xx status code
+func (o *GetPipelineJobStepLogsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get pipeline job step logs unauthorized response has a 5xx status code
+func (o *GetPipelineJobStepLogsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get pipeline job step logs unauthorized response a status code equal to that given
+func (o *GetPipelineJobStepLogsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get pipeline job step logs unauthorized response
+func (o *GetPipelineJobStepLogsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetPipelineJobStepLogsUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/logs/{stepName}][%d] getPipelineJobStepLogsUnauthorized ", 401)
+}
+
+func (o *GetPipelineJobStepLogsUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/logs/{stepName}][%d] getPipelineJobStepLogsUnauthorized ", 401)
 }
 
@@ -100,14 +171,49 @@ func NewGetPipelineJobStepLogsNotFound() *GetPipelineJobStepLogsNotFound {
 	return &GetPipelineJobStepLogsNotFound{}
 }
 
-/* GetPipelineJobStepLogsNotFound describes a response with status code 404, with default header values.
+/*
+GetPipelineJobStepLogsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetPipelineJobStepLogsNotFound struct {
 }
 
+// IsSuccess returns true when this get pipeline job step logs not found response has a 2xx status code
+func (o *GetPipelineJobStepLogsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get pipeline job step logs not found response has a 3xx status code
+func (o *GetPipelineJobStepLogsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get pipeline job step logs not found response has a 4xx status code
+func (o *GetPipelineJobStepLogsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get pipeline job step logs not found response has a 5xx status code
+func (o *GetPipelineJobStepLogsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get pipeline job step logs not found response a status code equal to that given
+func (o *GetPipelineJobStepLogsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get pipeline job step logs not found response
+func (o *GetPipelineJobStepLogsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetPipelineJobStepLogsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/logs/{stepName}][%d] getPipelineJobStepLogsNotFound ", 404)
+}
+
+func (o *GetPipelineJobStepLogsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/logs/{stepName}][%d] getPipelineJobStepLogsNotFound ", 404)
 }
 

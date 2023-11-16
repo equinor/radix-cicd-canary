@@ -53,10 +53,12 @@ func NewStopApplicationParamsWithHTTPClient(client *http.Client) *StopApplicatio
 	}
 }
 
-/* StopApplicationParams contains all the parameters to send to the API endpoint
-   for the stop application operation.
+/*
+StopApplicationParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the stop application operation.
+
+	Typically these are written to a http.Request.
 */
 type StopApplicationParams struct {
 

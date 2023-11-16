@@ -39,7 +39,7 @@ func (o *RestartApplicationReader) ReadResponse(response runtime.ClientResponse,
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/restart] restartApplication", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewRestartApplicationOK() *RestartApplicationOK {
 	return &RestartApplicationOK{}
 }
 
-/* RestartApplicationOK describes a response with status code 200, with default header values.
+/*
+RestartApplicationOK describes a response with status code 200, with default header values.
 
 Application started ok
 */
 type RestartApplicationOK struct {
 }
 
+// IsSuccess returns true when this restart application o k response has a 2xx status code
+func (o *RestartApplicationOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this restart application o k response has a 3xx status code
+func (o *RestartApplicationOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart application o k response has a 4xx status code
+func (o *RestartApplicationOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this restart application o k response has a 5xx status code
+func (o *RestartApplicationOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart application o k response a status code equal to that given
+func (o *RestartApplicationOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the restart application o k response
+func (o *RestartApplicationOK) Code() int {
+	return 200
+}
+
 func (o *RestartApplicationOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/restart][%d] restartApplicationOK ", 200)
+}
+
+func (o *RestartApplicationOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/restart][%d] restartApplicationOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewRestartApplicationUnauthorized() *RestartApplicationUnauthorized {
 	return &RestartApplicationUnauthorized{}
 }
 
-/* RestartApplicationUnauthorized describes a response with status code 401, with default header values.
+/*
+RestartApplicationUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type RestartApplicationUnauthorized struct {
 }
 
+// IsSuccess returns true when this restart application unauthorized response has a 2xx status code
+func (o *RestartApplicationUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart application unauthorized response has a 3xx status code
+func (o *RestartApplicationUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart application unauthorized response has a 4xx status code
+func (o *RestartApplicationUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart application unauthorized response has a 5xx status code
+func (o *RestartApplicationUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart application unauthorized response a status code equal to that given
+func (o *RestartApplicationUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the restart application unauthorized response
+func (o *RestartApplicationUnauthorized) Code() int {
+	return 401
+}
+
 func (o *RestartApplicationUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/restart][%d] restartApplicationUnauthorized ", 401)
+}
+
+func (o *RestartApplicationUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/restart][%d] restartApplicationUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewRestartApplicationNotFound() *RestartApplicationNotFound {
 	return &RestartApplicationNotFound{}
 }
 
-/* RestartApplicationNotFound describes a response with status code 404, with default header values.
+/*
+RestartApplicationNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type RestartApplicationNotFound struct {
 }
 
+// IsSuccess returns true when this restart application not found response has a 2xx status code
+func (o *RestartApplicationNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart application not found response has a 3xx status code
+func (o *RestartApplicationNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart application not found response has a 4xx status code
+func (o *RestartApplicationNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart application not found response has a 5xx status code
+func (o *RestartApplicationNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart application not found response a status code equal to that given
+func (o *RestartApplicationNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the restart application not found response
+func (o *RestartApplicationNotFound) Code() int {
+	return 404
+}
+
 func (o *RestartApplicationNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/restart][%d] restartApplicationNotFound ", 404)
+}
+
+func (o *RestartApplicationNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/restart][%d] restartApplicationNotFound ", 404)
 }
 

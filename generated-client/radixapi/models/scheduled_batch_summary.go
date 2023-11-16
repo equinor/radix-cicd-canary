@@ -242,6 +242,11 @@ func (m *ScheduledBatchSummary) contextValidateJobList(ctx context.Context, form
 	for i := 0; i < len(m.JobList); i++ {
 
 		if m.JobList[i] != nil {
+
+			if swag.IsZero(m.JobList[i]) { // not required
+				return nil
+			}
+
 			if err := m.JobList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobList" + "." + strconv.Itoa(i))
@@ -260,6 +265,11 @@ func (m *ScheduledBatchSummary) contextValidateJobList(ctx context.Context, form
 func (m *ScheduledBatchSummary) contextValidateReplica(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Replica != nil {
+
+		if swag.IsZero(m.Replica) { // not required
+			return nil
+		}
+
 		if err := m.Replica.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("replica")

@@ -156,6 +156,11 @@ func (m *Secret) contextValidateTLSCertificates(ctx context.Context, formats str
 	for i := 0; i < len(m.TLSCertificates); i++ {
 
 		if m.TLSCertificates[i] != nil {
+
+			if swag.IsZero(m.TLSCertificates[i]) { // not required
+				return nil
+			}
+
 			if err := m.TLSCertificates[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("tlsCertificates" + "." + strconv.Itoa(i))
@@ -172,6 +177,10 @@ func (m *Secret) contextValidateTLSCertificates(ctx context.Context, formats str
 }
 
 func (m *Secret) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
 
 	if err := m.Type.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {

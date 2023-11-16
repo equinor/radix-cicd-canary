@@ -53,10 +53,12 @@ func NewJobLogParamsWithHTTPClient(client *http.Client) *JobLogParams {
 	}
 }
 
-/* JobLogParams contains all the parameters to send to the API endpoint
-   for the job log operation.
+/*
+JobLogParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the job log operation.
+
+	Typically these are written to a http.Request.
 */
 type JobLogParams struct {
 

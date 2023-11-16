@@ -52,10 +52,12 @@ func NewGetBatchesParamsWithHTTPClient(client *http.Client) *GetBatchesParams {
 	}
 }
 
-/* GetBatchesParams contains all the parameters to send to the API endpoint
-   for the get batches operation.
+/*
+GetBatchesParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get batches operation.
+
+	Typically these are written to a http.Request.
 */
 type GetBatchesParams struct {
 	timeout    time.Duration

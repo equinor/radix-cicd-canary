@@ -51,7 +51,7 @@ func (o *RestartBatchReader) ReadResponse(response runtime.ClientResponse, consu
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart] restartBatch", response, response.Code())
 	}
 }
 
@@ -60,14 +60,49 @@ func NewRestartBatchNoContent() *RestartBatchNoContent {
 	return &RestartBatchNoContent{}
 }
 
-/* RestartBatchNoContent describes a response with status code 204, with default header values.
+/*
+RestartBatchNoContent describes a response with status code 204, with default header values.
 
 Success
 */
 type RestartBatchNoContent struct {
 }
 
+// IsSuccess returns true when this restart batch no content response has a 2xx status code
+func (o *RestartBatchNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this restart batch no content response has a 3xx status code
+func (o *RestartBatchNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart batch no content response has a 4xx status code
+func (o *RestartBatchNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this restart batch no content response has a 5xx status code
+func (o *RestartBatchNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart batch no content response a status code equal to that given
+func (o *RestartBatchNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+// Code gets the status code for the restart batch no content response
+func (o *RestartBatchNoContent) Code() int {
+	return 204
+}
+
 func (o *RestartBatchNoContent) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchNoContent ", 204)
+}
+
+func (o *RestartBatchNoContent) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchNoContent ", 204)
 }
 
@@ -81,14 +116,49 @@ func NewRestartBatchBadRequest() *RestartBatchBadRequest {
 	return &RestartBatchBadRequest{}
 }
 
-/* RestartBatchBadRequest describes a response with status code 400, with default header values.
+/*
+RestartBatchBadRequest describes a response with status code 400, with default header values.
 
 Invalid batch
 */
 type RestartBatchBadRequest struct {
 }
 
+// IsSuccess returns true when this restart batch bad request response has a 2xx status code
+func (o *RestartBatchBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart batch bad request response has a 3xx status code
+func (o *RestartBatchBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart batch bad request response has a 4xx status code
+func (o *RestartBatchBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart batch bad request response has a 5xx status code
+func (o *RestartBatchBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart batch bad request response a status code equal to that given
+func (o *RestartBatchBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the restart batch bad request response
+func (o *RestartBatchBadRequest) Code() int {
+	return 400
+}
+
 func (o *RestartBatchBadRequest) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchBadRequest ", 400)
+}
+
+func (o *RestartBatchBadRequest) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchBadRequest ", 400)
 }
 
@@ -102,14 +172,49 @@ func NewRestartBatchUnauthorized() *RestartBatchUnauthorized {
 	return &RestartBatchUnauthorized{}
 }
 
-/* RestartBatchUnauthorized describes a response with status code 401, with default header values.
+/*
+RestartBatchUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type RestartBatchUnauthorized struct {
 }
 
+// IsSuccess returns true when this restart batch unauthorized response has a 2xx status code
+func (o *RestartBatchUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart batch unauthorized response has a 3xx status code
+func (o *RestartBatchUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart batch unauthorized response has a 4xx status code
+func (o *RestartBatchUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart batch unauthorized response has a 5xx status code
+func (o *RestartBatchUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart batch unauthorized response a status code equal to that given
+func (o *RestartBatchUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the restart batch unauthorized response
+func (o *RestartBatchUnauthorized) Code() int {
+	return 401
+}
+
 func (o *RestartBatchUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchUnauthorized ", 401)
+}
+
+func (o *RestartBatchUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchUnauthorized ", 401)
 }
 
@@ -123,14 +228,49 @@ func NewRestartBatchForbidden() *RestartBatchForbidden {
 	return &RestartBatchForbidden{}
 }
 
-/* RestartBatchForbidden describes a response with status code 403, with default header values.
+/*
+RestartBatchForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type RestartBatchForbidden struct {
 }
 
+// IsSuccess returns true when this restart batch forbidden response has a 2xx status code
+func (o *RestartBatchForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart batch forbidden response has a 3xx status code
+func (o *RestartBatchForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart batch forbidden response has a 4xx status code
+func (o *RestartBatchForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart batch forbidden response has a 5xx status code
+func (o *RestartBatchForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart batch forbidden response a status code equal to that given
+func (o *RestartBatchForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the restart batch forbidden response
+func (o *RestartBatchForbidden) Code() int {
+	return 403
+}
+
 func (o *RestartBatchForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchForbidden ", 403)
+}
+
+func (o *RestartBatchForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchForbidden ", 403)
 }
 
@@ -144,14 +284,49 @@ func NewRestartBatchNotFound() *RestartBatchNotFound {
 	return &RestartBatchNotFound{}
 }
 
-/* RestartBatchNotFound describes a response with status code 404, with default header values.
+/*
+RestartBatchNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type RestartBatchNotFound struct {
 }
 
+// IsSuccess returns true when this restart batch not found response has a 2xx status code
+func (o *RestartBatchNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart batch not found response has a 3xx status code
+func (o *RestartBatchNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart batch not found response has a 4xx status code
+func (o *RestartBatchNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart batch not found response has a 5xx status code
+func (o *RestartBatchNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart batch not found response a status code equal to that given
+func (o *RestartBatchNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the restart batch not found response
+func (o *RestartBatchNotFound) Code() int {
+	return 404
+}
+
 func (o *RestartBatchNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchNotFound ", 404)
+}
+
+func (o *RestartBatchNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/restart][%d] restartBatchNotFound ", 404)
 }
 

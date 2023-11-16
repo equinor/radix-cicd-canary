@@ -42,7 +42,7 @@ func (o *TriggerPipelineBuildDeployReader) ReadResponse(response runtime.ClientR
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/pipelines/build-deploy] triggerPipelineBuildDeploy", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewTriggerPipelineBuildDeployOK() *TriggerPipelineBuildDeployOK {
 	return &TriggerPipelineBuildDeployOK{}
 }
 
-/* TriggerPipelineBuildDeployOK describes a response with status code 200, with default header values.
+/*
+TriggerPipelineBuildDeployOK describes a response with status code 200, with default header values.
 
 Successful trigger pipeline
 */
@@ -59,9 +60,44 @@ type TriggerPipelineBuildDeployOK struct {
 	Payload *models.JobSummary
 }
 
+// IsSuccess returns true when this trigger pipeline build deploy o k response has a 2xx status code
+func (o *TriggerPipelineBuildDeployOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this trigger pipeline build deploy o k response has a 3xx status code
+func (o *TriggerPipelineBuildDeployOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this trigger pipeline build deploy o k response has a 4xx status code
+func (o *TriggerPipelineBuildDeployOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this trigger pipeline build deploy o k response has a 5xx status code
+func (o *TriggerPipelineBuildDeployOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this trigger pipeline build deploy o k response a status code equal to that given
+func (o *TriggerPipelineBuildDeployOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the trigger pipeline build deploy o k response
+func (o *TriggerPipelineBuildDeployOK) Code() int {
+	return 200
+}
+
 func (o *TriggerPipelineBuildDeployOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployOK  %+v", 200, o.Payload)
 }
+
+func (o *TriggerPipelineBuildDeployOK) String() string {
+	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployOK  %+v", 200, o.Payload)
+}
+
 func (o *TriggerPipelineBuildDeployOK) GetPayload() *models.JobSummary {
 	return o.Payload
 }
@@ -83,14 +119,49 @@ func NewTriggerPipelineBuildDeployForbidden() *TriggerPipelineBuildDeployForbidd
 	return &TriggerPipelineBuildDeployForbidden{}
 }
 
-/* TriggerPipelineBuildDeployForbidden describes a response with status code 403, with default header values.
+/*
+TriggerPipelineBuildDeployForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type TriggerPipelineBuildDeployForbidden struct {
 }
 
+// IsSuccess returns true when this trigger pipeline build deploy forbidden response has a 2xx status code
+func (o *TriggerPipelineBuildDeployForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this trigger pipeline build deploy forbidden response has a 3xx status code
+func (o *TriggerPipelineBuildDeployForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this trigger pipeline build deploy forbidden response has a 4xx status code
+func (o *TriggerPipelineBuildDeployForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this trigger pipeline build deploy forbidden response has a 5xx status code
+func (o *TriggerPipelineBuildDeployForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this trigger pipeline build deploy forbidden response a status code equal to that given
+func (o *TriggerPipelineBuildDeployForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the trigger pipeline build deploy forbidden response
+func (o *TriggerPipelineBuildDeployForbidden) Code() int {
+	return 403
+}
+
 func (o *TriggerPipelineBuildDeployForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployForbidden ", 403)
+}
+
+func (o *TriggerPipelineBuildDeployForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployForbidden ", 403)
 }
 
@@ -104,14 +175,49 @@ func NewTriggerPipelineBuildDeployNotFound() *TriggerPipelineBuildDeployNotFound
 	return &TriggerPipelineBuildDeployNotFound{}
 }
 
-/* TriggerPipelineBuildDeployNotFound describes a response with status code 404, with default header values.
+/*
+TriggerPipelineBuildDeployNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type TriggerPipelineBuildDeployNotFound struct {
 }
 
+// IsSuccess returns true when this trigger pipeline build deploy not found response has a 2xx status code
+func (o *TriggerPipelineBuildDeployNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this trigger pipeline build deploy not found response has a 3xx status code
+func (o *TriggerPipelineBuildDeployNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this trigger pipeline build deploy not found response has a 4xx status code
+func (o *TriggerPipelineBuildDeployNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this trigger pipeline build deploy not found response has a 5xx status code
+func (o *TriggerPipelineBuildDeployNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this trigger pipeline build deploy not found response a status code equal to that given
+func (o *TriggerPipelineBuildDeployNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the trigger pipeline build deploy not found response
+func (o *TriggerPipelineBuildDeployNotFound) Code() int {
+	return 404
+}
+
 func (o *TriggerPipelineBuildDeployNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployNotFound ", 404)
+}
+
+func (o *TriggerPipelineBuildDeployNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/build-deploy][%d] triggerPipelineBuildDeployNotFound ", 404)
 }
 

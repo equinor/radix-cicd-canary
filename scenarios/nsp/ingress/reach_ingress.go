@@ -16,7 +16,7 @@ import (
 func Reach(ctx context.Context, cfg config.Config) error {
 	baseUrl := fmt.Sprintf("%s.%s", "https://www-radix-canary-golang-prod", cfg.GetClusterFQDN())
 	url, _ := neturl.JoinPath(baseUrl, "health")
-	client := httpUtils.GetHTTPDefaultClient()
+	client := httpUtils.GetHTTPDefaultClient(cfg.GetNSPReachIngressTimeout())
 	log.Ctx(ctx).Debug().Str("url", url).Msg("Requesting data")
 
 	// Run tests ingress

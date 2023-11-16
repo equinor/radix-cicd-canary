@@ -51,7 +51,7 @@ func (o *DeleteBatchReader) ReadResponse(response runtime.ClientResponse, consum
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}] deleteBatch", response, response.Code())
 	}
 }
 
@@ -60,14 +60,49 @@ func NewDeleteBatchNoContent() *DeleteBatchNoContent {
 	return &DeleteBatchNoContent{}
 }
 
-/* DeleteBatchNoContent describes a response with status code 204, with default header values.
+/*
+DeleteBatchNoContent describes a response with status code 204, with default header values.
 
 Success
 */
 type DeleteBatchNoContent struct {
 }
 
+// IsSuccess returns true when this delete batch no content response has a 2xx status code
+func (o *DeleteBatchNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this delete batch no content response has a 3xx status code
+func (o *DeleteBatchNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch no content response has a 4xx status code
+func (o *DeleteBatchNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete batch no content response has a 5xx status code
+func (o *DeleteBatchNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete batch no content response a status code equal to that given
+func (o *DeleteBatchNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+// Code gets the status code for the delete batch no content response
+func (o *DeleteBatchNoContent) Code() int {
+	return 204
+}
+
 func (o *DeleteBatchNoContent) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchNoContent ", 204)
+}
+
+func (o *DeleteBatchNoContent) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchNoContent ", 204)
 }
 
@@ -81,14 +116,49 @@ func NewDeleteBatchBadRequest() *DeleteBatchBadRequest {
 	return &DeleteBatchBadRequest{}
 }
 
-/* DeleteBatchBadRequest describes a response with status code 400, with default header values.
+/*
+DeleteBatchBadRequest describes a response with status code 400, with default header values.
 
 Invalid batch
 */
 type DeleteBatchBadRequest struct {
 }
 
+// IsSuccess returns true when this delete batch bad request response has a 2xx status code
+func (o *DeleteBatchBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete batch bad request response has a 3xx status code
+func (o *DeleteBatchBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch bad request response has a 4xx status code
+func (o *DeleteBatchBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete batch bad request response has a 5xx status code
+func (o *DeleteBatchBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete batch bad request response a status code equal to that given
+func (o *DeleteBatchBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the delete batch bad request response
+func (o *DeleteBatchBadRequest) Code() int {
+	return 400
+}
+
 func (o *DeleteBatchBadRequest) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchBadRequest ", 400)
+}
+
+func (o *DeleteBatchBadRequest) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchBadRequest ", 400)
 }
 
@@ -102,14 +172,49 @@ func NewDeleteBatchUnauthorized() *DeleteBatchUnauthorized {
 	return &DeleteBatchUnauthorized{}
 }
 
-/* DeleteBatchUnauthorized describes a response with status code 401, with default header values.
+/*
+DeleteBatchUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type DeleteBatchUnauthorized struct {
 }
 
+// IsSuccess returns true when this delete batch unauthorized response has a 2xx status code
+func (o *DeleteBatchUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete batch unauthorized response has a 3xx status code
+func (o *DeleteBatchUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch unauthorized response has a 4xx status code
+func (o *DeleteBatchUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete batch unauthorized response has a 5xx status code
+func (o *DeleteBatchUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete batch unauthorized response a status code equal to that given
+func (o *DeleteBatchUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the delete batch unauthorized response
+func (o *DeleteBatchUnauthorized) Code() int {
+	return 401
+}
+
 func (o *DeleteBatchUnauthorized) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchUnauthorized ", 401)
+}
+
+func (o *DeleteBatchUnauthorized) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchUnauthorized ", 401)
 }
 
@@ -123,14 +228,49 @@ func NewDeleteBatchForbidden() *DeleteBatchForbidden {
 	return &DeleteBatchForbidden{}
 }
 
-/* DeleteBatchForbidden describes a response with status code 403, with default header values.
+/*
+DeleteBatchForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type DeleteBatchForbidden struct {
 }
 
+// IsSuccess returns true when this delete batch forbidden response has a 2xx status code
+func (o *DeleteBatchForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete batch forbidden response has a 3xx status code
+func (o *DeleteBatchForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch forbidden response has a 4xx status code
+func (o *DeleteBatchForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete batch forbidden response has a 5xx status code
+func (o *DeleteBatchForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete batch forbidden response a status code equal to that given
+func (o *DeleteBatchForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the delete batch forbidden response
+func (o *DeleteBatchForbidden) Code() int {
+	return 403
+}
+
 func (o *DeleteBatchForbidden) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchForbidden ", 403)
+}
+
+func (o *DeleteBatchForbidden) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchForbidden ", 403)
 }
 
@@ -144,14 +284,49 @@ func NewDeleteBatchNotFound() *DeleteBatchNotFound {
 	return &DeleteBatchNotFound{}
 }
 
-/* DeleteBatchNotFound describes a response with status code 404, with default header values.
+/*
+DeleteBatchNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type DeleteBatchNotFound struct {
 }
 
+// IsSuccess returns true when this delete batch not found response has a 2xx status code
+func (o *DeleteBatchNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete batch not found response has a 3xx status code
+func (o *DeleteBatchNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete batch not found response has a 4xx status code
+func (o *DeleteBatchNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete batch not found response has a 5xx status code
+func (o *DeleteBatchNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete batch not found response a status code equal to that given
+func (o *DeleteBatchNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the delete batch not found response
+func (o *DeleteBatchNotFound) Code() int {
+	return 404
+}
+
 func (o *DeleteBatchNotFound) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchNotFound ", 404)
+}
+
+func (o *DeleteBatchNotFound) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}][%d] deleteBatchNotFound ", 404)
 }
 

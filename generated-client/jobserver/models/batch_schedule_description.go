@@ -115,6 +115,11 @@ func (m *BatchScheduleDescription) contextValidateJobScheduleDescriptions(ctx co
 	for i := 0; i < len(m.JobScheduleDescriptions); i++ {
 
 		if m.JobScheduleDescriptions[i] != nil {
+
+			if swag.IsZero(m.JobScheduleDescriptions[i]) { // not required
+				return nil
+			}
+
 			if err := m.JobScheduleDescriptions[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobScheduleDescriptions" + "." + strconv.Itoa(i))
@@ -133,6 +138,11 @@ func (m *BatchScheduleDescription) contextValidateJobScheduleDescriptions(ctx co
 func (m *BatchScheduleDescription) contextValidateDefaultRadixJobComponentConfig(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DefaultRadixJobComponentConfig != nil {
+
+		if swag.IsZero(m.DefaultRadixJobComponentConfig) { // not required
+			return nil
+		}
+
 		if err := m.DefaultRadixJobComponentConfig.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("defaultRadixJobComponentConfig")

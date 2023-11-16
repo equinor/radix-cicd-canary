@@ -53,10 +53,12 @@ func NewStopEnvironmentParamsWithHTTPClient(client *http.Client) *StopEnvironmen
 	}
 }
 
-/* StopEnvironmentParams contains all the parameters to send to the API endpoint
-   for the stop environment operation.
+/*
+StopEnvironmentParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the stop environment operation.
+
+	Typically these are written to a http.Request.
 */
 type StopEnvironmentParams struct {
 

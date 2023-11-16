@@ -36,7 +36,7 @@ type ClientService interface {
 }
 
 /*
-  GetDeployment gets deployment details
+GetDeployment gets deployment details
 */
 func (a *Client) GetDeployment(params *GetDeploymentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeploymentOK, error) {
 	// TODO: Validate the params before sending

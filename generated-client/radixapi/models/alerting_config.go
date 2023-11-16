@@ -154,6 +154,10 @@ func (m *AlertingConfig) contextValidateAlerts(ctx context.Context, formats strf
 
 func (m *AlertingConfig) contextValidateReceiverSecretStatus(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.ReceiverSecretStatus) { // not required
+		return nil
+	}
+
 	if err := m.ReceiverSecretStatus.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("receiverSecretStatus")
@@ -167,6 +171,10 @@ func (m *AlertingConfig) contextValidateReceiverSecretStatus(ctx context.Context
 }
 
 func (m *AlertingConfig) contextValidateReceivers(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Receivers) { // not required
+		return nil
+	}
 
 	if err := m.Receivers.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
