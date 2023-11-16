@@ -138,6 +138,11 @@ func (m *EnvironmentSummary) ContextValidate(ctx context.Context, formats strfmt
 func (m *EnvironmentSummary) contextValidateActiveDeployment(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ActiveDeployment != nil {
+
+		if swag.IsZero(m.ActiveDeployment) { // not required
+			return nil
+		}
+
 		if err := m.ActiveDeployment.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("activeDeployment")

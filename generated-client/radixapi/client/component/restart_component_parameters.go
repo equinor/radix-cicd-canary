@@ -53,10 +53,12 @@ func NewRestartComponentParamsWithHTTPClient(client *http.Client) *RestartCompon
 	}
 }
 
-/* RestartComponentParams contains all the parameters to send to the API endpoint
-   for the restart component operation.
+/*
+RestartComponentParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the restart component operation.
+
+	Typically these are written to a http.Request.
 */
 type RestartComponentParams struct {
 

@@ -55,10 +55,12 @@ func NewUpdatePrivateImageHubsSecretValueParamsWithHTTPClient(client *http.Clien
 	}
 }
 
-/* UpdatePrivateImageHubsSecretValueParams contains all the parameters to send to the API endpoint
-   for the update private image hubs secret value operation.
+/*
+UpdatePrivateImageHubsSecretValueParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the update private image hubs secret value operation.
+
+	Typically these are written to a http.Request.
 */
 type UpdatePrivateImageHubsSecretValueParams struct {
 

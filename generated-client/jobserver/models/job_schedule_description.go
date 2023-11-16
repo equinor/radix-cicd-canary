@@ -21,6 +21,9 @@ type JobScheduleDescription struct {
 	// BackoffLimit defines attempts to restart job if it fails. Corresponds to BackoffLimit in K8s.
 	BackoffLimit int32 `json:"backoffLimit,omitempty"`
 
+	// ImageTagName defines the image tag name to use for the job image
+	ImageTagName string `json:"imageTagName,omitempty"`
+
 	// JobId Optional ID of a job
 	// Example: 'job1'
 	JobID string `json:"jobId,omitempty"`
@@ -116,6 +119,11 @@ func (m *JobScheduleDescription) ContextValidate(ctx context.Context, formats st
 func (m *JobScheduleDescription) contextValidateNode(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Node != nil {
+
+		if swag.IsZero(m.Node) { // not required
+			return nil
+		}
+
 		if err := m.Node.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("node")
@@ -132,6 +140,11 @@ func (m *JobScheduleDescription) contextValidateNode(ctx context.Context, format
 func (m *JobScheduleDescription) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Resources != nil {
+
+		if swag.IsZero(m.Resources) { // not required
+			return nil
+		}
+
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("resources")

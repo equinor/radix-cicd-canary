@@ -39,7 +39,7 @@ func (o *DeleteEnvironmentReader) ReadResponse(response runtime.ClientResponse, 
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[DELETE /applications/{appName}/environments/{envName}] deleteEnvironment", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewDeleteEnvironmentOK() *DeleteEnvironmentOK {
 	return &DeleteEnvironmentOK{}
 }
 
-/* DeleteEnvironmentOK describes a response with status code 200, with default header values.
+/*
+DeleteEnvironmentOK describes a response with status code 200, with default header values.
 
 Environment deleted ok
 */
 type DeleteEnvironmentOK struct {
 }
 
+// IsSuccess returns true when this delete environment o k response has a 2xx status code
+func (o *DeleteEnvironmentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this delete environment o k response has a 3xx status code
+func (o *DeleteEnvironmentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete environment o k response has a 4xx status code
+func (o *DeleteEnvironmentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete environment o k response has a 5xx status code
+func (o *DeleteEnvironmentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete environment o k response a status code equal to that given
+func (o *DeleteEnvironmentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the delete environment o k response
+func (o *DeleteEnvironmentOK) Code() int {
+	return 200
+}
+
 func (o *DeleteEnvironmentOK) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}][%d] deleteEnvironmentOK ", 200)
+}
+
+func (o *DeleteEnvironmentOK) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}][%d] deleteEnvironmentOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewDeleteEnvironmentUnauthorized() *DeleteEnvironmentUnauthorized {
 	return &DeleteEnvironmentUnauthorized{}
 }
 
-/* DeleteEnvironmentUnauthorized describes a response with status code 401, with default header values.
+/*
+DeleteEnvironmentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type DeleteEnvironmentUnauthorized struct {
 }
 
+// IsSuccess returns true when this delete environment unauthorized response has a 2xx status code
+func (o *DeleteEnvironmentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete environment unauthorized response has a 3xx status code
+func (o *DeleteEnvironmentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete environment unauthorized response has a 4xx status code
+func (o *DeleteEnvironmentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete environment unauthorized response has a 5xx status code
+func (o *DeleteEnvironmentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete environment unauthorized response a status code equal to that given
+func (o *DeleteEnvironmentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the delete environment unauthorized response
+func (o *DeleteEnvironmentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *DeleteEnvironmentUnauthorized) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}][%d] deleteEnvironmentUnauthorized ", 401)
+}
+
+func (o *DeleteEnvironmentUnauthorized) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}][%d] deleteEnvironmentUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewDeleteEnvironmentNotFound() *DeleteEnvironmentNotFound {
 	return &DeleteEnvironmentNotFound{}
 }
 
-/* DeleteEnvironmentNotFound describes a response with status code 404, with default header values.
+/*
+DeleteEnvironmentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type DeleteEnvironmentNotFound struct {
 }
 
+// IsSuccess returns true when this delete environment not found response has a 2xx status code
+func (o *DeleteEnvironmentNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete environment not found response has a 3xx status code
+func (o *DeleteEnvironmentNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete environment not found response has a 4xx status code
+func (o *DeleteEnvironmentNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete environment not found response has a 5xx status code
+func (o *DeleteEnvironmentNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete environment not found response a status code equal to that given
+func (o *DeleteEnvironmentNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the delete environment not found response
+func (o *DeleteEnvironmentNotFound) Code() int {
+	return 404
+}
+
 func (o *DeleteEnvironmentNotFound) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}][%d] deleteEnvironmentNotFound ", 404)
+}
+
+func (o *DeleteEnvironmentNotFound) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}][%d] deleteEnvironmentNotFound ", 404)
 }
 

@@ -53,10 +53,12 @@ func NewScaleComponentParamsWithHTTPClient(client *http.Client) *ScaleComponentP
 	}
 }
 
-/* ScaleComponentParams contains all the parameters to send to the API endpoint
-   for the scale component operation.
+/*
+ScaleComponentParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the scale component operation.
+
+	Typically these are written to a http.Request.
 */
 type ScaleComponentParams struct {
 

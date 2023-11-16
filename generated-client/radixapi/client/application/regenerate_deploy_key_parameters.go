@@ -55,10 +55,12 @@ func NewRegenerateDeployKeyParamsWithHTTPClient(client *http.Client) *Regenerate
 	}
 }
 
-/* RegenerateDeployKeyParams contains all the parameters to send to the API endpoint
-   for the regenerate deploy key operation.
+/*
+RegenerateDeployKeyParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the regenerate deploy key operation.
+
+	Typically these are written to a http.Request.
 */
 type RegenerateDeployKeyParams struct {
 

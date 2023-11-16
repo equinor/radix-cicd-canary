@@ -55,10 +55,12 @@ func NewSearchApplicationsParamsWithHTTPClient(client *http.Client) *SearchAppli
 	}
 }
 
-/* SearchApplicationsParams contains all the parameters to send to the API endpoint
-   for the search applications operation.
+/*
+SearchApplicationsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the search applications operation.
+
+	Typically these are written to a http.Request.
 */
 type SearchApplicationsParams struct {
 

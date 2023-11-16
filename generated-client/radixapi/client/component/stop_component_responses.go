@@ -39,7 +39,7 @@ func (o *StopComponentReader) ReadResponse(response runtime.ClientResponse, cons
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/components/{componentName}/stop] stopComponent", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewStopComponentOK() *StopComponentOK {
 	return &StopComponentOK{}
 }
 
-/* StopComponentOK describes a response with status code 200, with default header values.
+/*
+StopComponentOK describes a response with status code 200, with default header values.
 
 Component stopped ok
 */
 type StopComponentOK struct {
 }
 
+// IsSuccess returns true when this stop component o k response has a 2xx status code
+func (o *StopComponentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this stop component o k response has a 3xx status code
+func (o *StopComponentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop component o k response has a 4xx status code
+func (o *StopComponentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this stop component o k response has a 5xx status code
+func (o *StopComponentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop component o k response a status code equal to that given
+func (o *StopComponentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the stop component o k response
+func (o *StopComponentOK) Code() int {
+	return 200
+}
+
 func (o *StopComponentOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/stop][%d] stopComponentOK ", 200)
+}
+
+func (o *StopComponentOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/stop][%d] stopComponentOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewStopComponentUnauthorized() *StopComponentUnauthorized {
 	return &StopComponentUnauthorized{}
 }
 
-/* StopComponentUnauthorized describes a response with status code 401, with default header values.
+/*
+StopComponentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type StopComponentUnauthorized struct {
 }
 
+// IsSuccess returns true when this stop component unauthorized response has a 2xx status code
+func (o *StopComponentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop component unauthorized response has a 3xx status code
+func (o *StopComponentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop component unauthorized response has a 4xx status code
+func (o *StopComponentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop component unauthorized response has a 5xx status code
+func (o *StopComponentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop component unauthorized response a status code equal to that given
+func (o *StopComponentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the stop component unauthorized response
+func (o *StopComponentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *StopComponentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/stop][%d] stopComponentUnauthorized ", 401)
+}
+
+func (o *StopComponentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/stop][%d] stopComponentUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewStopComponentNotFound() *StopComponentNotFound {
 	return &StopComponentNotFound{}
 }
 
-/* StopComponentNotFound describes a response with status code 404, with default header values.
+/*
+StopComponentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type StopComponentNotFound struct {
 }
 
+// IsSuccess returns true when this stop component not found response has a 2xx status code
+func (o *StopComponentNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop component not found response has a 3xx status code
+func (o *StopComponentNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop component not found response has a 4xx status code
+func (o *StopComponentNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop component not found response has a 5xx status code
+func (o *StopComponentNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop component not found response a status code equal to that given
+func (o *StopComponentNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the stop component not found response
+func (o *StopComponentNotFound) Code() int {
+	return 404
+}
+
 func (o *StopComponentNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/stop][%d] stopComponentNotFound ", 404)
+}
+
+func (o *StopComponentNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/stop][%d] stopComponentNotFound ", 404)
 }
 

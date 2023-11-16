@@ -54,7 +54,7 @@ func (o *GetEnvironmentAlertingConfigReader) ReadResponse(response runtime.Clien
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/alerting] getEnvironmentAlertingConfig", response, response.Code())
 	}
 }
 
@@ -63,7 +63,8 @@ func NewGetEnvironmentAlertingConfigOK() *GetEnvironmentAlertingConfigOK {
 	return &GetEnvironmentAlertingConfigOK{}
 }
 
-/* GetEnvironmentAlertingConfigOK describes a response with status code 200, with default header values.
+/*
+GetEnvironmentAlertingConfigOK describes a response with status code 200, with default header values.
 
 Successful get alerts config
 */
@@ -71,9 +72,44 @@ type GetEnvironmentAlertingConfigOK struct {
 	Payload *models.AlertingConfig
 }
 
+// IsSuccess returns true when this get environment alerting config o k response has a 2xx status code
+func (o *GetEnvironmentAlertingConfigOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get environment alerting config o k response has a 3xx status code
+func (o *GetEnvironmentAlertingConfigOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment alerting config o k response has a 4xx status code
+func (o *GetEnvironmentAlertingConfigOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get environment alerting config o k response has a 5xx status code
+func (o *GetEnvironmentAlertingConfigOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get environment alerting config o k response a status code equal to that given
+func (o *GetEnvironmentAlertingConfigOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get environment alerting config o k response
+func (o *GetEnvironmentAlertingConfigOK) Code() int {
+	return 200
+}
+
 func (o *GetEnvironmentAlertingConfigOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigOK  %+v", 200, o.Payload)
 }
+
+func (o *GetEnvironmentAlertingConfigOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigOK  %+v", 200, o.Payload)
+}
+
 func (o *GetEnvironmentAlertingConfigOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -95,14 +131,49 @@ func NewGetEnvironmentAlertingConfigUnauthorized() *GetEnvironmentAlertingConfig
 	return &GetEnvironmentAlertingConfigUnauthorized{}
 }
 
-/* GetEnvironmentAlertingConfigUnauthorized describes a response with status code 401, with default header values.
+/*
+GetEnvironmentAlertingConfigUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetEnvironmentAlertingConfigUnauthorized struct {
 }
 
+// IsSuccess returns true when this get environment alerting config unauthorized response has a 2xx status code
+func (o *GetEnvironmentAlertingConfigUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get environment alerting config unauthorized response has a 3xx status code
+func (o *GetEnvironmentAlertingConfigUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment alerting config unauthorized response has a 4xx status code
+func (o *GetEnvironmentAlertingConfigUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get environment alerting config unauthorized response has a 5xx status code
+func (o *GetEnvironmentAlertingConfigUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get environment alerting config unauthorized response a status code equal to that given
+func (o *GetEnvironmentAlertingConfigUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get environment alerting config unauthorized response
+func (o *GetEnvironmentAlertingConfigUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetEnvironmentAlertingConfigUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigUnauthorized ", 401)
+}
+
+func (o *GetEnvironmentAlertingConfigUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigUnauthorized ", 401)
 }
 
@@ -116,14 +187,49 @@ func NewGetEnvironmentAlertingConfigForbidden() *GetEnvironmentAlertingConfigFor
 	return &GetEnvironmentAlertingConfigForbidden{}
 }
 
-/* GetEnvironmentAlertingConfigForbidden describes a response with status code 403, with default header values.
+/*
+GetEnvironmentAlertingConfigForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type GetEnvironmentAlertingConfigForbidden struct {
 }
 
+// IsSuccess returns true when this get environment alerting config forbidden response has a 2xx status code
+func (o *GetEnvironmentAlertingConfigForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get environment alerting config forbidden response has a 3xx status code
+func (o *GetEnvironmentAlertingConfigForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment alerting config forbidden response has a 4xx status code
+func (o *GetEnvironmentAlertingConfigForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get environment alerting config forbidden response has a 5xx status code
+func (o *GetEnvironmentAlertingConfigForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get environment alerting config forbidden response a status code equal to that given
+func (o *GetEnvironmentAlertingConfigForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the get environment alerting config forbidden response
+func (o *GetEnvironmentAlertingConfigForbidden) Code() int {
+	return 403
+}
+
 func (o *GetEnvironmentAlertingConfigForbidden) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigForbidden ", 403)
+}
+
+func (o *GetEnvironmentAlertingConfigForbidden) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigForbidden ", 403)
 }
 
@@ -137,14 +243,49 @@ func NewGetEnvironmentAlertingConfigNotFound() *GetEnvironmentAlertingConfigNotF
 	return &GetEnvironmentAlertingConfigNotFound{}
 }
 
-/* GetEnvironmentAlertingConfigNotFound describes a response with status code 404, with default header values.
+/*
+GetEnvironmentAlertingConfigNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetEnvironmentAlertingConfigNotFound struct {
 }
 
+// IsSuccess returns true when this get environment alerting config not found response has a 2xx status code
+func (o *GetEnvironmentAlertingConfigNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get environment alerting config not found response has a 3xx status code
+func (o *GetEnvironmentAlertingConfigNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment alerting config not found response has a 4xx status code
+func (o *GetEnvironmentAlertingConfigNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get environment alerting config not found response has a 5xx status code
+func (o *GetEnvironmentAlertingConfigNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get environment alerting config not found response a status code equal to that given
+func (o *GetEnvironmentAlertingConfigNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get environment alerting config not found response
+func (o *GetEnvironmentAlertingConfigNotFound) Code() int {
+	return 404
+}
+
 func (o *GetEnvironmentAlertingConfigNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigNotFound ", 404)
+}
+
+func (o *GetEnvironmentAlertingConfigNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigNotFound ", 404)
 }
 
@@ -158,14 +299,49 @@ func NewGetEnvironmentAlertingConfigInternalServerError() *GetEnvironmentAlertin
 	return &GetEnvironmentAlertingConfigInternalServerError{}
 }
 
-/* GetEnvironmentAlertingConfigInternalServerError describes a response with status code 500, with default header values.
+/*
+GetEnvironmentAlertingConfigInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type GetEnvironmentAlertingConfigInternalServerError struct {
 }
 
+// IsSuccess returns true when this get environment alerting config internal server error response has a 2xx status code
+func (o *GetEnvironmentAlertingConfigInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get environment alerting config internal server error response has a 3xx status code
+func (o *GetEnvironmentAlertingConfigInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment alerting config internal server error response has a 4xx status code
+func (o *GetEnvironmentAlertingConfigInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get environment alerting config internal server error response has a 5xx status code
+func (o *GetEnvironmentAlertingConfigInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get environment alerting config internal server error response a status code equal to that given
+func (o *GetEnvironmentAlertingConfigInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the get environment alerting config internal server error response
+func (o *GetEnvironmentAlertingConfigInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetEnvironmentAlertingConfigInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigInternalServerError ", 500)
+}
+
+func (o *GetEnvironmentAlertingConfigInternalServerError) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/alerting][%d] getEnvironmentAlertingConfigInternalServerError ", 500)
 }
 

@@ -39,7 +39,7 @@ func (o *RestartComponentReader) ReadResponse(response runtime.ClientResponse, c
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/components/{componentName}/restart] restartComponent", response, response.Code())
 	}
 }
 
@@ -48,14 +48,49 @@ func NewRestartComponentOK() *RestartComponentOK {
 	return &RestartComponentOK{}
 }
 
-/* RestartComponentOK describes a response with status code 200, with default header values.
+/*
+RestartComponentOK describes a response with status code 200, with default header values.
 
 Component started ok
 */
 type RestartComponentOK struct {
 }
 
+// IsSuccess returns true when this restart component o k response has a 2xx status code
+func (o *RestartComponentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this restart component o k response has a 3xx status code
+func (o *RestartComponentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart component o k response has a 4xx status code
+func (o *RestartComponentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this restart component o k response has a 5xx status code
+func (o *RestartComponentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart component o k response a status code equal to that given
+func (o *RestartComponentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the restart component o k response
+func (o *RestartComponentOK) Code() int {
+	return 200
+}
+
 func (o *RestartComponentOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/restart][%d] restartComponentOK ", 200)
+}
+
+func (o *RestartComponentOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/restart][%d] restartComponentOK ", 200)
 }
 
@@ -69,14 +104,49 @@ func NewRestartComponentUnauthorized() *RestartComponentUnauthorized {
 	return &RestartComponentUnauthorized{}
 }
 
-/* RestartComponentUnauthorized describes a response with status code 401, with default header values.
+/*
+RestartComponentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type RestartComponentUnauthorized struct {
 }
 
+// IsSuccess returns true when this restart component unauthorized response has a 2xx status code
+func (o *RestartComponentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart component unauthorized response has a 3xx status code
+func (o *RestartComponentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart component unauthorized response has a 4xx status code
+func (o *RestartComponentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart component unauthorized response has a 5xx status code
+func (o *RestartComponentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart component unauthorized response a status code equal to that given
+func (o *RestartComponentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the restart component unauthorized response
+func (o *RestartComponentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *RestartComponentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/restart][%d] restartComponentUnauthorized ", 401)
+}
+
+func (o *RestartComponentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/restart][%d] restartComponentUnauthorized ", 401)
 }
 
@@ -90,14 +160,49 @@ func NewRestartComponentNotFound() *RestartComponentNotFound {
 	return &RestartComponentNotFound{}
 }
 
-/* RestartComponentNotFound describes a response with status code 404, with default header values.
+/*
+RestartComponentNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type RestartComponentNotFound struct {
 }
 
+// IsSuccess returns true when this restart component not found response has a 2xx status code
+func (o *RestartComponentNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart component not found response has a 3xx status code
+func (o *RestartComponentNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart component not found response has a 4xx status code
+func (o *RestartComponentNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart component not found response has a 5xx status code
+func (o *RestartComponentNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart component not found response a status code equal to that given
+func (o *RestartComponentNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the restart component not found response
+func (o *RestartComponentNotFound) Code() int {
+	return 404
+}
+
 func (o *RestartComponentNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/restart][%d] restartComponentNotFound ", 404)
+}
+
+func (o *RestartComponentNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/restart][%d] restartComponentNotFound ", 404)
 }
 

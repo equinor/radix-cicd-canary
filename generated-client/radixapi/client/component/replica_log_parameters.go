@@ -53,10 +53,12 @@ func NewReplicaLogParamsWithHTTPClient(client *http.Client) *ReplicaLogParams {
 	}
 }
 
-/* ReplicaLogParams contains all the parameters to send to the API endpoint
-   for the replica log operation.
+/*
+ReplicaLogParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the replica log operation.
+
+	Typically these are written to a http.Request.
 */
 type ReplicaLogParams struct {
 

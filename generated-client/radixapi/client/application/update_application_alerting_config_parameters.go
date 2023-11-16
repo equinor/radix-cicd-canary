@@ -55,10 +55,12 @@ func NewUpdateApplicationAlertingConfigParamsWithHTTPClient(client *http.Client)
 	}
 }
 
-/* UpdateApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
-   for the update application alerting config operation.
+/*
+UpdateApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the update application alerting config operation.
+
+	Typically these are written to a http.Request.
 */
 type UpdateApplicationAlertingConfigParams struct {
 

@@ -42,7 +42,7 @@ func (o *GetBuildSecretsReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/buildsecrets] getBuildSecrets", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetBuildSecretsOK() *GetBuildSecretsOK {
 	return &GetBuildSecretsOK{}
 }
 
-/* GetBuildSecretsOK describes a response with status code 200, with default header values.
+/*
+GetBuildSecretsOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -59,9 +60,44 @@ type GetBuildSecretsOK struct {
 	Payload []*models.BuildSecret
 }
 
+// IsSuccess returns true when this get build secrets o k response has a 2xx status code
+func (o *GetBuildSecretsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get build secrets o k response has a 3xx status code
+func (o *GetBuildSecretsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get build secrets o k response has a 4xx status code
+func (o *GetBuildSecretsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get build secrets o k response has a 5xx status code
+func (o *GetBuildSecretsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get build secrets o k response a status code equal to that given
+func (o *GetBuildSecretsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get build secrets o k response
+func (o *GetBuildSecretsOK) Code() int {
+	return 200
+}
+
 func (o *GetBuildSecretsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/buildsecrets][%d] getBuildSecretsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetBuildSecretsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/buildsecrets][%d] getBuildSecretsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetBuildSecretsOK) GetPayload() []*models.BuildSecret {
 	return o.Payload
 }
@@ -81,14 +117,49 @@ func NewGetBuildSecretsUnauthorized() *GetBuildSecretsUnauthorized {
 	return &GetBuildSecretsUnauthorized{}
 }
 
-/* GetBuildSecretsUnauthorized describes a response with status code 401, with default header values.
+/*
+GetBuildSecretsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetBuildSecretsUnauthorized struct {
 }
 
+// IsSuccess returns true when this get build secrets unauthorized response has a 2xx status code
+func (o *GetBuildSecretsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get build secrets unauthorized response has a 3xx status code
+func (o *GetBuildSecretsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get build secrets unauthorized response has a 4xx status code
+func (o *GetBuildSecretsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get build secrets unauthorized response has a 5xx status code
+func (o *GetBuildSecretsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get build secrets unauthorized response a status code equal to that given
+func (o *GetBuildSecretsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get build secrets unauthorized response
+func (o *GetBuildSecretsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetBuildSecretsUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/buildsecrets][%d] getBuildSecretsUnauthorized ", 401)
+}
+
+func (o *GetBuildSecretsUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/buildsecrets][%d] getBuildSecretsUnauthorized ", 401)
 }
 
@@ -102,14 +173,49 @@ func NewGetBuildSecretsNotFound() *GetBuildSecretsNotFound {
 	return &GetBuildSecretsNotFound{}
 }
 
-/* GetBuildSecretsNotFound describes a response with status code 404, with default header values.
+/*
+GetBuildSecretsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetBuildSecretsNotFound struct {
 }
 
+// IsSuccess returns true when this get build secrets not found response has a 2xx status code
+func (o *GetBuildSecretsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get build secrets not found response has a 3xx status code
+func (o *GetBuildSecretsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get build secrets not found response has a 4xx status code
+func (o *GetBuildSecretsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get build secrets not found response has a 5xx status code
+func (o *GetBuildSecretsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get build secrets not found response a status code equal to that given
+func (o *GetBuildSecretsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get build secrets not found response
+func (o *GetBuildSecretsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetBuildSecretsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/buildsecrets][%d] getBuildSecretsNotFound ", 404)
+}
+
+func (o *GetBuildSecretsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/buildsecrets][%d] getBuildSecretsNotFound ", 404)
 }
 

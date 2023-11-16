@@ -34,7 +34,7 @@ func (o *LogReader) ReadResponse(response runtime.ClientResponse, consumer runti
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs] log", response, response.Code())
 	}
 }
 
@@ -43,7 +43,8 @@ func NewLogOK() *LogOK {
 	return &LogOK{}
 }
 
-/* LogOK describes a response with status code 200, with default header values.
+/*
+LogOK describes a response with status code 200, with default header values.
 
 pod log
 */
@@ -51,9 +52,44 @@ type LogOK struct {
 	Payload string
 }
 
+// IsSuccess returns true when this log o k response has a 2xx status code
+func (o *LogOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this log o k response has a 3xx status code
+func (o *LogOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this log o k response has a 4xx status code
+func (o *LogOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this log o k response has a 5xx status code
+func (o *LogOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this log o k response a status code equal to that given
+func (o *LogOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the log o k response
+func (o *LogOK) Code() int {
+	return 200
+}
+
 func (o *LogOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs][%d] logOK  %+v", 200, o.Payload)
 }
+
+func (o *LogOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs][%d] logOK  %+v", 200, o.Payload)
+}
+
 func (o *LogOK) GetPayload() string {
 	return o.Payload
 }
@@ -73,14 +109,49 @@ func NewLogNotFound() *LogNotFound {
 	return &LogNotFound{}
 }
 
-/* LogNotFound describes a response with status code 404, with default header values.
+/*
+LogNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type LogNotFound struct {
 }
 
+// IsSuccess returns true when this log not found response has a 2xx status code
+func (o *LogNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this log not found response has a 3xx status code
+func (o *LogNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this log not found response has a 4xx status code
+func (o *LogNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this log not found response has a 5xx status code
+func (o *LogNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this log not found response a status code equal to that given
+func (o *LogNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the log not found response
+func (o *LogNotFound) Code() int {
+	return 404
+}
+
 func (o *LogNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs][%d] logNotFound ", 404)
+}
+
+func (o *LogNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/deployments/{deploymentName}/components/{componentName}/replicas/{podName}/logs][%d] logNotFound ", 404)
 }
 

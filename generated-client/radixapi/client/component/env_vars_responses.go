@@ -36,7 +36,7 @@ func (o *EnvVarsReader) ReadResponse(response runtime.ClientResponse, consumer r
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/components/{componentName}/envvars] envVars", response, response.Code())
 	}
 }
 
@@ -45,7 +45,8 @@ func NewEnvVarsOK() *EnvVarsOK {
 	return &EnvVarsOK{}
 }
 
-/* EnvVarsOK describes a response with status code 200, with default header values.
+/*
+EnvVarsOK describes a response with status code 200, with default header values.
 
 environment variables
 */
@@ -53,9 +54,44 @@ type EnvVarsOK struct {
 	Payload []*models.EnvVar
 }
 
+// IsSuccess returns true when this env vars o k response has a 2xx status code
+func (o *EnvVarsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this env vars o k response has a 3xx status code
+func (o *EnvVarsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this env vars o k response has a 4xx status code
+func (o *EnvVarsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this env vars o k response has a 5xx status code
+func (o *EnvVarsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this env vars o k response a status code equal to that given
+func (o *EnvVarsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the env vars o k response
+func (o *EnvVarsOK) Code() int {
+	return 200
+}
+
 func (o *EnvVarsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] envVarsOK  %+v", 200, o.Payload)
 }
+
+func (o *EnvVarsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] envVarsOK  %+v", 200, o.Payload)
+}
+
 func (o *EnvVarsOK) GetPayload() []*models.EnvVar {
 	return o.Payload
 }
@@ -75,14 +111,49 @@ func NewEnvVarsNotFound() *EnvVarsNotFound {
 	return &EnvVarsNotFound{}
 }
 
-/* EnvVarsNotFound describes a response with status code 404, with default header values.
+/*
+EnvVarsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type EnvVarsNotFound struct {
 }
 
+// IsSuccess returns true when this env vars not found response has a 2xx status code
+func (o *EnvVarsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this env vars not found response has a 3xx status code
+func (o *EnvVarsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this env vars not found response has a 4xx status code
+func (o *EnvVarsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this env vars not found response has a 5xx status code
+func (o *EnvVarsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this env vars not found response a status code equal to that given
+func (o *EnvVarsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the env vars not found response
+func (o *EnvVarsNotFound) Code() int {
+	return 404
+}
+
 func (o *EnvVarsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] envVarsNotFound ", 404)
+}
+
+func (o *EnvVarsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/envvars][%d] envVarsNotFound ", 404)
 }
 

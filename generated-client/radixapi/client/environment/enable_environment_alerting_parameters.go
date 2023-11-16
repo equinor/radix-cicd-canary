@@ -53,10 +53,12 @@ func NewEnableEnvironmentAlertingParamsWithHTTPClient(client *http.Client) *Enab
 	}
 }
 
-/* EnableEnvironmentAlertingParams contains all the parameters to send to the API endpoint
-   for the enable environment alerting operation.
+/*
+EnableEnvironmentAlertingParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the enable environment alerting operation.
+
+	Typically these are written to a http.Request.
 */
 type EnableEnvironmentAlertingParams struct {
 

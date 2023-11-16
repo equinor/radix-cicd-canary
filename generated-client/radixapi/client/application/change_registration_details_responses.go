@@ -54,7 +54,7 @@ func (o *ChangeRegistrationDetailsReader) ReadResponse(response runtime.ClientRe
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[PUT /applications/{appName}] changeRegistrationDetails", response, response.Code())
 	}
 }
 
@@ -63,7 +63,8 @@ func NewChangeRegistrationDetailsOK() *ChangeRegistrationDetailsOK {
 	return &ChangeRegistrationDetailsOK{}
 }
 
-/* ChangeRegistrationDetailsOK describes a response with status code 200, with default header values.
+/*
+ChangeRegistrationDetailsOK describes a response with status code 200, with default header values.
 
 Change registration operation result
 */
@@ -71,9 +72,44 @@ type ChangeRegistrationDetailsOK struct {
 	Payload *models.ApplicationRegistrationUpsertResponse
 }
 
+// IsSuccess returns true when this change registration details o k response has a 2xx status code
+func (o *ChangeRegistrationDetailsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this change registration details o k response has a 3xx status code
+func (o *ChangeRegistrationDetailsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change registration details o k response has a 4xx status code
+func (o *ChangeRegistrationDetailsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this change registration details o k response has a 5xx status code
+func (o *ChangeRegistrationDetailsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change registration details o k response a status code equal to that given
+func (o *ChangeRegistrationDetailsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the change registration details o k response
+func (o *ChangeRegistrationDetailsOK) Code() int {
+	return 200
+}
+
 func (o *ChangeRegistrationDetailsOK) Error() string {
 	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsOK  %+v", 200, o.Payload)
 }
+
+func (o *ChangeRegistrationDetailsOK) String() string {
+	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsOK  %+v", 200, o.Payload)
+}
+
 func (o *ChangeRegistrationDetailsOK) GetPayload() *models.ApplicationRegistrationUpsertResponse {
 	return o.Payload
 }
@@ -95,14 +131,49 @@ func NewChangeRegistrationDetailsBadRequest() *ChangeRegistrationDetailsBadReque
 	return &ChangeRegistrationDetailsBadRequest{}
 }
 
-/* ChangeRegistrationDetailsBadRequest describes a response with status code 400, with default header values.
+/*
+ChangeRegistrationDetailsBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
 type ChangeRegistrationDetailsBadRequest struct {
 }
 
+// IsSuccess returns true when this change registration details bad request response has a 2xx status code
+func (o *ChangeRegistrationDetailsBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change registration details bad request response has a 3xx status code
+func (o *ChangeRegistrationDetailsBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change registration details bad request response has a 4xx status code
+func (o *ChangeRegistrationDetailsBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change registration details bad request response has a 5xx status code
+func (o *ChangeRegistrationDetailsBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change registration details bad request response a status code equal to that given
+func (o *ChangeRegistrationDetailsBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the change registration details bad request response
+func (o *ChangeRegistrationDetailsBadRequest) Code() int {
+	return 400
+}
+
 func (o *ChangeRegistrationDetailsBadRequest) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsBadRequest ", 400)
+}
+
+func (o *ChangeRegistrationDetailsBadRequest) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsBadRequest ", 400)
 }
 
@@ -116,14 +187,49 @@ func NewChangeRegistrationDetailsUnauthorized() *ChangeRegistrationDetailsUnauth
 	return &ChangeRegistrationDetailsUnauthorized{}
 }
 
-/* ChangeRegistrationDetailsUnauthorized describes a response with status code 401, with default header values.
+/*
+ChangeRegistrationDetailsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type ChangeRegistrationDetailsUnauthorized struct {
 }
 
+// IsSuccess returns true when this change registration details unauthorized response has a 2xx status code
+func (o *ChangeRegistrationDetailsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change registration details unauthorized response has a 3xx status code
+func (o *ChangeRegistrationDetailsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change registration details unauthorized response has a 4xx status code
+func (o *ChangeRegistrationDetailsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change registration details unauthorized response has a 5xx status code
+func (o *ChangeRegistrationDetailsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change registration details unauthorized response a status code equal to that given
+func (o *ChangeRegistrationDetailsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the change registration details unauthorized response
+func (o *ChangeRegistrationDetailsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *ChangeRegistrationDetailsUnauthorized) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsUnauthorized ", 401)
+}
+
+func (o *ChangeRegistrationDetailsUnauthorized) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsUnauthorized ", 401)
 }
 
@@ -137,14 +243,49 @@ func NewChangeRegistrationDetailsNotFound() *ChangeRegistrationDetailsNotFound {
 	return &ChangeRegistrationDetailsNotFound{}
 }
 
-/* ChangeRegistrationDetailsNotFound describes a response with status code 404, with default header values.
+/*
+ChangeRegistrationDetailsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type ChangeRegistrationDetailsNotFound struct {
 }
 
+// IsSuccess returns true when this change registration details not found response has a 2xx status code
+func (o *ChangeRegistrationDetailsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change registration details not found response has a 3xx status code
+func (o *ChangeRegistrationDetailsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change registration details not found response has a 4xx status code
+func (o *ChangeRegistrationDetailsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change registration details not found response has a 5xx status code
+func (o *ChangeRegistrationDetailsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change registration details not found response a status code equal to that given
+func (o *ChangeRegistrationDetailsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the change registration details not found response
+func (o *ChangeRegistrationDetailsNotFound) Code() int {
+	return 404
+}
+
 func (o *ChangeRegistrationDetailsNotFound) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsNotFound ", 404)
+}
+
+func (o *ChangeRegistrationDetailsNotFound) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsNotFound ", 404)
 }
 
@@ -158,14 +299,49 @@ func NewChangeRegistrationDetailsConflict() *ChangeRegistrationDetailsConflict {
 	return &ChangeRegistrationDetailsConflict{}
 }
 
-/* ChangeRegistrationDetailsConflict describes a response with status code 409, with default header values.
+/*
+ChangeRegistrationDetailsConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type ChangeRegistrationDetailsConflict struct {
 }
 
+// IsSuccess returns true when this change registration details conflict response has a 2xx status code
+func (o *ChangeRegistrationDetailsConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change registration details conflict response has a 3xx status code
+func (o *ChangeRegistrationDetailsConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change registration details conflict response has a 4xx status code
+func (o *ChangeRegistrationDetailsConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change registration details conflict response has a 5xx status code
+func (o *ChangeRegistrationDetailsConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change registration details conflict response a status code equal to that given
+func (o *ChangeRegistrationDetailsConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the change registration details conflict response
+func (o *ChangeRegistrationDetailsConflict) Code() int {
+	return 409
+}
+
 func (o *ChangeRegistrationDetailsConflict) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsConflict ", 409)
+}
+
+func (o *ChangeRegistrationDetailsConflict) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}][%d] changeRegistrationDetailsConflict ", 409)
 }
 

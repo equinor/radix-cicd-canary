@@ -101,6 +101,11 @@ func (m *AuxiliaryResourceDeployment) contextValidateReplicaList(ctx context.Con
 	for i := 0; i < len(m.ReplicaList); i++ {
 
 		if m.ReplicaList[i] != nil {
+
+			if swag.IsZero(m.ReplicaList[i]) { // not required
+				return nil
+			}
+
 			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))

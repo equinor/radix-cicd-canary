@@ -42,7 +42,7 @@ func (o *GetTektonPipelineRunTaskReader) ReadResponse(response runtime.ClientRes
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}] getTektonPipelineRunTask", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetTektonPipelineRunTaskOK() *GetTektonPipelineRunTaskOK {
 	return &GetTektonPipelineRunTaskOK{}
 }
 
-/* GetTektonPipelineRunTaskOK describes a response with status code 200, with default header values.
+/*
+GetTektonPipelineRunTaskOK describes a response with status code 200, with default header values.
 
 Pipeline Run Task
 */
@@ -59,9 +60,44 @@ type GetTektonPipelineRunTaskOK struct {
 	Payload *models.PipelineRunTask
 }
 
+// IsSuccess returns true when this get tekton pipeline run task o k response has a 2xx status code
+func (o *GetTektonPipelineRunTaskOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get tekton pipeline run task o k response has a 3xx status code
+func (o *GetTektonPipelineRunTaskOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get tekton pipeline run task o k response has a 4xx status code
+func (o *GetTektonPipelineRunTaskOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get tekton pipeline run task o k response has a 5xx status code
+func (o *GetTektonPipelineRunTaskOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get tekton pipeline run task o k response a status code equal to that given
+func (o *GetTektonPipelineRunTaskOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get tekton pipeline run task o k response
+func (o *GetTektonPipelineRunTaskOK) Code() int {
+	return 200
+}
+
 func (o *GetTektonPipelineRunTaskOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}][%d] getTektonPipelineRunTaskOK  %+v", 200, o.Payload)
 }
+
+func (o *GetTektonPipelineRunTaskOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}][%d] getTektonPipelineRunTaskOK  %+v", 200, o.Payload)
+}
+
 func (o *GetTektonPipelineRunTaskOK) GetPayload() *models.PipelineRunTask {
 	return o.Payload
 }
@@ -83,14 +119,49 @@ func NewGetTektonPipelineRunTaskUnauthorized() *GetTektonPipelineRunTaskUnauthor
 	return &GetTektonPipelineRunTaskUnauthorized{}
 }
 
-/* GetTektonPipelineRunTaskUnauthorized describes a response with status code 401, with default header values.
+/*
+GetTektonPipelineRunTaskUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetTektonPipelineRunTaskUnauthorized struct {
 }
 
+// IsSuccess returns true when this get tekton pipeline run task unauthorized response has a 2xx status code
+func (o *GetTektonPipelineRunTaskUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get tekton pipeline run task unauthorized response has a 3xx status code
+func (o *GetTektonPipelineRunTaskUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get tekton pipeline run task unauthorized response has a 4xx status code
+func (o *GetTektonPipelineRunTaskUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get tekton pipeline run task unauthorized response has a 5xx status code
+func (o *GetTektonPipelineRunTaskUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get tekton pipeline run task unauthorized response a status code equal to that given
+func (o *GetTektonPipelineRunTaskUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get tekton pipeline run task unauthorized response
+func (o *GetTektonPipelineRunTaskUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetTektonPipelineRunTaskUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}][%d] getTektonPipelineRunTaskUnauthorized ", 401)
+}
+
+func (o *GetTektonPipelineRunTaskUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}][%d] getTektonPipelineRunTaskUnauthorized ", 401)
 }
 
@@ -104,14 +175,49 @@ func NewGetTektonPipelineRunTaskNotFound() *GetTektonPipelineRunTaskNotFound {
 	return &GetTektonPipelineRunTaskNotFound{}
 }
 
-/* GetTektonPipelineRunTaskNotFound describes a response with status code 404, with default header values.
+/*
+GetTektonPipelineRunTaskNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetTektonPipelineRunTaskNotFound struct {
 }
 
+// IsSuccess returns true when this get tekton pipeline run task not found response has a 2xx status code
+func (o *GetTektonPipelineRunTaskNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get tekton pipeline run task not found response has a 3xx status code
+func (o *GetTektonPipelineRunTaskNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get tekton pipeline run task not found response has a 4xx status code
+func (o *GetTektonPipelineRunTaskNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get tekton pipeline run task not found response has a 5xx status code
+func (o *GetTektonPipelineRunTaskNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get tekton pipeline run task not found response a status code equal to that given
+func (o *GetTektonPipelineRunTaskNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get tekton pipeline run task not found response
+func (o *GetTektonPipelineRunTaskNotFound) Code() int {
+	return 404
+}
+
 func (o *GetTektonPipelineRunTaskNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}][%d] getTektonPipelineRunTaskNotFound ", 404)
+}
+
+func (o *GetTektonPipelineRunTaskNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}/pipelineruns/{pipelineRunName}/tasks/{taskName}][%d] getTektonPipelineRunTaskNotFound ", 404)
 }
 

@@ -42,7 +42,7 @@ func (o *GetApplicationJobReader) ReadResponse(response runtime.ClientResponse, 
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/jobs/{jobName}] getApplicationJob", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetApplicationJobOK() *GetApplicationJobOK {
 	return &GetApplicationJobOK{}
 }
 
-/* GetApplicationJobOK describes a response with status code 200, with default header values.
+/*
+GetApplicationJobOK describes a response with status code 200, with default header values.
 
 Successful get job
 */
@@ -59,9 +60,44 @@ type GetApplicationJobOK struct {
 	Payload *models.Job
 }
 
+// IsSuccess returns true when this get application job o k response has a 2xx status code
+func (o *GetApplicationJobOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get application job o k response has a 3xx status code
+func (o *GetApplicationJobOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application job o k response has a 4xx status code
+func (o *GetApplicationJobOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get application job o k response has a 5xx status code
+func (o *GetApplicationJobOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application job o k response a status code equal to that given
+func (o *GetApplicationJobOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get application job o k response
+func (o *GetApplicationJobOK) Code() int {
+	return 200
+}
+
 func (o *GetApplicationJobOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}][%d] getApplicationJobOK  %+v", 200, o.Payload)
 }
+
+func (o *GetApplicationJobOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}][%d] getApplicationJobOK  %+v", 200, o.Payload)
+}
+
 func (o *GetApplicationJobOK) GetPayload() *models.Job {
 	return o.Payload
 }
@@ -83,14 +119,49 @@ func NewGetApplicationJobUnauthorized() *GetApplicationJobUnauthorized {
 	return &GetApplicationJobUnauthorized{}
 }
 
-/* GetApplicationJobUnauthorized describes a response with status code 401, with default header values.
+/*
+GetApplicationJobUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetApplicationJobUnauthorized struct {
 }
 
+// IsSuccess returns true when this get application job unauthorized response has a 2xx status code
+func (o *GetApplicationJobUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get application job unauthorized response has a 3xx status code
+func (o *GetApplicationJobUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application job unauthorized response has a 4xx status code
+func (o *GetApplicationJobUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get application job unauthorized response has a 5xx status code
+func (o *GetApplicationJobUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application job unauthorized response a status code equal to that given
+func (o *GetApplicationJobUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get application job unauthorized response
+func (o *GetApplicationJobUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetApplicationJobUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}][%d] getApplicationJobUnauthorized ", 401)
+}
+
+func (o *GetApplicationJobUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}][%d] getApplicationJobUnauthorized ", 401)
 }
 
@@ -104,14 +175,49 @@ func NewGetApplicationJobNotFound() *GetApplicationJobNotFound {
 	return &GetApplicationJobNotFound{}
 }
 
-/* GetApplicationJobNotFound describes a response with status code 404, with default header values.
+/*
+GetApplicationJobNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetApplicationJobNotFound struct {
 }
 
+// IsSuccess returns true when this get application job not found response has a 2xx status code
+func (o *GetApplicationJobNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get application job not found response has a 3xx status code
+func (o *GetApplicationJobNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get application job not found response has a 4xx status code
+func (o *GetApplicationJobNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get application job not found response has a 5xx status code
+func (o *GetApplicationJobNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get application job not found response a status code equal to that given
+func (o *GetApplicationJobNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get application job not found response
+func (o *GetApplicationJobNotFound) Code() int {
+	return 404
+}
+
 func (o *GetApplicationJobNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}][%d] getApplicationJobNotFound ", 404)
+}
+
+func (o *GetApplicationJobNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/jobs/{jobName}][%d] getApplicationJobNotFound ", 404)
 }
 

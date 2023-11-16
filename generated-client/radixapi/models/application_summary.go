@@ -121,6 +121,10 @@ func (m *ApplicationSummary) contextValidateEnvironmentActiveComponents(ctx cont
 
 		for i := 0; i < len(m.EnvironmentActiveComponents[k]); i++ {
 
+			if swag.IsZero(m.EnvironmentActiveComponents[k][i]) { // not required
+				return nil
+			}
+
 			if err := m.EnvironmentActiveComponents[k][i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("environmentActiveComponents" + "." + k + "." + strconv.Itoa(i))
@@ -140,6 +144,11 @@ func (m *ApplicationSummary) contextValidateEnvironmentActiveComponents(ctx cont
 func (m *ApplicationSummary) contextValidateLatestJob(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.LatestJob != nil {
+
+		if swag.IsZero(m.LatestJob) { // not required
+			return nil
+		}
+
 		if err := m.LatestJob.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("latestJob")

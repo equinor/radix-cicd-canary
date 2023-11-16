@@ -51,7 +51,7 @@ func (o *DeleteJobReader) ReadResponse(response runtime.ClientResponse, consumer
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}] deleteJob", response, response.Code())
 	}
 }
 
@@ -60,14 +60,49 @@ func NewDeleteJobNoContent() *DeleteJobNoContent {
 	return &DeleteJobNoContent{}
 }
 
-/* DeleteJobNoContent describes a response with status code 204, with default header values.
+/*
+DeleteJobNoContent describes a response with status code 204, with default header values.
 
 Success
 */
 type DeleteJobNoContent struct {
 }
 
+// IsSuccess returns true when this delete job no content response has a 2xx status code
+func (o *DeleteJobNoContent) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this delete job no content response has a 3xx status code
+func (o *DeleteJobNoContent) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete job no content response has a 4xx status code
+func (o *DeleteJobNoContent) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this delete job no content response has a 5xx status code
+func (o *DeleteJobNoContent) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete job no content response a status code equal to that given
+func (o *DeleteJobNoContent) IsCode(code int) bool {
+	return code == 204
+}
+
+// Code gets the status code for the delete job no content response
+func (o *DeleteJobNoContent) Code() int {
+	return 204
+}
+
 func (o *DeleteJobNoContent) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobNoContent ", 204)
+}
+
+func (o *DeleteJobNoContent) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobNoContent ", 204)
 }
 
@@ -81,14 +116,49 @@ func NewDeleteJobBadRequest() *DeleteJobBadRequest {
 	return &DeleteJobBadRequest{}
 }
 
-/* DeleteJobBadRequest describes a response with status code 400, with default header values.
+/*
+DeleteJobBadRequest describes a response with status code 400, with default header values.
 
 Invalid job
 */
 type DeleteJobBadRequest struct {
 }
 
+// IsSuccess returns true when this delete job bad request response has a 2xx status code
+func (o *DeleteJobBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete job bad request response has a 3xx status code
+func (o *DeleteJobBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete job bad request response has a 4xx status code
+func (o *DeleteJobBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete job bad request response has a 5xx status code
+func (o *DeleteJobBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete job bad request response a status code equal to that given
+func (o *DeleteJobBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the delete job bad request response
+func (o *DeleteJobBadRequest) Code() int {
+	return 400
+}
+
 func (o *DeleteJobBadRequest) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobBadRequest ", 400)
+}
+
+func (o *DeleteJobBadRequest) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobBadRequest ", 400)
 }
 
@@ -102,14 +172,49 @@ func NewDeleteJobUnauthorized() *DeleteJobUnauthorized {
 	return &DeleteJobUnauthorized{}
 }
 
-/* DeleteJobUnauthorized describes a response with status code 401, with default header values.
+/*
+DeleteJobUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type DeleteJobUnauthorized struct {
 }
 
+// IsSuccess returns true when this delete job unauthorized response has a 2xx status code
+func (o *DeleteJobUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete job unauthorized response has a 3xx status code
+func (o *DeleteJobUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete job unauthorized response has a 4xx status code
+func (o *DeleteJobUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete job unauthorized response has a 5xx status code
+func (o *DeleteJobUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete job unauthorized response a status code equal to that given
+func (o *DeleteJobUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the delete job unauthorized response
+func (o *DeleteJobUnauthorized) Code() int {
+	return 401
+}
+
 func (o *DeleteJobUnauthorized) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobUnauthorized ", 401)
+}
+
+func (o *DeleteJobUnauthorized) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobUnauthorized ", 401)
 }
 
@@ -123,14 +228,49 @@ func NewDeleteJobForbidden() *DeleteJobForbidden {
 	return &DeleteJobForbidden{}
 }
 
-/* DeleteJobForbidden describes a response with status code 403, with default header values.
+/*
+DeleteJobForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type DeleteJobForbidden struct {
 }
 
+// IsSuccess returns true when this delete job forbidden response has a 2xx status code
+func (o *DeleteJobForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete job forbidden response has a 3xx status code
+func (o *DeleteJobForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete job forbidden response has a 4xx status code
+func (o *DeleteJobForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete job forbidden response has a 5xx status code
+func (o *DeleteJobForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete job forbidden response a status code equal to that given
+func (o *DeleteJobForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the delete job forbidden response
+func (o *DeleteJobForbidden) Code() int {
+	return 403
+}
+
 func (o *DeleteJobForbidden) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobForbidden ", 403)
+}
+
+func (o *DeleteJobForbidden) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobForbidden ", 403)
 }
 
@@ -144,14 +284,49 @@ func NewDeleteJobNotFound() *DeleteJobNotFound {
 	return &DeleteJobNotFound{}
 }
 
-/* DeleteJobNotFound describes a response with status code 404, with default header values.
+/*
+DeleteJobNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type DeleteJobNotFound struct {
 }
 
+// IsSuccess returns true when this delete job not found response has a 2xx status code
+func (o *DeleteJobNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this delete job not found response has a 3xx status code
+func (o *DeleteJobNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this delete job not found response has a 4xx status code
+func (o *DeleteJobNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this delete job not found response has a 5xx status code
+func (o *DeleteJobNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this delete job not found response a status code equal to that given
+func (o *DeleteJobNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the delete job not found response
+func (o *DeleteJobNotFound) Code() int {
+	return 404
+}
+
 func (o *DeleteJobNotFound) Error() string {
+	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobNotFound ", 404)
+}
+
+func (o *DeleteJobNotFound) String() string {
 	return fmt.Sprintf("[DELETE /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}][%d] deleteJobNotFound ", 404)
 }
 

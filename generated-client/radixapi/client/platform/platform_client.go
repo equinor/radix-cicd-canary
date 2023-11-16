@@ -40,7 +40,7 @@ type ClientService interface {
 }
 
 /*
-  RegisterApplication creates an application registration
+RegisterApplication creates an application registration
 */
 func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegisterApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -79,7 +79,7 @@ func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo
 }
 
 /*
-  SearchApplications gets applications by name n o t e doesn t get application summary latest job environments
+SearchApplications gets applications by name n o t e doesn t get application summary latest job environments
 */
 func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SearchApplicationsOK, error) {
 	// TODO: Validate the params before sending
@@ -118,7 +118,7 @@ func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo r
 }
 
 /*
-  ShowApplications lists the applications n o t e doesn t get application summary latest job environments
+ShowApplications lists the applications n o t e doesn t get application summary latest job environments
 */
 func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ShowApplicationsOK, error) {
 	// TODO: Validate the params before sending

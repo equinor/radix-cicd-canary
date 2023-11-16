@@ -36,7 +36,7 @@ func (o *GetJobComponentDeploymentsReader) ReadResponse(response runtime.ClientR
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/deployments] GetJobComponentDeployments", response, response.Code())
 	}
 }
 
@@ -45,7 +45,8 @@ func NewGetJobComponentDeploymentsOK() *GetJobComponentDeploymentsOK {
 	return &GetJobComponentDeploymentsOK{}
 }
 
-/* GetJobComponentDeploymentsOK describes a response with status code 200, with default header values.
+/*
+GetJobComponentDeploymentsOK describes a response with status code 200, with default header values.
 
 Radix deployments
 */
@@ -53,9 +54,44 @@ type GetJobComponentDeploymentsOK struct {
 	Payload []*models.DeploymentItem
 }
 
+// IsSuccess returns true when this get job component deployments o k response has a 2xx status code
+func (o *GetJobComponentDeploymentsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get job component deployments o k response has a 3xx status code
+func (o *GetJobComponentDeploymentsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get job component deployments o k response has a 4xx status code
+func (o *GetJobComponentDeploymentsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get job component deployments o k response has a 5xx status code
+func (o *GetJobComponentDeploymentsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get job component deployments o k response a status code equal to that given
+func (o *GetJobComponentDeploymentsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get job component deployments o k response
+func (o *GetJobComponentDeploymentsOK) Code() int {
+	return 200
+}
+
 func (o *GetJobComponentDeploymentsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/deployments][%d] getJobComponentDeploymentsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetJobComponentDeploymentsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/deployments][%d] getJobComponentDeploymentsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetJobComponentDeploymentsOK) GetPayload() []*models.DeploymentItem {
 	return o.Payload
 }
@@ -75,14 +111,49 @@ func NewGetJobComponentDeploymentsNotFound() *GetJobComponentDeploymentsNotFound
 	return &GetJobComponentDeploymentsNotFound{}
 }
 
-/* GetJobComponentDeploymentsNotFound describes a response with status code 404, with default header values.
+/*
+GetJobComponentDeploymentsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetJobComponentDeploymentsNotFound struct {
 }
 
+// IsSuccess returns true when this get job component deployments not found response has a 2xx status code
+func (o *GetJobComponentDeploymentsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get job component deployments not found response has a 3xx status code
+func (o *GetJobComponentDeploymentsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get job component deployments not found response has a 4xx status code
+func (o *GetJobComponentDeploymentsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get job component deployments not found response has a 5xx status code
+func (o *GetJobComponentDeploymentsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get job component deployments not found response a status code equal to that given
+func (o *GetJobComponentDeploymentsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get job component deployments not found response
+func (o *GetJobComponentDeploymentsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetJobComponentDeploymentsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/deployments][%d] getJobComponentDeploymentsNotFound ", 404)
+}
+
+func (o *GetJobComponentDeploymentsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/deployments][%d] getJobComponentDeploymentsNotFound ", 404)
 }
 

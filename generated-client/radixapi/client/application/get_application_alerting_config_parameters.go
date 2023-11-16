@@ -53,10 +53,12 @@ func NewGetApplicationAlertingConfigParamsWithHTTPClient(client *http.Client) *G
 	}
 }
 
-/* GetApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
-   for the get application alerting config operation.
+/*
+GetApplicationAlertingConfigParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get application alerting config operation.
+
+	Typically these are written to a http.Request.
 */
 type GetApplicationAlertingConfigParams struct {
 

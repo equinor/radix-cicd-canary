@@ -42,7 +42,7 @@ func (o *GetEnvironmentEventsReader) ReadResponse(response runtime.ClientRespons
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/events] getEnvironmentEvents", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetEnvironmentEventsOK() *GetEnvironmentEventsOK {
 	return &GetEnvironmentEventsOK{}
 }
 
-/* GetEnvironmentEventsOK describes a response with status code 200, with default header values.
+/*
+GetEnvironmentEventsOK describes a response with status code 200, with default header values.
 
 Successful get environment events
 */
@@ -59,9 +60,44 @@ type GetEnvironmentEventsOK struct {
 	Payload *models.Event
 }
 
+// IsSuccess returns true when this get environment events o k response has a 2xx status code
+func (o *GetEnvironmentEventsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get environment events o k response has a 3xx status code
+func (o *GetEnvironmentEventsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment events o k response has a 4xx status code
+func (o *GetEnvironmentEventsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get environment events o k response has a 5xx status code
+func (o *GetEnvironmentEventsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get environment events o k response a status code equal to that given
+func (o *GetEnvironmentEventsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get environment events o k response
+func (o *GetEnvironmentEventsOK) Code() int {
+	return 200
+}
+
 func (o *GetEnvironmentEventsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/events][%d] getEnvironmentEventsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetEnvironmentEventsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/events][%d] getEnvironmentEventsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetEnvironmentEventsOK) GetPayload() *models.Event {
 	return o.Payload
 }
@@ -83,14 +119,49 @@ func NewGetEnvironmentEventsUnauthorized() *GetEnvironmentEventsUnauthorized {
 	return &GetEnvironmentEventsUnauthorized{}
 }
 
-/* GetEnvironmentEventsUnauthorized describes a response with status code 401, with default header values.
+/*
+GetEnvironmentEventsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetEnvironmentEventsUnauthorized struct {
 }
 
+// IsSuccess returns true when this get environment events unauthorized response has a 2xx status code
+func (o *GetEnvironmentEventsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get environment events unauthorized response has a 3xx status code
+func (o *GetEnvironmentEventsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment events unauthorized response has a 4xx status code
+func (o *GetEnvironmentEventsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get environment events unauthorized response has a 5xx status code
+func (o *GetEnvironmentEventsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get environment events unauthorized response a status code equal to that given
+func (o *GetEnvironmentEventsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get environment events unauthorized response
+func (o *GetEnvironmentEventsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetEnvironmentEventsUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/events][%d] getEnvironmentEventsUnauthorized ", 401)
+}
+
+func (o *GetEnvironmentEventsUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/events][%d] getEnvironmentEventsUnauthorized ", 401)
 }
 
@@ -104,14 +175,49 @@ func NewGetEnvironmentEventsNotFound() *GetEnvironmentEventsNotFound {
 	return &GetEnvironmentEventsNotFound{}
 }
 
-/* GetEnvironmentEventsNotFound describes a response with status code 404, with default header values.
+/*
+GetEnvironmentEventsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetEnvironmentEventsNotFound struct {
 }
 
+// IsSuccess returns true when this get environment events not found response has a 2xx status code
+func (o *GetEnvironmentEventsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get environment events not found response has a 3xx status code
+func (o *GetEnvironmentEventsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get environment events not found response has a 4xx status code
+func (o *GetEnvironmentEventsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get environment events not found response has a 5xx status code
+func (o *GetEnvironmentEventsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get environment events not found response a status code equal to that given
+func (o *GetEnvironmentEventsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get environment events not found response
+func (o *GetEnvironmentEventsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetEnvironmentEventsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/events][%d] getEnvironmentEventsNotFound ", 404)
+}
+
+func (o *GetEnvironmentEventsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/events][%d] getEnvironmentEventsNotFound ", 404)
 }
 

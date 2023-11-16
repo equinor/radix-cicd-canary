@@ -33,7 +33,7 @@ func (o *CreateEnvironmentReader) ReadResponse(response runtime.ClientResponse, 
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}] createEnvironment", response, response.Code())
 	}
 }
 
@@ -42,14 +42,49 @@ func NewCreateEnvironmentOK() *CreateEnvironmentOK {
 	return &CreateEnvironmentOK{}
 }
 
-/* CreateEnvironmentOK describes a response with status code 200, with default header values.
+/*
+CreateEnvironmentOK describes a response with status code 200, with default header values.
 
 Environment created ok
 */
 type CreateEnvironmentOK struct {
 }
 
+// IsSuccess returns true when this create environment o k response has a 2xx status code
+func (o *CreateEnvironmentOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this create environment o k response has a 3xx status code
+func (o *CreateEnvironmentOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create environment o k response has a 4xx status code
+func (o *CreateEnvironmentOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this create environment o k response has a 5xx status code
+func (o *CreateEnvironmentOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create environment o k response a status code equal to that given
+func (o *CreateEnvironmentOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the create environment o k response
+func (o *CreateEnvironmentOK) Code() int {
+	return 200
+}
+
 func (o *CreateEnvironmentOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}][%d] createEnvironmentOK ", 200)
+}
+
+func (o *CreateEnvironmentOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}][%d] createEnvironmentOK ", 200)
 }
 
@@ -63,14 +98,49 @@ func NewCreateEnvironmentUnauthorized() *CreateEnvironmentUnauthorized {
 	return &CreateEnvironmentUnauthorized{}
 }
 
-/* CreateEnvironmentUnauthorized describes a response with status code 401, with default header values.
+/*
+CreateEnvironmentUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type CreateEnvironmentUnauthorized struct {
 }
 
+// IsSuccess returns true when this create environment unauthorized response has a 2xx status code
+func (o *CreateEnvironmentUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this create environment unauthorized response has a 3xx status code
+func (o *CreateEnvironmentUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this create environment unauthorized response has a 4xx status code
+func (o *CreateEnvironmentUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this create environment unauthorized response has a 5xx status code
+func (o *CreateEnvironmentUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this create environment unauthorized response a status code equal to that given
+func (o *CreateEnvironmentUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the create environment unauthorized response
+func (o *CreateEnvironmentUnauthorized) Code() int {
+	return 401
+}
+
 func (o *CreateEnvironmentUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}][%d] createEnvironmentUnauthorized ", 401)
+}
+
+func (o *CreateEnvironmentUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}][%d] createEnvironmentUnauthorized ", 401)
 }
 

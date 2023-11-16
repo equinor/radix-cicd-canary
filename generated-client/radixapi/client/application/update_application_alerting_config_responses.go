@@ -60,7 +60,7 @@ func (o *UpdateApplicationAlertingConfigReader) ReadResponse(response runtime.Cl
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[PUT /applications/{appName}/alerting] updateApplicationAlertingConfig", response, response.Code())
 	}
 }
 
@@ -69,7 +69,8 @@ func NewUpdateApplicationAlertingConfigOK() *UpdateApplicationAlertingConfigOK {
 	return &UpdateApplicationAlertingConfigOK{}
 }
 
-/* UpdateApplicationAlertingConfigOK describes a response with status code 200, with default header values.
+/*
+UpdateApplicationAlertingConfigOK describes a response with status code 200, with default header values.
 
 Successful alerts config update
 */
@@ -77,9 +78,44 @@ type UpdateApplicationAlertingConfigOK struct {
 	Payload *models.AlertingConfig
 }
 
+// IsSuccess returns true when this update application alerting config o k response has a 2xx status code
+func (o *UpdateApplicationAlertingConfigOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this update application alerting config o k response has a 3xx status code
+func (o *UpdateApplicationAlertingConfigOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update application alerting config o k response has a 4xx status code
+func (o *UpdateApplicationAlertingConfigOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update application alerting config o k response has a 5xx status code
+func (o *UpdateApplicationAlertingConfigOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update application alerting config o k response a status code equal to that given
+func (o *UpdateApplicationAlertingConfigOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the update application alerting config o k response
+func (o *UpdateApplicationAlertingConfigOK) Code() int {
+	return 200
+}
+
 func (o *UpdateApplicationAlertingConfigOK) Error() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigOK  %+v", 200, o.Payload)
 }
+
+func (o *UpdateApplicationAlertingConfigOK) String() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigOK  %+v", 200, o.Payload)
+}
+
 func (o *UpdateApplicationAlertingConfigOK) GetPayload() *models.AlertingConfig {
 	return o.Payload
 }
@@ -101,14 +137,49 @@ func NewUpdateApplicationAlertingConfigBadRequest() *UpdateApplicationAlertingCo
 	return &UpdateApplicationAlertingConfigBadRequest{}
 }
 
-/* UpdateApplicationAlertingConfigBadRequest describes a response with status code 400, with default header values.
+/*
+UpdateApplicationAlertingConfigBadRequest describes a response with status code 400, with default header values.
 
 Invalid configuration
 */
 type UpdateApplicationAlertingConfigBadRequest struct {
 }
 
+// IsSuccess returns true when this update application alerting config bad request response has a 2xx status code
+func (o *UpdateApplicationAlertingConfigBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update application alerting config bad request response has a 3xx status code
+func (o *UpdateApplicationAlertingConfigBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update application alerting config bad request response has a 4xx status code
+func (o *UpdateApplicationAlertingConfigBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update application alerting config bad request response has a 5xx status code
+func (o *UpdateApplicationAlertingConfigBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update application alerting config bad request response a status code equal to that given
+func (o *UpdateApplicationAlertingConfigBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the update application alerting config bad request response
+func (o *UpdateApplicationAlertingConfigBadRequest) Code() int {
+	return 400
+}
+
 func (o *UpdateApplicationAlertingConfigBadRequest) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigBadRequest ", 400)
+}
+
+func (o *UpdateApplicationAlertingConfigBadRequest) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigBadRequest ", 400)
 }
 
@@ -122,14 +193,49 @@ func NewUpdateApplicationAlertingConfigUnauthorized() *UpdateApplicationAlerting
 	return &UpdateApplicationAlertingConfigUnauthorized{}
 }
 
-/* UpdateApplicationAlertingConfigUnauthorized describes a response with status code 401, with default header values.
+/*
+UpdateApplicationAlertingConfigUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type UpdateApplicationAlertingConfigUnauthorized struct {
 }
 
+// IsSuccess returns true when this update application alerting config unauthorized response has a 2xx status code
+func (o *UpdateApplicationAlertingConfigUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update application alerting config unauthorized response has a 3xx status code
+func (o *UpdateApplicationAlertingConfigUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update application alerting config unauthorized response has a 4xx status code
+func (o *UpdateApplicationAlertingConfigUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update application alerting config unauthorized response has a 5xx status code
+func (o *UpdateApplicationAlertingConfigUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update application alerting config unauthorized response a status code equal to that given
+func (o *UpdateApplicationAlertingConfigUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the update application alerting config unauthorized response
+func (o *UpdateApplicationAlertingConfigUnauthorized) Code() int {
+	return 401
+}
+
 func (o *UpdateApplicationAlertingConfigUnauthorized) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigUnauthorized ", 401)
+}
+
+func (o *UpdateApplicationAlertingConfigUnauthorized) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigUnauthorized ", 401)
 }
 
@@ -143,14 +249,49 @@ func NewUpdateApplicationAlertingConfigForbidden() *UpdateApplicationAlertingCon
 	return &UpdateApplicationAlertingConfigForbidden{}
 }
 
-/* UpdateApplicationAlertingConfigForbidden describes a response with status code 403, with default header values.
+/*
+UpdateApplicationAlertingConfigForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type UpdateApplicationAlertingConfigForbidden struct {
 }
 
+// IsSuccess returns true when this update application alerting config forbidden response has a 2xx status code
+func (o *UpdateApplicationAlertingConfigForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update application alerting config forbidden response has a 3xx status code
+func (o *UpdateApplicationAlertingConfigForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update application alerting config forbidden response has a 4xx status code
+func (o *UpdateApplicationAlertingConfigForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update application alerting config forbidden response has a 5xx status code
+func (o *UpdateApplicationAlertingConfigForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update application alerting config forbidden response a status code equal to that given
+func (o *UpdateApplicationAlertingConfigForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the update application alerting config forbidden response
+func (o *UpdateApplicationAlertingConfigForbidden) Code() int {
+	return 403
+}
+
 func (o *UpdateApplicationAlertingConfigForbidden) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigForbidden ", 403)
+}
+
+func (o *UpdateApplicationAlertingConfigForbidden) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigForbidden ", 403)
 }
 
@@ -164,14 +305,49 @@ func NewUpdateApplicationAlertingConfigNotFound() *UpdateApplicationAlertingConf
 	return &UpdateApplicationAlertingConfigNotFound{}
 }
 
-/* UpdateApplicationAlertingConfigNotFound describes a response with status code 404, with default header values.
+/*
+UpdateApplicationAlertingConfigNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type UpdateApplicationAlertingConfigNotFound struct {
 }
 
+// IsSuccess returns true when this update application alerting config not found response has a 2xx status code
+func (o *UpdateApplicationAlertingConfigNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update application alerting config not found response has a 3xx status code
+func (o *UpdateApplicationAlertingConfigNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update application alerting config not found response has a 4xx status code
+func (o *UpdateApplicationAlertingConfigNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update application alerting config not found response has a 5xx status code
+func (o *UpdateApplicationAlertingConfigNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update application alerting config not found response a status code equal to that given
+func (o *UpdateApplicationAlertingConfigNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the update application alerting config not found response
+func (o *UpdateApplicationAlertingConfigNotFound) Code() int {
+	return 404
+}
+
 func (o *UpdateApplicationAlertingConfigNotFound) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigNotFound ", 404)
+}
+
+func (o *UpdateApplicationAlertingConfigNotFound) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigNotFound ", 404)
 }
 
@@ -185,14 +361,49 @@ func NewUpdateApplicationAlertingConfigInternalServerError() *UpdateApplicationA
 	return &UpdateApplicationAlertingConfigInternalServerError{}
 }
 
-/* UpdateApplicationAlertingConfigInternalServerError describes a response with status code 500, with default header values.
+/*
+UpdateApplicationAlertingConfigInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type UpdateApplicationAlertingConfigInternalServerError struct {
 }
 
+// IsSuccess returns true when this update application alerting config internal server error response has a 2xx status code
+func (o *UpdateApplicationAlertingConfigInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update application alerting config internal server error response has a 3xx status code
+func (o *UpdateApplicationAlertingConfigInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update application alerting config internal server error response has a 4xx status code
+func (o *UpdateApplicationAlertingConfigInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update application alerting config internal server error response has a 5xx status code
+func (o *UpdateApplicationAlertingConfigInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this update application alerting config internal server error response a status code equal to that given
+func (o *UpdateApplicationAlertingConfigInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the update application alerting config internal server error response
+func (o *UpdateApplicationAlertingConfigInternalServerError) Code() int {
+	return 500
+}
+
 func (o *UpdateApplicationAlertingConfigInternalServerError) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigInternalServerError ", 500)
+}
+
+func (o *UpdateApplicationAlertingConfigInternalServerError) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/alerting][%d] updateApplicationAlertingConfigInternalServerError ", 500)
 }
 

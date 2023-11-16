@@ -317,6 +317,11 @@ func (m *Component) contextValidatePorts(ctx context.Context, formats strfmt.Reg
 	for i := 0; i < len(m.Ports); i++ {
 
 		if m.Ports[i] != nil {
+
+			if swag.IsZero(m.Ports[i]) { // not required
+				return nil
+			}
+
 			if err := m.Ports[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
@@ -337,6 +342,11 @@ func (m *Component) contextValidateReplicaList(ctx context.Context, formats strf
 	for i := 0; i < len(m.ReplicaList); i++ {
 
 		if m.ReplicaList[i] != nil {
+
+			if swag.IsZero(m.ReplicaList[i]) { // not required
+				return nil
+			}
+
 			if err := m.ReplicaList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("replicaList" + "." + strconv.Itoa(i))
@@ -355,6 +365,11 @@ func (m *Component) contextValidateReplicaList(ctx context.Context, formats strf
 func (m *Component) contextValidateHorizontalScalingSummary(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.HorizontalScalingSummary != nil {
+
+		if swag.IsZero(m.HorizontalScalingSummary) { // not required
+			return nil
+		}
+
 		if err := m.HorizontalScalingSummary.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("horizontalScalingSummary")
@@ -371,6 +386,11 @@ func (m *Component) contextValidateHorizontalScalingSummary(ctx context.Context,
 func (m *Component) contextValidateIdentity(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Identity != nil {
+
+		if swag.IsZero(m.Identity) { // not required
+			return nil
+		}
+
 		if err := m.Identity.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("identity")
@@ -387,6 +407,11 @@ func (m *Component) contextValidateIdentity(ctx context.Context, formats strfmt.
 func (m *Component) contextValidateNotifications(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Notifications != nil {
+
+		if swag.IsZero(m.Notifications) { // not required
+			return nil
+		}
+
 		if err := m.Notifications.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("notifications")
@@ -403,6 +428,11 @@ func (m *Component) contextValidateNotifications(ctx context.Context, formats st
 func (m *Component) contextValidateOauth2(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Oauth2 != nil {
+
+		if swag.IsZero(m.Oauth2) { // not required
+			return nil
+		}
+
 		if err := m.Oauth2.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("oauth2")

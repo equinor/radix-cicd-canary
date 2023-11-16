@@ -36,7 +36,7 @@ func (o *TriggerPipelinePromoteReader) ReadResponse(response runtime.ClientRespo
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/pipelines/promote] triggerPipelinePromote", response, response.Code())
 	}
 }
 
@@ -45,7 +45,8 @@ func NewTriggerPipelinePromoteOK() *TriggerPipelinePromoteOK {
 	return &TriggerPipelinePromoteOK{}
 }
 
-/* TriggerPipelinePromoteOK describes a response with status code 200, with default header values.
+/*
+TriggerPipelinePromoteOK describes a response with status code 200, with default header values.
 
 Successful trigger pipeline
 */
@@ -53,9 +54,44 @@ type TriggerPipelinePromoteOK struct {
 	Payload *models.JobSummary
 }
 
+// IsSuccess returns true when this trigger pipeline promote o k response has a 2xx status code
+func (o *TriggerPipelinePromoteOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this trigger pipeline promote o k response has a 3xx status code
+func (o *TriggerPipelinePromoteOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this trigger pipeline promote o k response has a 4xx status code
+func (o *TriggerPipelinePromoteOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this trigger pipeline promote o k response has a 5xx status code
+func (o *TriggerPipelinePromoteOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this trigger pipeline promote o k response a status code equal to that given
+func (o *TriggerPipelinePromoteOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the trigger pipeline promote o k response
+func (o *TriggerPipelinePromoteOK) Code() int {
+	return 200
+}
+
 func (o *TriggerPipelinePromoteOK) Error() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/promote][%d] triggerPipelinePromoteOK  %+v", 200, o.Payload)
 }
+
+func (o *TriggerPipelinePromoteOK) String() string {
+	return fmt.Sprintf("[POST /applications/{appName}/pipelines/promote][%d] triggerPipelinePromoteOK  %+v", 200, o.Payload)
+}
+
 func (o *TriggerPipelinePromoteOK) GetPayload() *models.JobSummary {
 	return o.Payload
 }
@@ -77,14 +113,49 @@ func NewTriggerPipelinePromoteNotFound() *TriggerPipelinePromoteNotFound {
 	return &TriggerPipelinePromoteNotFound{}
 }
 
-/* TriggerPipelinePromoteNotFound describes a response with status code 404, with default header values.
+/*
+TriggerPipelinePromoteNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type TriggerPipelinePromoteNotFound struct {
 }
 
+// IsSuccess returns true when this trigger pipeline promote not found response has a 2xx status code
+func (o *TriggerPipelinePromoteNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this trigger pipeline promote not found response has a 3xx status code
+func (o *TriggerPipelinePromoteNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this trigger pipeline promote not found response has a 4xx status code
+func (o *TriggerPipelinePromoteNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this trigger pipeline promote not found response has a 5xx status code
+func (o *TriggerPipelinePromoteNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this trigger pipeline promote not found response a status code equal to that given
+func (o *TriggerPipelinePromoteNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the trigger pipeline promote not found response
+func (o *TriggerPipelinePromoteNotFound) Code() int {
+	return 404
+}
+
 func (o *TriggerPipelinePromoteNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/pipelines/promote][%d] triggerPipelinePromoteNotFound ", 404)
+}
+
+func (o *TriggerPipelinePromoteNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/pipelines/promote][%d] triggerPipelinePromoteNotFound ", 404)
 }
 

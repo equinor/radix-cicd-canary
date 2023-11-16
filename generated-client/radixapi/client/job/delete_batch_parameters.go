@@ -53,10 +53,12 @@ func NewDeleteBatchParamsWithHTTPClient(client *http.Client) *DeleteBatchParams 
 	}
 }
 
-/* DeleteBatchParams contains all the parameters to send to the API endpoint
-   for the delete batch operation.
+/*
+DeleteBatchParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the delete batch operation.
+
+	Typically these are written to a http.Request.
 */
 type DeleteBatchParams struct {
 

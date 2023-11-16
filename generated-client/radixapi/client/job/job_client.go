@@ -32,6 +32,10 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	GetJobComponentDeployments(params *GetJobComponentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobComponentDeploymentsOK, error)
 
+	CopyBatch(params *CopyBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CopyBatchOK, error)
+
+	CopyJob(params *CopyJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CopyJobOK, error)
+
 	DeleteBatch(params *DeleteBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBatchNoContent, error)
 
 	DeleteJob(params *DeleteJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteJobNoContent, error)
@@ -60,7 +64,7 @@ type ClientService interface {
 }
 
 /*
-  GetJobComponentDeployments gets list of deployments for the job component
+GetJobComponentDeployments gets list of deployments for the job component
 */
 func (a *Client) GetJobComponentDeployments(params *GetJobComponentDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobComponentDeploymentsOK, error) {
 	// TODO: Validate the params before sending
@@ -99,7 +103,85 @@ func (a *Client) GetJobComponentDeployments(params *GetJobComponentDeploymentsPa
 }
 
 /*
-  DeleteBatch deletes batch
+CopyBatch creates a copy of existing scheduled batch with optional changes
+*/
+func (a *Client) CopyBatch(params *CopyBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CopyBatchOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCopyBatchParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "copyBatch",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/batches/{batchName}/copy",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &CopyBatchReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*CopyBatchOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for copyBatch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+CopyJob creates a copy of existing scheduled job with optional changes
+*/
+func (a *Client) CopyJob(params *CopyJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CopyJobOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewCopyJobParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "copyJob",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/environments/{envName}/jobcomponents/{jobComponentName}/jobs/{jobName}/copy",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &CopyJobReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*CopyJobOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for copyJob: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+DeleteBatch deletes batch
 */
 func (a *Client) DeleteBatch(params *DeleteBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteBatchNoContent, error) {
 	// TODO: Validate the params before sending
@@ -138,7 +220,7 @@ func (a *Client) DeleteBatch(params *DeleteBatchParams, authInfo runtime.ClientA
 }
 
 /*
-  DeleteJob deletes job
+DeleteJob deletes job
 */
 func (a *Client) DeleteJob(params *DeleteJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteJobNoContent, error) {
 	// TODO: Validate the params before sending
@@ -177,7 +259,7 @@ func (a *Client) DeleteJob(params *DeleteJobParams, authInfo runtime.ClientAuthI
 }
 
 /*
-  GetBatch gets list of scheduled batches
+GetBatch gets list of scheduled batches
 */
 func (a *Client) GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchOK, error) {
 	// TODO: Validate the params before sending
@@ -216,7 +298,7 @@ func (a *Client) GetBatch(params *GetBatchParams, authInfo runtime.ClientAuthInf
 }
 
 /*
-  GetBatches gets list of scheduled batches
+GetBatches gets list of scheduled batches
 */
 func (a *Client) GetBatches(params *GetBatchesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBatchesOK, error) {
 	// TODO: Validate the params before sending
@@ -255,7 +337,7 @@ func (a *Client) GetBatches(params *GetBatchesParams, authInfo runtime.ClientAut
 }
 
 /*
-  GetJob gets list of scheduled jobs
+GetJob gets list of scheduled jobs
 */
 func (a *Client) GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobOK, error) {
 	// TODO: Validate the params before sending
@@ -294,7 +376,7 @@ func (a *Client) GetJob(params *GetJobParams, authInfo runtime.ClientAuthInfoWri
 }
 
 /*
-  GetJobPayload gets payload of a scheduled job
+GetJobPayload gets payload of a scheduled job
 */
 func (a *Client) GetJobPayload(params *GetJobPayloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobPayloadOK, error) {
 	// TODO: Validate the params before sending
@@ -333,7 +415,7 @@ func (a *Client) GetJobPayload(params *GetJobPayloadParams, authInfo runtime.Cli
 }
 
 /*
-  GetJobs gets list of scheduled jobs
+GetJobs gets list of scheduled jobs
 */
 func (a *Client) GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetJobsOK, error) {
 	// TODO: Validate the params before sending
@@ -372,7 +454,7 @@ func (a *Client) GetJobs(params *GetJobsParams, authInfo runtime.ClientAuthInfoW
 }
 
 /*
-  JobLog gets log from a scheduled job
+JobLog gets log from a scheduled job
 */
 func (a *Client) JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*JobLogOK, error) {
 	// TODO: Validate the params before sending
@@ -411,7 +493,7 @@ func (a *Client) JobLog(params *JobLogParams, authInfo runtime.ClientAuthInfoWri
 }
 
 /*
-  RestartBatch restarts a scheduled or stopped batch
+RestartBatch restarts a scheduled or stopped batch
 */
 func (a *Client) RestartBatch(params *RestartBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartBatchNoContent, error) {
 	// TODO: Validate the params before sending
@@ -450,7 +532,7 @@ func (a *Client) RestartBatch(params *RestartBatchParams, authInfo runtime.Clien
 }
 
 /*
-  RestartJob restarts a running or stopped scheduled job
+RestartJob restarts a running or stopped scheduled job
 */
 func (a *Client) RestartJob(params *RestartJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartJobNoContent, error) {
 	// TODO: Validate the params before sending
@@ -489,7 +571,7 @@ func (a *Client) RestartJob(params *RestartJobParams, authInfo runtime.ClientAut
 }
 
 /*
-  StopBatch stops scheduled batch
+StopBatch stops scheduled batch
 */
 func (a *Client) StopBatch(params *StopBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopBatchNoContent, error) {
 	// TODO: Validate the params before sending
@@ -528,7 +610,7 @@ func (a *Client) StopBatch(params *StopBatchParams, authInfo runtime.ClientAuthI
 }
 
 /*
-  StopJob stops scheduled job
+StopJob stops scheduled job
 */
 func (a *Client) StopJob(params *StopJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopJobNoContent, error) {
 	// TODO: Validate the params before sending

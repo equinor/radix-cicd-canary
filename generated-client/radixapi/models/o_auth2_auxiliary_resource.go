@@ -75,6 +75,7 @@ func (m *OAuth2AuxiliaryResource) ContextValidate(ctx context.Context, formats s
 func (m *OAuth2AuxiliaryResource) contextValidateDeployment(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Deployment != nil {
+
 		if err := m.Deployment.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("deployment")

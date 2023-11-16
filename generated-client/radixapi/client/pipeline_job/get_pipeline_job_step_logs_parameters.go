@@ -53,10 +53,12 @@ func NewGetPipelineJobStepLogsParamsWithHTTPClient(client *http.Client) *GetPipe
 	}
 }
 
-/* GetPipelineJobStepLogsParams contains all the parameters to send to the API endpoint
-   for the get pipeline job step logs operation.
+/*
+GetPipelineJobStepLogsParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get pipeline job step logs operation.
+
+	Typically these are written to a http.Request.
 */
 type GetPipelineJobStepLogsParams struct {
 

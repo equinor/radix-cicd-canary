@@ -53,10 +53,12 @@ func NewRestartApplicationParamsWithHTTPClient(client *http.Client) *RestartAppl
 	}
 }
 
-/* RestartApplicationParams contains all the parameters to send to the API endpoint
-   for the restart application operation.
+/*
+RestartApplicationParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the restart application operation.
+
+	Typically these are written to a http.Request.
 */
 type RestartApplicationParams struct {
 

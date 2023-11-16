@@ -52,10 +52,12 @@ func NewGetBuildStatusParamsWithHTTPClient(client *http.Client) *GetBuildStatusP
 	}
 }
 
-/* GetBuildStatusParams contains all the parameters to send to the API endpoint
-   for the get build status operation.
+/*
+GetBuildStatusParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get build status operation.
+
+	Typically these are written to a http.Request.
 */
 type GetBuildStatusParams struct {
 

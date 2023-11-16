@@ -57,7 +57,7 @@ func (o *RestartOAuthAuxiliaryResourceReader) ReadResponse(response runtime.Clie
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart] restartOAuthAuxiliaryResource", response, response.Code())
 	}
 }
 
@@ -66,14 +66,49 @@ func NewRestartOAuthAuxiliaryResourceOK() *RestartOAuthAuxiliaryResourceOK {
 	return &RestartOAuthAuxiliaryResourceOK{}
 }
 
-/* RestartOAuthAuxiliaryResourceOK describes a response with status code 200, with default header values.
+/*
+RestartOAuthAuxiliaryResourceOK describes a response with status code 200, with default header values.
 
 Auxiliary resource restarted ok
 */
 type RestartOAuthAuxiliaryResourceOK struct {
 }
 
+// IsSuccess returns true when this restart o auth auxiliary resource o k response has a 2xx status code
+func (o *RestartOAuthAuxiliaryResourceOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this restart o auth auxiliary resource o k response has a 3xx status code
+func (o *RestartOAuthAuxiliaryResourceOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart o auth auxiliary resource o k response has a 4xx status code
+func (o *RestartOAuthAuxiliaryResourceOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this restart o auth auxiliary resource o k response has a 5xx status code
+func (o *RestartOAuthAuxiliaryResourceOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart o auth auxiliary resource o k response a status code equal to that given
+func (o *RestartOAuthAuxiliaryResourceOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the restart o auth auxiliary resource o k response
+func (o *RestartOAuthAuxiliaryResourceOK) Code() int {
+	return 200
+}
+
 func (o *RestartOAuthAuxiliaryResourceOK) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceOK ", 200)
+}
+
+func (o *RestartOAuthAuxiliaryResourceOK) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceOK ", 200)
 }
 
@@ -87,14 +122,49 @@ func NewRestartOAuthAuxiliaryResourceUnauthorized() *RestartOAuthAuxiliaryResour
 	return &RestartOAuthAuxiliaryResourceUnauthorized{}
 }
 
-/* RestartOAuthAuxiliaryResourceUnauthorized describes a response with status code 401, with default header values.
+/*
+RestartOAuthAuxiliaryResourceUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type RestartOAuthAuxiliaryResourceUnauthorized struct {
 }
 
+// IsSuccess returns true when this restart o auth auxiliary resource unauthorized response has a 2xx status code
+func (o *RestartOAuthAuxiliaryResourceUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart o auth auxiliary resource unauthorized response has a 3xx status code
+func (o *RestartOAuthAuxiliaryResourceUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart o auth auxiliary resource unauthorized response has a 4xx status code
+func (o *RestartOAuthAuxiliaryResourceUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart o auth auxiliary resource unauthorized response has a 5xx status code
+func (o *RestartOAuthAuxiliaryResourceUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart o auth auxiliary resource unauthorized response a status code equal to that given
+func (o *RestartOAuthAuxiliaryResourceUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the restart o auth auxiliary resource unauthorized response
+func (o *RestartOAuthAuxiliaryResourceUnauthorized) Code() int {
+	return 401
+}
+
 func (o *RestartOAuthAuxiliaryResourceUnauthorized) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceUnauthorized ", 401)
+}
+
+func (o *RestartOAuthAuxiliaryResourceUnauthorized) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceUnauthorized ", 401)
 }
 
@@ -108,14 +178,49 @@ func NewRestartOAuthAuxiliaryResourceForbidden() *RestartOAuthAuxiliaryResourceF
 	return &RestartOAuthAuxiliaryResourceForbidden{}
 }
 
-/* RestartOAuthAuxiliaryResourceForbidden describes a response with status code 403, with default header values.
+/*
+RestartOAuthAuxiliaryResourceForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type RestartOAuthAuxiliaryResourceForbidden struct {
 }
 
+// IsSuccess returns true when this restart o auth auxiliary resource forbidden response has a 2xx status code
+func (o *RestartOAuthAuxiliaryResourceForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart o auth auxiliary resource forbidden response has a 3xx status code
+func (o *RestartOAuthAuxiliaryResourceForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart o auth auxiliary resource forbidden response has a 4xx status code
+func (o *RestartOAuthAuxiliaryResourceForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart o auth auxiliary resource forbidden response has a 5xx status code
+func (o *RestartOAuthAuxiliaryResourceForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart o auth auxiliary resource forbidden response a status code equal to that given
+func (o *RestartOAuthAuxiliaryResourceForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the restart o auth auxiliary resource forbidden response
+func (o *RestartOAuthAuxiliaryResourceForbidden) Code() int {
+	return 403
+}
+
 func (o *RestartOAuthAuxiliaryResourceForbidden) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceForbidden ", 403)
+}
+
+func (o *RestartOAuthAuxiliaryResourceForbidden) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceForbidden ", 403)
 }
 
@@ -129,14 +234,49 @@ func NewRestartOAuthAuxiliaryResourceNotFound() *RestartOAuthAuxiliaryResourceNo
 	return &RestartOAuthAuxiliaryResourceNotFound{}
 }
 
-/* RestartOAuthAuxiliaryResourceNotFound describes a response with status code 404, with default header values.
+/*
+RestartOAuthAuxiliaryResourceNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type RestartOAuthAuxiliaryResourceNotFound struct {
 }
 
+// IsSuccess returns true when this restart o auth auxiliary resource not found response has a 2xx status code
+func (o *RestartOAuthAuxiliaryResourceNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart o auth auxiliary resource not found response has a 3xx status code
+func (o *RestartOAuthAuxiliaryResourceNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart o auth auxiliary resource not found response has a 4xx status code
+func (o *RestartOAuthAuxiliaryResourceNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart o auth auxiliary resource not found response has a 5xx status code
+func (o *RestartOAuthAuxiliaryResourceNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart o auth auxiliary resource not found response a status code equal to that given
+func (o *RestartOAuthAuxiliaryResourceNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the restart o auth auxiliary resource not found response
+func (o *RestartOAuthAuxiliaryResourceNotFound) Code() int {
+	return 404
+}
+
 func (o *RestartOAuthAuxiliaryResourceNotFound) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceNotFound ", 404)
+}
+
+func (o *RestartOAuthAuxiliaryResourceNotFound) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceNotFound ", 404)
 }
 
@@ -150,14 +290,49 @@ func NewRestartOAuthAuxiliaryResourceConflict() *RestartOAuthAuxiliaryResourceCo
 	return &RestartOAuthAuxiliaryResourceConflict{}
 }
 
-/* RestartOAuthAuxiliaryResourceConflict describes a response with status code 409, with default header values.
+/*
+RestartOAuthAuxiliaryResourceConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type RestartOAuthAuxiliaryResourceConflict struct {
 }
 
+// IsSuccess returns true when this restart o auth auxiliary resource conflict response has a 2xx status code
+func (o *RestartOAuthAuxiliaryResourceConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart o auth auxiliary resource conflict response has a 3xx status code
+func (o *RestartOAuthAuxiliaryResourceConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart o auth auxiliary resource conflict response has a 4xx status code
+func (o *RestartOAuthAuxiliaryResourceConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this restart o auth auxiliary resource conflict response has a 5xx status code
+func (o *RestartOAuthAuxiliaryResourceConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this restart o auth auxiliary resource conflict response a status code equal to that given
+func (o *RestartOAuthAuxiliaryResourceConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the restart o auth auxiliary resource conflict response
+func (o *RestartOAuthAuxiliaryResourceConflict) Code() int {
+	return 409
+}
+
 func (o *RestartOAuthAuxiliaryResourceConflict) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceConflict ", 409)
+}
+
+func (o *RestartOAuthAuxiliaryResourceConflict) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceConflict ", 409)
 }
 
@@ -171,14 +346,49 @@ func NewRestartOAuthAuxiliaryResourceInternalServerError() *RestartOAuthAuxiliar
 	return &RestartOAuthAuxiliaryResourceInternalServerError{}
 }
 
-/* RestartOAuthAuxiliaryResourceInternalServerError describes a response with status code 500, with default header values.
+/*
+RestartOAuthAuxiliaryResourceInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type RestartOAuthAuxiliaryResourceInternalServerError struct {
 }
 
+// IsSuccess returns true when this restart o auth auxiliary resource internal server error response has a 2xx status code
+func (o *RestartOAuthAuxiliaryResourceInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this restart o auth auxiliary resource internal server error response has a 3xx status code
+func (o *RestartOAuthAuxiliaryResourceInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this restart o auth auxiliary resource internal server error response has a 4xx status code
+func (o *RestartOAuthAuxiliaryResourceInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this restart o auth auxiliary resource internal server error response has a 5xx status code
+func (o *RestartOAuthAuxiliaryResourceInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this restart o auth auxiliary resource internal server error response a status code equal to that given
+func (o *RestartOAuthAuxiliaryResourceInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the restart o auth auxiliary resource internal server error response
+func (o *RestartOAuthAuxiliaryResourceInternalServerError) Code() int {
+	return 500
+}
+
 func (o *RestartOAuthAuxiliaryResourceInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceInternalServerError ", 500)
+}
+
+func (o *RestartOAuthAuxiliaryResourceInternalServerError) String() string {
 	return fmt.Sprintf("[POST /applications/{appName}/environments/{envName}/components/{componentName}/aux/oauth/restart][%d] restartOAuthAuxiliaryResourceInternalServerError ", 500)
 }
 

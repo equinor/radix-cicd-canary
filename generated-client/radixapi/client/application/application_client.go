@@ -58,8 +58,6 @@ type ClientService interface {
 
 	RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyNoContent, error)
 
-	RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateMachineUserTokenOK, error)
-
 	RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartApplicationOK, error)
 
 	StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartApplicationOK, error)
@@ -84,7 +82,7 @@ type ClientService interface {
 }
 
 /*
-  ChangeRegistrationDetails updates application registration
+ChangeRegistrationDetails updates application registration
 */
 func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeRegistrationDetailsOK, error) {
 	// TODO: Validate the params before sending
@@ -123,7 +121,7 @@ func (a *Client) ChangeRegistrationDetails(params *ChangeRegistrationDetailsPara
 }
 
 /*
-  DeleteApplication deletes application
+DeleteApplication deletes application
 */
 func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -162,7 +160,7 @@ func (a *Client) DeleteApplication(params *DeleteApplicationParams, authInfo run
 }
 
 /*
-  DisableApplicationAlerting disables alerting for application namespace
+DisableApplicationAlerting disables alerting for application namespace
 */
 func (a *Client) DisableApplicationAlerting(params *DisableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DisableApplicationAlertingOK, error) {
 	// TODO: Validate the params before sending
@@ -201,7 +199,7 @@ func (a *Client) DisableApplicationAlerting(params *DisableApplicationAlertingPa
 }
 
 /*
-  EnableApplicationAlerting enables alerting for application namespace
+EnableApplicationAlerting enables alerting for application namespace
 */
 func (a *Client) EnableApplicationAlerting(params *EnableApplicationAlertingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EnableApplicationAlertingOK, error) {
 	// TODO: Validate the params before sending
@@ -240,7 +238,7 @@ func (a *Client) EnableApplicationAlerting(params *EnableApplicationAlertingPara
 }
 
 /*
-  GetApplication gets the application by name
+GetApplication gets the application by name
 */
 func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -279,7 +277,7 @@ func (a *Client) GetApplication(params *GetApplicationParams, authInfo runtime.C
 }
 
 /*
-  GetApplicationAlertingConfig gets alerts configuration for application namespace
+GetApplicationAlertingConfig gets alerts configuration for application namespace
 */
 func (a *Client) GetApplicationAlertingConfig(params *GetApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationAlertingConfigOK, error) {
 	// TODO: Validate the params before sending
@@ -318,7 +316,7 @@ func (a *Client) GetApplicationAlertingConfig(params *GetApplicationAlertingConf
 }
 
 /*
-  GetBuildSecrets lists the application build secrets
+GetBuildSecrets lists the application build secrets
 */
 func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetBuildSecretsOK, error) {
 	// TODO: Validate the params before sending
@@ -357,7 +355,7 @@ func (a *Client) GetBuildSecrets(params *GetBuildSecretsParams, authInfo runtime
 }
 
 /*
-  GetDeployKeyAndSecret gets deploy key and secret
+GetDeployKeyAndSecret gets deploy key and secret
 */
 func (a *Client) GetDeployKeyAndSecret(params *GetDeployKeyAndSecretParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeployKeyAndSecretOK, error) {
 	// TODO: Validate the params before sending
@@ -396,7 +394,7 @@ func (a *Client) GetDeployKeyAndSecret(params *GetDeployKeyAndSecretParams, auth
 }
 
 /*
-  GetDeployments lists the application deployments
+GetDeployments lists the application deployments
 */
 func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeploymentsOK, error) {
 	// TODO: Validate the params before sending
@@ -435,7 +433,7 @@ func (a *Client) GetDeployments(params *GetDeploymentsParams, authInfo runtime.C
 }
 
 /*
-  GetPrivateImageHubs lists the application private image hubs
+GetPrivateImageHubs lists the application private image hubs
 */
 func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetPrivateImageHubsOK, error) {
 	// TODO: Validate the params before sending
@@ -474,7 +472,7 @@ func (a *Client) GetPrivateImageHubs(params *GetPrivateImageHubsParams, authInfo
 }
 
 /*
-  IsDeployKeyValid checks if the deploy key is correctly setup for application by cloning the repository
+IsDeployKeyValid checks if the deploy key is correctly setup for application by cloning the repository
 */
 func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IsDeployKeyValidOK, error) {
 	// TODO: Validate the params before sending
@@ -513,7 +511,7 @@ func (a *Client) IsDeployKeyValid(params *IsDeployKeyValidParams, authInfo runti
 }
 
 /*
-  ListPipelines lists the supported pipelines
+ListPipelines lists the supported pipelines
 */
 func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListPipelinesOK, error) {
 	// TODO: Validate the params before sending
@@ -552,7 +550,7 @@ func (a *Client) ListPipelines(params *ListPipelinesParams, authInfo runtime.Cli
 }
 
 /*
-  ModifyRegistrationDetails updates specific field s of an application registration
+ModifyRegistrationDetails updates specific field s of an application registration
 */
 func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ModifyRegistrationDetailsOK, error) {
 	// TODO: Validate the params before sending
@@ -591,7 +589,7 @@ func (a *Client) ModifyRegistrationDetails(params *ModifyRegistrationDetailsPara
 }
 
 /*
-  RegenerateDeployKey regenerates deploy key
+RegenerateDeployKey regenerates deploy key
 */
 func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyNoContent, error) {
 	// TODO: Validate the params before sending
@@ -630,46 +628,7 @@ func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo
 }
 
 /*
-  RegenerateMachineUserToken regenerates machine user token
-*/
-func (a *Client) RegenerateMachineUserToken(params *RegenerateMachineUserTokenParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateMachineUserTokenOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewRegenerateMachineUserTokenParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "regenerateMachineUserToken",
-		Method:             "POST",
-		PathPattern:        "/applications/{appName}/regenerate-machine-user-token",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &RegenerateMachineUserTokenReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*RegenerateMachineUserTokenOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for regenerateMachineUserToken: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-  RestartApplication restarts all components in all environments of the application stops all running components in all environments of the application pulls new images from image hub in radix configuration starts all components in all environments of the application again using up to date image
+RestartApplication restarts all components in all environments of the application stops all running components in all environments of the application pulls new images from image hub in radix configuration starts all components in all environments of the application again using up to date image
 */
 func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -708,7 +667,7 @@ func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo r
 }
 
 /*
-  StartApplication starts all components in all environments of the application
+StartApplication starts all components in all environments of the application
 */
 func (a *Client) StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -747,7 +706,7 @@ func (a *Client) StartApplication(params *StartApplicationParams, authInfo runti
 }
 
 /*
-  StopApplication stops all components in the environment
+StopApplication stops all components in the environment
 */
 func (a *Client) StopApplication(params *StopApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationOK, error) {
 	// TODO: Validate the params before sending
@@ -786,7 +745,7 @@ func (a *Client) StopApplication(params *StopApplicationParams, authInfo runtime
 }
 
 /*
-  TriggerPipelineBuild runs a build pipeline for a given application and branch
+TriggerPipelineBuild runs a build pipeline for a given application and branch
 */
 func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineBuildOK, error) {
 	// TODO: Validate the params before sending
@@ -825,7 +784,7 @@ func (a *Client) TriggerPipelineBuild(params *TriggerPipelineBuildParams, authIn
 }
 
 /*
-  TriggerPipelineBuildDeploy runs a build deploy pipeline for a given application and branch
+TriggerPipelineBuildDeploy runs a build deploy pipeline for a given application and branch
 */
 func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineBuildDeployOK, error) {
 	// TODO: Validate the params before sending
@@ -864,7 +823,7 @@ func (a *Client) TriggerPipelineBuildDeploy(params *TriggerPipelineBuildDeployPa
 }
 
 /*
-  TriggerPipelineDeploy runs a deploy pipeline for a given application and environment
+TriggerPipelineDeploy runs a deploy pipeline for a given application and environment
 */
 func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelineDeployOK, error) {
 	// TODO: Validate the params before sending
@@ -903,7 +862,7 @@ func (a *Client) TriggerPipelineDeploy(params *TriggerPipelineDeployParams, auth
 }
 
 /*
-  TriggerPipelinePromote runs a promote pipeline for a given application and branch
+TriggerPipelinePromote runs a promote pipeline for a given application and branch
 */
 func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TriggerPipelinePromoteOK, error) {
 	// TODO: Validate the params before sending
@@ -942,7 +901,7 @@ func (a *Client) TriggerPipelinePromote(params *TriggerPipelinePromoteParams, au
 }
 
 /*
-  UpdateApplicationAlertingConfig updates alerts configuration for application namespace
+UpdateApplicationAlertingConfig updates alerts configuration for application namespace
 */
 func (a *Client) UpdateApplicationAlertingConfig(params *UpdateApplicationAlertingConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateApplicationAlertingConfigOK, error) {
 	// TODO: Validate the params before sending
@@ -981,7 +940,7 @@ func (a *Client) UpdateApplicationAlertingConfig(params *UpdateApplicationAlerti
 }
 
 /*
-  UpdateBuildSecretsSecretValue updates an application build secret
+UpdateBuildSecretsSecretValue updates an application build secret
 */
 func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretValueParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateBuildSecretsSecretValueOK, error) {
 	// TODO: Validate the params before sending
@@ -1020,7 +979,7 @@ func (a *Client) UpdateBuildSecretsSecretValue(params *UpdateBuildSecretsSecretV
 }
 
 /*
-  UpdatePrivateImageHubsSecretValue updates an application private image hub secret
+UpdatePrivateImageHubsSecretValue updates an application private image hub secret
 */
 func (a *Client) UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdatePrivateImageHubsSecretValueOK, error) {
 	// TODO: Validate the params before sending

@@ -15,6 +15,8 @@ import (
 
 // ResourceRequirements ResourceRequirements describes the compute resource requirements.
 //
+// More info: https://www.radix.equinor.com/references/reference-radix-config/#resources-common
+//
 // swagger:model ResourceRequirements
 type ResourceRequirements struct {
 
@@ -101,6 +103,10 @@ func (m *ResourceRequirements) ContextValidate(ctx context.Context, formats strf
 
 func (m *ResourceRequirements) contextValidateLimits(ctx context.Context, formats strfmt.Registry) error {
 
+	if swag.IsZero(m.Limits) { // not required
+		return nil
+	}
+
 	if err := m.Limits.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("limits")
@@ -114,6 +120,10 @@ func (m *ResourceRequirements) contextValidateLimits(ctx context.Context, format
 }
 
 func (m *ResourceRequirements) contextValidateRequests(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Requests) { // not required
+		return nil
+	}
 
 	if err := m.Requests.ContextValidate(ctx, formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {

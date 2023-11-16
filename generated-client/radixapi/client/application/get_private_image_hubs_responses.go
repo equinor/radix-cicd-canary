@@ -42,7 +42,7 @@ func (o *GetPrivateImageHubsReader) ReadResponse(response runtime.ClientResponse
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/privateimagehubs] getPrivateImageHubs", response, response.Code())
 	}
 }
 
@@ -51,7 +51,8 @@ func NewGetPrivateImageHubsOK() *GetPrivateImageHubsOK {
 	return &GetPrivateImageHubsOK{}
 }
 
-/* GetPrivateImageHubsOK describes a response with status code 200, with default header values.
+/*
+GetPrivateImageHubsOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -59,9 +60,44 @@ type GetPrivateImageHubsOK struct {
 	Payload []*models.ImageHubSecret
 }
 
+// IsSuccess returns true when this get private image hubs o k response has a 2xx status code
+func (o *GetPrivateImageHubsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get private image hubs o k response has a 3xx status code
+func (o *GetPrivateImageHubsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get private image hubs o k response has a 4xx status code
+func (o *GetPrivateImageHubsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get private image hubs o k response has a 5xx status code
+func (o *GetPrivateImageHubsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get private image hubs o k response a status code equal to that given
+func (o *GetPrivateImageHubsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get private image hubs o k response
+func (o *GetPrivateImageHubsOK) Code() int {
+	return 200
+}
+
 func (o *GetPrivateImageHubsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/privateimagehubs][%d] getPrivateImageHubsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetPrivateImageHubsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/privateimagehubs][%d] getPrivateImageHubsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetPrivateImageHubsOK) GetPayload() []*models.ImageHubSecret {
 	return o.Payload
 }
@@ -81,14 +117,49 @@ func NewGetPrivateImageHubsUnauthorized() *GetPrivateImageHubsUnauthorized {
 	return &GetPrivateImageHubsUnauthorized{}
 }
 
-/* GetPrivateImageHubsUnauthorized describes a response with status code 401, with default header values.
+/*
+GetPrivateImageHubsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetPrivateImageHubsUnauthorized struct {
 }
 
+// IsSuccess returns true when this get private image hubs unauthorized response has a 2xx status code
+func (o *GetPrivateImageHubsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get private image hubs unauthorized response has a 3xx status code
+func (o *GetPrivateImageHubsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get private image hubs unauthorized response has a 4xx status code
+func (o *GetPrivateImageHubsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get private image hubs unauthorized response has a 5xx status code
+func (o *GetPrivateImageHubsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get private image hubs unauthorized response a status code equal to that given
+func (o *GetPrivateImageHubsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get private image hubs unauthorized response
+func (o *GetPrivateImageHubsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetPrivateImageHubsUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/privateimagehubs][%d] getPrivateImageHubsUnauthorized ", 401)
+}
+
+func (o *GetPrivateImageHubsUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/privateimagehubs][%d] getPrivateImageHubsUnauthorized ", 401)
 }
 
@@ -102,14 +173,49 @@ func NewGetPrivateImageHubsNotFound() *GetPrivateImageHubsNotFound {
 	return &GetPrivateImageHubsNotFound{}
 }
 
-/* GetPrivateImageHubsNotFound describes a response with status code 404, with default header values.
+/*
+GetPrivateImageHubsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetPrivateImageHubsNotFound struct {
 }
 
+// IsSuccess returns true when this get private image hubs not found response has a 2xx status code
+func (o *GetPrivateImageHubsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get private image hubs not found response has a 3xx status code
+func (o *GetPrivateImageHubsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get private image hubs not found response has a 4xx status code
+func (o *GetPrivateImageHubsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get private image hubs not found response has a 5xx status code
+func (o *GetPrivateImageHubsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get private image hubs not found response a status code equal to that given
+func (o *GetPrivateImageHubsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get private image hubs not found response
+func (o *GetPrivateImageHubsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetPrivateImageHubsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/privateimagehubs][%d] getPrivateImageHubsNotFound ", 404)
+}
+
+func (o *GetPrivateImageHubsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/privateimagehubs][%d] getPrivateImageHubsNotFound ", 404)
 }
 

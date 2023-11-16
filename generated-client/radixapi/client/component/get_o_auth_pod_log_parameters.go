@@ -53,10 +53,12 @@ func NewGetOAuthPodLogParamsWithHTTPClient(client *http.Client) *GetOAuthPodLogP
 	}
 }
 
-/* GetOAuthPodLogParams contains all the parameters to send to the API endpoint
-   for the get o auth pod log operation.
+/*
+GetOAuthPodLogParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the get o auth pod log operation.
+
+	Typically these are written to a http.Request.
 */
 type GetOAuthPodLogParams struct {
 

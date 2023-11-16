@@ -53,10 +53,12 @@ func NewIsDeployKeyValidParamsWithHTTPClient(client *http.Client) *IsDeployKeyVa
 	}
 }
 
-/* IsDeployKeyValidParams contains all the parameters to send to the API endpoint
-   for the is deploy key valid operation.
+/*
+IsDeployKeyValidParams contains all the parameters to send to the API endpoint
 
-   Typically these are written to a http.Request.
+	for the is deploy key valid operation.
+
+	Typically these are written to a http.Request.
 */
 type IsDeployKeyValidParams struct {
 

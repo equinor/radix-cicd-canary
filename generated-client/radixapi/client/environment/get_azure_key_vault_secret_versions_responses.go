@@ -66,7 +66,7 @@ func (o *GetAzureKeyVaultSecretVersionsReader) ReadResponse(response runtime.Cli
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}] getAzureKeyVaultSecretVersions", response, response.Code())
 	}
 }
 
@@ -75,7 +75,8 @@ func NewGetAzureKeyVaultSecretVersionsOK() *GetAzureKeyVaultSecretVersionsOK {
 	return &GetAzureKeyVaultSecretVersionsOK{}
 }
 
-/* GetAzureKeyVaultSecretVersionsOK describes a response with status code 200, with default header values.
+/*
+GetAzureKeyVaultSecretVersionsOK describes a response with status code 200, with default header values.
 
 Successful operation
 */
@@ -83,9 +84,44 @@ type GetAzureKeyVaultSecretVersionsOK struct {
 	Payload []*models.AzureKeyVaultSecretVersion
 }
 
+// IsSuccess returns true when this get azure key vault secret versions o k response has a 2xx status code
+func (o *GetAzureKeyVaultSecretVersionsOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this get azure key vault secret versions o k response has a 3xx status code
+func (o *GetAzureKeyVaultSecretVersionsOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get azure key vault secret versions o k response has a 4xx status code
+func (o *GetAzureKeyVaultSecretVersionsOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get azure key vault secret versions o k response has a 5xx status code
+func (o *GetAzureKeyVaultSecretVersionsOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get azure key vault secret versions o k response a status code equal to that given
+func (o *GetAzureKeyVaultSecretVersionsOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the get azure key vault secret versions o k response
+func (o *GetAzureKeyVaultSecretVersionsOK) Code() int {
+	return 200
+}
+
 func (o *GetAzureKeyVaultSecretVersionsOK) Error() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsOK  %+v", 200, o.Payload)
 }
+
+func (o *GetAzureKeyVaultSecretVersionsOK) String() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsOK  %+v", 200, o.Payload)
+}
+
 func (o *GetAzureKeyVaultSecretVersionsOK) GetPayload() []*models.AzureKeyVaultSecretVersion {
 	return o.Payload
 }
@@ -105,14 +141,49 @@ func NewGetAzureKeyVaultSecretVersionsBadRequest() *GetAzureKeyVaultSecretVersio
 	return &GetAzureKeyVaultSecretVersionsBadRequest{}
 }
 
-/* GetAzureKeyVaultSecretVersionsBadRequest describes a response with status code 400, with default header values.
+/*
+GetAzureKeyVaultSecretVersionsBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
 type GetAzureKeyVaultSecretVersionsBadRequest struct {
 }
 
+// IsSuccess returns true when this get azure key vault secret versions bad request response has a 2xx status code
+func (o *GetAzureKeyVaultSecretVersionsBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get azure key vault secret versions bad request response has a 3xx status code
+func (o *GetAzureKeyVaultSecretVersionsBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get azure key vault secret versions bad request response has a 4xx status code
+func (o *GetAzureKeyVaultSecretVersionsBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get azure key vault secret versions bad request response has a 5xx status code
+func (o *GetAzureKeyVaultSecretVersionsBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get azure key vault secret versions bad request response a status code equal to that given
+func (o *GetAzureKeyVaultSecretVersionsBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the get azure key vault secret versions bad request response
+func (o *GetAzureKeyVaultSecretVersionsBadRequest) Code() int {
+	return 400
+}
+
 func (o *GetAzureKeyVaultSecretVersionsBadRequest) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsBadRequest ", 400)
+}
+
+func (o *GetAzureKeyVaultSecretVersionsBadRequest) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsBadRequest ", 400)
 }
 
@@ -126,14 +197,49 @@ func NewGetAzureKeyVaultSecretVersionsUnauthorized() *GetAzureKeyVaultSecretVers
 	return &GetAzureKeyVaultSecretVersionsUnauthorized{}
 }
 
-/* GetAzureKeyVaultSecretVersionsUnauthorized describes a response with status code 401, with default header values.
+/*
+GetAzureKeyVaultSecretVersionsUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type GetAzureKeyVaultSecretVersionsUnauthorized struct {
 }
 
+// IsSuccess returns true when this get azure key vault secret versions unauthorized response has a 2xx status code
+func (o *GetAzureKeyVaultSecretVersionsUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get azure key vault secret versions unauthorized response has a 3xx status code
+func (o *GetAzureKeyVaultSecretVersionsUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get azure key vault secret versions unauthorized response has a 4xx status code
+func (o *GetAzureKeyVaultSecretVersionsUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get azure key vault secret versions unauthorized response has a 5xx status code
+func (o *GetAzureKeyVaultSecretVersionsUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get azure key vault secret versions unauthorized response a status code equal to that given
+func (o *GetAzureKeyVaultSecretVersionsUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the get azure key vault secret versions unauthorized response
+func (o *GetAzureKeyVaultSecretVersionsUnauthorized) Code() int {
+	return 401
+}
+
 func (o *GetAzureKeyVaultSecretVersionsUnauthorized) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsUnauthorized ", 401)
+}
+
+func (o *GetAzureKeyVaultSecretVersionsUnauthorized) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsUnauthorized ", 401)
 }
 
@@ -147,14 +253,49 @@ func NewGetAzureKeyVaultSecretVersionsForbidden() *GetAzureKeyVaultSecretVersion
 	return &GetAzureKeyVaultSecretVersionsForbidden{}
 }
 
-/* GetAzureKeyVaultSecretVersionsForbidden describes a response with status code 403, with default header values.
+/*
+GetAzureKeyVaultSecretVersionsForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type GetAzureKeyVaultSecretVersionsForbidden struct {
 }
 
+// IsSuccess returns true when this get azure key vault secret versions forbidden response has a 2xx status code
+func (o *GetAzureKeyVaultSecretVersionsForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get azure key vault secret versions forbidden response has a 3xx status code
+func (o *GetAzureKeyVaultSecretVersionsForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get azure key vault secret versions forbidden response has a 4xx status code
+func (o *GetAzureKeyVaultSecretVersionsForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get azure key vault secret versions forbidden response has a 5xx status code
+func (o *GetAzureKeyVaultSecretVersionsForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get azure key vault secret versions forbidden response a status code equal to that given
+func (o *GetAzureKeyVaultSecretVersionsForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the get azure key vault secret versions forbidden response
+func (o *GetAzureKeyVaultSecretVersionsForbidden) Code() int {
+	return 403
+}
+
 func (o *GetAzureKeyVaultSecretVersionsForbidden) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsForbidden ", 403)
+}
+
+func (o *GetAzureKeyVaultSecretVersionsForbidden) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsForbidden ", 403)
 }
 
@@ -168,14 +309,49 @@ func NewGetAzureKeyVaultSecretVersionsNotFound() *GetAzureKeyVaultSecretVersions
 	return &GetAzureKeyVaultSecretVersionsNotFound{}
 }
 
-/* GetAzureKeyVaultSecretVersionsNotFound describes a response with status code 404, with default header values.
+/*
+GetAzureKeyVaultSecretVersionsNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type GetAzureKeyVaultSecretVersionsNotFound struct {
 }
 
+// IsSuccess returns true when this get azure key vault secret versions not found response has a 2xx status code
+func (o *GetAzureKeyVaultSecretVersionsNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get azure key vault secret versions not found response has a 3xx status code
+func (o *GetAzureKeyVaultSecretVersionsNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get azure key vault secret versions not found response has a 4xx status code
+func (o *GetAzureKeyVaultSecretVersionsNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get azure key vault secret versions not found response has a 5xx status code
+func (o *GetAzureKeyVaultSecretVersionsNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get azure key vault secret versions not found response a status code equal to that given
+func (o *GetAzureKeyVaultSecretVersionsNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the get azure key vault secret versions not found response
+func (o *GetAzureKeyVaultSecretVersionsNotFound) Code() int {
+	return 404
+}
+
 func (o *GetAzureKeyVaultSecretVersionsNotFound) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsNotFound ", 404)
+}
+
+func (o *GetAzureKeyVaultSecretVersionsNotFound) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsNotFound ", 404)
 }
 
@@ -189,14 +365,49 @@ func NewGetAzureKeyVaultSecretVersionsConflict() *GetAzureKeyVaultSecretVersions
 	return &GetAzureKeyVaultSecretVersionsConflict{}
 }
 
-/* GetAzureKeyVaultSecretVersionsConflict describes a response with status code 409, with default header values.
+/*
+GetAzureKeyVaultSecretVersionsConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type GetAzureKeyVaultSecretVersionsConflict struct {
 }
 
+// IsSuccess returns true when this get azure key vault secret versions conflict response has a 2xx status code
+func (o *GetAzureKeyVaultSecretVersionsConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get azure key vault secret versions conflict response has a 3xx status code
+func (o *GetAzureKeyVaultSecretVersionsConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get azure key vault secret versions conflict response has a 4xx status code
+func (o *GetAzureKeyVaultSecretVersionsConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this get azure key vault secret versions conflict response has a 5xx status code
+func (o *GetAzureKeyVaultSecretVersionsConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this get azure key vault secret versions conflict response a status code equal to that given
+func (o *GetAzureKeyVaultSecretVersionsConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the get azure key vault secret versions conflict response
+func (o *GetAzureKeyVaultSecretVersionsConflict) Code() int {
+	return 409
+}
+
 func (o *GetAzureKeyVaultSecretVersionsConflict) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsConflict ", 409)
+}
+
+func (o *GetAzureKeyVaultSecretVersionsConflict) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsConflict ", 409)
 }
 
@@ -210,14 +421,49 @@ func NewGetAzureKeyVaultSecretVersionsInternalServerError() *GetAzureKeyVaultSec
 	return &GetAzureKeyVaultSecretVersionsInternalServerError{}
 }
 
-/* GetAzureKeyVaultSecretVersionsInternalServerError describes a response with status code 500, with default header values.
+/*
+GetAzureKeyVaultSecretVersionsInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type GetAzureKeyVaultSecretVersionsInternalServerError struct {
 }
 
+// IsSuccess returns true when this get azure key vault secret versions internal server error response has a 2xx status code
+func (o *GetAzureKeyVaultSecretVersionsInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this get azure key vault secret versions internal server error response has a 3xx status code
+func (o *GetAzureKeyVaultSecretVersionsInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this get azure key vault secret versions internal server error response has a 4xx status code
+func (o *GetAzureKeyVaultSecretVersionsInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this get azure key vault secret versions internal server error response has a 5xx status code
+func (o *GetAzureKeyVaultSecretVersionsInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this get azure key vault secret versions internal server error response a status code equal to that given
+func (o *GetAzureKeyVaultSecretVersionsInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the get azure key vault secret versions internal server error response
+func (o *GetAzureKeyVaultSecretVersionsInternalServerError) Code() int {
+	return 500
+}
+
 func (o *GetAzureKeyVaultSecretVersionsInternalServerError) Error() string {
+	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsInternalServerError ", 500)
+}
+
+func (o *GetAzureKeyVaultSecretVersionsInternalServerError) String() string {
 	return fmt.Sprintf("[GET /applications/{appName}/environments/{envName}/components/{componentName}/secrets/azure/keyvault/{azureKeyVaultName}][%d] getAzureKeyVaultSecretVersionsInternalServerError ", 500)
 }
 

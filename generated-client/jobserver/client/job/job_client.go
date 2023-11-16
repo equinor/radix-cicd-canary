@@ -44,7 +44,7 @@ type ClientService interface {
 }
 
 /*
-  CreateJob creates job
+CreateJob creates job
 */
 func (a *Client) CreateJob(params *CreateJobParams, opts ...ClientOption) (*CreateJobOK, error) {
 	// TODO: Validate the params before sending
@@ -82,7 +82,7 @@ func (a *Client) CreateJob(params *CreateJobParams, opts ...ClientOption) (*Crea
 }
 
 /*
-  DeleteJob deletes job
+DeleteJob deletes job
 */
 func (a *Client) DeleteJob(params *DeleteJobParams, opts ...ClientOption) (*DeleteJobOK, error) {
 	// TODO: Validate the params before sending
@@ -120,7 +120,7 @@ func (a *Client) DeleteJob(params *DeleteJobParams, opts ...ClientOption) (*Dele
 }
 
 /*
-  GetJob gets job
+GetJob gets job
 */
 func (a *Client) GetJob(params *GetJobParams, opts ...ClientOption) (*GetJobOK, error) {
 	// TODO: Validate the params before sending
@@ -158,7 +158,7 @@ func (a *Client) GetJob(params *GetJobParams, opts ...ClientOption) (*GetJobOK, 
 }
 
 /*
-  GetJobs gets jobs
+GetJobs gets jobs
 */
 func (a *Client) GetJobs(params *GetJobsParams, opts ...ClientOption) (*GetJobsOK, error) {
 	// TODO: Validate the params before sending
@@ -196,7 +196,7 @@ func (a *Client) GetJobs(params *GetJobsParams, opts ...ClientOption) (*GetJobsO
 }
 
 /*
-  StopJob stops job
+StopJob stops job
 */
 func (a *Client) StopJob(params *StopJobParams, opts ...ClientOption) (*StopJobOK, error) {
 	// TODO: Validate the params before sending

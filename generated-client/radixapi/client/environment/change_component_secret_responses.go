@@ -63,7 +63,7 @@ func (o *ChangeComponentSecretReader) ReadResponse(response runtime.ClientRespon
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}] changeComponentSecret", response, response.Code())
 	}
 }
 
@@ -72,14 +72,49 @@ func NewChangeComponentSecretOK() *ChangeComponentSecretOK {
 	return &ChangeComponentSecretOK{}
 }
 
-/* ChangeComponentSecretOK describes a response with status code 200, with default header values.
+/*
+ChangeComponentSecretOK describes a response with status code 200, with default header values.
 
 success
 */
 type ChangeComponentSecretOK struct {
 }
 
+// IsSuccess returns true when this change component secret o k response has a 2xx status code
+func (o *ChangeComponentSecretOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this change component secret o k response has a 3xx status code
+func (o *ChangeComponentSecretOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change component secret o k response has a 4xx status code
+func (o *ChangeComponentSecretOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this change component secret o k response has a 5xx status code
+func (o *ChangeComponentSecretOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change component secret o k response a status code equal to that given
+func (o *ChangeComponentSecretOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the change component secret o k response
+func (o *ChangeComponentSecretOK) Code() int {
+	return 200
+}
+
 func (o *ChangeComponentSecretOK) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretOK ", 200)
+}
+
+func (o *ChangeComponentSecretOK) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretOK ", 200)
 }
 
@@ -93,14 +128,49 @@ func NewChangeComponentSecretBadRequest() *ChangeComponentSecretBadRequest {
 	return &ChangeComponentSecretBadRequest{}
 }
 
-/* ChangeComponentSecretBadRequest describes a response with status code 400, with default header values.
+/*
+ChangeComponentSecretBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
 type ChangeComponentSecretBadRequest struct {
 }
 
+// IsSuccess returns true when this change component secret bad request response has a 2xx status code
+func (o *ChangeComponentSecretBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change component secret bad request response has a 3xx status code
+func (o *ChangeComponentSecretBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change component secret bad request response has a 4xx status code
+func (o *ChangeComponentSecretBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change component secret bad request response has a 5xx status code
+func (o *ChangeComponentSecretBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change component secret bad request response a status code equal to that given
+func (o *ChangeComponentSecretBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the change component secret bad request response
+func (o *ChangeComponentSecretBadRequest) Code() int {
+	return 400
+}
+
 func (o *ChangeComponentSecretBadRequest) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretBadRequest ", 400)
+}
+
+func (o *ChangeComponentSecretBadRequest) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretBadRequest ", 400)
 }
 
@@ -114,14 +184,49 @@ func NewChangeComponentSecretUnauthorized() *ChangeComponentSecretUnauthorized {
 	return &ChangeComponentSecretUnauthorized{}
 }
 
-/* ChangeComponentSecretUnauthorized describes a response with status code 401, with default header values.
+/*
+ChangeComponentSecretUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type ChangeComponentSecretUnauthorized struct {
 }
 
+// IsSuccess returns true when this change component secret unauthorized response has a 2xx status code
+func (o *ChangeComponentSecretUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change component secret unauthorized response has a 3xx status code
+func (o *ChangeComponentSecretUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change component secret unauthorized response has a 4xx status code
+func (o *ChangeComponentSecretUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change component secret unauthorized response has a 5xx status code
+func (o *ChangeComponentSecretUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change component secret unauthorized response a status code equal to that given
+func (o *ChangeComponentSecretUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the change component secret unauthorized response
+func (o *ChangeComponentSecretUnauthorized) Code() int {
+	return 401
+}
+
 func (o *ChangeComponentSecretUnauthorized) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretUnauthorized ", 401)
+}
+
+func (o *ChangeComponentSecretUnauthorized) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretUnauthorized ", 401)
 }
 
@@ -135,14 +240,49 @@ func NewChangeComponentSecretForbidden() *ChangeComponentSecretForbidden {
 	return &ChangeComponentSecretForbidden{}
 }
 
-/* ChangeComponentSecretForbidden describes a response with status code 403, with default header values.
+/*
+ChangeComponentSecretForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type ChangeComponentSecretForbidden struct {
 }
 
+// IsSuccess returns true when this change component secret forbidden response has a 2xx status code
+func (o *ChangeComponentSecretForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change component secret forbidden response has a 3xx status code
+func (o *ChangeComponentSecretForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change component secret forbidden response has a 4xx status code
+func (o *ChangeComponentSecretForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change component secret forbidden response has a 5xx status code
+func (o *ChangeComponentSecretForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change component secret forbidden response a status code equal to that given
+func (o *ChangeComponentSecretForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the change component secret forbidden response
+func (o *ChangeComponentSecretForbidden) Code() int {
+	return 403
+}
+
 func (o *ChangeComponentSecretForbidden) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretForbidden ", 403)
+}
+
+func (o *ChangeComponentSecretForbidden) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretForbidden ", 403)
 }
 
@@ -156,14 +296,49 @@ func NewChangeComponentSecretNotFound() *ChangeComponentSecretNotFound {
 	return &ChangeComponentSecretNotFound{}
 }
 
-/* ChangeComponentSecretNotFound describes a response with status code 404, with default header values.
+/*
+ChangeComponentSecretNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type ChangeComponentSecretNotFound struct {
 }
 
+// IsSuccess returns true when this change component secret not found response has a 2xx status code
+func (o *ChangeComponentSecretNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change component secret not found response has a 3xx status code
+func (o *ChangeComponentSecretNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change component secret not found response has a 4xx status code
+func (o *ChangeComponentSecretNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change component secret not found response has a 5xx status code
+func (o *ChangeComponentSecretNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change component secret not found response a status code equal to that given
+func (o *ChangeComponentSecretNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the change component secret not found response
+func (o *ChangeComponentSecretNotFound) Code() int {
+	return 404
+}
+
 func (o *ChangeComponentSecretNotFound) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretNotFound ", 404)
+}
+
+func (o *ChangeComponentSecretNotFound) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretNotFound ", 404)
 }
 
@@ -177,14 +352,49 @@ func NewChangeComponentSecretConflict() *ChangeComponentSecretConflict {
 	return &ChangeComponentSecretConflict{}
 }
 
-/* ChangeComponentSecretConflict describes a response with status code 409, with default header values.
+/*
+ChangeComponentSecretConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type ChangeComponentSecretConflict struct {
 }
 
+// IsSuccess returns true when this change component secret conflict response has a 2xx status code
+func (o *ChangeComponentSecretConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change component secret conflict response has a 3xx status code
+func (o *ChangeComponentSecretConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change component secret conflict response has a 4xx status code
+func (o *ChangeComponentSecretConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this change component secret conflict response has a 5xx status code
+func (o *ChangeComponentSecretConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this change component secret conflict response a status code equal to that given
+func (o *ChangeComponentSecretConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the change component secret conflict response
+func (o *ChangeComponentSecretConflict) Code() int {
+	return 409
+}
+
 func (o *ChangeComponentSecretConflict) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretConflict ", 409)
+}
+
+func (o *ChangeComponentSecretConflict) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretConflict ", 409)
 }
 
@@ -198,14 +408,49 @@ func NewChangeComponentSecretInternalServerError() *ChangeComponentSecretInterna
 	return &ChangeComponentSecretInternalServerError{}
 }
 
-/* ChangeComponentSecretInternalServerError describes a response with status code 500, with default header values.
+/*
+ChangeComponentSecretInternalServerError describes a response with status code 500, with default header values.
 
 Internal server error
 */
 type ChangeComponentSecretInternalServerError struct {
 }
 
+// IsSuccess returns true when this change component secret internal server error response has a 2xx status code
+func (o *ChangeComponentSecretInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this change component secret internal server error response has a 3xx status code
+func (o *ChangeComponentSecretInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this change component secret internal server error response has a 4xx status code
+func (o *ChangeComponentSecretInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this change component secret internal server error response has a 5xx status code
+func (o *ChangeComponentSecretInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this change component secret internal server error response a status code equal to that given
+func (o *ChangeComponentSecretInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the change component secret internal server error response
+func (o *ChangeComponentSecretInternalServerError) Code() int {
+	return 500
+}
+
 func (o *ChangeComponentSecretInternalServerError) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretInternalServerError ", 500)
+}
+
+func (o *ChangeComponentSecretInternalServerError) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/environments/{envName}/components/{componentName}/secrets/{secretName}][%d] changeComponentSecretInternalServerError ", 500)
 }
 

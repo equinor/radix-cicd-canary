@@ -57,7 +57,7 @@ func (o *UpdatePrivateImageHubsSecretValueReader) ReadResponse(response runtime.
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("response status code does not match any response statuses defined for this endpoint in the swagger spec", response, response.Code())
+		return nil, runtime.NewAPIError("[PUT /applications/{appName}/privateimagehubs/{serverName}] updatePrivateImageHubsSecretValue", response, response.Code())
 	}
 }
 
@@ -66,14 +66,49 @@ func NewUpdatePrivateImageHubsSecretValueOK() *UpdatePrivateImageHubsSecretValue
 	return &UpdatePrivateImageHubsSecretValueOK{}
 }
 
-/* UpdatePrivateImageHubsSecretValueOK describes a response with status code 200, with default header values.
+/*
+UpdatePrivateImageHubsSecretValueOK describes a response with status code 200, with default header values.
 
 success
 */
 type UpdatePrivateImageHubsSecretValueOK struct {
 }
 
+// IsSuccess returns true when this update private image hubs secret value o k response has a 2xx status code
+func (o *UpdatePrivateImageHubsSecretValueOK) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this update private image hubs secret value o k response has a 3xx status code
+func (o *UpdatePrivateImageHubsSecretValueOK) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update private image hubs secret value o k response has a 4xx status code
+func (o *UpdatePrivateImageHubsSecretValueOK) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this update private image hubs secret value o k response has a 5xx status code
+func (o *UpdatePrivateImageHubsSecretValueOK) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update private image hubs secret value o k response a status code equal to that given
+func (o *UpdatePrivateImageHubsSecretValueOK) IsCode(code int) bool {
+	return code == 200
+}
+
+// Code gets the status code for the update private image hubs secret value o k response
+func (o *UpdatePrivateImageHubsSecretValueOK) Code() int {
+	return 200
+}
+
 func (o *UpdatePrivateImageHubsSecretValueOK) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueOK ", 200)
+}
+
+func (o *UpdatePrivateImageHubsSecretValueOK) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueOK ", 200)
 }
 
@@ -87,14 +122,49 @@ func NewUpdatePrivateImageHubsSecretValueBadRequest() *UpdatePrivateImageHubsSec
 	return &UpdatePrivateImageHubsSecretValueBadRequest{}
 }
 
-/* UpdatePrivateImageHubsSecretValueBadRequest describes a response with status code 400, with default header values.
+/*
+UpdatePrivateImageHubsSecretValueBadRequest describes a response with status code 400, with default header values.
 
 Invalid application
 */
 type UpdatePrivateImageHubsSecretValueBadRequest struct {
 }
 
+// IsSuccess returns true when this update private image hubs secret value bad request response has a 2xx status code
+func (o *UpdatePrivateImageHubsSecretValueBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update private image hubs secret value bad request response has a 3xx status code
+func (o *UpdatePrivateImageHubsSecretValueBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update private image hubs secret value bad request response has a 4xx status code
+func (o *UpdatePrivateImageHubsSecretValueBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update private image hubs secret value bad request response has a 5xx status code
+func (o *UpdatePrivateImageHubsSecretValueBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update private image hubs secret value bad request response a status code equal to that given
+func (o *UpdatePrivateImageHubsSecretValueBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the update private image hubs secret value bad request response
+func (o *UpdatePrivateImageHubsSecretValueBadRequest) Code() int {
+	return 400
+}
+
 func (o *UpdatePrivateImageHubsSecretValueBadRequest) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueBadRequest ", 400)
+}
+
+func (o *UpdatePrivateImageHubsSecretValueBadRequest) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueBadRequest ", 400)
 }
 
@@ -108,14 +178,49 @@ func NewUpdatePrivateImageHubsSecretValueUnauthorized() *UpdatePrivateImageHubsS
 	return &UpdatePrivateImageHubsSecretValueUnauthorized{}
 }
 
-/* UpdatePrivateImageHubsSecretValueUnauthorized describes a response with status code 401, with default header values.
+/*
+UpdatePrivateImageHubsSecretValueUnauthorized describes a response with status code 401, with default header values.
 
 Unauthorized
 */
 type UpdatePrivateImageHubsSecretValueUnauthorized struct {
 }
 
+// IsSuccess returns true when this update private image hubs secret value unauthorized response has a 2xx status code
+func (o *UpdatePrivateImageHubsSecretValueUnauthorized) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update private image hubs secret value unauthorized response has a 3xx status code
+func (o *UpdatePrivateImageHubsSecretValueUnauthorized) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update private image hubs secret value unauthorized response has a 4xx status code
+func (o *UpdatePrivateImageHubsSecretValueUnauthorized) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update private image hubs secret value unauthorized response has a 5xx status code
+func (o *UpdatePrivateImageHubsSecretValueUnauthorized) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update private image hubs secret value unauthorized response a status code equal to that given
+func (o *UpdatePrivateImageHubsSecretValueUnauthorized) IsCode(code int) bool {
+	return code == 401
+}
+
+// Code gets the status code for the update private image hubs secret value unauthorized response
+func (o *UpdatePrivateImageHubsSecretValueUnauthorized) Code() int {
+	return 401
+}
+
 func (o *UpdatePrivateImageHubsSecretValueUnauthorized) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueUnauthorized ", 401)
+}
+
+func (o *UpdatePrivateImageHubsSecretValueUnauthorized) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueUnauthorized ", 401)
 }
 
@@ -129,14 +234,49 @@ func NewUpdatePrivateImageHubsSecretValueForbidden() *UpdatePrivateImageHubsSecr
 	return &UpdatePrivateImageHubsSecretValueForbidden{}
 }
 
-/* UpdatePrivateImageHubsSecretValueForbidden describes a response with status code 403, with default header values.
+/*
+UpdatePrivateImageHubsSecretValueForbidden describes a response with status code 403, with default header values.
 
 Forbidden
 */
 type UpdatePrivateImageHubsSecretValueForbidden struct {
 }
 
+// IsSuccess returns true when this update private image hubs secret value forbidden response has a 2xx status code
+func (o *UpdatePrivateImageHubsSecretValueForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update private image hubs secret value forbidden response has a 3xx status code
+func (o *UpdatePrivateImageHubsSecretValueForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update private image hubs secret value forbidden response has a 4xx status code
+func (o *UpdatePrivateImageHubsSecretValueForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update private image hubs secret value forbidden response has a 5xx status code
+func (o *UpdatePrivateImageHubsSecretValueForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update private image hubs secret value forbidden response a status code equal to that given
+func (o *UpdatePrivateImageHubsSecretValueForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the update private image hubs secret value forbidden response
+func (o *UpdatePrivateImageHubsSecretValueForbidden) Code() int {
+	return 403
+}
+
 func (o *UpdatePrivateImageHubsSecretValueForbidden) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueForbidden ", 403)
+}
+
+func (o *UpdatePrivateImageHubsSecretValueForbidden) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueForbidden ", 403)
 }
 
@@ -150,14 +290,49 @@ func NewUpdatePrivateImageHubsSecretValueNotFound() *UpdatePrivateImageHubsSecre
 	return &UpdatePrivateImageHubsSecretValueNotFound{}
 }
 
-/* UpdatePrivateImageHubsSecretValueNotFound describes a response with status code 404, with default header values.
+/*
+UpdatePrivateImageHubsSecretValueNotFound describes a response with status code 404, with default header values.
 
 Not found
 */
 type UpdatePrivateImageHubsSecretValueNotFound struct {
 }
 
+// IsSuccess returns true when this update private image hubs secret value not found response has a 2xx status code
+func (o *UpdatePrivateImageHubsSecretValueNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update private image hubs secret value not found response has a 3xx status code
+func (o *UpdatePrivateImageHubsSecretValueNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update private image hubs secret value not found response has a 4xx status code
+func (o *UpdatePrivateImageHubsSecretValueNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update private image hubs secret value not found response has a 5xx status code
+func (o *UpdatePrivateImageHubsSecretValueNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update private image hubs secret value not found response a status code equal to that given
+func (o *UpdatePrivateImageHubsSecretValueNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the update private image hubs secret value not found response
+func (o *UpdatePrivateImageHubsSecretValueNotFound) Code() int {
+	return 404
+}
+
 func (o *UpdatePrivateImageHubsSecretValueNotFound) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueNotFound ", 404)
+}
+
+func (o *UpdatePrivateImageHubsSecretValueNotFound) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueNotFound ", 404)
 }
 
@@ -171,14 +346,49 @@ func NewUpdatePrivateImageHubsSecretValueConflict() *UpdatePrivateImageHubsSecre
 	return &UpdatePrivateImageHubsSecretValueConflict{}
 }
 
-/* UpdatePrivateImageHubsSecretValueConflict describes a response with status code 409, with default header values.
+/*
+UpdatePrivateImageHubsSecretValueConflict describes a response with status code 409, with default header values.
 
 Conflict
 */
 type UpdatePrivateImageHubsSecretValueConflict struct {
 }
 
+// IsSuccess returns true when this update private image hubs secret value conflict response has a 2xx status code
+func (o *UpdatePrivateImageHubsSecretValueConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this update private image hubs secret value conflict response has a 3xx status code
+func (o *UpdatePrivateImageHubsSecretValueConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this update private image hubs secret value conflict response has a 4xx status code
+func (o *UpdatePrivateImageHubsSecretValueConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this update private image hubs secret value conflict response has a 5xx status code
+func (o *UpdatePrivateImageHubsSecretValueConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this update private image hubs secret value conflict response a status code equal to that given
+func (o *UpdatePrivateImageHubsSecretValueConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the update private image hubs secret value conflict response
+func (o *UpdatePrivateImageHubsSecretValueConflict) Code() int {
+	return 409
+}
+
 func (o *UpdatePrivateImageHubsSecretValueConflict) Error() string {
+	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueConflict ", 409)
+}
+
+func (o *UpdatePrivateImageHubsSecretValueConflict) String() string {
 	return fmt.Sprintf("[PUT /applications/{appName}/privateimagehubs/{serverName}][%d] updatePrivateImageHubsSecretValueConflict ", 409)
 }
 

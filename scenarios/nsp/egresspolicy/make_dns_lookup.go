@@ -15,17 +15,17 @@ import (
 // LookupInternalDNS tests that we are able to make lookups to internal DNS
 func LookupInternalDNS(ctx context.Context, cfg config.Config) error {
 	internalDnsUrl := fmt.Sprintf("%s/testinternaldns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
-	return lookupDns(internalDnsUrl, ctx)
+	return lookupDns(internalDnsUrl, ctx, cfg)
 }
 
 // LookupPublicDNS tests that we are able to make lookups to public DNS
 func LookupPublicDNS(ctx context.Context, cfg config.Config) error {
 	publicDnsUrl := fmt.Sprintf("%s/testpublicdns", cfg.GetNetworkPolicyCanaryUrl("egressrulestopublicdns"))
-	return lookupDns(publicDnsUrl, ctx)
+	return lookupDns(publicDnsUrl, ctx, cfg)
 }
 
-func lookupDns(dnsUrl string, ctx context.Context) error {
-	client := httpUtils.GetHTTPDefaultClient()
+func lookupDns(dnsUrl string, ctx context.Context, cfg config.Config) error {
+	client := httpUtils.GetHTTPDefaultClient(cfg.GetNSPDNSLookupTimeout())
 
 	log.Ctx(ctx).Debug().Str("url", dnsUrl).Msg("Requesting data")
 	dnsResponse, dnsErr := client.Get(dnsUrl)

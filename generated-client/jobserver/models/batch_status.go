@@ -25,6 +25,10 @@ type BatchStatus struct {
 	// Example: 'batch1'
 	BatchName string `json:"batchName,omitempty"`
 
+	// BatchType Single job or multiple jobs batch
+	// Example: \"job\
+	BatchType string `json:"batchType,omitempty"`
+
 	// Created timestamp
 	// Example: 2006-01-02T15:04:05Z
 	// Required: true
@@ -41,7 +45,7 @@ type BatchStatus struct {
 	// JobStatuses of the jobs in the batch
 	JobStatuses []*JobStatus `json:"jobStatuses"`
 
-	// Status message, if any, of the job
+	// Message, if any, of the job
 	// Example: \"Error occurred\
 	Message string `json:"message,omitempty"`
 
@@ -206,6 +210,11 @@ func (m *BatchStatus) contextValidateJobStatuses(ctx context.Context, formats st
 	for i := 0; i < len(m.JobStatuses); i++ {
 
 		if m.JobStatuses[i] != nil {
+
+			if swag.IsZero(m.JobStatuses[i]) { // not required
+				return nil
+			}
+
 			if err := m.JobStatuses[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
