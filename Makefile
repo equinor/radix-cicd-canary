@@ -22,29 +22,11 @@ build:
 run:
 	docker run -it --rm -p 5000:5000 radix-cicd-canary
 
-build-push:
+.PHONY: deploy
+deploy:
 	az acr login --name $(CONTAINER_REPO)
 	docker build -t $(DOCKER_REGISTRY)/radix-cicd-canary:$(BRANCH)-$(VERSION) .
 	docker push $(DOCKER_REGISTRY)/radix-cicd-canary:$(BRANCH)-$(VERSION)
-
-deploy-via-helm:
-	make build-push
-
-	az keyvault secret download \
-		--vault-name $(VAULT_NAME) \
-		--name radix-cicd-canary-values \
-		--file radix-cicd-canary-values.yaml
-
-	helm upgrade --install radix-cicd-canary \
-	    ./charts/radix-cicd-canary/ \
-		--namespace radix-cicd-canary \
-		--set image.tag=$(BRANCH)-$(VERSION) \
-		--set radixApiPrefix=$(RADIX_API_PREFIX) \
-		--set radixWebhookPrefix=$(RADIX_WEBHOOK_PREFIX) \
-		--set clusterFqdn=$(CLUSTER_FQDN) \
-		-f radix-cicd-canary-values.yaml
-
-	rm -f radix-cicd-canary-values.yaml
 
 delete-dev-image:
 	az acr repository delete --n radixdev  --image  radix-cicd-canary:$(BRANCH)-$(VERSION) --yes
