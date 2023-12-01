@@ -138,5 +138,16 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	log.Ctx(ctx).Info().Msg("Second job was stopped")
+
+	// Test tekton log output contain parameters and secrets
+	tektonLogContent := job.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "test-tekton")
+	if !strings.Contains(tektonLogContent, Secret1Value) {
+		return errors.New("Tekton test does not contain SecretValue")
+	}
+
+	if !strings.Contains(tektonLogContent, "github.com") {
+		return errors.New("Tekton test does no conaint github.com (should be printed from known_hosts)")
+	}
+
 	return nil
 }
