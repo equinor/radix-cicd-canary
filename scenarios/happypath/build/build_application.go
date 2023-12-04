@@ -90,6 +90,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		{name: "clone", components: []string{}},
 		{name: "build-app", components: []string{"app"}},
 		{name: "build-redis", components: []string{"redis"}},
+		{name: "run-pipelines", components: []string{}},
 	}
 
 	if len(steps) != len(expectedSteps) {
