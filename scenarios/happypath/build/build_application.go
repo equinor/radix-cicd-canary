@@ -109,7 +109,10 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	log.Ctx(ctx).Debug().Str("jobName", jobName).Msg("Checking Sub-pipeline run...")
-	pipelineRuns := job.GetPipelineRuns(ctx, cfg, defaults.App2Name, jobName)
+	pipelineRuns, err := job.GetPipelineRuns(ctx, cfg, defaults.App2Name, jobName)
+	if err != nil {
+		return err
+	}
 	run, ok := slice.FindFirst(pipelineRuns, func(run *models.PipelineRun) bool {
 		return true
 	})
@@ -117,7 +120,10 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return errors.New("No Pipeline run found")
 	}
 
-	tasks := job.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
+	tasks, err := job.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
+	if err != nil {
+		return err
+	}
 	targetTask, ok := slice.FindFirst(tasks, func(task *models.PipelineRunTask) bool {
 		return *task.Name == "details"
 	})
@@ -126,7 +132,11 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	// Test tekton log output contain parameters and secrets
-	tektonLogContent := job.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
+	tektonLogContent, err := job.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
+	if err != nil {
+		return err
+	}
+
 	if !strings.Contains(tektonLogContent, Secret1Value) {
 		return errors.New("Tekton test does not contain SecretValue")
 	}
