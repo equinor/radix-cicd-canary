@@ -55,7 +55,7 @@ func Register(ctx context.Context, cfg config.Config, appName, appRepo, appShare
 func DeleteByImpersonatedUser(ctx context.Context, cfg config.Config, appName string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-	log.Ctx(ctx).Debug().Msgf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, impersonateGroup)
+	log.Ctx(ctx).Debug().Msgf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, *impersonateGroup)
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithImpersonateUser(impersonateUser).

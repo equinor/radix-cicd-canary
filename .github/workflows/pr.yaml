@@ -22,13 +22,8 @@ jobs:
         run: go install honnef.co/go/tools/cmd/staticcheck@2023.1.6
 
       - name: golangci-lint
-        run: golangci-lint run --timeout=30m --max-same-issues=0 --out-format=github-actions --new
+        run: golangci-lint run --timeout=30m --max-same-issues=0 --out-format=github-actions
 
-      # Add legacy checks since golangci-lint only tests changed files for now
-      - name: StaticCheck
-        run: staticcheck -f text `go list ./... | grep -v "pkg/client"`
-      - name: Go Vet
-        run: go vet `go list ./... | grep -v "pkg/client"`
   build:
     name: Build
     runs-on: ubuntu-latest
