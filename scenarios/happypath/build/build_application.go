@@ -107,7 +107,33 @@ func Application(ctx context.Context, cfg config.Config) error {
 		}
 	}
 
+	pipelineRuns := job.GetPipelineRuns(ctx, cfg, defaults.App2Name, jobName)
+	for _, run := range pipelineRuns {
+		var targetTask *models.PipelineRunTask
+		tasks := job.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
+		for _, t := range tasks {
+			if *t.Name == "details" {
+				targetTask = t
+			}
+		}
+		if targetTask == nil {
+			return errors.New("Tekton test task is not found!")
+		}
+
+		// Test tekton log output contain parameters and secrets
+		tektonLogContent := job.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
+		if !strings.Contains(tektonLogContent, Secret1Value) {
+			return errors.New("Tekton test does not contain SecretValue")
+		}
+
+		if !strings.Contains(tektonLogContent, "github.com") {
+			return errors.New("Tekton test does no conaint github.com (should be printed from known_hosts)")
+		}
+		log.Ctx(ctx).Info().Msg("Sub-pipeline completed")
+	}
+
 	stepLog := job.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "build-app")
+
 	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
@@ -139,16 +165,6 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	log.Ctx(ctx).Info().Msg("Second job was stopped")
-
-	// Test tekton log output contain parameters and secrets
-	tektonLogContent := job.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "test-tekton")
-	if !strings.Contains(tektonLogContent, Secret1Value) {
-		return errors.New("Tekton test does not contain SecretValue")
-	}
-
-	if !strings.Contains(tektonLogContent, "github.com") {
-		return errors.New("Tekton test does no conaint github.com (should be printed from known_hosts)")
-	}
 
 	return nil
 }
