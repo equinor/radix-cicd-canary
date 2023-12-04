@@ -195,7 +195,7 @@ func GetPipelineRuns(ctx context.Context, cfg config.Config, appName, jobName st
 	client := httpUtils.GetJobClient(cfg)
 	response, err := client.GetTektonPipelineRuns(params, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to fetch pipelinerun details: %w", err)
+		return nil, fmt.Errorf("failed to fetch pipelinerun details: %w", err)
 	}
 
 	return response.Payload, nil
@@ -217,7 +217,7 @@ func GetPipelineRunTasks(ctx context.Context, cfg config.Config, appName, jobNam
 	client := httpUtils.GetJobClient(cfg)
 	applicationJob, err := client.GetTektonPipelineRunTasks(params, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to fetch tasks for pipelinerun: %w", err)
+		return nil, fmt.Errorf("failed to fetch tasks for pipelinerun: %w", err)
 	}
 
 	return applicationJob.Payload, nil
@@ -240,7 +240,7 @@ func GetLogForPipelineStep(ctx context.Context, cfg config.Config, appName, jobN
 	client := httpUtils.GetJobClient(cfg)
 	logs, err := client.GetTektonPipelineRunTaskStepLogs(params, nil)
 	if err != nil {
-		return "", fmt.Errorf("Failed to fetch logs for pipeline task-step log: %w", err)
+		return "", fmt.Errorf("failed to fetch logs for pipeline task-step log: %w", err)
 	}
 	return logs.Payload, nil
 }
