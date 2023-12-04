@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/equinor/radix-common/utils/slice"
 	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
@@ -107,30 +108,33 @@ func Application(ctx context.Context, cfg config.Config) error {
 		}
 	}
 
+	log.Ctx(ctx).Debug().Str("jobName", jobName).Msg("Checking Sub-pipeline run...")
 	pipelineRuns := job.GetPipelineRuns(ctx, cfg, defaults.App2Name, jobName)
-	for _, run := range pipelineRuns {
-		var targetTask *models.PipelineRunTask
-		tasks := job.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
-		for _, t := range tasks {
-			if *t.Name == "details" {
-				targetTask = t
-			}
-		}
-		if targetTask == nil {
-			return errors.New("Tekton test task is not found!")
-		}
-
-		// Test tekton log output contain parameters and secrets
-		tektonLogContent := job.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
-		if !strings.Contains(tektonLogContent, Secret1Value) {
-			return errors.New("Tekton test does not contain SecretValue")
-		}
-
-		if !strings.Contains(tektonLogContent, "github.com") {
-			return errors.New("Tekton test does no conaint github.com (should be printed from known_hosts)")
-		}
-		log.Ctx(ctx).Info().Msg("Sub-pipeline completed")
+	run, ok := slice.FindFirst(pipelineRuns, func(run *models.PipelineRun) bool {
+		return true
+	})
+	if !ok {
+		return errors.New("No Pipeline run found")
 	}
+
+	tasks := job.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
+	targetTask, ok := slice.FindFirst(tasks, func(task *models.PipelineRunTask) bool {
+		return *task.Name == "details"
+	})
+	if !ok {
+		return errors.New("Tekton test task not found!")
+	}
+
+	// Test tekton log output contain parameters and secrets
+	tektonLogContent := job.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
+	if !strings.Contains(tektonLogContent, Secret1Value) {
+		return errors.New("Tekton test does not contain SecretValue")
+	}
+
+	if !strings.Contains(tektonLogContent, "github.com") {
+		return errors.New("Tekton test does no conaint github.com (should be printed from known_hosts)")
+	}
+	log.Ctx(ctx).Info().Msg("Sub-pipeline completed")
 
 	stepLog := job.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "build-app")
 
