@@ -46,7 +46,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 
 	type impersonateParam interface {
 		SetImpersonateUser(*string)
-		SetImpersonateGroup([]string)
+		SetImpersonateGroup(*string)
 		SetAppName(string)
 	}
 
@@ -191,7 +191,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 
 	setImpersonation := func(p impersonateParam) {
 		p.SetImpersonateUser(impersonateUser)
-		p.SetImpersonateGroup([]string{readerGroup})
+		p.SetImpersonateGroup(&readerGroup)
 		p.SetAppName(appName)
 	}
 

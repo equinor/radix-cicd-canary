@@ -2,6 +2,7 @@ package job
 
 import (
 	"context"
+	"fmt"
 
 	pipelineJobClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/pipeline_job"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
@@ -177,4 +178,69 @@ func GetLogForStep(ctx context.Context, cfg config.Config, appName, jobName, ste
 		return ""
 	}
 	return applicationJobLogs.Payload
+}
+
+// GetPipelineRuns gets pipeline runs from job name
+func GetPipelineRuns(ctx context.Context, cfg config.Config, appName, jobName string) ([]*models.PipelineRun, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroups()
+
+	params := pipelineJobClient.NewGetTektonPipelineRunsParams().
+		WithAppName(appName).
+		WithJobName(jobName).
+		WithContext(ctx).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
+
+	client := httpUtils.GetJobClient(cfg)
+	response, err := client.GetTektonPipelineRuns(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch pipelinerun details: %w", err)
+	}
+
+	return response.Payload, nil
+}
+
+// GetPipelineRunTasks gets tasks from pipeline run from job name
+func GetPipelineRunTasks(ctx context.Context, cfg config.Config, appName, jobName, pipelineRunName string) ([]*models.PipelineRunTask, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroups()
+
+	params := pipelineJobClient.NewGetTektonPipelineRunTasksParams().
+		WithAppName(appName).
+		WithJobName(jobName).
+		WithPipelineRunName(pipelineRunName).
+		WithContext(ctx).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
+
+	client := httpUtils.GetJobClient(cfg)
+	applicationJob, err := client.GetTektonPipelineRunTasks(params, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch tasks for pipelinerun: %w", err)
+	}
+
+	return applicationJob.Payload, nil
+}
+
+func GetLogForPipelineStep(ctx context.Context, cfg config.Config, appName, jobName, pipelineRunName, taskName, stepName string) (string, error) {
+	impersonateUser := cfg.GetImpersonateUser()
+	impersonateGroup := cfg.GetImpersonateGroups()
+
+	params := pipelineJobClient.NewGetTektonPipelineRunTaskStepLogsParams().
+		WithAppName(appName).
+		WithJobName(jobName).
+		WithPipelineRunName(pipelineRunName).
+		WithTaskName(taskName).
+		WithStepName(stepName).
+		WithContext(ctx).
+		WithImpersonateUser(impersonateUser).
+		WithImpersonateGroup(impersonateGroup)
+
+	client := httpUtils.GetJobClient(cfg)
+	logs, err := client.GetTektonPipelineRunTaskStepLogs(params, nil)
+	if err != nil {
+		return "", fmt.Errorf("failed to fetch logs for pipeline task-step log: %w", err)
+	}
+	return logs.Payload, nil
 }

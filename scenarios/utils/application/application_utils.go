@@ -55,7 +55,7 @@ func Register(ctx context.Context, cfg config.Config, appName, appRepo, appShare
 func DeleteByImpersonatedUser(ctx context.Context, cfg config.Config, appName string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-	log.Ctx(ctx).Debug().Msgf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, impersonateGroup)
+	log.Ctx(ctx).Debug().Msgf("delete an application %s by the impersonamed user %v, group %s", appName, impersonateUser, *impersonateGroup)
 
 	params := applicationclient.NewDeleteApplicationParams().
 		WithImpersonateUser(impersonateUser).
@@ -84,7 +84,7 @@ func DeleteByServiceAccount(ctx context.Context, cfg config.Config, appName stri
 func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privateKey, sharedSecret string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-	log.Ctx(ctx).Debug().Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("regenerate deploy key for application by the impersonamed user")
+	log.Ctx(ctx).Debug().Str("impersonateGroup", *impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("regenerate deploy key for application by the impersonamed user")
 
 	params := applicationclient.NewRegenerateDeployKeyParams().
 		WithImpersonateUser(impersonateUser).
@@ -133,7 +133,7 @@ func IsDeployKeyDefined(ctx context.Context, cfg config.Config, appName string) 
 func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (string, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
-	log.Ctx(ctx).Debug().Strs("impersonateGroup", impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("get deploy key for application by the impersonated user")
+	log.Ctx(ctx).Debug().Str("impersonateGroup", *impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("get deploy key for application by the impersonated user")
 
 	params := applicationclient.NewGetDeployKeyAndSecretParams().
 		WithImpersonateUser(impersonateUser).

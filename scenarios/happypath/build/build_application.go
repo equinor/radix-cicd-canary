@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/equinor/radix-common/utils/slice"
 	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
@@ -107,7 +108,46 @@ func Application(ctx context.Context, cfg config.Config) error {
 		}
 	}
 
+	log.Ctx(ctx).Debug().Str("jobName", jobName).Msg("Checking Sub-pipeline run...")
+	pipelineRuns, err := job.GetPipelineRuns(ctx, cfg, defaults.App2Name, jobName)
+	if err != nil {
+		return err
+	}
+	run, ok := slice.FindFirst(pipelineRuns, func(run *models.PipelineRun) bool {
+		return true
+	})
+	if !ok {
+		return errors.New("No Pipeline run found")
+	}
+
+	tasks, err := job.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
+	if err != nil {
+		return err
+	}
+	targetTask, ok := slice.FindFirst(tasks, func(task *models.PipelineRunTask) bool {
+		return *task.Name == "details"
+	})
+	if !ok {
+		return errors.New("Tekton test task not found!")
+	}
+
+	// Test tekton log output contain parameters and secrets
+	tektonLogContent, err := job.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
+	if err != nil {
+		return err
+	}
+
+	if !strings.Contains(tektonLogContent, Secret1Value) {
+		return errors.New("Tekton test does not contain SecretValue")
+	}
+
+	if !strings.Contains(tektonLogContent, "github.com") {
+		return errors.New("Tekton test does no conaint github.com (should be printed from known_hosts)")
+	}
+	log.Ctx(ctx).Info().Msg("Sub-pipeline completed")
+
 	stepLog := job.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "build-app")
+
 	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
 	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
@@ -139,5 +179,6 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	log.Ctx(ctx).Info().Msg("Second job was stopped")
+
 	return nil
 }
