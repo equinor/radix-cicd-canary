@@ -2,11 +2,11 @@ package delete
 
 import (
 	"context"
+	"errors"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
-	commonErrors "github.com/equinor/radix-common/utils/errors"
 )
 
 // Applications Tests that we are able to delete applications
@@ -18,5 +18,5 @@ func Applications(ctx context.Context, cfg config.Config) error {
 			errs = append(errs, err)
 		}
 	}
-	return commonErrors.Concat(errs)
+	return errors.Join(errs...)
 }

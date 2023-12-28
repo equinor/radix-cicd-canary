@@ -2,6 +2,7 @@ package egresspolicy
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -9,8 +10,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
-	radixErrors "github.com/equinor/radix-common/utils/errors"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -41,7 +40,7 @@ func NotReachRadixSite(ctx context.Context, cfg config.Config) error {
 	}
 	res, err := client.Get(reachRadixSiteUrl)
 	if err == nil && res.StatusCode == 200 {
-		return errors.Errorf("request to %s from canary should have been blocked by network policy", reachRadixSiteUrl)
+		return fmt.Errorf("request to %s from canary should have been blocked by network policy", reachRadixSiteUrl)
 	}
 	return nil
 }
@@ -57,11 +56,11 @@ func NotReachExternalSite(ctx context.Context, cfg config.Config) error {
 		}
 		res, err := client.Get(reachExternalSiteUrl)
 		if err == nil && res.StatusCode == 200 {
-			errs = append(errs, errors.Errorf("requests to external websites from canary in environment %s should have been blocked by network policy", appEnv))
+			errs = append(errs, fmt.Errorf("requests to external websites from canary in environment %s should have been blocked by network policy", appEnv))
 		}
 	}
 	if len(errs) > 0 {
-		return radixErrors.Concat(errs)
+		return errors.Join(errs...)
 	}
 	return nil
 }
