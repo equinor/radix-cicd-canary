@@ -2,13 +2,13 @@ package egresspolicy
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	"github.com/equinor/radix-common/utils/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -24,7 +24,7 @@ func GetJobList(ctx context.Context, cfg config.Config) error {
 		}
 	}
 	if len(errs) > 0 {
-		return errors.Concat(errs)
+		return errors.Join(errs...)
 	}
 	return nil
 }
