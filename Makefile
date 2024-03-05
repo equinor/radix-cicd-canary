@@ -12,7 +12,13 @@ RADIX_WEBHOOK_PREFIX ?= webhook-radix-github-webhook-qa
 CONTAINER_REPO ?= radix$(ENVIRONMENT)
 DOCKER_REGISTRY	?= $(CONTAINER_REPO).azurecr.io
 
-generate-client:
+.PHONY: lint
+lint: bootstrap
+	golangci-lint run --max-same-issues 0 --timeout 10m
+
+.PHONY: generate-client
+generate-client: SHELL:=/bin/bash
+generate-client: bootstrap
 	swagger generate client -t ./generated-client/radixapi -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radixapi
 	swagger generate client -t ./generated-client/jobserver -f https://raw.githubusercontent.com/equinor/radix-public-site/main/public-site/docs/guides/jobs/swagger.json -A jobserver
 
@@ -39,6 +45,13 @@ delete-image-and-deploy:
 test:
 	go test -cover `go list ./...`
 
-.PHONY: staticcheck
-staticcheck:
-	staticcheck ./...
+HAS_SWAGGER       := $(shell command -v swagger;)
+HAS_GOLANGCI_LINT := $(shell command -v golangci-lint;)
+
+bootstrap:
+ifndef HAS_SWAGGER
+	go install github.com/go-swagger/go-swagger/cmd/swagger@v0.30.5
+endif
+ifndef HAS_GOLANGCI_LINT
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2
+endif

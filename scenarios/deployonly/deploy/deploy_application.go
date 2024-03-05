@@ -13,11 +13,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 )
 
-type expectedStep struct {
-	name       string
-	components []string
-}
-
 // Application Tests that we are able to successfully deploy an application by calling Radix API server
 func Application(ctx context.Context, cfg config.Config) error {
 

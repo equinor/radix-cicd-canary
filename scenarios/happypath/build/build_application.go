@@ -25,8 +25,6 @@ const (
 	Secret2ValueSha256 = "087f38fb04a52265ad5394fc20a6bfaa78c44bd58097dbcb690031a85b6e8313"
 )
 
-type expectedStep map[string][]string
-
 // Application Tests that we are able to successfully build an application
 func Application(ctx context.Context, cfg config.Config) error {
 	// Trigger build via web hook
