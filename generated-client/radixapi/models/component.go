@@ -21,6 +21,17 @@ import (
 // swagger:model Component
 type Component struct {
 
+	// Commit ID for the component. It can be different from the Commit ID, specified in deployment label
+	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
+	CommitID string `json:"commitID,omitempty"`
+
+	// Array of external DNS configurations
+	ExternalDNS []*ExternalDNS `json:"externalDNS"`
+
+	// GitTags the git tags that the git commit hash points to
+	// Example: \"v1.22.1 v1.22.3\
+	GitTags string `json:"gitTags,omitempty"`
+
 	// Image name
 	// Example: radixdev.azurecr.io/app-server:cdgkg
 	// Required: true
@@ -53,6 +64,10 @@ type Component struct {
 	// Example: ["DB_CON","A_SECRET"]
 	Secrets []string `json:"secrets"`
 
+	// SkipDeployment The component should not be deployed, but used existing
+	// Example: true
+	SkipDeployment bool `json:"skipDeployment,omitempty"`
+
 	// Status of the component
 	// Example: Consistent
 	// Enum: [Stopped Consistent Reconciling Restarting Outdated]
@@ -83,6 +98,10 @@ type Component struct {
 // Validate validates this component
 func (m *Component) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateExternalDNS(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateImage(formats); err != nil {
 		res = append(res, err)
@@ -127,6 +146,32 @@ func (m *Component) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Component) validateExternalDNS(formats strfmt.Registry) error {
+	if swag.IsZero(m.ExternalDNS) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.ExternalDNS); i++ {
+		if swag.IsZero(m.ExternalDNS[i]) { // not required
+			continue
+		}
+
+		if m.ExternalDNS[i] != nil {
+			if err := m.ExternalDNS[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("externalDNS" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("externalDNS" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -374,6 +419,10 @@ func (m *Component) validateOauth2(formats strfmt.Registry) error {
 func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateExternalDNS(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidatePorts(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -401,6 +450,31 @@ func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Component) contextValidateExternalDNS(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.ExternalDNS); i++ {
+
+		if m.ExternalDNS[i] != nil {
+
+			if swag.IsZero(m.ExternalDNS[i]) { // not required
+				return nil
+			}
+
+			if err := m.ExternalDNS[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("externalDNS" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("externalDNS" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

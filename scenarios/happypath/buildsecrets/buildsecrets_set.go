@@ -10,7 +10,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
+	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -28,24 +28,25 @@ func Set(ctx context.Context, cfg config.Config) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Failed")
+		return jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Failed")
 	})
 	if err != nil {
 		return err
 	}
 
 	jobName := jobSummary.Name
-	job, err := job.Get(ctx, cfg, defaults.App2Name, jobName)
+	job, err := jobUtils.Get(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
 	}
-	expectedSteps := []string{
-		"clone-config",
-		"prepare-pipelines",
-		"radix-pipeline"}
 
-	if len(job.Steps) != len(expectedSteps) {
-		return errors.Errorf("job should not contain any build step")
+	expectedSteps := jobUtils.NewExpectedSteps().
+		Add("clone-config").
+		Add("prepare-pipelines").
+		Add("radix-pipeline")
+
+	if len(job.Steps) != expectedSteps.Count() {
+		return errors.New("job should not contain any build step")
 	}
 
 	// First job failed, due to missing build secrets, as expected in test

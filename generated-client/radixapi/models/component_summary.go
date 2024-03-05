@@ -20,6 +20,15 @@ import (
 // swagger:model ComponentSummary
 type ComponentSummary struct {
 
+	// CommitID the commit ID of the branch to build
+	// REQUIRED for "build" and "build-deploy" pipelines
+	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
+	CommitID string `json:"commitID,omitempty"`
+
+	// GitTags the git tags that the git commit hash points to
+	// Example: \"v1.22.1 v1.22.3\
+	GitTags string `json:"gitTags,omitempty"`
+
 	// Image name
 	// Example: radixdev.azurecr.io/app-server:cdgkg
 	// Required: true
@@ -29,6 +38,10 @@ type ComponentSummary struct {
 	// Example: server
 	// Required: true
 	Name *string `json:"name"`
+
+	// SkipDeployment The component should not be deployed, but used existing
+	// Example: true
+	SkipDeployment bool `json:"skipDeployment,omitempty"`
 
 	// Type of component
 	// Example: component

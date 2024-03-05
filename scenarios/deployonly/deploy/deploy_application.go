@@ -2,16 +2,14 @@ package deploy
 
 import (
 	"context"
-	"strings"
 
 	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
+	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 )
 
@@ -31,7 +29,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		jobSummary, err := job.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App3Name, "Succeeded")
+		jobSummary, err := jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App3Name, "Succeeded")
 		if err != nil {
 			return nil, err
 		}
@@ -45,26 +43,20 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	jobName := jobSummary.Name
-	steps := job.GetSteps(ctx, cfg, defaults.App3Name, jobName)
+	steps := jobUtils.GetSteps(ctx, cfg, defaults.App3Name, jobName)
 
-	expectedSteps := []expectedStep{
-		{name: "clone-config", components: []string{}},
-		{name: "prepare-pipelines", components: []string{}},
-		{name: "radix-pipeline", components: []string{}},
-		{name: "run-pipelines", components: []string{}},
+	expectedSteps := jobUtils.NewExpectedSteps().
+		Add("clone-config").
+		Add("prepare-pipelines").
+		Add("radix-pipeline")
+
+	if len(steps) != expectedSteps.Count() {
+		return errors.New("number of pipeline steps was not as expected")
 	}
 
-	if steps == nil && len(steps) != len(expectedSteps) {
-		return errors.New("pipeline steps was not as expected")
-	}
-
-	for index, step := range steps {
-		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return errors.Errorf("expected step %s, but got %s", expectedSteps[index].name, step.Name)
-		}
-
-		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return errors.Errorf("expected components %s, but got %s", expectedSteps[index].components, step.Components)
+	for _, step := range steps {
+		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
+			return errors.Errorf("missing expected step %s", step.Name)
 		}
 	}
 
