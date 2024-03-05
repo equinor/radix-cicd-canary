@@ -2,24 +2,17 @@ package configbranch
 
 import (
 	"context"
-	"strings"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/array"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
+	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
-
-type expectedStep struct {
-	name       string
-	components []string
-}
 
 // Change Tests that radixconfig is read from the branch defined as configBranch
 func Change(ctx context.Context, cfg config.Config) error {
@@ -47,14 +40,12 @@ func Change(ctx context.Context, cfg config.Config) error {
 
 	log.Ctx(ctx).Info().Msg("First job was completed")
 
-	expectedSteps := []expectedStep{
-		{name: "clone-config", components: []string{}},
-		{name: "prepare-pipelines", components: []string{}},
-		{name: "radix-pipeline", components: []string{}},
-		{name: "clone", components: []string{}},
-		{name: "build-www", components: []string{"www"}},
-		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
-	}
+	expectedSteps := jobUtils.NewExpectedSteps().
+		Add("clone-config").
+		Add("prepare-pipelines").
+		Add("radix-pipeline").
+		Add("clone", "www-prod").
+		Add("build-www-prod", "www")
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
@@ -86,14 +77,12 @@ func Change(ctx context.Context, cfg config.Config) error {
 
 	log.Ctx(ctx).Info().Msg("Second job was completed")
 
-	expectedSteps = []expectedStep{
-		{name: "clone-config", components: []string{}},
-		{name: "prepare-pipelines", components: []string{}},
-		{name: "radix-pipeline", components: []string{}},
-		{name: "clone", components: []string{}},
-		{name: "build-www2", components: []string{"www2"}},
-		// {name: "run-pipelines", components: []string{}},//skip due to there is no sub-pipeline
-	}
+	expectedSteps = jobUtils.NewExpectedSteps().
+		Add("clone-config").
+		Add("prepare-pipelines").
+		Add("radix-pipeline").
+		Add("clone", "www2-prod").
+		Add("build-www2-prod", "www2")
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
@@ -106,13 +95,13 @@ func waitForJobRunning(ctx context.Context, cfg config.Config, appName string) (
 	status := "Running"
 
 	return test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return job.GetLastPipelineJobWithStatus(ctx, cfg, appName, status)
+		return jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, appName, status)
 	})
 }
 
 func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName string) error {
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
-		return job.IsDone(ctx, cfg, appName, jobName)
+		return jobUtils.IsDone(ctx, cfg, appName, jobName)
 	})
 	if err != nil {
 		return err
@@ -145,22 +134,17 @@ func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfi
 	return nil
 }
 
-func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps []expectedStep) (bool, error) {
-	steps := job.GetSteps(ctx, cfg, appName, jobName)
+func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps jobUtils.ExpectedSteps) (bool, error) {
+	steps := jobUtils.GetSteps(ctx, cfg, appName, jobName)
 
-	if len(steps) != len(expectedSteps) {
-		return false, errors.Errorf("number of pipeline steps was not as expected. Expected: %d, actuall: %d", len(expectedSteps), len(steps))
+	if len(steps) != expectedSteps.Count() {
+		return false, errors.New("number of pipeline steps was not as expected")
 	}
 
-	for index, step := range steps {
-		if !strings.EqualFold(step.Name, expectedSteps[index].name) {
-			return false, errors.Errorf("expeced step %s, but got %s", expectedSteps[index].name, step.Name)
-		}
-
-		if !array.EqualElements(step.Components, expectedSteps[index].components) {
-			return false, errors.Errorf("expeced components %s, but got %s", expectedSteps[index].components, step.Components)
+	for _, step := range steps {
+		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
+			return false, errors.Errorf("missing expected step %s with components %s", step.Name, step.Components)
 		}
 	}
-
 	return true, nil
 }
