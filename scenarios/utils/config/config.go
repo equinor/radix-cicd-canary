@@ -140,8 +140,9 @@ func (cfg *Config) GetImpersonateUser() *string {
 }
 
 // GetImpersonateGroups get list of groups for impersonation
-func (cfg *Config) GetImpersonateGroups() []string {
-	return []string{cfg.impersonateGroup, cfg.GetAppAdminGroup()}
+func (cfg *Config) GetImpersonateGroups() *string {
+	s := cfg.impersonateGroup + "," + cfg.GetAppAdminGroup()
+	return &s
 }
 
 func (cfg *Config) GetAppAdminGroup() string {
