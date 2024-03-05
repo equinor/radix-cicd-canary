@@ -44,8 +44,8 @@ func Change(ctx context.Context, cfg config.Config) error {
 		Add("clone-config").
 		Add("prepare-pipelines").
 		Add("radix-pipeline").
-		Add("clone", "www").
-		Add("build-www", "www")
+		Add("clone", "www-prod").
+		Add("build-www-prod", "www")
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
@@ -81,8 +81,8 @@ func Change(ctx context.Context, cfg config.Config) error {
 		Add("clone-config").
 		Add("prepare-pipelines").
 		Add("radix-pipeline").
-		Add("clone", "www2").
-		Add("build-www2", "www2")
+		Add("clone", "www2-prod").
+		Add("build-www2-prod", "www2")
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
