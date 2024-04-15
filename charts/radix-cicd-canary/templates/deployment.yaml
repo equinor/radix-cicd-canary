@@ -41,5 +41,5 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
             privileged: false
-            readOnlyRootFilesystem: false
+            readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
