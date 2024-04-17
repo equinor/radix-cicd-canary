@@ -5,9 +5,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "cicd-canary.labels" . | nindent 4 }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
 spec:
   replicas: 1
   selector:
@@ -19,8 +16,8 @@ spec:
         {{- include "cicd-canary.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccount: {{ include "cicd-canary.serviceAccountName" . }}
-      {{- with .Values.podSecurityContext }}
       automountServiceAccountToken: true
+      {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -31,6 +28,7 @@ spec:
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
+          {{- end}}
           env:
             {{- if and .Values.env .Values.env.logLevel }}
             - name: LOG_LEVEL
@@ -42,4 +40,11 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}         
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}   
