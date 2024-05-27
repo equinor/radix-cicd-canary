@@ -99,3 +99,12 @@ volumes: []
 
 # Additional volume mounts to add to the radix-cicd-canary container.
 volumeMounts: []
+
+# Affinity for pod scheduling
+affinity: {}
+
+# Node selector for pod scheduling
+nodeSelector: {}
+
+# Tolerations for pod scheduling
+tolerations: []
