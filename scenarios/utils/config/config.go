@@ -297,7 +297,7 @@ func getTokenSource() oauth2.TokenSource {
 	}
 
 	if ts == nil {
-		panic(errors.New("failed to create TokenSource from service account token or environmnt variable"))
+		panic(errors.New("failed to create TokenSource from service account token or environment variable"))
 	}
 
 	return oauth2.ReuseTokenSource(nil, ts)
