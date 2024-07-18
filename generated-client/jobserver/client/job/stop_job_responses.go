@@ -29,6 +29,12 @@ func (o *StopJobReader) ReadResponse(response runtime.ClientResponse, consumer r
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewStopJobBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewStopJobNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -103,6 +109,74 @@ func (o *StopJobOK) GetPayload() *models.Status {
 }
 
 func (o *StopJobOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.Status)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewStopJobBadRequest creates a StopJobBadRequest with default headers values
+func NewStopJobBadRequest() *StopJobBadRequest {
+	return &StopJobBadRequest{}
+}
+
+/*
+StopJobBadRequest describes a response with status code 400, with default header values.
+
+Bad request
+*/
+type StopJobBadRequest struct {
+	Payload *models.Status
+}
+
+// IsSuccess returns true when this stop job bad request response has a 2xx status code
+func (o *StopJobBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop job bad request response has a 3xx status code
+func (o *StopJobBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop job bad request response has a 4xx status code
+func (o *StopJobBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop job bad request response has a 5xx status code
+func (o *StopJobBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop job bad request response a status code equal to that given
+func (o *StopJobBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the stop job bad request response
+func (o *StopJobBadRequest) Code() int {
+	return 400
+}
+
+func (o *StopJobBadRequest) Error() string {
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *StopJobBadRequest) String() string {
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *StopJobBadRequest) GetPayload() *models.Status {
+	return o.Payload
+}
+
+func (o *StopJobBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.Status)
 

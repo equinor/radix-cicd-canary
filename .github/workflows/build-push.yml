@@ -20,31 +20,31 @@ jobs:
         - name: "dev"
           ref: "refs/heads/master"
           acr-name: "radixdev"
-          client-id: "6e96429a-3ad5-40ee-b961-6de864d878fc"
+          client-id: "2bfe6984-f5e3-4d09-a0b2-4dd96de3f21e"
           subscription-id: "16ede44b-1f74-40a5-b428-46cca9a5741b"
 
         - name: "set-arm-platform"
           ref: "refs/heads/master"
           acr-name: "radixdev"
-          client-id: "6e96429a-3ad5-40ee-b961-6de864d878fc"
+          client-id: "2bfe6984-f5e3-4d09-a0b2-4dd96de3f21e"
           subscription-id: "16ede44b-1f74-40a5-b428-46cca9a5741b"
 
         - name: "playground"
           ref: "refs/heads/release"
-          acr-name: "radixdev"
-          client-id: "6e96429a-3ad5-40ee-b961-6de864d878fc"
+          acr-name: "radixplayground"
+          client-id: "7c000a42-1edb-4491-a241-4ac77bf7dd6d"
           subscription-id: "16ede44b-1f74-40a5-b428-46cca9a5741b"
 
         - name: "platform"
           ref: "refs/heads/release"
           acr-name: "radixprod"
-          client-id: "9304412c-98e6-414c-bde4-c5d5047add70"
+          client-id: "044f760d-aabb-4d29-a879-e774f16e3bcc"
           subscription-id: "ded7ca41-37c8-4085-862f-b11d21ab341a"
 
         - name: "c2"
           ref: "refs/heads/release"
           acr-name: "radixc2prod"
-          client-id: "9304412c-98e6-414c-bde4-c5d5047add70"
+          client-id: "581bb747-7b9f-4e80-a843-249eafb0a5fa"
           subscription-id: "ded7ca41-37c8-4085-862f-b11d21ab341a"
 
     steps:

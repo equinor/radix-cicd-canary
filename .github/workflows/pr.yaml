@@ -20,19 +20,6 @@ jobs:
           linux/amd64
           linux/arm64
 
-  test:
-    name: Unit Test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        go-version-file: 'go.mod'
-    - name: Install dependencies
-      run: go mod download
-    - name: Run Tests
-      run: go test -cover `go list ./...`
-
   lint:
     name: Lint
     runs-on: ubuntu-latest

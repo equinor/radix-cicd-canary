@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -29,9 +30,16 @@ type JobStatus struct {
 	// Required: true
 	Created *string `json:"created"`
 
+	// DeploymentName for this batch
+	DeploymentName string `json:"DeploymentName,omitempty"`
+
 	// Ended timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
+
+	// The number of times the container for the job has failed.
+	// +optional
+	Failed int32 `json:"failed,omitempty"`
 
 	// JobId Optional ID of a job
 	// Example: 'job1'
@@ -46,14 +54,33 @@ type JobStatus struct {
 	// Required: true
 	Name *string `json:"name"`
 
+	// PodStatuses for each pod of the job
+	PodStatuses []*PodStatus `json:"podStatuses"`
+
+	// Timestamp of the job restart, if applied.
+	// +optional
+	Restart string `json:"restart,omitempty"`
+
 	// Started timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Started string `json:"started,omitempty"`
 
 	// Status of the job
+	// Running = Job is running
+	// Succeeded = Job has succeeded
+	// Failed = Job has failed
+	// Waiting = Job is waiting
+	// Stopping = Job is stopping
+	// Stopped = Job has been stopped
+	// Active = Job is active
+	// Completed = Job is completed
 	// Example: Waiting
-	// Enum: [Waiting Running Succeeded Stopping Stopped Failed DeadlineExceeded]
+	// Enum: [Running Succeeded Failed Waiting Stopping Stopped Active Completed]
 	Status string `json:"status,omitempty"`
+
+	// Updated timestamp when the status was updated
+	// Example: 2006-01-02T15:04:05Z
+	Updated string `json:"updated,omitempty"`
 }
 
 // Validate validates this job status
@@ -65,6 +92,10 @@ func (m *JobStatus) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePodStatuses(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -96,11 +127,37 @@ func (m *JobStatus) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *JobStatus) validatePodStatuses(formats strfmt.Registry) error {
+	if swag.IsZero(m.PodStatuses) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.PodStatuses); i++ {
+		if swag.IsZero(m.PodStatuses[i]) { // not required
+			continue
+		}
+
+		if m.PodStatuses[i] != nil {
+			if err := m.PodStatuses[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("podStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("podStatuses" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 var jobStatusTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["Waiting","Running","Succeeded","Stopping","Stopped","Failed","DeadlineExceeded"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Running","Succeeded","Failed","Waiting","Stopping","Stopped","Active","Completed"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -110,14 +167,17 @@ func init() {
 
 const (
 
-	// JobStatusStatusWaiting captures enum value "Waiting"
-	JobStatusStatusWaiting string = "Waiting"
-
 	// JobStatusStatusRunning captures enum value "Running"
 	JobStatusStatusRunning string = "Running"
 
 	// JobStatusStatusSucceeded captures enum value "Succeeded"
 	JobStatusStatusSucceeded string = "Succeeded"
+
+	// JobStatusStatusFailed captures enum value "Failed"
+	JobStatusStatusFailed string = "Failed"
+
+	// JobStatusStatusWaiting captures enum value "Waiting"
+	JobStatusStatusWaiting string = "Waiting"
 
 	// JobStatusStatusStopping captures enum value "Stopping"
 	JobStatusStatusStopping string = "Stopping"
@@ -125,11 +185,11 @@ const (
 	// JobStatusStatusStopped captures enum value "Stopped"
 	JobStatusStatusStopped string = "Stopped"
 
-	// JobStatusStatusFailed captures enum value "Failed"
-	JobStatusStatusFailed string = "Failed"
+	// JobStatusStatusActive captures enum value "Active"
+	JobStatusStatusActive string = "Active"
 
-	// JobStatusStatusDeadlineExceeded captures enum value "DeadlineExceeded"
-	JobStatusStatusDeadlineExceeded string = "DeadlineExceeded"
+	// JobStatusStatusCompleted captures enum value "Completed"
+	JobStatusStatusCompleted string = "Completed"
 )
 
 // prop value enum
@@ -153,8 +213,42 @@ func (m *JobStatus) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this job status based on context it is used
+// ContextValidate validate this job status based on the context it is used
 func (m *JobStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePodStatuses(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *JobStatus) contextValidatePodStatuses(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.PodStatuses); i++ {
+
+		if m.PodStatuses[i] != nil {
+
+			if swag.IsZero(m.PodStatuses[i]) { // not required
+				return nil
+			}
+
+			if err := m.PodStatuses[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("podStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("podStatuses" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

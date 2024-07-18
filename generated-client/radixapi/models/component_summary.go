@@ -48,6 +48,12 @@ type ComponentSummary struct {
 	// Required: true
 	// Enum: [component job]
 	Type *string `json:"type"`
+
+	// resources
+	Resources *ResourceRequirements `json:"resources,omitempty"`
+
+	// runtime
+	Runtime *Runtime `json:"runtime,omitempty"`
 }
 
 // Validate validates this component summary
@@ -63,6 +69,14 @@ func (m *ComponentSummary) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateResources(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRuntime(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -133,8 +147,101 @@ func (m *ComponentSummary) validateType(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this component summary based on context it is used
+func (m *ComponentSummary) validateResources(formats strfmt.Registry) error {
+	if swag.IsZero(m.Resources) { // not required
+		return nil
+	}
+
+	if m.Resources != nil {
+		if err := m.Resources.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("resources")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *ComponentSummary) validateRuntime(formats strfmt.Registry) error {
+	if swag.IsZero(m.Runtime) { // not required
+		return nil
+	}
+
+	if m.Runtime != nil {
+		if err := m.Runtime.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtime")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this component summary based on the context it is used
 func (m *ComponentSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateResources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRuntime(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ComponentSummary) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Resources != nil {
+
+		if swag.IsZero(m.Resources) { // not required
+			return nil
+		}
+
+		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("resources")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *ComponentSummary) contextValidateRuntime(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Runtime != nil {
+
+		if swag.IsZero(m.Runtime) { // not required
+			return nil
+		}
+
+		if err := m.Runtime.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtime")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

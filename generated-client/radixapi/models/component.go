@@ -48,7 +48,7 @@ type Component struct {
 	// Array of ReplicaSummary
 	ReplicaList []*ReplicaSummary `json:"replicaList"`
 
-	// Array of pod names
+	// Deprecated: Array of pod names. Use ReplicaList instead
 	// Example: ["server-78fc8857c4-hm76l","server-78fc8857c4-asfa2"]
 	Replicas []string `json:"replicas"`
 
@@ -93,6 +93,12 @@ type Component struct {
 
 	// oauth2
 	Oauth2 *OAuth2AuxiliaryResource `json:"oauth2,omitempty"`
+
+	// resources
+	Resources *ResourceRequirements `json:"resources,omitempty"`
+
+	// runtime
+	Runtime *Runtime `json:"runtime,omitempty"`
 }
 
 // Validate validates this component
@@ -140,6 +146,14 @@ func (m *Component) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateOauth2(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateResources(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRuntime(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -415,6 +429,44 @@ func (m *Component) validateOauth2(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Component) validateResources(formats strfmt.Registry) error {
+	if swag.IsZero(m.Resources) { // not required
+		return nil
+	}
+
+	if m.Resources != nil {
+		if err := m.Resources.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("resources")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Component) validateRuntime(formats strfmt.Registry) error {
+	if swag.IsZero(m.Runtime) { // not required
+		return nil
+	}
+
+	if m.Runtime != nil {
+		if err := m.Runtime.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtime")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this component based on the context it is used
 func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -444,6 +496,14 @@ func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry
 	}
 
 	if err := m.contextValidateOauth2(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateResources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRuntime(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -604,6 +664,48 @@ func (m *Component) contextValidateOauth2(ctx context.Context, formats strfmt.Re
 				return ve.ValidateName("oauth2")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("oauth2")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Component) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Resources != nil {
+
+		if swag.IsZero(m.Resources) { // not required
+			return nil
+		}
+
+		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("resources")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("resources")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Component) contextValidateRuntime(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Runtime != nil {
+
+		if swag.IsZero(m.Runtime) { // not required
+			return nil
+		}
+
+		if err := m.Runtime.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtime")
 			}
 			return err
 		}
