@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -28,7 +30,8 @@ func init() {
 
 func main() {
 	cfg := config.NewConfig()
-	ctx := context.Background()
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGTERM)
+	defer cancel()
 
 	logLevel := cfg.GetLogLevel()
 	pretty := cfg.GetPrettyPrint()
@@ -66,6 +69,7 @@ func main() {
 		return
 	}
 	log.Info().Msg("Complete.")
+	<-ctx.Done()
 }
 
 func runSuites(ctx context.Context, environmentVariables config.Config, sleepInterval time.Duration, suites ...test.Suite) {

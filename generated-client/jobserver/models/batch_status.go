@@ -34,9 +34,16 @@ type BatchStatus struct {
 	// Required: true
 	Created *string `json:"created"`
 
+	// DeploymentName for this batch
+	DeploymentName string `json:"DeploymentName,omitempty"`
+
 	// Ended timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Ended string `json:"ended,omitempty"`
+
+	// The number of times the container for the job has failed.
+	// +optional
+	Failed int32 `json:"failed,omitempty"`
 
 	// JobId Optional ID of a job
 	// Example: 'job1'
@@ -54,14 +61,33 @@ type BatchStatus struct {
 	// Required: true
 	Name *string `json:"name"`
 
+	// PodStatuses for each pod of the job
+	PodStatuses []*PodStatus `json:"podStatuses"`
+
+	// Timestamp of the job restart, if applied.
+	// +optional
+	Restart string `json:"restart,omitempty"`
+
 	// Started timestamp
 	// Example: 2006-01-02T15:04:05Z
 	Started string `json:"started,omitempty"`
 
 	// Status of the job
+	// Running = Job is running
+	// Succeeded = Job has succeeded
+	// Failed = Job has failed
+	// Waiting = Job is waiting
+	// Stopping = Job is stopping
+	// Stopped = Job has been stopped
+	// Active = Job is active
+	// Completed = Job is completed
 	// Example: Waiting
-	// Enum: [Waiting Running Succeeded Stopping Stopped Failed DeadlineExceeded]
+	// Enum: [Running Succeeded Failed Waiting Stopping Stopped Active Completed]
 	Status string `json:"status,omitempty"`
+
+	// Updated timestamp when the status was updated
+	// Example: 2006-01-02T15:04:05Z
+	Updated string `json:"updated,omitempty"`
 }
 
 // Validate validates this batch status
@@ -77,6 +103,10 @@ func (m *BatchStatus) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePodStatuses(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -134,11 +164,37 @@ func (m *BatchStatus) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *BatchStatus) validatePodStatuses(formats strfmt.Registry) error {
+	if swag.IsZero(m.PodStatuses) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.PodStatuses); i++ {
+		if swag.IsZero(m.PodStatuses[i]) { // not required
+			continue
+		}
+
+		if m.PodStatuses[i] != nil {
+			if err := m.PodStatuses[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("podStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("podStatuses" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 var batchStatusTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["Waiting","Running","Succeeded","Stopping","Stopped","Failed","DeadlineExceeded"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Running","Succeeded","Failed","Waiting","Stopping","Stopped","Active","Completed"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -148,14 +204,17 @@ func init() {
 
 const (
 
-	// BatchStatusStatusWaiting captures enum value "Waiting"
-	BatchStatusStatusWaiting string = "Waiting"
-
 	// BatchStatusStatusRunning captures enum value "Running"
 	BatchStatusStatusRunning string = "Running"
 
 	// BatchStatusStatusSucceeded captures enum value "Succeeded"
 	BatchStatusStatusSucceeded string = "Succeeded"
+
+	// BatchStatusStatusFailed captures enum value "Failed"
+	BatchStatusStatusFailed string = "Failed"
+
+	// BatchStatusStatusWaiting captures enum value "Waiting"
+	BatchStatusStatusWaiting string = "Waiting"
 
 	// BatchStatusStatusStopping captures enum value "Stopping"
 	BatchStatusStatusStopping string = "Stopping"
@@ -163,11 +222,11 @@ const (
 	// BatchStatusStatusStopped captures enum value "Stopped"
 	BatchStatusStatusStopped string = "Stopped"
 
-	// BatchStatusStatusFailed captures enum value "Failed"
-	BatchStatusStatusFailed string = "Failed"
+	// BatchStatusStatusActive captures enum value "Active"
+	BatchStatusStatusActive string = "Active"
 
-	// BatchStatusStatusDeadlineExceeded captures enum value "DeadlineExceeded"
-	BatchStatusStatusDeadlineExceeded string = "DeadlineExceeded"
+	// BatchStatusStatusCompleted captures enum value "Completed"
+	BatchStatusStatusCompleted string = "Completed"
 )
 
 // prop value enum
@@ -199,6 +258,10 @@ func (m *BatchStatus) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidatePodStatuses(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -220,6 +283,31 @@ func (m *BatchStatus) contextValidateJobStatuses(ctx context.Context, formats st
 					return ve.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
 				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *BatchStatus) contextValidatePodStatuses(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.PodStatuses); i++ {
+
+		if m.PodStatuses[i] != nil {
+
+			if swag.IsZero(m.PodStatuses[i]) { // not required
+				return nil
+			}
+
+			if err := m.PodStatuses[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("podStatuses" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("podStatuses" + "." + strconv.Itoa(i))
 				}
 				return err
 			}

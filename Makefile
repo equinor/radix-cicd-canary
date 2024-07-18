@@ -20,7 +20,7 @@ lint: bootstrap
 generate-client: SHELL:=/bin/bash
 generate-client: bootstrap
 	swagger generate client -t ./generated-client/radixapi -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radixapi
-	swagger generate client -t ./generated-client/jobserver -f https://raw.githubusercontent.com/equinor/radix-public-site/main/public-site/docs/guides/jobs/swagger.json -A jobserver
+	swagger generate client -t ./generated-client/jobserver -f https://raw.githubusercontent.com/equinor/radix-job-scheduler/main/swaggerui/html/swagger.json -A jobserver
 
 build:
 	docker build -t radix-cicd-canary:$(BRANCH)-$(VERSION) .
