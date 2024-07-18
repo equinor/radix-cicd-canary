@@ -29,6 +29,12 @@ func (o *StopBatchReader) ReadResponse(response runtime.ClientResponse, consumer
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewStopBatchBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 404:
 		result := NewStopBatchNotFound()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -103,6 +109,74 @@ func (o *StopBatchOK) GetPayload() *models.Status {
 }
 
 func (o *StopBatchOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.Status)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewStopBatchBadRequest creates a StopBatchBadRequest with default headers values
+func NewStopBatchBadRequest() *StopBatchBadRequest {
+	return &StopBatchBadRequest{}
+}
+
+/*
+StopBatchBadRequest describes a response with status code 400, with default header values.
+
+Bad request
+*/
+type StopBatchBadRequest struct {
+	Payload *models.Status
+}
+
+// IsSuccess returns true when this stop batch bad request response has a 2xx status code
+func (o *StopBatchBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this stop batch bad request response has a 3xx status code
+func (o *StopBatchBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this stop batch bad request response has a 4xx status code
+func (o *StopBatchBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this stop batch bad request response has a 5xx status code
+func (o *StopBatchBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this stop batch bad request response a status code equal to that given
+func (o *StopBatchBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the stop batch bad request response
+func (o *StopBatchBadRequest) Code() int {
+	return 400
+}
+
+func (o *StopBatchBadRequest) Error() string {
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *StopBatchBadRequest) String() string {
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *StopBatchBadRequest) GetPayload() *models.Status {
+	return o.Payload
+}
+
+func (o *StopBatchBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.Status)
 

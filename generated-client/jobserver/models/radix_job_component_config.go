@@ -8,7 +8,6 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -24,129 +23,23 @@ type RadixJobComponentConfig struct {
 	// ImageTagName defines the image tag name to use for the job image
 	ImageTagName string `json:"imageTagName,omitempty"`
 
+	// Node defines node attributes, where container should be scheduled
+	Node interface{} `json:"node,omitempty"`
+
+	// Resource describes the compute resource requirements.
+	Resources interface{} `json:"resources,omitempty"`
+
 	// TimeLimitSeconds defines maximum job run time. Corresponds to ActiveDeadlineSeconds in K8s.
 	TimeLimitSeconds int64 `json:"timeLimitSeconds,omitempty"`
-
-	// node
-	Node *RadixNode `json:"node,omitempty"`
-
-	// resources
-	Resources *ResourceRequirements `json:"resources,omitempty"`
 }
 
 // Validate validates this radix job component config
 func (m *RadixJobComponentConfig) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateNode(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateResources(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
 	return nil
 }
 
-func (m *RadixJobComponentConfig) validateNode(formats strfmt.Registry) error {
-	if swag.IsZero(m.Node) { // not required
-		return nil
-	}
-
-	if m.Node != nil {
-		if err := m.Node.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("node")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *RadixJobComponentConfig) validateResources(formats strfmt.Registry) error {
-	if swag.IsZero(m.Resources) { // not required
-		return nil
-	}
-
-	if m.Resources != nil {
-		if err := m.Resources.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this radix job component config based on the context it is used
+// ContextValidate validates this radix job component config based on context it is used
 func (m *RadixJobComponentConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateNode(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateResources(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *RadixJobComponentConfig) contextValidateNode(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Node != nil {
-
-		if swag.IsZero(m.Node) { // not required
-			return nil
-		}
-
-		if err := m.Node.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("node")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *RadixJobComponentConfig) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Resources != nil {
-
-		if swag.IsZero(m.Resources) { // not required
-			return nil
-		}
-
-		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 

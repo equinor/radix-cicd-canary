@@ -1,26 +1,21 @@
-FROM golang:1.21-alpine3.18 as builder
+FROM docker.io/golang:1.22.5-alpine3.20 AS builder
 
-ENV GO111MODULE=on
+ENV CGO_ENABLED=0 \
+    GOOS=linux
 
-RUN apk update && apk add git && apk add ca-certificates curl && \
-    apk add --no-cache gcc musl-dev
+WORKDIR /src
 
-WORKDIR /go/src/github.com/equinor/radix-cicd-canary/
-
-# get go dependecies
-COPY go.mod go.sum ./
+# Install project dependencies
+COPY ./go.mod ./go.sum ./
 RUN go mod download
 
+# Copy and build project code
 COPY . .
+RUN go build -ldflags="-s -w" -o /build/radix-cicd-canary
 
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w" -a -installsuffix cgo -o ./rootfs/radix-cicd-canary
-
-RUN addgroup -S -g 1000 radix-cicd-canary
-RUN adduser -S -u 1000 -G radix-cicd-canary radix-cicd-canary
-
-FROM scratch
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /go/src/github.com/equinor/radix-cicd-canary/rootfs/radix-cicd-canary /usr/local/bin/radix-cicd-canary
+# Final stage, ref https://github.com/GoogleContainerTools/distroless/blob/main/base/README.md for distroless
+FROM gcr.io/distroless/static
+WORKDIR /app
+COPY --from=builder /build/radix-cicd-canary .
 USER 1000
-ENTRYPOINT ["/usr/local/bin/radix-cicd-canary"]
+ENTRYPOINT ["/app/radix-cicd-canary"]
