@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/equinor/radix-cicd-canary/workflows/radix-cicd-canary-build/badge.svg)](https://github.com/equinor/radix-cicd-canary/actions?query=workflow%3Aradix-cicd-canary-build)  
+[![Build Status](https://github.com/equinor/radix-cicd-canary/workflows/radix-cicd-canary-build/badge.svg)](https://github.com/equinor/radix-cicd-canary/actions?query=workflow%3Aradix-cicd-canary-build)  [![SCM Compliance](https://scm-compliance-api.radix.equinor.com/repos/equinor/8de2870b-4681-4c54-8f5e-2cb7a85f3201/badge)](https://developer.equinor.com/governance/scm-policy/)  
 # Radix CI/CD Canary
 
 This application is an automated end-to-end test tool to be run continuously in a [Radix](https://www.radix.equinor.com) cluster to verify that the most important functionalities are behaving as expected. This document is for Radix developers, or anyone interested in poking around.
