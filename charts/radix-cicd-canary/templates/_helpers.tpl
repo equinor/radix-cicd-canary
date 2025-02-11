@@ -57,11 +57,3 @@ Create the name of the service monitor to use
 {{- define "cicd-canary.serviceAccountName" -}}
 {{- default (include "cicd-canary.fullname" .) .Values.serviceAccount.name }}
 {{- end }}
-
-{{- define "cicd-canary.platformUserGroup" -}}
-{{if eq .Values.clusterType "playground"}}
-{{- .Values.radixGroups.playground -}}
-{{else}}
-{{- .Values.radixGroups.user -}}
-{{end}}
-{{- end }}
