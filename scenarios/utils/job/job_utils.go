@@ -57,7 +57,7 @@ func getPipelineJobs(ctx context.Context, cfg config.Config, appName string) ([]
 	if err != nil {
 		return nil, errors.Wrapf(err, "error calling GetApplicationJobs for application %s", appName)
 	}
-	if applicationJobs.Payload == nil || len(applicationJobs.Payload) == 0 {
+	if len(applicationJobs.Payload) == 0 {
 		return nil, errors.Errorf("method GetApplicationJobs for application %s received invalid or empty applicationJobs payload", appName)
 	}
 	jobSummaries := applicationJobs.Payload

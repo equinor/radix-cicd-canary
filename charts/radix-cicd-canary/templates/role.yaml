@@ -13,7 +13,7 @@ rules:
   resources: ["groups"]
   verbs: ["impersonate"]
   resourceNames:
-  - {{ include "cicd-canary.platformUserGroup" . | quote }}
+  - {{ required ".Values.radixGroups.user is required" .Values.radixGroups.user | quote }}
   - {{ .Values.appAdminGroup | quote }}
   - {{ .Values.appReaderGroup | quote }}
 - apiGroups: ["*"]
