@@ -6,17 +6,17 @@ metadata:
   labels:
     {{- include "cicd-canary.labels" . | nindent 4 }}
 data:
-  impersonateGroup: {{ include "cicd-canary.platformUserGroup" . | quote }}
-  impersonateUser: {{ .Values.impersonate.user }}
-  publicKey: {{ .Values.deployKey.public }}
-  privateKeyBase64: {{ .Values.deployKey.private }}
-  publicKeyCanary3: {{ .Values.deployKeyCanary3.public }}
-  privateKeyCanary3Base64: {{ .Values.deployKeyCanary3.private }}
-  publicKeyCanary4: {{ .Values.deployKeyCanary4.public }}
-  privateKeyCanary4Base64: {{ .Values.deployKeyCanary4.private }}
-  radixApiPrefix: {{ .Values.radixApiPrefix}}
-  radixWebhookPrefix: {{ .Values.radixWebhookPrefix}}
-  clusterFqdn: {{ .Values.clusterFqdn}}
+  impersonateGroup: {{ required ".Values.radixGroups.user is required" .Values.radixGroups.user | quote }}
+  impersonateUser: {{ .Values.impersonate.user | quote }}
+  publicKey: {{ .Values.deployKey.public | quote }}
+  privateKeyBase64: {{ .Values.deployKey.private | quote }}
+  publicKeyCanary3: {{ .Values.deployKeyCanary3.public | quote }}
+  privateKeyCanary3Base64: {{ .Values.deployKeyCanary3.private | quote }}
+  publicKeyCanary4: {{ .Values.deployKeyCanary4.public | quote }}
+  privateKeyCanary4Base64: {{ .Values.deployKeyCanary4.private | quote }}
+  radixApiPrefix: {{ .Values.radixApiPrefix | quote }}
+  radixWebhookPrefix: {{ .Values.radixWebhookPrefix | quote }}
+  clusterFqdn: {{ .Values.clusterFqdn | quote }}
   timeoutOfTest: {{ .Values.timeoutOfTest | quote }}
   sleepIntervalBetweenChecks: {{ .Values.sleepIntervalBetweenChecks | quote }}
   sleepIntervalTestRuns: {{ .Values.sleepIntervalTestRuns | quote }}
@@ -24,10 +24,10 @@ data:
   nspDNSLookupTimeout: {{ .Values.nspDNSLookupTimeout | quote }}
   nspNSPReachIngressTimeout: {{ .Values.nspNSPReachIngressTimeout | quote }}
   nspNSPReachServiceTimeout: {{ .Values.nspNSPReachServiceTimeout | quote }}
-  privateImageHubPassword: {{ .Values.privateImageHub.password }}
+  privateImageHubPassword: {{ .Values.privateImageHub.password | quote }}
   nspLongSleepInterval: {{ .Values.nspLongSleepInterval | quote }}
-  networkPolicyCanaryAppName: {{ .Values.networkPolicyCanaryAppName }}
-  networkPolicyCanaryJobComponentName: {{ .Values.networkPolicyCanaryJobComponentName }}
-  networkPolicyCanaryPassword: {{ .Values.networkPolicyCanary.password }}
+  networkPolicyCanaryAppName: {{ .Values.networkPolicyCanaryAppName | quote }}
+  networkPolicyCanaryJobComponentName: {{ .Values.networkPolicyCanaryJobComponentName | quote }}
+  networkPolicyCanaryPassword: {{ .Values.networkPolicyCanary.password | quote }}
   appAdminGroup: {{ .Values.appAdminGroup | quote }}
   appReaderGroup: {{ .Values.appReaderGroup | quote }}
