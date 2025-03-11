@@ -37,7 +37,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return errors.Errorf("could not get listed job for application %s status '%s'", defaults.App3Name, "Succeeded")
 	}
 
-	jobName := jobSummary.Name
+	jobName := *jobSummary.Name
 	steps := jobUtils.GetSteps(ctx, cfg, defaults.App3Name, jobName)
 
 	expectedSteps := jobUtils.NewExpectedSteps().

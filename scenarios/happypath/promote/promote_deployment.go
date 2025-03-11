@@ -116,5 +116,5 @@ func promote(ctx context.Context, cfg config.Config, deployment *models.Deployme
 		return "", err
 	}
 
-	return returnValue.Payload.Name, nil
+	return *returnValue.Payload.Name, nil
 }

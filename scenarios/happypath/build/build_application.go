@@ -43,7 +43,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 
-	jobName := jobSummary.Name
+	jobName := *jobSummary.Name
 	log.Ctx(ctx).Info().Msgf("First job name: %s", jobName)
 
 	// Another build should cause second job to queue up
@@ -156,7 +156,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	// Stop job and verify that it has been stopped
-	jobName = jobSummary.Name
+	jobName = *jobSummary.Name
 	log.Ctx(ctx).Info().Msgf("Second job name: %s", jobName)
 	err = jobUtils.Stop(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
