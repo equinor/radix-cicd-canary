@@ -45,6 +45,15 @@ delete-image-and-deploy:
 test:
 	go test -cover `go list ./...`
 
+
+.PHONY: generate
+generate: generate-client
+	go mod tidy
+
+.PHONY: verify-generate
+verify-generate: generate
+	git diff --exit-code
+
 HAS_SWAGGER       := $(shell command -v swagger;)
 HAS_GOLANGCI_LINT := $(shell command -v golangci-lint;)
 

@@ -20,6 +20,10 @@ import (
 // swagger:model BatchScheduleDescription
 type BatchScheduleDescription struct {
 
+	// Defines a user defined ID of the batch.
+	// Example: 'batch-id-1'
+	BatchID string `json:"batchId,omitempty"`
+
 	// JobScheduleDescriptions descriptions of jobs to schedule within the batch
 	// Required: true
 	JobScheduleDescriptions []*JobScheduleDescription `json:"jobScheduleDescriptions"`

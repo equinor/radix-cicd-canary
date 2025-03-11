@@ -2,9 +2,8 @@ package unauthorized
 
 import (
 	"context"
+	errors "errors"
 	"fmt"
-
-	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -128,7 +127,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 		{
 			name:          "reader-user-cannot-set-private-image-hub-secret",
 			logMsg:        fmt.Sprintf("checking that user with read role cannot set private image hub secret for app %s", appName),
-			expectedError: application.NewUpdatePrivateImageHubsSecretValueBadRequest(), // TODO: should be forbidden 403. requires some rewrite of radix-api or radix-operator lib function
+			expectedError: errors.Join(application.NewUpdatePrivateImageHubsSecretValueForbidden(), application.NewUpdatePrivateImageHubsSecretValueBadRequest()), // TODO: Error should be Forbidden, and its deployed in Dev, but not in Prod clusters yet
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				imageHubs, err := privateimagehub.List(cfg, appName)
 				if err != nil {
@@ -179,7 +178,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 				jobName := jobSummary.Name
 				param := pipeline_job.NewGetPipelineJobStepLogsParams().
 					WithContext(ctx).
-					WithJobName(jobName).
+					WithJobName(*jobName).
 					WithStepName("radix-pipeline")
 				impersonationSetter(param)
 				_, err = httpUtils.GetJobClient(cfg).GetPipelineJobStepLogs(param, nil)
@@ -200,7 +199,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 		log.Ctx(scenarioCtx).Debug().Msg(scenario.logMsg)
 		err := scenario.testFunc(scenarioCtx, setImpersonation)
 		if !errors.Is(err, scenario.expectedError) {
-			return errors.Errorf("incorrect response on scenario %s: Got %v, expected %v", scenario.name, err, scenario.expectedError)
+			return fmt.Errorf("incorrect response on scenario %s: Got %w, expected %v", scenario.name, err, scenario.expectedError)
 		}
 	}
 	return nil

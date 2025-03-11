@@ -30,7 +30,8 @@ type Environment struct {
 
 	// Name of the environment
 	// Example: prod
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 
 	// Secrets All secrets in environment
 	Secrets []*Secret `json:"secrets"`
@@ -40,7 +41,7 @@ type Environment struct {
 	// Consistent = Environment exists in Radix config and in cluster
 	// Orphan = Environment does not exist in Radix config, but exists in cluster
 	// Example: Consistent
-	// Enum: [Pending Consistent Orphan]
+	// Enum: ["Pending","Consistent","Orphan"]
 	Status string `json:"status,omitempty"`
 
 	// active deployment
@@ -52,6 +53,10 @@ func (m *Environment) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDeployments(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -94,6 +99,15 @@ func (m *Environment) validateDeployments(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *Environment) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
 	}
 
 	return nil

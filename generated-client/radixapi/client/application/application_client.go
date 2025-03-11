@@ -9,12 +9,38 @@ import (
 	"fmt"
 
 	"github.com/go-openapi/runtime"
+	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 )
 
 // New creates a new application API client.
 func New(transport runtime.ClientTransport, formats strfmt.Registry) ClientService {
 	return &Client{transport: transport, formats: formats}
+}
+
+// New creates a new application API client with basic auth credentials.
+// It takes the following parameters:
+// - host: http host (github.com).
+// - basePath: any base path for the API client ("/v1", "/v3").
+// - scheme: http scheme ("http", "https").
+// - user: user for basic authentication header.
+// - password: password for basic authentication header.
+func NewClientWithBasicAuth(host, basePath, scheme, user, password string) ClientService {
+	transport := httptransport.New(host, basePath, []string{scheme})
+	transport.DefaultAuthentication = httptransport.BasicAuth(user, password)
+	return &Client{transport: transport, formats: strfmt.Default}
+}
+
+// New creates a new application API client with a bearer token for authentication.
+// It takes the following parameters:
+// - host: http host (github.com).
+// - basePath: any base path for the API client ("/v1", "/v3").
+// - scheme: http scheme ("http", "https").
+// - bearerToken: bearer token for Bearer authentication header.
+func NewClientWithBearerToken(host, basePath, scheme, bearerToken string) ClientService {
+	transport := httptransport.New(host, basePath, []string{scheme})
+	transport.DefaultAuthentication = httptransport.BearerToken(bearerToken)
+	return &Client{transport: transport, formats: strfmt.Default}
 }
 
 /*
@@ -25,11 +51,13 @@ type Client struct {
 	formats   strfmt.Registry
 }
 
-// ClientOption is the option for Client methods
+// ClientOption may be used to customize the behavior of Client methods.
 type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
+	GetApplicationResourcesUtilization(params *GetApplicationResourcesUtilizationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationResourcesUtilizationOK, error)
+
 	ChangeRegistrationDetails(params *ChangeRegistrationDetailsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ChangeRegistrationDetailsOK, error)
 
 	DeleteApplication(params *DeleteApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteApplicationOK, error)
@@ -58,6 +86,8 @@ type ClientService interface {
 
 	RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegenerateDeployKeyNoContent, error)
 
+	ResetManuallyScaledComponentsInApplication(params *ResetManuallyScaledComponentsInApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetManuallyScaledComponentsInApplicationOK, error)
+
 	RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartApplicationOK, error)
 
 	StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartApplicationOK, error)
@@ -81,6 +111,45 @@ type ClientService interface {
 	UpdatePrivateImageHubsSecretValue(params *UpdatePrivateImageHubsSecretValueParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdatePrivateImageHubsSecretValueOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
+}
+
+/*
+GetApplicationResourcesUtilization gets max resources used by the application
+*/
+func (a *Client) GetApplicationResourcesUtilization(params *GetApplicationResourcesUtilizationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetApplicationResourcesUtilizationOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetApplicationResourcesUtilizationParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GetApplicationResourcesUtilization",
+		Method:             "GET",
+		PathPattern:        "/applications/{appName}/utilization",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GetApplicationResourcesUtilizationReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetApplicationResourcesUtilizationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GetApplicationResourcesUtilization: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
 }
 
 /*
@@ -630,6 +699,45 @@ func (a *Client) RegenerateDeployKey(params *RegenerateDeployKeyParams, authInfo
 }
 
 /*
+ResetManuallyScaledComponentsInApplication resets and resumes normal opperation for all manually stopped components in all environments of the application
+*/
+func (a *Client) ResetManuallyScaledComponentsInApplication(params *ResetManuallyScaledComponentsInApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResetManuallyScaledComponentsInApplicationOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewResetManuallyScaledComponentsInApplicationParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "resetManuallyScaledComponentsInApplication",
+		Method:             "POST",
+		PathPattern:        "/applications/{appName}/reset-scale",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &ResetManuallyScaledComponentsInApplicationReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ResetManuallyScaledComponentsInApplicationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for resetManuallyScaledComponentsInApplication: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
 RestartApplication restarts all components in all environments of the application stops all running components in all environments of the application pulls new images from image hub in radix configuration starts all components in all environments of the application again using up to date image
 */
 func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RestartApplicationOK, error) {
@@ -669,7 +777,7 @@ func (a *Client) RestartApplication(params *RestartApplicationParams, authInfo r
 }
 
 /*
-StartApplication starts all components in all environments of the application
+StartApplication deprecateds use reset scale that does the same thing instead this will be removed after 1 september 2025
 */
 func (a *Client) StartApplication(params *StartApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StartApplicationOK, error) {
 	// TODO: Validate the params before sending
