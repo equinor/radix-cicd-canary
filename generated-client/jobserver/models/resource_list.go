@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// ResourceList ResourceList defines a resource and a value.
+// ResourceList resource list
 //
 // swagger:model ResourceList
 type ResourceList map[string]string

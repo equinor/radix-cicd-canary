@@ -6,6 +6,7 @@ package job
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -91,11 +92,13 @@ func (o *GetJobOK) Code() int {
 }
 
 func (o *GetJobOK) Error() string {
-	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobOK %s", 200, payload)
 }
 
 func (o *GetJobOK) String() string {
-	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobOK %s", 200, payload)
 }
 
 func (o *GetJobOK) GetPayload() *models.JobStatus {
@@ -159,11 +162,13 @@ func (o *GetJobNotFound) Code() int {
 }
 
 func (o *GetJobNotFound) Error() string {
-	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobNotFound %s", 404, payload)
 }
 
 func (o *GetJobNotFound) String() string {
-	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobNotFound %s", 404, payload)
 }
 
 func (o *GetJobNotFound) GetPayload() *models.Status {
@@ -227,11 +232,13 @@ func (o *GetJobInternalServerError) Code() int {
 }
 
 func (o *GetJobInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobInternalServerError %s", 500, payload)
 }
 
 func (o *GetJobInternalServerError) String() string {
-	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/{jobName}][%d] getJobInternalServerError %s", 500, payload)
 }
 
 func (o *GetJobInternalServerError) GetPayload() *models.Status {

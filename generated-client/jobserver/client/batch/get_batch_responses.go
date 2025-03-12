@@ -6,6 +6,7 @@ package batch
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -91,11 +92,13 @@ func (o *GetBatchOK) Code() int {
 }
 
 func (o *GetBatchOK) Error() string {
-	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchOK %s", 200, payload)
 }
 
 func (o *GetBatchOK) String() string {
-	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchOK %s", 200, payload)
 }
 
 func (o *GetBatchOK) GetPayload() *models.BatchStatus {
@@ -159,11 +162,13 @@ func (o *GetBatchNotFound) Code() int {
 }
 
 func (o *GetBatchNotFound) Error() string {
-	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchNotFound %s", 404, payload)
 }
 
 func (o *GetBatchNotFound) String() string {
-	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchNotFound %s", 404, payload)
 }
 
 func (o *GetBatchNotFound) GetPayload() *models.Status {
@@ -227,11 +232,13 @@ func (o *GetBatchInternalServerError) Code() int {
 }
 
 func (o *GetBatchInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchInternalServerError %s", 500, payload)
 }
 
 func (o *GetBatchInternalServerError) String() string {
-	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/{batchName}][%d] getBatchInternalServerError %s", 500, payload)
 }
 
 func (o *GetBatchInternalServerError) GetPayload() *models.Status {

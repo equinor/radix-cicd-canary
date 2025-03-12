@@ -24,7 +24,7 @@ func Applications(ctx context.Context, cfg config.Config) error {
 	if err == nil {
 		log.Ctx(ctx).Info().Msgf("Response length: %v", len(showAppOk.Payload))
 		for i, appSummary := range showAppOk.Payload {
-			log.Ctx(ctx).Info().Msgf("App %v: %s", i, appSummary.Name)
+			log.Ctx(ctx).Info().Msgf("App %v: %s", i, *appSummary.Name)
 		}
 	}
 

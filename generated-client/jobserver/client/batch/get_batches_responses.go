@@ -6,6 +6,7 @@ package batch
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -85,11 +86,13 @@ func (o *GetBatchesOK) Code() int {
 }
 
 func (o *GetBatchesOK) Error() string {
-	return fmt.Sprintf("[GET /batches/][%d] getBatchesOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/][%d] getBatchesOK %s", 200, payload)
 }
 
 func (o *GetBatchesOK) String() string {
-	return fmt.Sprintf("[GET /batches/][%d] getBatchesOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/][%d] getBatchesOK %s", 200, payload)
 }
 
 func (o *GetBatchesOK) GetPayload() []*models.BatchStatus {
@@ -151,11 +154,13 @@ func (o *GetBatchesInternalServerError) Code() int {
 }
 
 func (o *GetBatchesInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /batches/][%d] getBatchesInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/][%d] getBatchesInternalServerError %s", 500, payload)
 }
 
 func (o *GetBatchesInternalServerError) String() string {
-	return fmt.Sprintf("[GET /batches/][%d] getBatchesInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /batches/][%d] getBatchesInternalServerError %s", 500, payload)
 }
 
 func (o *GetBatchesInternalServerError) GetPayload() *models.Status {

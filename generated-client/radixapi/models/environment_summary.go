@@ -25,14 +25,15 @@ type EnvironmentSummary struct {
 
 	// Name of the environment
 	// Example: prod
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
 
 	// Status of the environment
 	// Pending = Environment exists in Radix config, but not in cluster
 	// Consistent = Environment exists in Radix config and in cluster
 	// Orphan = Environment does not exist in Radix config, but exists in cluster
 	// Example: Consistent
-	// Enum: [Pending Consistent Orphan]
+	// Enum: ["Pending","Consistent","Orphan"]
 	Status string `json:"status,omitempty"`
 
 	// active deployment
@@ -42,6 +43,10 @@ type EnvironmentSummary struct {
 // Validate validates this environment summary
 func (m *EnvironmentSummary) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
@@ -54,6 +59,15 @@ func (m *EnvironmentSummary) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *EnvironmentSummary) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
 	return nil
 }
 

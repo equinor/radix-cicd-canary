@@ -6,6 +6,7 @@ package batch
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -103,11 +104,13 @@ func (o *CreateBatchOK) Code() int {
 }
 
 func (o *CreateBatchOK) Error() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchOK %s", 200, payload)
 }
 
 func (o *CreateBatchOK) String() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchOK %s", 200, payload)
 }
 
 func (o *CreateBatchOK) GetPayload() *models.BatchStatus {
@@ -171,11 +174,13 @@ func (o *CreateBatchBadRequest) Code() int {
 }
 
 func (o *CreateBatchBadRequest) Error() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchBadRequest %s", 400, payload)
 }
 
 func (o *CreateBatchBadRequest) String() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchBadRequest %s", 400, payload)
 }
 
 func (o *CreateBatchBadRequest) GetPayload() *models.Status {
@@ -239,11 +244,13 @@ func (o *CreateBatchNotFound) Code() int {
 }
 
 func (o *CreateBatchNotFound) Error() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchNotFound %s", 404, payload)
 }
 
 func (o *CreateBatchNotFound) String() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchNotFound %s", 404, payload)
 }
 
 func (o *CreateBatchNotFound) GetPayload() *models.Status {
@@ -307,11 +314,13 @@ func (o *CreateBatchUnprocessableEntity) Code() int {
 }
 
 func (o *CreateBatchUnprocessableEntity) Error() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchUnprocessableEntity  %+v", 422, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchUnprocessableEntity %s", 422, payload)
 }
 
 func (o *CreateBatchUnprocessableEntity) String() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchUnprocessableEntity  %+v", 422, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchUnprocessableEntity %s", 422, payload)
 }
 
 func (o *CreateBatchUnprocessableEntity) GetPayload() *models.Status {
@@ -375,11 +384,13 @@ func (o *CreateBatchInternalServerError) Code() int {
 }
 
 func (o *CreateBatchInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchInternalServerError %s", 500, payload)
 }
 
 func (o *CreateBatchInternalServerError) String() string {
-	return fmt.Sprintf("[POST /batches][%d] createBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches][%d] createBatchInternalServerError %s", 500, payload)
 }
 
 func (o *CreateBatchInternalServerError) GetPayload() *models.Status {

@@ -6,6 +6,7 @@ package job
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -103,11 +104,13 @@ func (o *CreateJobOK) Code() int {
 }
 
 func (o *CreateJobOK) Error() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobOK %s", 200, payload)
 }
 
 func (o *CreateJobOK) String() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobOK %s", 200, payload)
 }
 
 func (o *CreateJobOK) GetPayload() *models.JobStatus {
@@ -171,11 +174,13 @@ func (o *CreateJobBadRequest) Code() int {
 }
 
 func (o *CreateJobBadRequest) Error() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobBadRequest %s", 400, payload)
 }
 
 func (o *CreateJobBadRequest) String() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobBadRequest %s", 400, payload)
 }
 
 func (o *CreateJobBadRequest) GetPayload() *models.Status {
@@ -239,11 +244,13 @@ func (o *CreateJobNotFound) Code() int {
 }
 
 func (o *CreateJobNotFound) Error() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobNotFound %s", 404, payload)
 }
 
 func (o *CreateJobNotFound) String() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobNotFound %s", 404, payload)
 }
 
 func (o *CreateJobNotFound) GetPayload() *models.Status {
@@ -307,11 +314,13 @@ func (o *CreateJobUnprocessableEntity) Code() int {
 }
 
 func (o *CreateJobUnprocessableEntity) Error() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobUnprocessableEntity  %+v", 422, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobUnprocessableEntity %s", 422, payload)
 }
 
 func (o *CreateJobUnprocessableEntity) String() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobUnprocessableEntity  %+v", 422, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobUnprocessableEntity %s", 422, payload)
 }
 
 func (o *CreateJobUnprocessableEntity) GetPayload() *models.Status {
@@ -375,11 +384,13 @@ func (o *CreateJobInternalServerError) Code() int {
 }
 
 func (o *CreateJobInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobInternalServerError %s", 500, payload)
 }
 
 func (o *CreateJobInternalServerError) String() string {
-	return fmt.Sprintf("[POST /jobs][%d] createJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs][%d] createJobInternalServerError %s", 500, payload)
 }
 
 func (o *CreateJobInternalServerError) GetPayload() *models.Status {

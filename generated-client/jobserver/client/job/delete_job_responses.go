@@ -6,6 +6,7 @@ package job
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -91,11 +92,13 @@ func (o *DeleteJobOK) Code() int {
 }
 
 func (o *DeleteJobOK) Error() string {
-	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobOK %s", 200, payload)
 }
 
 func (o *DeleteJobOK) String() string {
-	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobOK %s", 200, payload)
 }
 
 func (o *DeleteJobOK) GetPayload() *models.Status {
@@ -159,11 +162,13 @@ func (o *DeleteJobNotFound) Code() int {
 }
 
 func (o *DeleteJobNotFound) Error() string {
-	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobNotFound %s", 404, payload)
 }
 
 func (o *DeleteJobNotFound) String() string {
-	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobNotFound %s", 404, payload)
 }
 
 func (o *DeleteJobNotFound) GetPayload() *models.Status {
@@ -227,11 +232,13 @@ func (o *DeleteJobInternalServerError) Code() int {
 }
 
 func (o *DeleteJobInternalServerError) Error() string {
-	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobInternalServerError %s", 500, payload)
 }
 
 func (o *DeleteJobInternalServerError) String() string {
-	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /jobs/{jobName}][%d] deleteJobInternalServerError %s", 500, payload)
 }
 
 func (o *DeleteJobInternalServerError) GetPayload() *models.Status {

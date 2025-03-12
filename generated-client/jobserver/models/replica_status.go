@@ -30,7 +30,7 @@ type ReplicaStatus struct {
 	// Stopped = Job has been stopped
 	// Example: Running
 	// Required: true
-	// Enum: [Pending Succeeded Failing Failed Running Terminated Starting Stopped]
+	// Enum: ["Pending","Succeeded","Failing","Failed","Running","Terminated","Starting","Stopped"]
 	Status *string `json:"status"`
 }
 

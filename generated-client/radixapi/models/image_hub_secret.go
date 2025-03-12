@@ -33,8 +33,11 @@ type ImageHubSecret struct {
 	// Pending = Secret value is not set
 	// Consistent = Secret value is set
 	// Example: Consistent
-	// Enum: [Pending Consistent]
+	// Enum: ["Pending","Consistent"]
 	Status string `json:"status,omitempty"`
+
+	// Updated when the secret was last changed
+	Updated interface{} `json:"updated,omitempty"`
 
 	// Username for connecting to private image hub
 	// Example: my-user-name

@@ -6,6 +6,7 @@ package batch
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -97,11 +98,13 @@ func (o *StopBatchOK) Code() int {
 }
 
 func (o *StopBatchOK) Error() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchOK %s", 200, payload)
 }
 
 func (o *StopBatchOK) String() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchOK %s", 200, payload)
 }
 
 func (o *StopBatchOK) GetPayload() *models.Status {
@@ -165,11 +168,13 @@ func (o *StopBatchBadRequest) Code() int {
 }
 
 func (o *StopBatchBadRequest) Error() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchBadRequest %s", 400, payload)
 }
 
 func (o *StopBatchBadRequest) String() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchBadRequest %s", 400, payload)
 }
 
 func (o *StopBatchBadRequest) GetPayload() *models.Status {
@@ -233,11 +238,13 @@ func (o *StopBatchNotFound) Code() int {
 }
 
 func (o *StopBatchNotFound) Error() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchNotFound %s", 404, payload)
 }
 
 func (o *StopBatchNotFound) String() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchNotFound %s", 404, payload)
 }
 
 func (o *StopBatchNotFound) GetPayload() *models.Status {
@@ -301,11 +308,13 @@ func (o *StopBatchInternalServerError) Code() int {
 }
 
 func (o *StopBatchInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchInternalServerError %s", 500, payload)
 }
 
 func (o *StopBatchInternalServerError) String() string {
-	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /batches/{batchName}/stop][%d] stopBatchInternalServerError %s", 500, payload)
 }
 
 func (o *StopBatchInternalServerError) GetPayload() *models.Status {

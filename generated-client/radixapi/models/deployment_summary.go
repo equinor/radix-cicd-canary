@@ -22,13 +22,17 @@ import (
 type DeploymentSummary struct {
 
 	// ActiveFrom Timestamp when the deployment starts (or created)
-	// Example: 2006-01-02T15:04:05Z
 	// Required: true
-	ActiveFrom *string `json:"activeFrom"`
+	// Format: date-time
+	ActiveFrom *strfmt.DateTime `json:"activeFrom"`
 
 	// ActiveTo Timestamp when the deployment ends
-	// Example: 2006-01-02T15:04:05Z
-	ActiveTo string `json:"activeTo,omitempty"`
+	// Format: date-time
+	ActiveTo strfmt.DateTime `json:"activeTo,omitempty"`
+
+	// Name of the branch used to build the deployment
+	// Example: main
+	BuiltFromBranch string `json:"builtFromBranch,omitempty"`
 
 	// CommitID the commit ID of the branch to build
 	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
@@ -60,7 +64,7 @@ type DeploymentSummary struct {
 
 	// Type of pipeline job
 	// Example: build-deploy
-	// Enum: [build build-deploy promote deploy]
+	// Enum: ["build","build-deploy","promote","deploy","apply-config"]
 	PipelineJobType string `json:"pipelineJobType,omitempty"`
 
 	// Name of the environment the deployment was promoted from
@@ -74,6 +78,10 @@ func (m *DeploymentSummary) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateActiveFrom(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateActiveTo(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -102,6 +110,22 @@ func (m *DeploymentSummary) Validate(formats strfmt.Registry) error {
 func (m *DeploymentSummary) validateActiveFrom(formats strfmt.Registry) error {
 
 	if err := validate.Required("activeFrom", "body", m.ActiveFrom); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("activeFrom", "body", "date-time", m.ActiveFrom.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *DeploymentSummary) validateActiveTo(formats strfmt.Registry) error {
+	if swag.IsZero(m.ActiveTo) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("activeTo", "body", "date-time", m.ActiveTo.String(), formats); err != nil {
 		return err
 	}
 
@@ -156,7 +180,7 @@ var deploymentSummaryTypePipelineJobTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["build","build-deploy","promote","deploy"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["build","build-deploy","promote","deploy","apply-config"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -177,6 +201,9 @@ const (
 
 	// DeploymentSummaryPipelineJobTypeDeploy captures enum value "deploy"
 	DeploymentSummaryPipelineJobTypeDeploy string = "deploy"
+
+	// DeploymentSummaryPipelineJobTypeApplyDashConfig captures enum value "apply-config"
+	DeploymentSummaryPipelineJobTypeApplyDashConfig string = "apply-config"
 )
 
 // prop value enum
