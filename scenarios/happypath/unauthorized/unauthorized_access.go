@@ -127,7 +127,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 		{
 			name:          "reader-user-cannot-set-private-image-hub-secret",
 			logMsg:        fmt.Sprintf("checking that user with read role cannot set private image hub secret for app %s", appName),
-			expectedError: errors.Join(application.NewUpdatePrivateImageHubsSecretValueForbidden(), application.NewUpdatePrivateImageHubsSecretValueBadRequest()), // TODO: Error should be Forbidden, and its deployed in Dev, but not in Prod clusters yet
+			expectedError: application.NewUpdatePrivateImageHubsSecretValueForbidden(),
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				imageHubs, err := privateimagehub.List(cfg, appName)
 				if err != nil {
