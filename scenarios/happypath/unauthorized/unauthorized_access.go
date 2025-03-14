@@ -50,17 +50,17 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 	}
 
 	type scenarioSpec struct {
-		name          string
-		logMsg        string
-		expectedError error
-		testFunc      func(ctx context.Context, impersonationSetter func(impersonateParam)) error
+		name           string
+		logMsg         string
+		expectedErrors []error
+		testFunc       func(ctx context.Context, impersonationSetter func(impersonateParam)) error
 	}
 
 	scenarios := []scenarioSpec{
 		{
-			name:          "reader-user-can-read-RR",
-			logMsg:        fmt.Sprintf("checking that user with reader role can read RR for application %s", appName),
-			expectedError: nil,
+			name:           "reader-user-can-read-RR",
+			logMsg:         fmt.Sprintf("checking that user with reader role can read RR for application %s", appName),
+			expectedErrors: nil,
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := application.NewGetApplicationParams().WithContext(ctx)
 				impersonationSetter(param)
@@ -69,9 +69,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			},
 		},
 		{
-			name:          "reader-user-cannot-restart-env",
-			logMsg:        fmt.Sprintf("checking that user with reader role cannot restart env %s for application %s", defaults.App2EnvironmentName, appName),
-			expectedError: environment.NewRestartEnvironmentForbidden(),
+			name:           "reader-user-cannot-restart-env",
+			logMsg:         fmt.Sprintf("checking that user with reader role cannot restart env %s for application %s", defaults.App2EnvironmentName, appName),
+			expectedErrors: []error{environment.NewRestartEnvironmentForbidden()},
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := environment.NewRestartEnvironmentParams().
 					WithEnvName(defaults.App2EnvironmentName).
@@ -82,9 +82,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			},
 		},
 		{
-			name:          "reader-user-cannot-trigger-pipeline",
-			logMsg:        fmt.Sprintf("checking that user with read role cannot trigger build-deploy pipeline for application %s", appName),
-			expectedError: application.NewTriggerPipelineBuildDeployForbidden(),
+			name:           "reader-user-cannot-trigger-pipeline",
+			logMsg:         fmt.Sprintf("checking that user with read role cannot trigger build-deploy pipeline for application %s", appName),
+			expectedErrors: []error{application.NewTriggerPipelineBuildDeployForbidden()},
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := application.NewTriggerPipelineBuildDeployParams().
 					WithContext(ctx).
@@ -100,9 +100,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			},
 		},
 		{
-			name:          "reader-user-cannot-delete-app",
-			logMsg:        fmt.Sprintf("checking that user with read role cannot delete app %s", appName),
-			expectedError: application.NewDeleteApplicationForbidden(),
+			name:           "reader-user-cannot-delete-app",
+			logMsg:         fmt.Sprintf("checking that user with read role cannot delete app %s", appName),
+			expectedErrors: []error{application.NewDeleteApplicationForbidden()},
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := application.NewDeleteApplicationParams().WithContext(ctx)
 				impersonationSetter(param)
@@ -111,9 +111,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			},
 		},
 		{
-			name:          "reader-user-cannot-set-build-secret",
-			logMsg:        fmt.Sprintf("checking that user with read role cannot set build secret for app %s", appName),
-			expectedError: application.NewUpdateBuildSecretsSecretValueForbidden(),
+			name:           "reader-user-cannot-set-build-secret",
+			logMsg:         fmt.Sprintf("checking that user with read role cannot set build secret for app %s", appName),
+			expectedErrors: []error{application.NewUpdateBuildSecretsSecretValueForbidden()},
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := application.NewUpdateBuildSecretsSecretValueParams().
 					WithContext(ctx).
@@ -125,9 +125,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			},
 		},
 		{
-			name:          "reader-user-cannot-set-private-image-hub-secret",
-			logMsg:        fmt.Sprintf("checking that user with read role cannot set private image hub secret for app %s", appName),
-			expectedError: errors.Join(application.NewUpdatePrivateImageHubsSecretValueForbidden(), application.NewUpdatePrivateImageHubsSecretValueBadRequest()), // TODO: Error should be Forbidden, and its deployed in Dev, but not in Prod clusters yet
+			name:           "reader-user-cannot-set-private-image-hub-secret",
+			logMsg:         fmt.Sprintf("checking that user with read role cannot set private image hub secret for app %s", appName),
+			expectedErrors: []error{application.NewUpdatePrivateImageHubsSecretValueForbidden(), application.NewUpdatePrivateImageHubsSecretValueBadRequest()}, // TODO: Error should be Forbidden, and its deployed in Dev, but not in Prod clusters yet
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				imageHubs, err := privateimagehub.List(cfg, appName)
 				if err != nil {
@@ -144,9 +144,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			},
 		},
 		{
-			name:          "reader-user-cannot-set-secret",
-			logMsg:        fmt.Sprintf("checking that user with read role cannot set secret for app %s", appName),
-			expectedError: environment.NewChangeComponentSecretForbidden(),
+			name:           "reader-user-cannot-set-secret",
+			logMsg:         fmt.Sprintf("checking that user with read role cannot set secret for app %s", appName),
+			expectedErrors: []error{environment.NewChangeComponentSecretForbidden()},
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := environment.NewChangeComponentSecretParams().
 					WithEnvName(defaults.App2EnvironmentName).
@@ -164,9 +164,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 		},
 		// TODO: check that reading pipeline log is allowed https://console.dev.radix.equinor.com/api/v1/applications/radix-networkpolicy-canary/jobs/radix-pipeline-20230728084604-ew3sz/logs/radix-pipeline?lines=1000
 		{
-			name:          "reader-user-can-read-pipeline-log",
-			logMsg:        fmt.Sprintf("checking that user with read role can read pipeline log for app %s", appName),
-			expectedError: nil,
+			name:           "reader-user-can-read-pipeline-log",
+			logMsg:         fmt.Sprintf("checking that user with read role can read pipeline log for app %s", appName),
+			expectedErrors: nil,
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				// Get job
 				jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
@@ -198,8 +198,20 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 		scenarioCtx := log.Ctx(ctx).With().Str("scenario", scenario.name).Logger().WithContext(ctx)
 		log.Ctx(scenarioCtx).Debug().Msg(scenario.logMsg)
 		err := scenario.testFunc(scenarioCtx, setImpersonation)
-		if !errors.Is(err, scenario.expectedError) {
-			return fmt.Errorf("incorrect response on scenario %s: Got %w, expected %v", scenario.name, err, scenario.expectedError)
+		if scenario.expectedErrors == nil {
+			if err != nil {
+				return fmt.Errorf("incorrect response on scenario %s: Got %w, expected %v", scenario.name, err, scenario.expectedErrors)
+			}
+			return nil
+		}
+
+		matchingError := false
+		for _, expectedErr := range scenario.expectedErrors {
+			matchingError = matchingError || errors.Is(err, expectedErr)
+		}
+
+		if !matchingError {
+			return fmt.Errorf("incorrect response on scenario %s: Got %w, expected %v", scenario.name, err, scenario.expectedErrors)
 		}
 	}
 	return nil
