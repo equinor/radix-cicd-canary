@@ -34,7 +34,7 @@ func Set(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 
-	jobName := jobSummary.Name
+	jobName := *jobSummary.Name
 	job, err := jobUtils.Get(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err

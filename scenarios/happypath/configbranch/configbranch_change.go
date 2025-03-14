@@ -31,7 +31,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
 	}
 
-	jobName := jobSummary.Name
+	jobName := *jobSummary.Name
 	log.Ctx(ctx).Info().Msgf("First job name: %s", jobName)
 
 	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
@@ -68,7 +68,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 		return errors.Wrapf(err, "second job for application %s", defaults.App4Name)
 	}
 
-	jobName = jobSummary.Name
+	jobName = *jobSummary.Name
 	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("Second job name")
 
 	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {

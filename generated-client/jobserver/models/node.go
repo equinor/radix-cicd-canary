@@ -12,33 +12,30 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// RadixNode RadixNode defines node attributes, where container should be scheduled
+// Node Node defines node attributes, where container should be scheduled
 //
-// swagger:model RadixNode
-type RadixNode struct {
+// swagger:model Node
+type Node struct {
 
 	// Defines rules for allowed GPU types.
-	// More info: https://www.radix.equinor.com/references/reference-radix-config/#gpu
-	// +optional
 	Gpu string `json:"gpu,omitempty"`
 
 	// Defines minimum number of required GPUs.
-	// +optional
 	GpuCount string `json:"gpuCount,omitempty"`
 }
 
-// Validate validates this radix node
-func (m *RadixNode) Validate(formats strfmt.Registry) error {
+// Validate validates this node
+func (m *Node) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this radix node based on context it is used
-func (m *RadixNode) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validates this node based on context it is used
+func (m *Node) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *RadixNode) MarshalBinary() ([]byte, error) {
+func (m *Node) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -46,8 +43,8 @@ func (m *RadixNode) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *RadixNode) UnmarshalBinary(b []byte) error {
-	var res RadixNode
+func (m *Node) UnmarshalBinary(b []byte) error {
+	var res Node
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

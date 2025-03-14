@@ -52,6 +52,10 @@ type Component struct {
 	// Example: ["server-78fc8857c4-hm76l","server-78fc8857c4-asfa2"]
 	Replicas []string `json:"replicas"`
 
+	// Set if manual control of replicas is in place. Not set means automatic control, 0 means stopped and >= 1 is manually scaled.
+	// Example: 5
+	ReplicasOverride *int64 `json:"replicasOverride,omitempty"`
+
 	// ScheduledJobPayloadPath defines the payload path, where payload for Job Scheduler will be mapped as a file. From radixconfig.yaml
 	// Example: \"/tmp/payload\
 	ScheduledJobPayloadPath string `json:"scheduledJobPayloadPath,omitempty"`
@@ -70,13 +74,13 @@ type Component struct {
 
 	// Status of the component
 	// Example: Consistent
-	// Enum: [Stopped Consistent Reconciling Restarting Outdated]
+	// Enum: ["Stopped","Consistent","Reconciling","Restarting","Outdated"]
 	Status string `json:"status,omitempty"`
 
 	// Type of component
 	// Example: component
 	// Required: true
-	// Enum: [component job]
+	// Enum: ["component","job"]
 	Type *string `json:"type"`
 
 	// Variable names map to values. From radixconfig.yaml
@@ -87,6 +91,9 @@ type Component struct {
 
 	// identity
 	Identity *Identity `json:"identity,omitempty"`
+
+	// network
+	Network *Network `json:"network,omitempty"`
 
 	// notifications
 	Notifications *Notifications `json:"notifications,omitempty"`
@@ -138,6 +145,10 @@ func (m *Component) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateIdentity(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateNetwork(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -391,6 +402,25 @@ func (m *Component) validateIdentity(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Component) validateNetwork(formats strfmt.Registry) error {
+	if swag.IsZero(m.Network) { // not required
+		return nil
+	}
+
+	if m.Network != nil {
+		if err := m.Network.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("network")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("network")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Component) validateNotifications(formats strfmt.Registry) error {
 	if swag.IsZero(m.Notifications) { // not required
 		return nil
@@ -488,6 +518,10 @@ func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry
 	}
 
 	if err := m.contextValidateIdentity(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateNetwork(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -622,6 +656,27 @@ func (m *Component) contextValidateIdentity(ctx context.Context, formats strfmt.
 				return ve.ValidateName("identity")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("identity")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Component) contextValidateNetwork(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Network != nil {
+
+		if swag.IsZero(m.Network) { // not required
+			return nil
+		}
+
+		if err := m.Network.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("network")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("network")
 			}
 			return err
 		}

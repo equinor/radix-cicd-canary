@@ -27,6 +27,9 @@ type PipelineParametersBuild struct {
 	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
 	CommitID string `json:"commitID,omitempty"`
 
+	// DeployExternalDNS deploy external DNS
+	DeployExternalDNS *bool `json:"deployExternalDNS,omitempty"`
+
 	// ImageName of the component, without repository name and image-tag
 	// Example: radix-component
 	ImageName string `json:"imageName,omitempty"`
@@ -39,9 +42,16 @@ type PipelineParametersBuild struct {
 	// Example: master-latest
 	ImageTag string `json:"imageTag,omitempty"`
 
+	// OverrideUseBuildCache override default or configured build cache option
+	OverrideUseBuildCache *bool `json:"overrideUseBuildCache,omitempty"`
+
 	// PushImage should image be pushed to container registry. Defaults pushing
 	// Example: true
 	PushImage string `json:"pushImage,omitempty"`
+
+	// Name of environment to build for
+	// Example: prod
+	ToEnvironment string `json:"toEnvironment,omitempty"`
 
 	// TriggeredBy of the job - if empty will use user token upn (user principle name)
 	// Example: a_user@equinor.com

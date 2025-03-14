@@ -6,6 +6,7 @@ package batch
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -91,11 +92,13 @@ func (o *DeleteBatchOK) Code() int {
 }
 
 func (o *DeleteBatchOK) Error() string {
-	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchOK %s", 200, payload)
 }
 
 func (o *DeleteBatchOK) String() string {
-	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchOK %s", 200, payload)
 }
 
 func (o *DeleteBatchOK) GetPayload() *models.Status {
@@ -159,11 +162,13 @@ func (o *DeleteBatchNotFound) Code() int {
 }
 
 func (o *DeleteBatchNotFound) Error() string {
-	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchNotFound %s", 404, payload)
 }
 
 func (o *DeleteBatchNotFound) String() string {
-	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchNotFound %s", 404, payload)
 }
 
 func (o *DeleteBatchNotFound) GetPayload() *models.Status {
@@ -227,11 +232,13 @@ func (o *DeleteBatchInternalServerError) Code() int {
 }
 
 func (o *DeleteBatchInternalServerError) Error() string {
-	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchInternalServerError %s", 500, payload)
 }
 
 func (o *DeleteBatchInternalServerError) String() string {
-	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[DELETE /batches/{batchName}][%d] deleteBatchInternalServerError %s", 500, payload)
 }
 
 func (o *DeleteBatchInternalServerError) GetPayload() *models.Status {

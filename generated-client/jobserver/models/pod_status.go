@@ -20,16 +20,16 @@ import (
 type PodStatus struct {
 
 	// Container started timestamp
-	// Example: 2006-01-02T15:04:05Z
-	ContainerStarted string `json:"containerStarted,omitempty"`
+	// Format: date-time
+	ContainerStarted strfmt.DateTime `json:"containerStarted,omitempty"`
 
 	// Created timestamp
-	// Example: 2006-01-02T15:04:05Z
-	Created string `json:"created,omitempty"`
+	// Format: date-time
+	Created strfmt.DateTime `json:"created,omitempty"`
 
 	// The time at which the batch job's pod finishedAt.
-	// Example: 2006-01-02T15:04:05Z
-	EndTime string `json:"endTime,omitempty"`
+	// Format: date-time
+	EndTime strfmt.DateTime `json:"endTime,omitempty"`
 
 	// Exit status from the last termination of the container
 	ExitCode int32 `json:"exitCode,omitempty"`
@@ -57,8 +57,8 @@ type PodStatus struct {
 	RestartCount int32 `json:"restartCount,omitempty"`
 
 	// The time at which the batch job's pod startedAt
-	// Example: 2006-01-02T15:04:05Z
-	StartTime string `json:"startTime,omitempty"`
+	// Format: date-time
+	StartTime strfmt.DateTime `json:"startTime,omitempty"`
 
 	// StatusMessage provides message describing the status of a component container inside a pod
 	StatusMessage string `json:"statusMessage,omitempty"`
@@ -71,7 +71,23 @@ type PodStatus struct {
 func (m *PodStatus) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateContainerStarted(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateCreated(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEndTime(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStartTime(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -85,9 +101,57 @@ func (m *PodStatus) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *PodStatus) validateContainerStarted(formats strfmt.Registry) error {
+	if swag.IsZero(m.ContainerStarted) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("containerStarted", "body", "date-time", m.ContainerStarted.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *PodStatus) validateCreated(formats strfmt.Registry) error {
+	if swag.IsZero(m.Created) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("created", "body", "date-time", m.Created.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *PodStatus) validateEndTime(formats strfmt.Registry) error {
+	if swag.IsZero(m.EndTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("endTime", "body", "date-time", m.EndTime.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *PodStatus) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *PodStatus) validateStartTime(formats strfmt.Registry) error {
+	if swag.IsZero(m.StartTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("startTime", "body", "date-time", m.StartTime.String(), formats); err != nil {
 		return err
 	}
 

@@ -6,6 +6,7 @@ package job
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -97,11 +98,13 @@ func (o *StopJobOK) Code() int {
 }
 
 func (o *StopJobOK) Error() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobOK %s", 200, payload)
 }
 
 func (o *StopJobOK) String() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobOK %s", 200, payload)
 }
 
 func (o *StopJobOK) GetPayload() *models.Status {
@@ -165,11 +168,13 @@ func (o *StopJobBadRequest) Code() int {
 }
 
 func (o *StopJobBadRequest) Error() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobBadRequest %s", 400, payload)
 }
 
 func (o *StopJobBadRequest) String() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobBadRequest  %+v", 400, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobBadRequest %s", 400, payload)
 }
 
 func (o *StopJobBadRequest) GetPayload() *models.Status {
@@ -233,11 +238,13 @@ func (o *StopJobNotFound) Code() int {
 }
 
 func (o *StopJobNotFound) Error() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobNotFound %s", 404, payload)
 }
 
 func (o *StopJobNotFound) String() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobNotFound  %+v", 404, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobNotFound %s", 404, payload)
 }
 
 func (o *StopJobNotFound) GetPayload() *models.Status {
@@ -301,11 +308,13 @@ func (o *StopJobInternalServerError) Code() int {
 }
 
 func (o *StopJobInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobInternalServerError %s", 500, payload)
 }
 
 func (o *StopJobInternalServerError) String() string {
-	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /jobs/{jobName}/stop][%d] stopJobInternalServerError %s", 500, payload)
 }
 
 func (o *StopJobInternalServerError) GetPayload() *models.Status {

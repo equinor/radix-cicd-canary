@@ -6,6 +6,7 @@ package job
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -85,11 +86,13 @@ func (o *GetJobsOK) Code() int {
 }
 
 func (o *GetJobsOK) Error() string {
-	return fmt.Sprintf("[GET /jobs/][%d] getJobsOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/][%d] getJobsOK %s", 200, payload)
 }
 
 func (o *GetJobsOK) String() string {
-	return fmt.Sprintf("[GET /jobs/][%d] getJobsOK  %+v", 200, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/][%d] getJobsOK %s", 200, payload)
 }
 
 func (o *GetJobsOK) GetPayload() []*models.JobStatus {
@@ -151,11 +154,13 @@ func (o *GetJobsInternalServerError) Code() int {
 }
 
 func (o *GetJobsInternalServerError) Error() string {
-	return fmt.Sprintf("[GET /jobs/][%d] getJobsInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/][%d] getJobsInternalServerError %s", 500, payload)
 }
 
 func (o *GetJobsInternalServerError) String() string {
-	return fmt.Sprintf("[GET /jobs/][%d] getJobsInternalServerError  %+v", 500, o.Payload)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /jobs/][%d] getJobsInternalServerError %s", 500, payload)
 }
 
 func (o *GetJobsInternalServerError) GetPayload() *models.Status {

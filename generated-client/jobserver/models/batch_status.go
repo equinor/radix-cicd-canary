@@ -21,6 +21,10 @@ import (
 // swagger:model BatchStatus
 type BatchStatus struct {
 
+	// Defines a user defined ID of the batch.
+	// Example: 'batch-id-1'
+	BatchID string `json:"batchId,omitempty"`
+
 	// BatchName Optional Batch ID of a job
 	// Example: 'batch1'
 	BatchName string `json:"batchName,omitempty"`
@@ -30,16 +34,15 @@ type BatchStatus struct {
 	BatchType string `json:"batchType,omitempty"`
 
 	// Created timestamp
-	// Example: 2006-01-02T15:04:05Z
-	// Required: true
-	Created *string `json:"created"`
+	// Format: date-time
+	Created strfmt.DateTime `json:"created,omitempty"`
 
 	// DeploymentName for this batch
 	DeploymentName string `json:"DeploymentName,omitempty"`
 
 	// Ended timestamp
-	// Example: 2006-01-02T15:04:05Z
-	Ended string `json:"ended,omitempty"`
+	// Format: date-time
+	Ended strfmt.DateTime `json:"ended,omitempty"`
 
 	// The number of times the container for the job has failed.
 	// +optional
@@ -69,8 +72,8 @@ type BatchStatus struct {
 	Restart string `json:"restart,omitempty"`
 
 	// Started timestamp
-	// Example: 2006-01-02T15:04:05Z
-	Started string `json:"started,omitempty"`
+	// Format: date-time
+	Started strfmt.DateTime `json:"started,omitempty"`
 
 	// Status of the job
 	// Running = Job is running
@@ -82,12 +85,12 @@ type BatchStatus struct {
 	// Active = Job is active
 	// Completed = Job is completed
 	// Example: Waiting
-	// Enum: [Running Succeeded Failed Waiting Stopping Stopped Active Completed]
+	// Enum: ["Running","Succeeded","Failed","Waiting","Stopping","Stopped","Active","Completed"]
 	Status string `json:"status,omitempty"`
 
 	// Updated timestamp when the status was updated
-	// Example: 2006-01-02T15:04:05Z
-	Updated string `json:"updated,omitempty"`
+	// Format: date-time
+	Updated strfmt.DateTime `json:"updated,omitempty"`
 }
 
 // Validate validates this batch status
@@ -95,6 +98,10 @@ func (m *BatchStatus) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreated(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEnded(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -110,7 +117,15 @@ func (m *BatchStatus) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateStarted(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUpdated(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -121,8 +136,23 @@ func (m *BatchStatus) Validate(formats strfmt.Registry) error {
 }
 
 func (m *BatchStatus) validateCreated(formats strfmt.Registry) error {
+	if swag.IsZero(m.Created) { // not required
+		return nil
+	}
 
-	if err := validate.Required("created", "body", m.Created); err != nil {
+	if err := validate.FormatOf("created", "body", "date-time", m.Created.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *BatchStatus) validateEnded(formats strfmt.Registry) error {
+	if swag.IsZero(m.Ended) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("ended", "body", "date-time", m.Ended.String(), formats); err != nil {
 		return err
 	}
 
@@ -190,6 +220,18 @@ func (m *BatchStatus) validatePodStatuses(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *BatchStatus) validateStarted(formats strfmt.Registry) error {
+	if swag.IsZero(m.Started) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("started", "body", "date-time", m.Started.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 var batchStatusTypeStatusPropEnum []interface{}
 
 func init() {
@@ -244,6 +286,18 @@ func (m *BatchStatus) validateStatus(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *BatchStatus) validateUpdated(formats strfmt.Registry) error {
+	if swag.IsZero(m.Updated) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("updated", "body", "date-time", m.Updated.String(), formats); err != nil {
 		return err
 	}
 

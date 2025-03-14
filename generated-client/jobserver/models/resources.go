@@ -13,12 +13,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// ResourceRequirements ResourceRequirements describes the compute resource requirements.
+// Resources Resources describes the compute resource requirements.
 //
-// More info: https://www.radix.equinor.com/references/reference-radix-config/#resources-common
-//
-// swagger:model ResourceRequirements
-type ResourceRequirements struct {
+// swagger:model Resources
+type Resources struct {
 
 	// limits
 	Limits ResourceList `json:"limits,omitempty"`
@@ -27,8 +25,8 @@ type ResourceRequirements struct {
 	Requests ResourceList `json:"requests,omitempty"`
 }
 
-// Validate validates this resource requirements
-func (m *ResourceRequirements) Validate(formats strfmt.Registry) error {
+// Validate validates this resources
+func (m *Resources) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateLimits(formats); err != nil {
@@ -45,7 +43,7 @@ func (m *ResourceRequirements) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *ResourceRequirements) validateLimits(formats strfmt.Registry) error {
+func (m *Resources) validateLimits(formats strfmt.Registry) error {
 	if swag.IsZero(m.Limits) { // not required
 		return nil
 	}
@@ -64,7 +62,7 @@ func (m *ResourceRequirements) validateLimits(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *ResourceRequirements) validateRequests(formats strfmt.Registry) error {
+func (m *Resources) validateRequests(formats strfmt.Registry) error {
 	if swag.IsZero(m.Requests) { // not required
 		return nil
 	}
@@ -83,8 +81,8 @@ func (m *ResourceRequirements) validateRequests(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this resource requirements based on the context it is used
-func (m *ResourceRequirements) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this resources based on the context it is used
+func (m *Resources) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateLimits(ctx, formats); err != nil {
@@ -101,7 +99,7 @@ func (m *ResourceRequirements) ContextValidate(ctx context.Context, formats strf
 	return nil
 }
 
-func (m *ResourceRequirements) contextValidateLimits(ctx context.Context, formats strfmt.Registry) error {
+func (m *Resources) contextValidateLimits(ctx context.Context, formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Limits) { // not required
 		return nil
@@ -119,7 +117,7 @@ func (m *ResourceRequirements) contextValidateLimits(ctx context.Context, format
 	return nil
 }
 
-func (m *ResourceRequirements) contextValidateRequests(ctx context.Context, formats strfmt.Registry) error {
+func (m *Resources) contextValidateRequests(ctx context.Context, formats strfmt.Registry) error {
 
 	if swag.IsZero(m.Requests) { // not required
 		return nil
@@ -138,7 +136,7 @@ func (m *ResourceRequirements) contextValidateRequests(ctx context.Context, form
 }
 
 // MarshalBinary interface implementation
-func (m *ResourceRequirements) MarshalBinary() ([]byte, error) {
+func (m *Resources) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -146,8 +144,8 @@ func (m *ResourceRequirements) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *ResourceRequirements) UnmarshalBinary(b []byte) error {
-	var res ResourceRequirements
+func (m *Resources) UnmarshalBinary(b []byte) error {
+	var res Resources
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
