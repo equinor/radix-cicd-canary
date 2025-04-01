@@ -79,7 +79,6 @@ func Application(ctx context.Context, cfg config.Config) error {
 	steps := jobUtils.GetSteps(ctx, cfg, defaults.App2Name, jobName)
 	expectedSteps := jobUtils.NewExpectedSteps().
 		Add("clone-config").
-		Add("prepare-pipelines").
 		Add("radix-pipeline").
 		Add("clone", "app-qa").
 		Add("clone", "app-prod").
@@ -88,8 +87,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		Add("build-app-qa", "app").
 		Add("build-app-prod", "app").
 		Add("build-redis-prod", "redis").
-		Add("build-redis-qa", "redis").
-		Add("run-pipelines")
+		Add("build-redis-qa", "redis")
 
 	if len(steps) != expectedSteps.Count() {
 		return errors.New("number of pipeline steps was not as expected")
@@ -113,7 +111,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return errors.New("No Pipeline run found")
 	}
 
-	tasks, err := jobUtils.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
+	tasks, err := jobUtils.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.KubeName)
 	if err != nil {
 		return err
 	}
@@ -125,7 +123,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	// Test tekton log output contain parameters and secrets
-	tektonLogContent, err := jobUtils.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
+	tektonLogContent, err := jobUtils.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.KubeName, *targetTask.KubeName, "test-tekton")
 	if err != nil {
 		return err
 	}

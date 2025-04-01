@@ -42,7 +42,6 @@ func Change(ctx context.Context, cfg config.Config) error {
 
 	expectedSteps := jobUtils.NewExpectedSteps().
 		Add("clone-config").
-		Add("prepare-pipelines").
 		Add("radix-pipeline").
 		Add("clone", "www-prod").
 		Add("build-www-prod", "www")
@@ -79,7 +78,6 @@ func Change(ctx context.Context, cfg config.Config) error {
 
 	expectedSteps = jobUtils.NewExpectedSteps().
 		Add("clone-config").
-		Add("prepare-pipelines").
 		Add("radix-pipeline").
 		Add("clone", "www2-prod").
 		Add("build-www2-prod", "www2")
