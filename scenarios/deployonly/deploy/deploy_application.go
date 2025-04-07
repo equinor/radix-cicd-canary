@@ -42,7 +42,6 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	expectedSteps := jobUtils.NewExpectedSteps().
 		Add("clone-config").
-		Add("prepare-pipelines").
 		Add("radix-pipeline")
 
 	if len(steps) != expectedSteps.Count() {
