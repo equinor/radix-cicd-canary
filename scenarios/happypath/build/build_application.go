@@ -103,7 +103,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	for _, step := range steps {
 		if step.SubPipelineTaskStep != nil {
 			if !expectedSteps.HasStepWithSubPipelineTaskStep(step.Name, step.SubPipelineTaskStep) {
-				return errors.Errorf("missing expected step %s with SubPipelineTaskStep env %s, pipeline %s", step.Name, step.SubPipelineTaskStep.Environment, step.SubPipelineTaskStep.PipelineName)
+				return errors.Errorf("missing expected step %s with SubPipelineTaskStep env %s, pipeline %s", step.Name, *step.SubPipelineTaskStep.Environment, *step.SubPipelineTaskStep.PipelineName)
 			}
 			continue
 		}

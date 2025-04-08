@@ -56,7 +56,9 @@ func (es *expectedSteps) HasStepWithSubPipelineTaskStep(stepName string, subPipe
 	}
 	return slice.Any(es.steps, func(step expectedStep) bool {
 		return step.name == stepName && step.subPipelineTaskStep != nil &&
-			step.subPipelineTaskStep.Environment == subPipelineTaskStep.Environment &&
+			step.subPipelineTaskStep.Environment != nil &&
+			*step.subPipelineTaskStep.Environment == *subPipelineTaskStep.Environment &&
+			step.subPipelineTaskStep.PipelineName != nil &&
 			*step.subPipelineTaskStep.PipelineName == *subPipelineTaskStep.PipelineName
 	})
 }
