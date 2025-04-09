@@ -11,6 +11,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/equinor/radix-common/utils/pointers"
 	"github.com/equinor/radix-common/utils/slice"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -84,6 +85,12 @@ func Application(ctx context.Context, cfg config.Config) error {
 		Add("clone", "app-prod").
 		Add("clone", "redis-prod").
 		Add("clone", "redis-qa").
+		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
+			Environment:  pointers.Ptr("qa"),
+			PipelineName: pointers.Ptr("radix-cicdcanary-test2)")}).
+		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
+			Environment:  pointers.Ptr("prod"),
+			PipelineName: pointers.Ptr("radix-cicdcanary-test2)")}).
 		Add("build-app-qa", "app").
 		Add("build-app-prod", "app").
 		Add("build-redis-prod", "redis").
@@ -94,6 +101,12 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	for _, step := range steps {
+		if step.SubPipelineTaskStep != nil {
+			if !expectedSteps.HasStepWithSubPipelineTaskStep(step.Name, step.SubPipelineTaskStep) {
+				return errors.Errorf("missing expected step %s with SubPipelineTaskStep env %s, pipeline %s", step.Name, *step.SubPipelineTaskStep.Environment, *step.SubPipelineTaskStep.PipelineName)
+			}
+			continue
+		}
 		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
 			return errors.Errorf("missing expected step %s with components %s", step.Name, step.Components)
 		}
