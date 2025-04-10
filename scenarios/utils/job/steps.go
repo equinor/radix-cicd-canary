@@ -52,13 +52,15 @@ func (es *expectedSteps) HasStepWithComponent(stepName string, components []stri
 
 func (es *expectedSteps) HasStepWithSubPipelineTaskStep(stepName string, subPipelineTaskStep *models.SubPipelineTaskStep) bool {
 	if subPipelineTaskStep == nil {
-		panic("subPipelineTaskStep is nil")
+		return false
 	}
 	return slice.Any(es.steps, func(step expectedStep) bool {
-		return step.name == stepName && step.subPipelineTaskStep != nil &&
-			step.subPipelineTaskStep.Environment != nil &&
-			*step.subPipelineTaskStep.Environment == *subPipelineTaskStep.Environment &&
-			step.subPipelineTaskStep.PipelineName != nil &&
-			*step.subPipelineTaskStep.PipelineName == *subPipelineTaskStep.PipelineName
+		if step.name != stepName || step.subPipelineTaskStep == nil ||
+			step.subPipelineTaskStep.Environment == nil ||
+			step.subPipelineTaskStep.PipelineName == nil {
+			return false
+		}
+		return *(step.subPipelineTaskStep.Environment) == *(subPipelineTaskStep.Environment) &&
+			*(step.subPipelineTaskStep.PipelineName) == *(subPipelineTaskStep.PipelineName)
 	})
 }
