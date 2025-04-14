@@ -11,6 +11,7 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
+	"github.com/equinor/radix-common/utils/pointers"
 	"github.com/equinor/radix-common/utils/slice"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
@@ -79,23 +80,33 @@ func Application(ctx context.Context, cfg config.Config) error {
 	steps := jobUtils.GetSteps(ctx, cfg, defaults.App2Name, jobName)
 	expectedSteps := jobUtils.NewExpectedSteps().
 		Add("clone-config").
-		Add("prepare-pipelines").
 		Add("radix-pipeline").
 		Add("clone", "app-qa").
 		Add("clone", "app-prod").
 		Add("clone", "redis-prod").
 		Add("clone", "redis-qa").
+		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
+			Environment:  pointers.Ptr("qa"),
+			PipelineName: pointers.Ptr("radix-cicdcanary-test2")}).
+		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
+			Environment:  pointers.Ptr("prod"),
+			PipelineName: pointers.Ptr("radix-cicdcanary-test2")}).
 		Add("build-app-qa", "app").
 		Add("build-app-prod", "app").
 		Add("build-redis-prod", "redis").
-		Add("build-redis-qa", "redis").
-		Add("run-pipelines")
+		Add("build-redis-qa", "redis")
 
 	if len(steps) != expectedSteps.Count() {
 		return errors.New("number of pipeline steps was not as expected")
 	}
 
 	for _, step := range steps {
+		if step.Name == "sub-pipeline-step" {
+			if !expectedSteps.HasStepWithSubPipelineTaskStep(step.Name, step.SubPipelineTaskStep) {
+				return errors.Errorf("missing expected step %s with SubPipelineTaskStep env %s, pipeline %s", step.Name, *step.SubPipelineTaskStep.Environment, *step.SubPipelineTaskStep.PipelineName)
+			}
+			continue
+		}
 		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
 			return errors.Errorf("missing expected step %s with components %s", step.Name, step.Components)
 		}
@@ -113,7 +124,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return errors.New("No Pipeline run found")
 	}
 
-	tasks, err := jobUtils.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.RealName)
+	tasks, err := jobUtils.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.KubeName)
 	if err != nil {
 		return err
 	}
@@ -125,7 +136,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	// Test tekton log output contain parameters and secrets
-	tektonLogContent, err := jobUtils.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.RealName, *targetTask.RealName, "test-tekton")
+	tektonLogContent, err := jobUtils.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.KubeName, *targetTask.KubeName, "test-tekton")
 	if err != nil {
 		return err
 	}
