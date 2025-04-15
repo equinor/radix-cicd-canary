@@ -2,13 +2,13 @@ package privateimagehub
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/equinor/radix-cicd-canary/scenarios/happypath/environment"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/component"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -16,73 +16,52 @@ import (
 func Set(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App2Name
 
-	err := privateimagehub.PasswordNotSet(cfg, appName)
-	if err != nil {
+	if err := privateimagehub.PasswordNotSet(cfg, appName); err != nil {
 		return err
 	}
-	log.Ctx(ctx).Info().Msg("SUCCESS: private image hub is not set")
+	log.Ctx(ctx).Info().Msg("verified private image hub password is not set")
 
-	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
-		return podNotLoaded(cfg, appName)
+	log.Ctx(ctx).Info().Msg("verify that all replicas are in failing state")
+	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return allReplicasFailing(ctx, cfg)
 	})
 	if err != nil {
-		return errors.Errorf("%s component is running before private image hub password was set. %v", defaults.App2ComponentPrivateImageHubName, err)
+		return fmt.Errorf("failed to verify that all replicas are in failing state: %w", err)
 	}
-	log.Ctx(ctx).Info().Msg("SUCCESS: container is not loaded")
+	log.Ctx(ctx).Info().Msg("verified all replicas are in failing state")
 
 	err = privateimagehub.SetPassword(cfg, appName)
 	if err != nil {
-		return errors.Errorf("failed to set private image hub password. %v", err)
+		return fmt.Errorf("failed to set private image hub password: %w", err)
 	}
-	log.Ctx(ctx).Info().Msg("SUCCESS: set private image hub password")
-
-	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
-		return podLoaded(cfg, appName)
-	})
-	if err != nil {
-		return errors.Errorf("%s component does not run after setting private image hub password. Error %v", defaults.App2ComponentPrivateImageHubName, err.Error())
-	}
-	log.Ctx(ctx).Info().Msg("SUCCESS: container is loaded with updated image hub password")
+	log.Ctx(ctx).Info().Msg("successfully set private image hub password")
 
 	err = privateimagehub.PasswordSet(cfg, appName)
 	if err != nil {
 		return err
 	}
-	log.Ctx(ctx).Info().Msg("SUCCESS: private image hub is verified set")
+	log.Ctx(ctx).Info().Msg("verified private image hub password is set")
+
+	log.Ctx(ctx).Info().Msg("verify that all replicas are in running running state")
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return allReplicasRunning(ctx, cfg)
+	})
+	if err != nil {
+		return fmt.Errorf("failed to verify that all replicas are in running state: %w", err)
+	}
+	log.Ctx(ctx).Info().Msg("verified all replicas are in running state")
 
 	return nil
 }
 
-func podNotLoaded(cfg config.Config, appName string) error {
-	return verifyPrivateImageHubPodStatus(cfg, appName, "Failing")
+func allReplicasFailing(ctx context.Context, cfg config.Config) error {
+	return verifyPrivateImageHubPodStatus(ctx, cfg, "Failing")
 }
 
-func podLoaded(cfg config.Config, appName string) error {
-	return verifyPrivateImageHubPodStatus(cfg, appName, "Running")
+func allReplicasRunning(ctx context.Context, cfg config.Config) error {
+	return verifyPrivateImageHubPodStatus(ctx, cfg, "Running")
 }
 
-func verifyPrivateImageHubPodStatus(cfg config.Config, appName string, expectedStatus string) error {
-	actualStatus, err := getPrivateImageHubComponentStatus(cfg, appName)
-	if err != nil {
-		return err
-	}
-	if actualStatus != expectedStatus {
-		return errors.Errorf("expected status %s on component %s - was %s", expectedStatus, defaults.App2ComponentPrivateImageHubName, actualStatus)
-	}
-	return nil
-}
-
-func getPrivateImageHubComponentStatus(cfg config.Config, appName string) (string, error) {
-	envQA, err := environment.GetEnvironment(cfg, appName, defaults.App2EnvironmentName)
-	if err != nil {
-		return "", err
-	}
-	for _, comp := range envQA.ActiveDeployment.Components {
-		if *comp.Name == defaults.App2ComponentPrivateImageHubName && len(comp.ReplicaList) > 0 {
-			if replica := comp.ReplicaList[0]; replica != nil {
-				return *replica.ReplicaStatus.Status, nil
-			}
-		}
-	}
-	return "", nil
+func verifyPrivateImageHubPodStatus(ctx context.Context, cfg config.Config, expectedStatus string) error {
+	return component.AllReplicasHaveExpectedStatus(ctx, cfg, defaults.App2Name, defaults.App2EnvironmentName, defaults.App2ComponentPrivateImageHubName, expectedStatus)
 }

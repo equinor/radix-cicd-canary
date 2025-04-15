@@ -2,30 +2,65 @@ package privateimagehub
 
 import (
 	"context"
-	"math/rand"
-	"time"
+	"fmt"
 
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/component"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
-	"github.com/pkg/errors"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/rs/zerolog/log"
 )
 
 // Set runs tests related to private image hub. Expect canary2 to be built and deployed before test run
 func Set(ctx context.Context, cfg config.Config) error {
-	// Due to a timing bug in Config Syncer (https://github.com/kubeops/config-syncer) that can happen
-	// when a new namespace is created and at the same time a secret that must be synced to the namespace is updated,
-	// the old "cached" secret from the nsSyncer overwrites the secret created by the secret informer's OnUpdate.
-	// Currently, this timing bug is activly happening in the playground cluster almost every time this suite is executed.
-	// The random sleep (5-10 sec) will allow the nsSyncer in Config Syncer to update perform the initial sync before we update the secret.
-	time.Sleep(time.Duration(rand.Intn(10)+5) * time.Second)
-
-	log.Ctx(ctx).Debug().Str("app", defaults.App3Name).Msg("set privateimagehub passford for application")
-	err := privateimagehub.SetPassword(cfg, defaults.App3Name)
-	if err != nil {
-		return errors.Errorf("failed to set private image hub password. %v", err)
+	if err := privateimagehub.PasswordNotSet(cfg, defaults.App3Name); err != nil {
+		return err
 	}
+	log.Ctx(ctx).Info().Msg("verified private image hub is not set")
+
+	log.Ctx(ctx).Info().Msg("verify that all replicas are in failing state")
+	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return allReplicasFailing(ctx, cfg)
+	})
+	if err != nil {
+		return fmt.Errorf("failed to verify that all replicas are in failing state: %w", err)
+	}
+	log.Ctx(ctx).Info().Msg("verified that all replicas are in failing state")
+
+	log.Ctx(ctx).Debug().Str("app", defaults.App3Name).Msg("set privateimagehub password for application")
+	err = privateimagehub.SetPassword(cfg, defaults.App3Name)
+	if err != nil {
+		return fmt.Errorf("failed to set private image hub password: %w", err)
+	}
+	log.Ctx(ctx).Info().Msg("successfully set private image hub password")
+
+	err = privateimagehub.PasswordSet(cfg, defaults.App3Name)
+	if err != nil {
+		return err
+	}
+	log.Ctx(ctx).Info().Msg("verified private image hub password is set")
+
+	log.Ctx(ctx).Info().Msg("verify that all replicas are in running state")
+	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return allReplicasRunning(ctx, cfg)
+	})
+	if err != nil {
+		return fmt.Errorf("failed to verify that all replicas are in running state: %w", err)
+	}
+	log.Ctx(ctx).Info().Msg("verified all replicas are in running state")
 
 	return nil
+}
+
+func allReplicasFailing(ctx context.Context, cfg config.Config) error {
+	return verifyPrivateImageHubPodStatus(ctx, cfg, "Failing")
+}
+
+func allReplicasRunning(ctx context.Context, cfg config.Config) error {
+	return verifyPrivateImageHubPodStatus(ctx, cfg, "Running")
+}
+
+func verifyPrivateImageHubPodStatus(ctx context.Context, cfg config.Config, expectedStatus string) error {
+	return component.AllReplicasHaveExpectedStatus(ctx, cfg, defaults.App3Name, defaults.App3EnvironmentName, defaults.App3Component1Name, expectedStatus)
 }

@@ -81,6 +81,7 @@ func getDeployments(ctx context.Context, cfg config.Config, appName string, envi
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewGetApplicationEnvironmentDeploymentsParams().
+		WithContext(ctx).
 		WithAppName(appName).
 		WithEnvName(environment).
 		WithImpersonateUser(impersonateUser).
