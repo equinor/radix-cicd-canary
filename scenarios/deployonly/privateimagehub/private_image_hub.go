@@ -28,7 +28,7 @@ func Set(ctx context.Context, cfg config.Config) error {
 	}
 	log.Ctx(ctx).Info().Msg("verified that all replicas are in failing state")
 
-	log.Ctx(ctx).Debug().Str("app", defaults.App3Name).Msg("set privateimagehub passford for application")
+	log.Ctx(ctx).Debug().Str("app", defaults.App3Name).Msg("set privateimagehub password for application")
 	err = privateimagehub.SetPassword(cfg, defaults.App3Name)
 	if err != nil {
 		return fmt.Errorf("failed to set private image hub password: %w", err)
