@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/equinor/radix-cicd-canary/metrics"
-	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/alias"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/delete"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/deploy"
 	"github.com/equinor/radix-cicd-canary/scenarios/deployonly/privateimagehub"
@@ -38,13 +37,6 @@ func TestSuite() test.Suite {
 				Name:        "SetDeployOnlyPrivateImageHub",
 				Description: "Check private image hub func",
 				Test:        privateimagehub.Set,
-				SuccessFn:   successFunction,
-				FailFn:      failFunction,
-			},
-			{
-				Name:        "DefaultDeployOnlyAliasResponding",
-				Description: "Check alias responding",
-				Test:        alias.DefaultResponding,
 				SuccessFn:   successFunction,
 				FailFn:      failFunction,
 			},

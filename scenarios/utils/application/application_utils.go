@@ -2,11 +2,9 @@ package application
 
 import (
 	"context"
-	"net/http"
 	"strings"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
-	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/platform"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -17,11 +15,6 @@ import (
 	"github.com/rs/zerolog/log"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
-)
-
-const (
-	publicDomainNameEnvironmentVariable  = "RADIX_PUBLIC_DOMAIN_NAME"
-	canonicalEndpointEnvironmentVariable = "RADIX_CANONICAL_DOMAIN_NAME"
 )
 
 // Register Will register application
@@ -224,123 +217,4 @@ func Get(ctx context.Context, cfg config.Config, appName string) (*models.Applic
 		return nil, errors.WithStack(err)
 	}
 	return result.Payload, nil
-}
-
-// IsAliasDefined Checks if app alias is defined
-func IsAliasDefined(ctx context.Context, cfg config.Config, appName string) error {
-	appAlias := getAlias(ctx, cfg, appName)
-	if appAlias != nil {
-		log.Ctx(ctx).Info().Msgf("App alias for application %s is defined: %s", appName, *appAlias)
-		return nil
-	}
-
-	log.Ctx(ctx).Info().Msg("App alias for application is not yet defined")
-	return errors.Errorf("public alias for application %s is not defined", appName)
-}
-
-func getAlias(ctx context.Context, cfg config.Config, appName string) *string {
-	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroups()
-
-	params := applicationclient.NewGetApplicationParams().
-		WithAppName(appName).
-		WithContext(ctx).
-		WithImpersonateUser(impersonateUser).
-		WithImpersonateGroup(impersonateGroup)
-	client := httpUtils.GetApplicationClient(cfg)
-	applicationDetails, err := client.GetApplication(params, nil)
-	if err == nil && applicationDetails.Payload != nil && applicationDetails.Payload.AppAlias != nil {
-		return applicationDetails.Payload.AppAlias.URL
-	}
-
-	return nil
-}
-
-// IsRunningInActiveCluster Check if app is running in active cluster
-func IsRunningInActiveCluster(publicDomainName, canonicalDomainName string) bool {
-	return !strings.EqualFold(publicDomainName, canonicalDomainName)
-}
-
-// TryGetPublicDomainName Waits for public domain name to be defined
-func TryGetPublicDomainName(ctx context.Context, cfg config.Config, appName, environmentName, componentName string) (string, error) {
-	publicDomainName := getEnvVariable(ctx, cfg, appName, environmentName, componentName, publicDomainNameEnvironmentVariable)
-	if publicDomainName == "" {
-		return "", errors.Errorf("public domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
-	}
-	return publicDomainName, nil
-}
-
-// TryGetCanonicalDomainName Waits for canonical domain name to be defined
-func TryGetCanonicalDomainName(ctx context.Context, cfg config.Config, appName, environmentName, componentName string) (string, error) {
-	canonicalDomainName := getEnvVariable(ctx, cfg, appName, environmentName, componentName, canonicalEndpointEnvironmentVariable)
-	if canonicalDomainName == "" {
-		return "", errors.Errorf("canonical domain name variable for application %s, component %s in environment %s is empty", appName, componentName, environmentName)
-	}
-	return canonicalDomainName, nil
-}
-
-func getEnvVariable(ctx context.Context, cfg config.Config, appName, envName, forComponentName, variableName string) string {
-	impersonateUser := cfg.GetImpersonateUser()
-	impersonateGroup := cfg.GetImpersonateGroups()
-
-	params := environmentclient.NewGetEnvironmentParams().
-		WithAppName(appName).
-		WithEnvName(envName).
-		WithContext(ctx).
-		WithImpersonateUser(impersonateUser).
-		WithImpersonateGroup(impersonateGroup)
-	client := httpUtils.GetEnvironmentClient(cfg)
-	environmentDetails, err := client.GetEnvironment(params, nil)
-	if err == nil &&
-		environmentDetails.Payload != nil &&
-		environmentDetails.Payload.ActiveDeployment != nil {
-		for _, component := range environmentDetails.Payload.ActiveDeployment.Components {
-			componentName := *component.Name
-			if componentName == forComponentName {
-				return component.Variables[variableName]
-			}
-		}
-	}
-
-	return ""
-}
-
-// AreResponding Checks if all endpoint responds
-func AreResponding(ctx context.Context, urls ...string) error {
-	for _, url := range urls {
-		responded := IsResponding(ctx, url)
-		if !responded {
-			return errors.New("not all endpoints respond")
-		}
-	}
-
-	return nil
-}
-
-// IsResponding Checks if endpoint is responding
-func IsResponding(ctx context.Context, url string) bool {
-	req := httpUtils.CreateRequest(url, "GET", nil)
-	client := http.DefaultClient
-	resp, err := client.Do(req)
-	logger := log.Ctx(ctx)
-
-	if err == nil && resp.StatusCode == 200 {
-		logger.Info().Msg("App alias responded ok")
-		return true
-	}
-
-	if err != nil {
-		logger.Debug().Msgf("Failed request to %s with the alias: %v", url, err)
-	}
-
-	if resp != nil {
-		logger.Debug().Msgf("Request to alias '%s' returned status %v", url, resp.StatusCode)
-	}
-
-	if err == nil && resp == nil {
-		logger.Debug().Msgf("Request to alias returned, no response and no err: %s", url)
-	}
-
-	logger.Info().Msgf("Alias is still not responding: %s", url)
-	return false
 }
