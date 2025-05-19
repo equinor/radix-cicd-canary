@@ -117,7 +117,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := application.NewUpdateBuildSecretsSecretValueParams().
 					WithContext(ctx).
-					WithSecretName(defaults.App2SecretName).
+					WithSecretName(defaults.App2BuildSecretName).
 					WithSecretValue(&models.SecretParameters{SecretValue: commonUtils.StringPtr(defaults.App2SecretValue)})
 				impersonationSetter(param)
 				_, err := httpUtils.GetApplicationClient(cfg).UpdateBuildSecretsSecretValue(param, nil)

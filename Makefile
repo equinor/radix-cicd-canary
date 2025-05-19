@@ -16,6 +16,10 @@ DOCKER_REGISTRY	?= $(CONTAINER_REPO).azurecr.io
 lint: bootstrap
 	golangci-lint run --max-same-issues 0 --timeout 10m
 
+.PHONY: tidy
+tidy:
+	go mod tidy
+
 .PHONY: generate-client
 generate-client: SHELL:=/bin/bash
 generate-client: bootstrap
@@ -50,8 +54,7 @@ test:
 
 
 .PHONY: generate
-generate: generate-client
-	go mod tidy
+generate: tidy generate-client
 
 .PHONY: verify-generate
 verify-generate: generate
