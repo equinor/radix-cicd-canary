@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Runtime Runtime requirements for the component or job
+// Runtime Runtime defines the component or job's target runtime requirements
 //
 // swagger:model Runtime
 type Runtime struct {
@@ -21,8 +21,11 @@ type Runtime struct {
 	// Example: amd64
 	Architecture string `json:"architecture,omitempty"`
 
-	// NodeType is the node type of the component
-	// Example: memory-optimized-2-v1
+	// Defines the node type for the component. It is a node-pool label and taint, where the component's or job's pods will be scheduled.
+	// More info: https://www.radix.equinor.com/radix-config#nodetype
+	// +kubebuilder:validation:MaxLength=120
+	// +kubebuilder:validation:Pattern=^(([a-z0-9][-a-z0-9]*)?[a-z0-9])?$
+	// +optional
 	NodeType string `json:"nodeType,omitempty"`
 }
 

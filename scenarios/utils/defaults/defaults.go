@@ -25,6 +25,7 @@ const (
 	App2Component1Name               = "app"
 	App2Component2Name               = "redis"
 	App2ComponentPrivateImageHubName = "from-private-image-hub"
+	App2BuildSecretName              = "SECRET_1"
 	App2SecretName                   = "DB_PASS"
 	App2SecretValue                  = "Test"
 	App2ConfigBranch                 = "master"

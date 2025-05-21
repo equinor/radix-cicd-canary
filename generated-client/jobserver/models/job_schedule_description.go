@@ -43,6 +43,9 @@ type JobScheduleDescription struct {
 
 	// resources
 	Resources *Resources `json:"resources,omitempty"`
+
+	// runtime
+	Runtime *Runtime `json:"runtime,omitempty"`
 }
 
 // Validate validates this job schedule description
@@ -58,6 +61,10 @@ func (m *JobScheduleDescription) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateResources(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRuntime(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -124,6 +131,25 @@ func (m *JobScheduleDescription) validateResources(formats strfmt.Registry) erro
 	return nil
 }
 
+func (m *JobScheduleDescription) validateRuntime(formats strfmt.Registry) error {
+	if swag.IsZero(m.Runtime) { // not required
+		return nil
+	}
+
+	if m.Runtime != nil {
+		if err := m.Runtime.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtime")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this job schedule description based on the context it is used
 func (m *JobScheduleDescription) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -137,6 +163,10 @@ func (m *JobScheduleDescription) ContextValidate(ctx context.Context, formats st
 	}
 
 	if err := m.contextValidateResources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRuntime(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -201,6 +231,27 @@ func (m *JobScheduleDescription) contextValidateResources(ctx context.Context, f
 				return ve.ValidateName("resources")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("resources")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *JobScheduleDescription) contextValidateRuntime(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Runtime != nil {
+
+		if swag.IsZero(m.Runtime) { // not required
+			return nil
+		}
+
+		if err := m.Runtime.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtime")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtime")
 			}
 			return err
 		}
