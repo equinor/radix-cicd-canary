@@ -2,6 +2,7 @@ package register
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -34,8 +35,8 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 
-	if err := application.RegenerateDeployKey(ctx, cfg, appName, cfg.GetPrivateKey(), ""); err != nil {
-		return errors.Wrapf(err, "failed to regenerate deploy key for application %s", appName)
+	if err := application.RegenerateDeployKey(ctx, cfg, appName, cfg.GetPrivateKey()); err != nil {
+		return fmt.Errorf("failed to regenerated deploy key for application %s: %w", appName, err)
 	}
 
 	return test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {

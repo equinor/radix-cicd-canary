@@ -74,7 +74,7 @@ func DeleteByServiceAccount(ctx context.Context, cfg config.Config, appName stri
 	return deleteApplication(cfg, appName, params)
 }
 
-func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privateKey, sharedSecret string) error {
+func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privateKey string) error {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	log.Ctx(ctx).Debug().Str("impersonateGroup", *impersonateGroup).Str("impersonateUser", *impersonateUser).Msg("regenerate deploy key for application by the impersonamed user")
@@ -83,18 +83,11 @@ func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privat
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
 		WithAppName(appName).
-		WithRegenerateDeployKeyAndSecretData(&models.RegenerateDeployKeyAndSecretData{
-			PrivateKey:   privateKey,
-			SharedSecret: sharedSecret,
-		},
-		)
+		WithRegenerateDeployKeyAndSecretData(&models.RegenerateDeployKeyData{PrivateKey: privateKey})
 
 	client := httpUtils.GetApplicationClient(cfg)
 	_, err := client.RegenerateDeployKey(params, nil)
-	if err != nil {
-		return errors.Wrapf(err, "failed regenerating deploy key for the application %s", appName)
-	}
-	return nil
+	return err
 }
 
 func HasDeployKey(ctx context.Context, cfg config.Config, appName, expectedDeployKey string) error {
