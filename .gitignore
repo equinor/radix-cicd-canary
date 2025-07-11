@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-__debug_bin
+__debug_bin*
 
 # Test binary, build with `go test -c`
 *.test
@@ -19,3 +19,5 @@ rootfs/
 .vscode/
 .idea
 .dccache
+
+.env
