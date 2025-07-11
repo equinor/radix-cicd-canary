@@ -10,9 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/main.go",
-            "env": {
-                "BEARER_TOKEN": "",
-            },
+            "envFile": "${workspaceFolder}/.env",
             "args": []
         }
     ]

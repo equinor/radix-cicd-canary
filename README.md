@@ -80,7 +80,7 @@ The application can be run locally for debugging purposes, but it will still int
 
 ### Entire application
 
-The tests can be debugged in their entirety by setting the `BEARER_TOKEN` value in the `launch.json` file, and then running debug from VSCode (F5). You will most likely need to comment in the `os.Setenv("GODEBUG", "http2server=0,http2client=0")`line in the `main.go` to allow for a large token in the API.
+The tests can be debugged in their entirety by setting the `BEARER_TOKEN` value in the `.env` file, and then running debug from VSCode (F5). You will most likely need to comment in the `os.Setenv("GODEBUG", "http2server=0,http2client=0")` line in the `main.go` to allow for a large token in the API.
 
 ### Unit tests
 
