@@ -61,10 +61,6 @@ func DeleteByImpersonatedUser(ctx context.Context, cfg config.Config, appName st
 
 // DeleteByServiceAccount an application by the service account
 func DeleteByServiceAccount(ctx context.Context, cfg config.Config, appName string) error {
-	err := IsDefined(ctx, cfg, appName)
-	if err != nil {
-		return err
-	}
 	log.Ctx(ctx).Debug().Msgf("delete an application by the service account: %s", appName)
 
 	params := applicationclient.NewDeleteApplicationParams().
@@ -138,7 +134,7 @@ func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (strin
 func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
 	client := httpUtils.GetApplicationClient(cfg)
 	_, err := client.DeleteApplication(params, nil)
-	if err != nil {
+	if err != nil && !errors.Is(err, applicationclient.NewDeleteApplicationNotFound()) {
 		return errors.Wrapf(err, "failed deleting the application %s", appName)
 	}
 	return nil
