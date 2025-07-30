@@ -18,8 +18,37 @@ import (
 // swagger:model JobScheduleDescription
 type JobScheduleDescription struct {
 
+	// Arguments to the entrypoint.
+	// The container image's CMD is used if this is not provided.
+	// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+	// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+	// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+	// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+	// of whether the variable exists or not. Cannot be updated.
+	// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+	// +optional
+	// +listType=atomic
+	Args []string `json:"args"`
+
 	// BackoffLimit defines attempts to restart job if it fails. Corresponds to BackoffLimit in K8s.
 	BackoffLimit int32 `json:"backoffLimit,omitempty"`
+
+	// Entrypoint array. Not executed within a shell.
+	// The container image's ENTRYPOINT is used if this is not provided.
+	// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
+	// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
+	// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
+	// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
+	// of whether the variable exists or not. Cannot be updated.
+	// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
+	// +optional
+	// +listType=atomic
+	Command []string `json:"command"`
+
+	// Name of an existing container image to use when running the job. Overrides an image in the RadixDeployment
+	// More info: https://www.radix.equinor.com/radix-config#image-2
+	// +optional
+	Image string `json:"image,omitempty"`
 
 	// ImageTagName defines the image tag name to use for the job image
 	ImageTagName string `json:"imageTagName,omitempty"`
@@ -46,6 +75,9 @@ type JobScheduleDescription struct {
 
 	// runtime
 	Runtime *Runtime `json:"runtime,omitempty"`
+
+	// variables
+	Variables EnvVars `json:"variables,omitempty"`
 }
 
 // Validate validates this job schedule description
@@ -65,6 +97,10 @@ func (m *JobScheduleDescription) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateRuntime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateVariables(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -150,6 +186,25 @@ func (m *JobScheduleDescription) validateRuntime(formats strfmt.Registry) error 
 	return nil
 }
 
+func (m *JobScheduleDescription) validateVariables(formats strfmt.Registry) error {
+	if swag.IsZero(m.Variables) { // not required
+		return nil
+	}
+
+	if m.Variables != nil {
+		if err := m.Variables.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("variables")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("variables")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this job schedule description based on the context it is used
 func (m *JobScheduleDescription) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -167,6 +222,10 @@ func (m *JobScheduleDescription) ContextValidate(ctx context.Context, formats st
 	}
 
 	if err := m.contextValidateRuntime(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVariables(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -255,6 +314,24 @@ func (m *JobScheduleDescription) contextValidateRuntime(ctx context.Context, for
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *JobScheduleDescription) contextValidateVariables(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Variables) { // not required
+		return nil
+	}
+
+	if err := m.Variables.ContextValidate(ctx, formats); err != nil {
+		if ve, ok := err.(*errors.Validation); ok {
+			return ve.ValidateName("variables")
+		} else if ce, ok := err.(*errors.CompositeError); ok {
+			return ce.ValidateName("variables")
+		}
+		return err
 	}
 
 	return nil
