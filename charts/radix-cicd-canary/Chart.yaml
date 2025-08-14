@@ -1,8 +1,8 @@
 apiVersion: v2
 name: radix-cicd-canary
 description: Radix CICD Canary
-version: 1.4.4
-appVersion: 1.4.4
+version: 1.4.4 # x-patch-semver
+appVersion: 1.4.4 # x-patch-semver
 kubeVersion: ">=1.24.0"
 keywords:
   - radix

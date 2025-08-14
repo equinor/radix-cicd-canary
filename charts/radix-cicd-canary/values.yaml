@@ -5,8 +5,9 @@ fullnameOverride: ""
 clusterFQDN: xx
 
 image:
-  repository: xx
-  tag: xx
+  repository: ghcr.io/equinor/radix/cicd-canary
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
   pullPolicy: Always
 
 service:
