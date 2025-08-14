@@ -64,6 +64,7 @@ jobs:
             linux/arm64
           tags: ${{ steps.container-metadata.outputs.tags }}
           labels: ${{ steps.container-metadata.outputs.labels }}
+          
   deploy-helm:
     runs-on: ubuntu-latest
     needs: metadata
