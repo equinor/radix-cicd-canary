@@ -12,6 +12,7 @@ jobs:
       pull-requests: read
       contents: read
     uses: equinor/radix-reusable-workflows/.github/workflows/template-unreleased-pr-metadata.yml@v1.0.1
+    
   release-pull-request:
     name: Release pull request
     needs: 
