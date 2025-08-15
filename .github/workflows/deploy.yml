@@ -52,7 +52,7 @@ jobs:
         id: container-metadata
         uses: docker/metadata-action@v5
         with:
-          images: "${{ env.CONTAINER_REGISTRY }}/radix/cicd-canary"
+          images: "${{ env.CONTAINER_REGISTRY }}/equinor/radix/cicd-canary"
           tags: ${{ needs.metadata.outputs.version }}
       - name: Build and push container images
         uses: docker/build-push-action@v5
@@ -94,7 +94,7 @@ jobs:
           set -Eeuo pipefail
 
           version=${{ needs.metadata.outputs.version }}
-          helm_repo=${{ env.HELM_CHART_REGISTRY }}/radix/charts
+          helm_repo=${{ env.HELM_CHART_REGISTRY }}/equinor/radix/charts
 
           helm package --version $version --app-version $version .
           helm push radix-cicd-canary-$version.tgz $helm_repo
