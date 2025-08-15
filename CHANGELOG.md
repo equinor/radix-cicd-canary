@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ## New Contributors ❤️
 
-* @github-actions[bot] made their first contribution in [#243](https://github.com/equinor/radix-cicd-canary/pull/243)
+* @github-actions[bot] made their first contribution in [#244](https://github.com/equinor/radix-cicd-canary/pull/244)
 ## [1.4.4] - 2025-07-30
 
 ### 🚀 Features
