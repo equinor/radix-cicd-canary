@@ -53,26 +53,47 @@ The `Deploy only` suite contains the following tests.
 1. Check alias responding
 1. Delete applications
 
-## Developer information
 
-### Development Process
+## Development Process
 
-The `radix-cicd-canary` is developed using trunk-based development. There is a different setup for each cluster:
+The `radix-cicd-canary` project follows a **trunk-based development** approach.
 
-- `master` branch should be used for deployment to `dev` clusters. When a pull request is approved and merged to `master`, Github actions will create a `radix-cicd-canary:master-<sha>` image and push it to ACR. Flux then installs it into the cluster.
-- `release` branch should be used for deployment to `playground` and `prod` clusters. When a pull request is approved and merged to `master`, and tested ok in `dev` cluster, we should immediately merge `master` into `release` and deploy those changes to `playground` and `prod` clusters, unless there are breaking changes which needs to be coordinated with release of our other components. When the `master` branch is merged to the `release` branch, Github actions will create a `radix-cicd-canary:release-<sha>` image and push it to ACR. Flux then installs it into the clusters.
+### 🔁 Workflow
 
-### From a local machine
+- **External contributors** should:
+  - Fork the repository
+  - Create a feature branch in their fork
 
-NOTE: The following only applies to development. Proper installation have being done through installing base components and Flux Helmrelease:
-First build the docker file (default it will push to `radixdev`. With `ENVIRONMENT=prod` it will push to `radixprod`):
-```bash
-make deploy
-```
+- **Maintainers** may create feature branches directly in the main repository.
 
-### Pre-requisites
+### ✅ Merging Changes
 
-The pre-requisite secret is installed by the `install_base_components.sh` script (in the [radix-platform repository](https://github.com/equinor/radix-platform/tree/master/scripts)) that is typically run when a new cluster is created:
+All changes must be merged into the `master` branch using **pull requests** with **squash commits**.
+
+The squash commit message must follow the [Conventional Commits](https://www.conventionalcommits.org/en/about/) specification.
+
+
+## Release Process
+
+Merging a pull request into `master` triggers the **Prepare release pull request** workflow.  
+This workflow analyzes the commit messages to determine whether the version number should be bumped — and if so, whether it's a major, minor, or patch change.  
+
+It then creates two pull requests:
+
+- one for the new stable version (e.g. `1.2.3`), and  
+- one for a pre-release version where `-rc.[number]` is appended (e.g. `1.2.3-rc.1`).
+
+---
+
+Merging either of these pull requests triggers the **Create releases and tags** workflow.  
+This workflow reads the version stored in `version.txt`, creates a GitHub release, and tags it accordingly.
+
+The new tag triggers the **Build and deploy Docker and Helm** workflow, which:
+
+- builds and pushes a new container image and Helm chart to `ghcr.io`, and  
+- uploads the Helm chart as an artifact to the corresponding GitHub release.
+
+
 
 ## Debugging
 
