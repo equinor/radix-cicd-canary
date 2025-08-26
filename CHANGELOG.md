@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.1](https://github.com/equinor/radix-cicd-canary/compare/v1.5.0..v1.5.1) - 2025-08-26
+
+### 🐛 Bug Fixes
+
+- Regenerate radix-api client (#251) - ([ed914de](https://github.com/equinor/radix-cicd-canary/commit/ed914defa41bd20b18613b98aee2f48f6b197ef6)) by @nilsgstrabo in [#251](https://github.com/equinor/radix-cicd-canary/pull/251)
+
+
+### 📚 Documentation
+
+- Update development and release documentation - ([69499b6](https://github.com/equinor/radix-cicd-canary/commit/69499b65b40c9c5f429218a440ff66e4c3d85109)) by @nilsgstrabo in [#248](https://github.com/equinor/radix-cicd-canary/pull/248)
+
+
+### ⚙️ Miscellaneous Tasks
+
+- Remove deprecated "build & push" workflow (#249) - ([4d4ba45](https://github.com/equinor/radix-cicd-canary/commit/4d4ba45b3652b7241091f8a1fa206d8b600e6258)) by @nilsgstrabo in [#249](https://github.com/equinor/radix-cicd-canary/pull/249)
+
+- Use workflow token when uploading chart artifact to release (#250) - ([85961c8](https://github.com/equinor/radix-cicd-canary/commit/85961c819fb8ef63405e7982f58dbb62aa7f2553)) by @nilsgstrabo in [#250](https://github.com/equinor/radix-cicd-canary/pull/250)
+
+- Bump docker/build-push-action to v6 - ([ec50704](https://github.com/equinor/radix-cicd-canary/commit/ec50704d86b50aff5cd554410f1851468303bd09)) by @nilsgstrabo in [#254](https://github.com/equinor/radix-cicd-canary/pull/254)
+
+
 ## [1.5.0](https://github.com/equinor/radix-cicd-canary/compare/v1.4.4..v1.5.0) - 2025-08-15
 
 ### 🚀 Features
@@ -18,7 +39,7 @@ All notable changes to this project will be documented in this file.
 
 ## New Contributors ❤️
 
-* @github-actions[bot] made their first contribution in [#243](https://github.com/equinor/radix-cicd-canary/pull/243)
+* @github-actions[bot] made their first contribution in [#244](https://github.com/equinor/radix-cicd-canary/pull/244)
 ## [1.4.4] - 2025-07-30
 
 ### 🚀 Features
