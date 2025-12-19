@@ -2,9 +2,12 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: radix-cicd-canary
+  title: Radix CICD Canary
+  description: "Main app for the Canary tests in Radix"
   annotations:
     github.com/project-slug: equinor/radix-cicd-canary
 spec:
-  type: other
-  lifecycle: unknown
+  type: service
+  lifecycle: production
   owner: omnia-radix
+  system: Radix
