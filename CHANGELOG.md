@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.2](https://github.com/equinor/radix-cicd-canary/compare/v1.5.1..v1.5.2) - 2026-01-09
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update to go 1.25 - ([41d4f10](https://github.com/equinor/radix-cicd-canary/commit/41d4f106c2eb6056f4ea998f409952a08f4e6278)) by @nilsgstrabo in [#261](https://github.com/equinor/radix-cicd-canary/pull/261)
+
+
+### 📚 Documentation
+
+- Add catalog-info.yaml config file (#260) - ([8e3888b](https://github.com/equinor/radix-cicd-canary/commit/8e3888be9994c50a2e6bb3ff289bb5f60f160caf)) by @emirgens in [#260](https://github.com/equinor/radix-cicd-canary/pull/260)
+
+
+### ⚙️ Miscellaneous Tasks
+
+- Configure concurrency for prepare-release workflow to prevent concurrent runs - ([ecd4dbe](https://github.com/equinor/radix-cicd-canary/commit/ecd4dbe2ca6e0d8dd9a8f9e44be0fdd756633db5)) by @nilsgstrabo in [#258](https://github.com/equinor/radix-cicd-canary/pull/258)
+
+
 ## [1.5.1](https://github.com/equinor/radix-cicd-canary/compare/v1.5.0..v1.5.1) - 2025-08-26
 
 ### 🐛 Bug Fixes
