@@ -48,7 +48,7 @@ func (m *ReplicaStatus) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var replicaStatusTypeStatusPropEnum []interface{}
+var replicaStatusTypeStatusPropEnum []any
 
 func init() {
 	var res []string

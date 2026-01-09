@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -68,11 +69,15 @@ func (m *ApplicationSummary) validateEnvironmentActiveComponents(formats strfmt.
 		for i := 0; i < len(m.EnvironmentActiveComponents[k]); i++ {
 
 			if err := m.EnvironmentActiveComponents[k][i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("environmentActiveComponents" + "." + k + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("environmentActiveComponents" + "." + k + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 
@@ -99,11 +104,15 @@ func (m *ApplicationSummary) validateLatestJob(formats strfmt.Registry) error {
 
 	if m.LatestJob != nil {
 		if err := m.LatestJob.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("latestJob")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("latestJob")
 			}
+
 			return err
 		}
 	}
@@ -140,11 +149,15 @@ func (m *ApplicationSummary) contextValidateEnvironmentActiveComponents(ctx cont
 			}
 
 			if err := m.EnvironmentActiveComponents[k][i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("environmentActiveComponents" + "." + k + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("environmentActiveComponents" + "." + k + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 
@@ -164,11 +177,15 @@ func (m *ApplicationSummary) contextValidateLatestJob(ctx context.Context, forma
 		}
 
 		if err := m.LatestJob.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("latestJob")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("latestJob")
 			}
+
 			return err
 		}
 	}

@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -57,9 +58,7 @@ type Deployment struct {
 	// branch
 	// tag
 	// <empty> - either branch or tag
-	//
-	// required false
-	// Example: \"branch\
+	// Example: branch
 	// Enum: ["branch","tag","\"\""]
 	GitRefType string `json:"gitRefType,omitempty"`
 
@@ -171,11 +170,15 @@ func (m *Deployment) validateComponents(formats strfmt.Registry) error {
 
 		if m.Components[i] != nil {
 			if err := m.Components[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -194,7 +197,7 @@ func (m *Deployment) validateEnvironment(formats strfmt.Registry) error {
 	return nil
 }
 
-var deploymentTypeGitRefTypePropEnum []interface{}
+var deploymentTypeGitRefTypePropEnum []any
 
 func init() {
 	var res []string
@@ -291,11 +294,15 @@ func (m *Deployment) contextValidateComponents(ctx context.Context, formats strf
 			}
 
 			if err := m.Components[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

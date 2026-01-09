@@ -71,7 +71,7 @@ type ClientService interface {
 GetSearchApplications gets applications by name n o t e doesn t get application summary latest job environments
 */
 func (a *Client) GetSearchApplications(params *GetSearchApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetSearchApplicationsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetSearchApplicationsParams()
 	}
@@ -91,17 +91,22 @@ func (a *Client) GetSearchApplications(params *GetSearchApplicationsParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetSearchApplicationsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getSearchApplications: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -110,7 +115,7 @@ func (a *Client) GetSearchApplications(params *GetSearchApplicationsParams, auth
 RegisterApplication creates an application registration
 */
 func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegisterApplicationOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRegisterApplicationParams()
 	}
@@ -130,17 +135,22 @@ func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RegisterApplicationOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for registerApplication: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -149,7 +159,7 @@ func (a *Client) RegisterApplication(params *RegisterApplicationParams, authInfo
 SearchApplications gets applications by name n o t e doesn t get application summary latest job environments
 */
 func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SearchApplicationsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSearchApplicationsParams()
 	}
@@ -169,17 +179,22 @@ func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SearchApplicationsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for searchApplications: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -188,7 +203,7 @@ func (a *Client) SearchApplications(params *SearchApplicationsParams, authInfo r
 ShowApplications lists the applications n o t e doesn t get application summary latest job environments
 */
 func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ShowApplicationsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewShowApplicationsParams()
 	}
@@ -208,17 +223,22 @@ func (a *Client) ShowApplications(params *ShowApplicationsParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ShowApplicationsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for showApplications: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

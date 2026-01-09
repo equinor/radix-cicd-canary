@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -61,9 +62,7 @@ type DeploymentSummary struct {
 	// branch
 	// tag
 	// <empty> - either branch or tag
-	//
-	// required false
-	// Example: \"branch\
+	// Example: branch
 	// Enum: ["branch","tag","\"\""]
 	GitRefType string `json:"gitRefType,omitempty"`
 
@@ -171,11 +170,15 @@ func (m *DeploymentSummary) validateComponents(formats strfmt.Registry) error {
 
 		if m.Components[i] != nil {
 			if err := m.Components[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -194,7 +197,7 @@ func (m *DeploymentSummary) validateEnvironment(formats strfmt.Registry) error {
 	return nil
 }
 
-var deploymentSummaryTypeGitRefTypePropEnum []interface{}
+var deploymentSummaryTypeGitRefTypePropEnum []any
 
 func init() {
 	var res []string
@@ -248,7 +251,7 @@ func (m *DeploymentSummary) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-var deploymentSummaryTypePipelineJobTypePropEnum []interface{}
+var deploymentSummaryTypePipelineJobTypePropEnum []any
 
 func init() {
 	var res []string
@@ -324,11 +327,15 @@ func (m *DeploymentSummary) contextValidateComponents(ctx context.Context, forma
 			}
 
 			if err := m.Components[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("components" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("components" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

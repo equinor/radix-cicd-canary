@@ -162,7 +162,6 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 				return err
 			},
 		},
-		// TODO: check that reading pipeline log is allowed https://console.dev.radix.equinor.com/api/v1/applications/radix-networkpolicy-canary/jobs/radix-pipeline-20230728084604-ew3sz/logs/radix-pipeline?lines=1000
 		{
 			name:          "reader-user-can-read-pipeline-log",
 			logMsg:        fmt.Sprintf("checking that user with read role can read pipeline log for app %s", appName),
@@ -185,7 +184,6 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 				return err
 			},
 		},
-		// TODO: check that reading runtime log is allowed https://console.dev.radix.equinor.com/api/v1/applications/radix-networkpolicy-canary/environments/egressrulestopublicdns/components/web/replicas/web-978d76dc4-ctgzz/logs?lines=1000
 	}
 
 	setImpersonation := func(p impersonateParam) {

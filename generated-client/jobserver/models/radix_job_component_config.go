@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -109,11 +110,15 @@ func (m *RadixJobComponentConfig) validateFailurePolicy(formats strfmt.Registry)
 
 	if m.FailurePolicy != nil {
 		if err := m.FailurePolicy.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("failurePolicy")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("failurePolicy")
 			}
+
 			return err
 		}
 	}
@@ -128,11 +133,15 @@ func (m *RadixJobComponentConfig) validateNode(formats strfmt.Registry) error {
 
 	if m.Node != nil {
 		if err := m.Node.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("node")
 			}
+
 			return err
 		}
 	}
@@ -147,11 +156,15 @@ func (m *RadixJobComponentConfig) validateResources(formats strfmt.Registry) err
 
 	if m.Resources != nil {
 		if err := m.Resources.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("resources")
 			}
+
 			return err
 		}
 	}
@@ -166,11 +179,15 @@ func (m *RadixJobComponentConfig) validateRuntime(formats strfmt.Registry) error
 
 	if m.Runtime != nil {
 		if err := m.Runtime.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runtime")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runtime")
 			}
+
 			return err
 		}
 	}
@@ -185,11 +202,15 @@ func (m *RadixJobComponentConfig) validateVariables(formats strfmt.Registry) err
 
 	if m.Variables != nil {
 		if err := m.Variables.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("variables")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("variables")
 			}
+
 			return err
 		}
 	}
@@ -236,11 +257,15 @@ func (m *RadixJobComponentConfig) contextValidateFailurePolicy(ctx context.Conte
 		}
 
 		if err := m.FailurePolicy.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("failurePolicy")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("failurePolicy")
 			}
+
 			return err
 		}
 	}
@@ -257,11 +282,15 @@ func (m *RadixJobComponentConfig) contextValidateNode(ctx context.Context, forma
 		}
 
 		if err := m.Node.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("node")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("node")
 			}
+
 			return err
 		}
 	}
@@ -278,11 +307,15 @@ func (m *RadixJobComponentConfig) contextValidateResources(ctx context.Context, 
 		}
 
 		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("resources")
 			}
+
 			return err
 		}
 	}
@@ -299,11 +332,15 @@ func (m *RadixJobComponentConfig) contextValidateRuntime(ctx context.Context, fo
 		}
 
 		if err := m.Runtime.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runtime")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runtime")
 			}
+
 			return err
 		}
 	}
@@ -318,11 +355,15 @@ func (m *RadixJobComponentConfig) contextValidateVariables(ctx context.Context, 
 	}
 
 	if err := m.Variables.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("variables")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("variables")
 		}
+
 		return err
 	}
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -63,7 +64,6 @@ type HorizontalScalingSummary struct {
 	TargetMemoryUtilizationPercentage int32 `json:"targetMemoryUtilizationPercentage,omitempty"`
 
 	// Triggers lists status of all triggers found in radixconfig.yaml
-	// Example: 30
 	// Required: true
 	Triggers []*HorizontalScalingSummaryTriggerStatus `json:"triggers"`
 }
@@ -121,11 +121,15 @@ func (m *HorizontalScalingSummary) validateTriggers(formats strfmt.Registry) err
 
 		if m.Triggers[i] != nil {
 			if err := m.Triggers[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("triggers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("triggers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -160,11 +164,15 @@ func (m *HorizontalScalingSummary) contextValidateTriggers(ctx context.Context, 
 			}
 
 			if err := m.Triggers[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("triggers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("triggers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

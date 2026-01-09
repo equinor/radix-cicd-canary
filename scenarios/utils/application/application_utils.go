@@ -134,14 +134,14 @@ func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (strin
 func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
 	client := httpUtils.GetApplicationClient(cfg)
 	_, err := client.DeleteApplication(params, nil)
-	
-    if err != nil {
-        if _, ok := err.(*applicationclient.DeleteApplicationNotFound); ok {
-            return nil
-        }
+
+	if err != nil {
+		if _, ok := err.(*applicationclient.DeleteApplicationNotFound); ok {
+			return nil
+		}
 		return errors.Wrapf(err, "failed deleting the application %s", appName)
-    }
-    return nil
+	}
+	return nil
 }
 
 // Deploy Deploy application
