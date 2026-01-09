@@ -436,8 +436,8 @@ func getConfigMapInt(key string) int {
 // SetRequiredEnvironmentVariablesForTest Sets test environment variables, that would come from
 // launch config, when running complete scenario
 func SetRequiredEnvironmentVariablesForTest() {
-	os.Setenv("GODEBUG", "http2server=0,http2client=0")
-	os.Setenv("BEARER_TOKEN", "")
+	_ = os.Setenv("GODEBUG", "http2server=0,http2client=0")
+	_ = os.Setenv("BEARER_TOKEN", "")
 }
 
 func getConfigFromMap(config string) string {

@@ -1,8 +1,6 @@
 module github.com/equinor/radix-cicd-canary
 
-go 1.24.0
-
-toolchain go1.24.2
+go 1.25.5
 
 require (
 	github.com/equinor/radix-common v1.11.0

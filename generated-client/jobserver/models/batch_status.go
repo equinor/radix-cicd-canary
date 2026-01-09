@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -171,11 +172,15 @@ func (m *BatchStatus) validateJobStatuses(formats strfmt.Registry) error {
 
 		if m.JobStatuses[i] != nil {
 			if err := m.JobStatuses[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -206,11 +211,15 @@ func (m *BatchStatus) validatePodStatuses(formats strfmt.Registry) error {
 
 		if m.PodStatuses[i] != nil {
 			if err := m.PodStatuses[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("podStatuses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("podStatuses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -232,7 +241,7 @@ func (m *BatchStatus) validateStarted(formats strfmt.Registry) error {
 	return nil
 }
 
-var batchStatusTypeStatusPropEnum []interface{}
+var batchStatusTypeStatusPropEnum []any
 
 func init() {
 	var res []string
@@ -333,11 +342,15 @@ func (m *BatchStatus) contextValidateJobStatuses(ctx context.Context, formats st
 			}
 
 			if err := m.JobStatuses[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("jobStatuses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -358,11 +371,15 @@ func (m *BatchStatus) contextValidatePodStatuses(ctx context.Context, formats st
 			}
 
 			if err := m.PodStatuses[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("podStatuses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("podStatuses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

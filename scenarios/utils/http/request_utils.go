@@ -92,7 +92,9 @@ func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, 
 
 // CheckResponse Checks that the response was successful
 func CheckResponse(ctx context.Context, resp *http.Response) error {
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 	_, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Wrap(err, "error reading response body")

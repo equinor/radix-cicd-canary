@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -51,7 +52,7 @@ func (m *FailurePolicyRule) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var failurePolicyRuleTypeActionPropEnum []interface{}
+var failurePolicyRuleTypeActionPropEnum []any
 
 func init() {
 	var res []string
@@ -105,11 +106,15 @@ func (m *FailurePolicyRule) validateOnExitCodes(formats strfmt.Registry) error {
 
 	if m.OnExitCodes != nil {
 		if err := m.OnExitCodes.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("onExitCodes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("onExitCodes")
 			}
+
 			return err
 		}
 	}
@@ -136,11 +141,15 @@ func (m *FailurePolicyRule) contextValidateOnExitCodes(ctx context.Context, form
 	if m.OnExitCodes != nil {
 
 		if err := m.OnExitCodes.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("onExitCodes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("onExitCodes")
 			}
+
 			return err
 		}
 	}

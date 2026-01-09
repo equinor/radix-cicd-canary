@@ -42,7 +42,9 @@ func startJobBatch(baseUrl string, password string, appEnv string) error {
 	if response.StatusCode != 200 {
 		return errors.Errorf("got non-200 OK from %s", jobBatchUrl)
 	}
-	defer response.Body.Close()
+	defer func() {
+		_ = response.Body.Close()
+	}()
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return err

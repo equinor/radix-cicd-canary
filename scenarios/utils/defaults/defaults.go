@@ -1,11 +1,5 @@
 package defaults
 
-// TODO: Add test for build-deploy for a specific commitId.
-// Before user story https://dev.azure.com/Equinor/Radix/_workitems/edit/106471, the AppXCommitId didn't have any effect on the build-deploy jobs
-// To keep consistent behavioru between dev and prod clusters in a transition period until the user story is release to prod
-// we have to use "" as commit Id.
-// When functionality in the user story is released to all clusters, we must add a test to verify that the commit id is actually used by the pipeline job(s)
-
 const (
 	App1Name       = "canarycicd-test1"
 	App1Repository = "https://github.com/equinor/radix-canarycicd-test-1"

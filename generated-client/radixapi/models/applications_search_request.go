@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -62,11 +63,15 @@ func (m *ApplicationsSearchRequest) validateIncludeFields(formats strfmt.Registr
 
 	if m.IncludeFields != nil {
 		if err := m.IncludeFields.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("includeFields")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("includeFields")
 			}
+
 			return err
 		}
 	}
@@ -97,11 +102,15 @@ func (m *ApplicationsSearchRequest) contextValidateIncludeFields(ctx context.Con
 		}
 
 		if err := m.IncludeFields.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("includeFields")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("includeFields")
 			}
+
 			return err
 		}
 	}

@@ -57,12 +57,12 @@ type Secret struct {
 	// csi-azure-key-vault-item SecretTypeCsiAzureKeyVaultItem
 	// client-cert-auth SecretTypeClientCertificateAuth
 	// oauth2-proxy SecretTypeOAuth2Proxy
-	// Example: client-cert
+	// Example: generic
 	// Enum: ["generic","azure-blob-fuse-volume","csi-azure-blob-volume","csi-azure-key-vault-creds","csi-azure-key-vault-item","client-cert-auth","oauth2-proxy"]
 	Type string `json:"type,omitempty"`
 
 	// Updated timestamp of the last change
-	Updated interface{} `json:"updated,omitempty"`
+	Updated any `json:"updated,omitempty"`
 }
 
 // Validate validates this secret
@@ -96,7 +96,7 @@ func (m *Secret) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-var secretTypeStatusPropEnum []interface{}
+var secretTypeStatusPropEnum []any
 
 func init() {
 	var res []string
@@ -141,7 +141,7 @@ func (m *Secret) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
-var secretTypeTypePropEnum []interface{}
+var secretTypeTypePropEnum []any
 
 func init() {
 	var res []string
