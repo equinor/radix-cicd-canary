@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.3](https://github.com/equinor/radix-cicd-canary/compare/v1.5.2..v1.5.3) - 2026-02-16
+
+### 🐛 Bug Fixes
+
+- *(deps)* Update Go version to 1.25.7 (#267) - ([4c53c47](https://github.com/equinor/radix-cicd-canary/commit/4c53c47c0eb247e3a0f2db091ab0649b9b88c944)) by @nilsgstrabo in [#267](https://github.com/equinor/radix-cicd-canary/pull/267)
+
+
+### 📚 Documentation
+
+- Update catalog-info.yaml (#266) - ([2b4fcc5](https://github.com/equinor/radix-cicd-canary/commit/2b4fcc5e65a6a1f940d30a1eec46baf206bba026)) by @emirgens in [#266](https://github.com/equinor/radix-cicd-canary/pull/266)
+
+
 ## [1.5.2](https://github.com/equinor/radix-cicd-canary/compare/v1.5.1..v1.5.2) - 2026-01-09
 
 ### 🐛 Bug Fixes
