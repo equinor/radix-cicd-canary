@@ -62,7 +62,8 @@ type Secret struct {
 	Type string `json:"type,omitempty"`
 
 	// Updated timestamp of the last change
-	Updated any `json:"updated,omitempty"`
+	// Format: date-time
+	Updated strfmt.DateTime `json:"updated,omitempty"`
 }
 
 // Validate validates this secret
@@ -78,6 +79,10 @@ func (m *Secret) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUpdated(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -192,6 +197,18 @@ func (m *Secret) validateType(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Secret) validateUpdated(formats strfmt.Registry) error {
+	if swag.IsZero(m.Updated) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("updated", "body", "date-time", m.Updated.String(), formats); err != nil {
 		return err
 	}
 

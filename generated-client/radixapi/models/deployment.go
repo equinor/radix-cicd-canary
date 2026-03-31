@@ -84,6 +84,18 @@ type Deployment struct {
 	// Required: true
 	Repository *string `json:"repository"`
 
+	// Status of deployment reconciliation
+	// Reconciling DeploymentStatusReconciling  DeploymentStatusReconciling deployment is not fully reconciled
+	// Ready DeploymentStatusReady  DeploymentStatusReady deployment is reconciled successfully
+	// Failed DeploymentStatusFailed  DeploymentStatusFailed deployment reconciliation failed
+	// Inactive DeploymentStatusInactive  DeploymentStatusInactive deployment is inactive
+	// Required: true
+	// Enum: ["Reconciling","Ready","Failed","Inactive"]
+	Status *string `json:"status"`
+
+	// StatusReason contains details when deployment status is Failed
+	StatusReason string `json:"statusReason,omitempty"`
+
 	// Defaults to true and requires useBuildKit to have an effect.
 	UseBuildCache *bool `json:"useBuildCache,omitempty"`
 
@@ -124,6 +136,10 @@ func (m *Deployment) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateRepository(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -263,6 +279,55 @@ func (m *Deployment) validateNamespace(formats strfmt.Registry) error {
 func (m *Deployment) validateRepository(formats strfmt.Registry) error {
 
 	if err := validate.Required("repository", "body", m.Repository); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var deploymentTypeStatusPropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Reconciling","Ready","Failed","Inactive"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		deploymentTypeStatusPropEnum = append(deploymentTypeStatusPropEnum, v)
+	}
+}
+
+const (
+
+	// DeploymentStatusReconciling captures enum value "Reconciling"
+	DeploymentStatusReconciling string = "Reconciling"
+
+	// DeploymentStatusReady captures enum value "Ready"
+	DeploymentStatusReady string = "Ready"
+
+	// DeploymentStatusFailed captures enum value "Failed"
+	DeploymentStatusFailed string = "Failed"
+
+	// DeploymentStatusInactive captures enum value "Inactive"
+	DeploymentStatusInactive string = "Inactive"
+)
+
+// prop value enum
+func (m *Deployment) validateStatusEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, deploymentTypeStatusPropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Deployment) validateStatus(formats strfmt.Registry) error {
+
+	if err := validate.Required("status", "body", m.Status); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateStatusEnum("status", "body", *m.Status); err != nil {
 		return err
 	}
 
