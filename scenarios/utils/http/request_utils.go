@@ -17,7 +17,6 @@ import (
 	jobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/job"
 	pipelineJobAPIClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/pipeline_job"
 	platformAPIClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/platform"
-	webhookAPIClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/webhook"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/crypto"
 	"github.com/go-openapi/runtime"
@@ -131,10 +130,6 @@ func GetPlatformClient(cfg config.Config) platformAPIClient.ClientService {
 // GetApplicationClient Gets the Application API client
 func GetApplicationClient(cfg config.Config) applicationAPIClient.ClientService {
 	return applicationAPIClient.New(getTransport(cfg), strfmt.Default)
-}
-
-func GetWebhookClient(cfg config.Config) webhookAPIClient.ClientService {
-	return webhookAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
 // GetJobClient Gets the Job API client
