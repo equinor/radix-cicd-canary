@@ -94,7 +94,7 @@ The new tag triggers the **Build and deploy Docker and Helm** workflow, which:
 
 ## Debugging
 
-The application can be run locally for debugging purposes, but it will still interact with `radix-api` in a cluster. A config map named `radix-cicd-canary` should exist in in the cluster, under the `radix-cicd-canary` namespace (i.e. `kubectl get configmap -n radix-cicd-canary -oyaml`); its format can be found at `charts/templates/config.yaml`. Normally, though, you don't need to do anything with this configmap. When debugging in a cluster it is wise to turn of the canary in the cluster. Do that by setting replica to zero for the deployment (i.e. `kubectl edit deploy -n radix-cicd-canary`). Also make sure you start a test from scratch by deleting the registration for the apps used in the tests `kubectl delete rr $(kubectl get rr -o custom-columns=':metadata.name' --no-headers | grep canarycicd-)`
+The application can be run locally for debugging purposes, but it will still interact with `radix-api-server` in a cluster. A config map named `radix-cicd-canary` should exist in the cluster, under the `radix-cicd-canary` namespace (i.e. `kubectl get configmap -n radix-cicd-canary -oyaml`); its format can be found at `charts/templates/config.yaml`. Normally, though, you don't need to do anything with this configmap. When debugging in a cluster it is wise to turn off the canary in the cluster. Do that by setting replica to zero for the deployment (i.e. `kubectl edit deploy -n radix-cicd-canary`). Also make sure you start a test from scratch by deleting the registration for the apps used in the tests `kubectl delete rr $(kubectl get rr -o custom-columns=':metadata.name' --no-headers | grep canarycicd-)`
 
 ### Entire application
 
@@ -123,7 +123,7 @@ By default, all suites are running. This can be configured with environment vari
 
 To debug locally with connecting to the local services - set following environment variables:
 
-- `RADIX_API_SERVER_URL=http://localhost:3002`
+- `RADIX_API_SERVER=http://localhost:3002`
 
 ## Contribution
 
