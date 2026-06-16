@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.4](https://github.com/equinor/radix-cicd-canary/compare/v1.5.3..v1.5.4) - 2026-06-16
+
+### 🐛 Bug Fixes
+
+- Refactor GitHub webhook endpoint to use Radix API server (#274) - ([19e7e28](https://github.com/equinor/radix-cicd-canary/commit/19e7e287cde69f1d21e1b25ccf709cbe2479e8de)) by @Richard87 in [#274](https://github.com/equinor/radix-cicd-canary/pull/274)
+
+
+### ⚙️ Miscellaneous Tasks
+
+- *(ci)* Update github workflows to latest version and pin to sha - ([1f0bb29](https://github.com/equinor/radix-cicd-canary/commit/1f0bb291e2ce630e05d6ab6607077462b5889957)) by @sveinpj in [#272](https://github.com/equinor/radix-cicd-canary/pull/272)
+
+
 ## [1.5.3](https://github.com/equinor/radix-cicd-canary/compare/v1.5.2..v1.5.3) - 2026-02-17
 
 ### 🐛 Bug Fixes
