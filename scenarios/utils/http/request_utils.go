@@ -68,7 +68,7 @@ func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, 
 		},
 	}
 
-	req := CreateRequest(fmt.Sprintf("%s/events/github", cfg.GetGitHubWebHookAPIURL()), "POST", parameters)
+	req := CreateRequest(fmt.Sprintf("%s/api/v1/webhooks/github", cfg.GetRadixAPIURL()), "POST", parameters)
 	client := http.DefaultClient
 	payload, _ := json.Marshal(parameters)
 
@@ -157,17 +157,10 @@ func GetK8sJobClient(cfg config.Config) jobAPIClient.ClientService {
 	return jobAPIClient.New(getTransport(cfg), strfmt.Default)
 }
 
-func GetUrl(schema string, domainName string) string {
-	if strings.HasPrefix("http://", domainName) || strings.HasPrefix("https://", domainName) {
-		return domainName
-	}
-	return fmt.Sprintf("%s://%s", schema, domainName)
-}
-
 func getTransport(cfg config.Config) *httptransport.Runtime {
 	radixAPIURL := cfg.GetRadixAPIURL()
-	schemes := cfg.GetRadixAPISchemes()
-	transport := httptransport.New(radixAPIURL, basePath, schemes)
+	scheme, hostname := getSchemeAndHostname(radixAPIURL)
+	transport := httptransport.New(hostname, basePath, []string{scheme})
 	transport.DefaultAuthentication = getClientAuthInfoWriter(cfg)
 	return transport
 }
@@ -184,4 +177,15 @@ func getClientAuthInfoWriter(cfg config.Config) runtime.ClientAuthInfoWriter {
 	}
 
 	return nil
+}
+
+func getSchemeAndHostname(url string) (string, string) {
+	if strings.HasPrefix(url, "https://") {
+		return "https", strings.TrimPrefix(url, "https://")
+	} else if strings.HasPrefix(url, "http://") {
+		return "http", strings.TrimPrefix(url, "http://")
+	}
+
+	// URL is missing scheme, default to https
+	return "https", url
 }

@@ -52,8 +52,6 @@ appReaderGroup: "rrrrrrrr-rrrr-rrrr-rrrr-rrrrrrrrrrrr"
 radixGroups:
   user: "" # Defines the group to use when impersonating access to the Radix Platform
 
-radixApiPrefix: server-radix-api-prod
-radixWebhookPrefix: webhook-radix-github-webhook-prod
 clusterFqdn: weekly-27.dev.radix.equinor.com
 timeoutOfTest: 1200
 sleepIntervalBetweenChecks: 10
