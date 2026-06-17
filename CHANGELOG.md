@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.5.4](https://github.com/equinor/radix-cicd-canary/compare/v1.5.3..v1.5.4) - 2026-06-16
+## [1.5.4](https://github.com/equinor/radix-cicd-canary/compare/v1.5.3..v1.5.4) - 2026-06-17
 
 ### 🐛 Bug Fixes
 
