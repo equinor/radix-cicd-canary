@@ -93,9 +93,6 @@ type Component struct {
 	// identity
 	Identity *Identity `json:"identity,omitempty"`
 
-	// network
-	Network *Network `json:"network,omitempty"`
-
 	// notifications
 	Notifications *Notifications `json:"notifications,omitempty"`
 
@@ -146,10 +143,6 @@ func (m *Component) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateIdentity(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateNetwork(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -423,29 +416,6 @@ func (m *Component) validateIdentity(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Component) validateNetwork(formats strfmt.Registry) error {
-	if swag.IsZero(m.Network) { // not required
-		return nil
-	}
-
-	if m.Network != nil {
-		if err := m.Network.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("network")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("network")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (m *Component) validateNotifications(formats strfmt.Registry) error {
 	if swag.IsZero(m.Notifications) { // not required
 		return nil
@@ -559,10 +529,6 @@ func (m *Component) ContextValidate(ctx context.Context, formats strfmt.Registry
 	}
 
 	if err := m.contextValidateIdentity(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateNetwork(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -716,31 +682,6 @@ func (m *Component) contextValidateIdentity(ctx context.Context, formats strfmt.
 			ce := new(errors.CompositeError)
 			if stderrors.As(err, &ce) {
 				return ce.ValidateName("identity")
-			}
-
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *Component) contextValidateNetwork(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Network != nil {
-
-		if swag.IsZero(m.Network) { // not required
-			return nil
-		}
-
-		if err := m.Network.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
-				return ve.ValidateName("network")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
-				return ce.ValidateName("network")
 			}
 
 			return err
