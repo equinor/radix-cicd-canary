@@ -168,6 +168,9 @@ func getSharedSecret(ctx context.Context, cfg config.Config, appName string) (st
 	if err != nil {
 		return "", errors.Wrapf(err, "failed getting shared secret for the application %s", appName)
 	}
+	if response == nil || response.Payload == nil || response.Payload.SharedSecret == nil {
+		return "", errors.Errorf("shared secret for application %s was not returned by API", appName)
+	}
 	return *response.Payload.SharedSecret, nil
 }
 
