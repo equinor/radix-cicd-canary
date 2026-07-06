@@ -15,7 +15,6 @@ import (
 func Application(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App3Name
 	appRepo := defaults.App3Repository
-	appSharedSecret := defaults.App3SharedSecret
 	appCreator := defaults.App3Creator
 	appConfigurationItem := defaults.App3ConfigurationItem
 	appConfigBranch := defaults.App3ConfigBranch
@@ -25,7 +24,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 
-	_, err = application.Register(ctx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(ctx, cfg, appName, appRepo, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
 		return err
 	}

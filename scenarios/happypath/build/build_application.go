@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -28,8 +29,13 @@ const (
 
 // Application Tests that we are able to successfully build an application
 func Application(ctx context.Context, cfg config.Config) error {
+	sharedSecret, err := application.GetSharedSecret(ctx, cfg, defaults.App2Name)
+	if err != nil {
+		return err
+	}
+
 	// Trigger build via web hook
-	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}
@@ -50,7 +56,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
 	time.Sleep(1 * time.Second)
-	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}

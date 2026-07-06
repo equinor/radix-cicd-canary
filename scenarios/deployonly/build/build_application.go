@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -21,8 +22,13 @@ type expectedStep struct {
 // Application Tests that we are able to successfully build an application
 func Application(ctx context.Context, cfg config.Config) error {
 
+	sharedSecret, err := application.GetSharedSecret(ctx, cfg, defaults.App3Name)
+	if err != nil {
+		return err
+	}
+
 	// Trigger build via web hook
-	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App3BranchToBuildFrom, defaults.App3CommitID, defaults.App3SSHRepository, defaults.App3SharedSecret)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App3BranchToBuildFrom, defaults.App3CommitID, defaults.App3SSHRepository, sharedSecret)
 	if err != nil {
 		return errors.Errorf("failed to push webhook push for App3, error %v", err)
 	}
