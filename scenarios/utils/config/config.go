@@ -25,8 +25,6 @@ const (
 	impersonateUserConfig                     = "impersonateUser"
 	impersonateGroupConfig                    = "impersonateGroup"
 	clusterFQDNConfig                         = "clusterFqdn"
-	radixAPIPrefixConfig                      = "radixApiPrefix"
-	radixWebhookPrefixConfig                  = "radixWebhookPrefix"
 	publicKeyConfig                           = "publicKey"
 	privateKeyBase64Config                    = "privateKeyBase64"
 	publicKeyCanary3Config                    = "publicKeyCanary3"
@@ -51,8 +49,7 @@ const (
 	envVarIsBlacklist                         = "SUITE_LIST_IS_BLACKLIST"
 	envVarLogLevel                            = "LOG_LEVEL"
 	envVarPrettyPrint                         = "PRETTY_PRINT"
-	envUseLocalRadixApi                       = "USE_LOCAL_RADIX_API"
-	envUseLocalGitHubWebHookApi               = "USE_LOCAL_GITHUB_WEBHOOK_API"
+	envVarRadixAPIServer                      = "RADIX_API_SERVER"
 	serviceAccountTokenFile                   = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 )
 
@@ -61,8 +58,6 @@ type Config struct {
 	impersonateUser                     string
 	impersonateGroup                    string
 	clusterFQDN                         string
-	radixAPIPrefix                      string
-	webhookPrefix                       string
 	publicKey                           string
 	privateKey                          string
 	publicKeyCanary3                    string
@@ -104,8 +99,6 @@ func NewConfig() Config {
 		getImpersonateUser(),
 		getImpersonateGroup(),
 		getClusterFQDN(),
-		getRadixAPIPrefix(),
-		getWebhookPrefix(),
 		getPublicKey(),
 		getPrivateKey(),
 		getPublicKeyCanary3(),
@@ -247,19 +240,11 @@ func (cfg *Config) GetPrettyPrint() bool {
 }
 
 func (cfg *Config) GetRadixAPIURL() string {
-	if useLocalRadixApi() {
-		return "localhost:3002"
-	} else {
-		return fmt.Sprintf("%s.%s", cfg.getRadixAPIPrefix(), cfg.GetClusterFQDN())
+	if os.Getenv(envVarRadixAPIServer) != "" {
+		return os.Getenv(envVarRadixAPIServer)
 	}
-}
 
-func (cfg *Config) GetGitHubWebHookAPIURL() string {
-	if useLocalGitHubWebHookApi() {
-		return "http://localhost:3001"
-	} else {
-		return fmt.Sprintf("https://%s.%s", cfg.getWebHookPrefix(), cfg.GetClusterFQDN())
-	}
+	return fmt.Sprintf("https://api.%s", cfg.GetClusterFQDN())
 }
 
 func (cfg *Config) GetNetworkPolicyCanaryUrl(appEnv string) string {
@@ -273,14 +258,6 @@ func (cfg *Config) GetNetworkPolicyCanaryAppName() string {
 
 func (cfg *Config) GetNetworkPolicyCanaryJobComponentName() string {
 	return cfg.networkPolicyCanaryJobComponentName
-}
-
-func (cfg *Config) GetRadixAPISchemes() []string {
-	if useLocalRadixApi() {
-		return []string{"http"}
-	} else {
-		return []string{"https"}
-	}
 }
 
 func getTokenSource() oauth2.TokenSource {
@@ -321,14 +298,6 @@ func getAppReaderGroup() string {
 
 func getClusterFQDN() string {
 	return getConfigFromMap(clusterFQDNConfig)
-}
-
-func getRadixAPIPrefix() string {
-	return getConfigFromMap(radixAPIPrefixConfig)
-}
-
-func getWebhookPrefix() string {
-	return getConfigFromMap(radixWebhookPrefixConfig)
 }
 
 func getPublicKey() string {
@@ -462,14 +431,6 @@ func getIsBlacklist() bool {
 	return envVarIsTrueOrYes(strings.ToLower(os.Getenv(envVarIsBlacklist)))
 }
 
-func (cfg *Config) getRadixAPIPrefix() string {
-	return cfg.radixAPIPrefix
-}
-
-func (cfg *Config) getWebHookPrefix() string {
-	return cfg.webhookPrefix
-}
-
 func (cfg *Config) GetAppReaderGroup() string {
 	return cfg.appReaderGroup
 }
@@ -487,14 +448,6 @@ func (cfg *Config) GetNSPReachIngressTimeout() time.Duration {
 // GetNSPReachServiceTimeout Get reach service timeout
 func (cfg *Config) GetNSPReachServiceTimeout() time.Duration {
 	return cfg.nspNSPReachServiceTimeout
-}
-
-func useLocalRadixApi() bool {
-	return envVarIsTrueOrYes(os.Getenv(envUseLocalRadixApi))
-}
-
-func useLocalGitHubWebHookApi() bool {
-	return envVarIsTrueOrYes(os.Getenv(envUseLocalGitHubWebHookApi))
 }
 
 func envVarIsTrueOrYes(envVar string) bool {
