@@ -15,7 +15,7 @@ echo:
 	@echo "VERSION : " $(VERSION)
 	@echo "TAG : " $(TAG)
 	@echo ""
-	@echo "radix-cicd-canary : " $(DOCKER_REGISTRY)/radix-api-server:$(TAG)
+	@echo "radix-cicd-canary : " $(DOCKER_REGISTRY)/radix-cicd-canary:$(TAG)
 
 .PHONY: lint
 lint: bootstrap
