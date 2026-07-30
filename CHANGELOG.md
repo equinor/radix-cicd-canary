@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.5.4](https://github.com/equinor/radix-cicd-canary/compare/v1.5.3..v1.5.4) - 2026-06-16
+## [1.5.5](https://github.com/equinor/radix-cicd-canary/compare/v1.5.4..v1.5.5) - 2026-07-30
+
+### 🐛 Bug Fixes
+
+- *(deps)* Bump go version and dependencies (#282) - ([1d8b811](https://github.com/equinor/radix-cicd-canary/commit/1d8b811c329bea1f11a021e72e2f90fb852b3dd0)) by @nilsgstrabo in [#282](https://github.com/equinor/radix-cicd-canary/pull/282)
+
+
+## [1.5.4](https://github.com/equinor/radix-cicd-canary/compare/v1.5.3..v1.5.4) - 2026-06-17
 
 ### 🐛 Bug Fixes
 
