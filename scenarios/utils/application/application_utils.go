@@ -18,14 +18,13 @@ import (
 )
 
 // Register Will register application
-func Register(ctx context.Context, cfg config.Config, appName, appRepo, appSharedSecret, appCreator, configBranch, configurationItem string, appAdminGroup string, appReaderGroups []string) (*apiclient.RegisterApplicationOK, error) {
+func Register(ctx context.Context, cfg config.Config, appName, appRepo, appCreator, configBranch, configurationItem string, appAdminGroup string, appReaderGroups []string) (*apiclient.RegisterApplicationOK, error) {
 	impersonateUser := cfg.GetImpersonateUser()
 	impersonateGroup := cfg.GetImpersonateGroups()
 	bodyParameters := models.ApplicationRegistrationRequest{
 		ApplicationRegistration: &models.ApplicationRegistration{
 			Name:              &appName,
 			Repository:        &appRepo,
-			SharedSecret:      &appSharedSecret,
 			Creator:           &appCreator,
 			AdGroups:          []string{appAdminGroup},
 			ReaderAdGroups:    appReaderGroups,
@@ -129,6 +128,50 @@ func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (strin
 		return "", errors.Wrapf(err, "failed getting deploy key for the application %s", appName)
 	}
 	return *response.Payload.PublicDeployKey, nil
+}
+
+// GetSharedSecret Waits for the shared secret to be generated and returns it
+func GetSharedSecret(ctx context.Context, cfg config.Config, appName string) (string, error) {
+	return test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
+		sharedSecret, err := getSharedSecret(ctx, cfg, appName)
+		if err != nil {
+			return "", err
+		}
+		if strings.TrimSpace(sharedSecret) == "" {
+			return "", errors.Errorf("shared secret for application %s is not yet defined", appName)
+		}
+		return sharedSecret, nil
+	})
+}
+
+// IsSharedSecretDefined Checks that a shared secret has been generated for the application
+func IsSharedSecretDefined(ctx context.Context, cfg config.Config, appName string) error {
+	sharedSecret, err := getSharedSecret(ctx, cfg, appName)
+	if err != nil {
+		return err
+	}
+	if strings.TrimSpace(sharedSecret) == "" {
+		return errors.Errorf("shared secret for application %s is not defined", appName)
+	}
+	return nil
+}
+
+func getSharedSecret(ctx context.Context, cfg config.Config, appName string) (string, error) {
+	params := applicationclient.NewGetDeployKeyAndSecretParams().
+		WithImpersonateUser(cfg.GetImpersonateUser()).
+		WithImpersonateGroup(cfg.GetImpersonateGroups()).
+		WithContext(ctx).
+		WithAppName(appName)
+
+	client := httpUtils.GetApplicationClient(cfg)
+	response, err := client.GetDeployKeyAndSecret(params, nil)
+	if err != nil {
+		return "", errors.Wrapf(err, "failed getting shared secret for the application %s", appName)
+	}
+	if response == nil || response.Payload == nil || response.Payload.SharedSecret == nil {
+		return "", errors.Errorf("shared secret for application %s was not returned by API", appName)
+	}
+	return *response.Payload.SharedSecret, nil
 }
 
 func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {

@@ -5,6 +5,7 @@ import (
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -18,8 +19,13 @@ import (
 func Change(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App4Name
 
+	sharedSecret, err := application.GetSharedSecret(ctx, cfg, appName)
+	if err != nil {
+		return err
+	}
+
 	// Trigger first build via web hook
-	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, defaults.App4SharedSecret)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}
@@ -55,7 +61,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 
-	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, defaults.App4SharedSecret)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}

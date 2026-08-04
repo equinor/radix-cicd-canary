@@ -7,6 +7,7 @@ import (
 	applicationClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/happypath/build"
+	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
@@ -18,8 +19,13 @@ import (
 
 // Set Tests that we are able to successfully set build secrets
 func Set(ctx context.Context, cfg config.Config) error {
+	sharedSecret, err := application.GetSharedSecret(ctx, cfg, defaults.App2Name)
+	if err != nil {
+		return err
+	}
+
 	// Trigger build to apply RA with build secrets
-	err := httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, defaults.App2SharedSecret)
+	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}

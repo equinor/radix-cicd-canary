@@ -1,10 +1,8 @@
 package defaults
 
 const (
-	App1Name       = "canarycicd-test1"
-	App1Repository = "https://github.com/equinor/radix-canarycicd-test-1"
-	// file deepcode ignore HardcodedPassword: This is a fake shared secret
-	App1SharedSecret                 = "AnySharedSecret"
+	App1Name                         = "canarycicd-test1"
+	App1Repository                   = "https://github.com/equinor/radix-canarycicd-test-1"
 	App1Creator                      = "a-user@equinor.com"
 	App1ConfigBranch                 = "master"
 	App1ConfigurationItem            = "110327"
@@ -14,7 +12,6 @@ const (
 	App2CommitID                     = "" //"580f3ae3c0c23503a7cd02a8b60a5dec49279d0f"
 	App2Repository                   = "https://github.com/equinor/radix-canarycicd-test-2"
 	App2SSHRepository                = "git@github.com:equinor/radix-canarycicd-test-2.git"
-	App2SharedSecret                 = "a sportless strobic spinach"
 	App2EnvironmentName              = "prod"
 	App2Component1Name               = "app"
 	App2Component2Name               = "redis"
@@ -30,7 +27,6 @@ const (
 	App3CommitID                     = "" // "580f3ae3c0c23503a7cd02a8b60a5dec49279d0f"
 	App3Repository                   = "https://github.com/equinor/radix-canarycicd-test-3"
 	App3SSHRepository                = "git@github.com:equinor/radix-canarycicd-test-3.git"
-	App3SharedSecret                 = "a sportless strobic spinach"
 	App3EnvironmentName              = "prod"
 	App3Component1Name               = "client"
 	App3ConfigBranch                 = "master"
@@ -40,7 +36,6 @@ const (
 	App4SSHRepository                = "git@github.com:equinor/radix-canarycicd-test-4.git"
 	App4CommitID                     = "" //"02fdd66c44bad6dcbb887186e1a2a2bc9ee075f4"
 	App4NewCommitID                  = "" //"97f71362819b3505087dfe56b5624f88aeebf6cb"
-	App4SharedSecret                 = "AnySharedSecret"
 	App4Creator                      = "a-user@equinor.com"
 	App4ConfigBranch                 = "main"
 	App4ConfigurationItem            = "110327"

@@ -15,7 +15,6 @@ import (
 func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App1Name
 	appRepo := defaults.App1Repository
-	appSharedSecret := defaults.App1SharedSecret
 	appCreator := defaults.App1Creator
 	appConfigBranch := defaults.App1ConfigBranch
 	appConfigurationItem := defaults.App1ConfigurationItem
@@ -25,7 +24,7 @@ func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 
-	_, err = application.Register(ctx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(ctx, cfg, appName, appRepo, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
 		return errors.Wrapf(err, "failed to register application %s", appName)
 	}
@@ -34,6 +33,12 @@ func ApplicationWithNoDeployKey(ctx context.Context, cfg config.Config) error {
 		return application.IsDefined(ctx, cfg, appName)
 	})
 	if err != nil {
+		return err
+	}
+
+	if err := test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
+		return application.IsSharedSecretDefined(ctx, cfg, appName)
+	}); err != nil {
 		return err
 	}
 

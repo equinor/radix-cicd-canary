@@ -15,7 +15,6 @@ import (
 func ApplicationWithMainConfigBranch(ctx context.Context, cfg config.Config) error {
 	appName := defaults.App4Name
 	appRepo := defaults.App4Repository
-	appSharedSecret := defaults.App4SharedSecret
 	appCreator := defaults.App4Creator
 	appConfigBranch := defaults.App4ConfigBranch
 	appConfigurationItem := defaults.App4ConfigurationItem
@@ -25,7 +24,7 @@ func ApplicationWithMainConfigBranch(ctx context.Context, cfg config.Config) err
 		return err
 	}
 
-	_, err = application.Register(ctx, cfg, appName, appRepo, appSharedSecret, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
+	_, err = application.Register(ctx, cfg, appName, appRepo, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
 		return errors.Wrapf(err, "failed to register application %s", appName)
 	}
