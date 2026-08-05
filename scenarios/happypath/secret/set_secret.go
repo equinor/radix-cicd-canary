@@ -2,6 +2,9 @@ package secret
 
 import (
 	"context"
+	"fmt"
+
+	"errors"
 
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
 	models "github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
@@ -9,7 +12,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -39,7 +41,7 @@ func Set(ctx context.Context, cfg config.Config) error {
 	client := httpUtils.GetEnvironmentClient(cfg)
 	_, err = client.ChangeComponentSecret(params, nil)
 	if err != nil {
-		return errors.Wrapf(err, "error calling ChangeComponentSecret for application %s", defaults.App2Name)
+		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", defaults.App2Name, err)
 	}
 	return nil
 }
@@ -53,7 +55,7 @@ func isDeploymentConsistent(cfg config.Config, ctx context.Context) error {
 		log.Ctx(ctx).Info().Msg("Deployment is consistent. We can set the secret.")
 		return nil
 	}
-	return errors.Errorf("deployment is not consistent")
+	return errors.New("deployment is not consistent")
 }
 
 func getEnvironmentDetails(cfg config.Config) *models.Environment {

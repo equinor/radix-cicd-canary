@@ -84,7 +84,7 @@ func (runner Runner) Run(ctx context.Context, suites ...Suite) {
 
 	for scenario, elapsed := range scenarioDuration {
 		metrics.AddScenarioDuration(scenario, elapsed)
-		log.Ctx(ctx).Info().Str("suite", scenario).Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
+		log.Ctx(ctx).Info().Str("suite", scenario).Dur("elapsed", elapsed).Msgf("Elapsed time: %v", elapsed)
 	}
 }
 
@@ -104,7 +104,7 @@ func runSuiteSetup(ctx context.Context, cfg config.Config, suite Suite, scenario
 		}
 		log.Ctx(testCtx).Debug().Msgf("Setup success %s", setup.Description)
 	}
-	log.Ctx(ctx).Info().Msgf("suite setup complete")
+	log.Ctx(ctx).Info().Msgf("Suite setup complete")
 
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -166,6 +166,6 @@ func runTest(ctx context.Context, cfg config.Config, testToRun Spec) bool {
 	elapsed := end.Sub(start)
 
 	metrics.AddTestDuration(testToRun.Name, elapsed)
-	log.Ctx(ctx).Info().Dur("elapsed", elapsed).Msgf("elapsed time: %v", elapsed)
+	log.Ctx(ctx).Info().Dur("elapsed", elapsed).Msgf("Elapsed time: %v", elapsed)
 	return err == nil
 }

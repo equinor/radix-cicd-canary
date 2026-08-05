@@ -7,11 +7,12 @@ import (
 	"net/url"
 	"time"
 
+	"errors"
+
 	"github.com/equinor/radix-cicd-canary/metrics"
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-common/utils/slice"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 

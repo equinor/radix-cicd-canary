@@ -8,7 +8,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/pkg/errors"
 )
 
 // ApplicationWithMainConfigBranch Tests that we are able to register the application
@@ -26,7 +25,7 @@ func ApplicationWithMainConfigBranch(ctx context.Context, cfg config.Config) err
 
 	_, err = application.Register(ctx, cfg, appName, appRepo, appCreator, appConfigBranch, appConfigurationItem, cfg.GetAppAdminGroup(), []string{cfg.GetAppReaderGroup()})
 	if err != nil {
-		return errors.Wrapf(err, "failed to register application %s", appName)
+		return fmt.Errorf("failed to register application %s: %w", appName, err)
 	}
 
 	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {

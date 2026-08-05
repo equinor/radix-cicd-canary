@@ -2,6 +2,9 @@ package configbranch
 
 import (
 	"context"
+	"fmt"
+
+	"errors"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
@@ -11,7 +14,6 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -34,14 +36,14 @@ func Change(ctx context.Context, cfg config.Config) error {
 	jobSummary, err := waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
-		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
+		return fmt.Errorf("first job for application %s: %w", defaults.App4Name, err)
 	}
 
 	jobName := *jobSummary.Name
 	log.Ctx(ctx).Info().Msgf("First job name: %s", jobName)
 
 	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
-		return errors.Wrapf(err, "first job for application %s", defaults.App4Name)
+		return fmt.Errorf("first job for application %s: %w", defaults.App4Name, err)
 	}
 
 	log.Ctx(ctx).Info().Msg("First job was completed")
@@ -70,14 +72,14 @@ func Change(ctx context.Context, cfg config.Config) error {
 	jobSummary, err = waitForJobRunning(ctx, cfg, appName)
 
 	if err != nil {
-		return errors.Wrapf(err, "second job for application %s", defaults.App4Name)
+		return fmt.Errorf("second job for application %s: %w", defaults.App4Name, err)
 	}
 
 	jobName = *jobSummary.Name
 	log.Ctx(ctx).Info().Str("jobName", jobName).Msg("Second job name")
 
 	if err = waitForJobDone(ctx, cfg, appName, jobName); err != nil {
-		return errors.Wrapf(err, "second job for application %s", defaults.App4Name)
+		return fmt.Errorf("second job for application %s: %w", defaults.App4Name, err)
 	}
 
 	log.Ctx(ctx).Info().Msg("Second job was completed")
@@ -111,7 +113,7 @@ func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName str
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return errors.Errorf("job %s completed with status %s", jobName, jobStatus)
+		return fmt.Errorf("job %s completed with status %s", jobName, jobStatus)
 	}
 	return nil
 }
@@ -147,7 +149,7 @@ func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName s
 
 	for _, step := range steps {
 		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
-			return false, errors.Errorf("missing expected step %s with components %s", step.Name, step.Components)
+			return false, fmt.Errorf("missing expected step %s with components %s", step.Name, step.Components)
 		}
 	}
 	return true, nil

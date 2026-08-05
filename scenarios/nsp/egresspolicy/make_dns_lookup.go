@@ -8,7 +8,6 @@ import (
 	nspMetrics "github.com/equinor/radix-cicd-canary/metrics/scenarios/nsp"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -34,7 +33,7 @@ func lookupDns(dnsUrl string, ctx context.Context, cfg config.Config) error {
 		return dnsErr
 	}
 	if dnsResponse.StatusCode != 200 {
-		return errors.Errorf("expected dnsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode)
+		return fmt.Errorf("expected dnsResponse.StatusCode is 200, but got %d", dnsResponse.StatusCode)
 	}
 	return nil
 }
