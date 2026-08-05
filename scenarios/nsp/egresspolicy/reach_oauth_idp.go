@@ -47,7 +47,7 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 
 	csrfCookie, hasCsrfCookie := slice.FindFirst(resp.Cookies(), func(c *http.Cookie) bool { return c.Name == "_oauth2_proxy_csrf" })
 	if !hasCsrfCookie {
-		return errors.New("response does not CSRF cookie")
+		return errors.New("response does not contain CSRF cookie '_oauth2_proxy_csrf'")
 	}
 
 	// Reuse state from the IdP redirect and send a fake code so oauth2-proxy attempts the token exchange against the IdP endpoint.
