@@ -22,12 +22,14 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 		return fmt.Errorf("failed to parse base URL: %w", err)
 	}
 	client := http.Client{
-		Timeout: 15 * time.Second,
+		Timeout: 10 * time.Second,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
 	}
 
+	// First hit the protected endpoint to trigger oauth2-proxy redirect to the IdP.
+	// The redirect response carries the one-time state and CSRF cookie required for callback validation.
 	resp, err := client.Get(baseUrl.String())
 	if err != nil {
 		return fmt.Errorf("failed initial request: %w", err)
@@ -48,6 +50,7 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 		return errors.New("response does not CSRF cookie")
 	}
 
+	// Reuse state from the IdP redirect and send a fake code so oauth2-proxy attempts the token exchange against the IdP endpoint.
 	callbackUrl := baseUrl.JoinPath("oauth2", "callback")
 	callbackQuery := callbackUrl.Query()
 	callbackQuery.Add("code", "fake-code")
@@ -58,6 +61,7 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	if err != nil {
 		panic(err)
 	}
+	// Send the CSRF cookie from the initial redirect so oauth2-proxy accepts callback validation.
 	req.AddCookie(csrfCookie)
 
 	_, err = client.Do(req)
