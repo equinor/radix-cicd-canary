@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.6](https://github.com/equinor/radix-cicd-canary/compare/v1.5.5..v1.5.6) - 2026-08-05
+
+### 🐛 Bug Fixes
+
+- Remove ability to set shared secret when creating app (#281) - ([2b10cf9](https://github.com/equinor/radix-cicd-canary/commit/2b10cf972a12e23f27e5175a4bac6b733c7147a5)) by @Richard87 in [#281](https://github.com/equinor/radix-cicd-canary/pull/281)
+
+
 ## [1.5.5](https://github.com/equinor/radix-cicd-canary/compare/v1.5.4..v1.5.5) - 2026-07-30
 
 ### 🐛 Bug Fixes
