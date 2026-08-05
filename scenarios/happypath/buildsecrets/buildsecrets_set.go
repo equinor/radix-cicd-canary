@@ -2,7 +2,10 @@ package buildsecrets
 
 import (
 	"context"
+	"fmt"
 	"strings"
+
+	"errors"
 
 	applicationClient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
@@ -13,7 +16,6 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -100,7 +102,7 @@ func buildSecretsAreListedWithStatus(ctx context.Context, cfg config.Config, app
 	}
 
 	log.Ctx(ctx).Info().Msg("Build secrets are not listed yet")
-	return errors.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
+	return fmt.Errorf("failed buildSecretsAreListedWithStatus expected %s", expectedStatus)
 }
 
 func setSecret(ctx context.Context, cfg config.Config, appName, secretName, secretValue string) error {
@@ -123,7 +125,7 @@ func setSecret(ctx context.Context, cfg config.Config, appName, secretName, secr
 	client := httpUtils.GetApplicationClient(cfg)
 	_, err := client.UpdateBuildSecretsSecretValue(params, nil)
 	if err != nil {
-		return errors.Errorf("failed to set secret %s. Error: %v", secretName, err)
+		return fmt.Errorf("failed to set secret %s: %w", secretName, err)
 	}
 
 	return nil

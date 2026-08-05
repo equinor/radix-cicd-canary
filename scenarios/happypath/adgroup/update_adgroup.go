@@ -2,8 +2,9 @@ package adgroup
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/pkg/errors"
+	"errors"
 
 	apiclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	environmentclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/environment"
@@ -28,7 +29,7 @@ func Update(ctx context.Context, cfg config.Config) error {
 	logger.Debug().Msg("check that admin AD-Group has access")
 	err := test.WaitForCheckFuncOrTimeout(ctx, cfg, hasAccess)
 	if err != nil {
-		return errors.Wrapf(err, "failed to get update details of the suite")
+		return fmt.Errorf("failed to get update details of the suite: %w", err)
 	}
 	logger.Debug().Msg("admin AD-Group has access")
 
@@ -42,14 +43,14 @@ func Update(ctx context.Context, cfg config.Config) error {
 	logger.Debug().Msg("check that the application cannot be accessed with current impersonation")
 	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, hasNoAccess)
 	if err != nil {
-		return errors.Wrap(err, "failed to get patchAdGroup update details")
+		return fmt.Errorf("failed to get patchAdGroup update details: %w", err)
 	}
 	logger.Debug().Msg("application cannot be accessed with current impersonation")
 
-	logger.Debug().Msg("patch the RR and set oroginal admin AD group, which the impersonated user is member of")
+	logger.Debug().Msg("patch the RR and set original admin AD group, which the impersonated user is member of")
 	err = patchAdGroup(ctx, cfg, defaults.App2Name, cfg.GetAppAdminGroup())
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to set original admin group: %w", err)
 	}
 	logger.Debug().Msg("admin AD-Group is patched")
 
@@ -81,7 +82,7 @@ func hasProperAccess(ctx context.Context, cfg config.Config, properAccess bool) 
 	log.Ctx(ctx).Debug().Msgf("AccessToApplication: %v, accessToBuild: %v, accessToSecret: %v, HasProperAccess: %v", accessToApplication, accessToBuild, accessToSecret, hasProperAccess)
 
 	if !hasProperAccess {
-		return errors.Errorf("proper access hasn't been granted yet")
+		return errors.New("proper access hasn't been granted yet")
 	}
 	return nil
 }
@@ -168,7 +169,7 @@ func setSecret(cfg config.Config) error {
 	client := httpUtils.GetEnvironmentClient(cfg)
 	_, err := client.ChangeComponentSecret(params, nil)
 	if err != nil {
-		return errors.Wrapf(err, "error calling ChangeComponentSecret for application %s", defaults.App2Name)
+		return fmt.Errorf("error calling ChangeComponentSecret for application %s: %w", defaults.App2Name, err)
 	}
 	return nil
 }

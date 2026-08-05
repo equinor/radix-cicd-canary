@@ -2,8 +2,11 @@ package build
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
+
+	"errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
@@ -14,7 +17,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/equinor/radix-common/utils/pointers"
 	"github.com/equinor/radix-common/utils/slice"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -79,7 +81,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 	if jobStatus != "Succeeded" {
-		return errors.Errorf("expected job status was Success, but got %s", jobStatus)
+		return fmt.Errorf("expected job status was Success, but got %s", jobStatus)
 	}
 	log.Ctx(ctx).Info().Msg("First job was completed")
 
@@ -109,12 +111,12 @@ func Application(ctx context.Context, cfg config.Config) error {
 	for _, step := range steps {
 		if step.Name == "sub-pipeline-step" {
 			if !expectedSteps.HasStepWithSubPipelineTaskStep(step.Name, step.SubPipelineTaskStep) {
-				return errors.Errorf("missing expected step %s with SubPipelineTaskStep env %s, pipeline %s", step.Name, *step.SubPipelineTaskStep.Environment, *step.SubPipelineTaskStep.PipelineName)
+				return fmt.Errorf("missing expected step %s with SubPipelineTaskStep env %s, pipeline %s", step.Name, *step.SubPipelineTaskStep.Environment, *step.SubPipelineTaskStep.PipelineName)
 			}
 			continue
 		}
 		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
-			return errors.Errorf("missing expected step %s with components %s", step.Name, step.Components)
+			return fmt.Errorf("missing expected step %s with components %s", step.Name, step.Components)
 		}
 	}
 
@@ -127,7 +129,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return true
 	})
 	if !ok {
-		return errors.New("No Pipeline run found")
+		return errors.New("failed to find pipeline runs")
 	}
 
 	tasks, err := jobUtils.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.KubeName)
@@ -138,7 +140,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return *task.Name == "details"
 	})
 	if !ok {
-		return errors.New("Tekton test task not found!")
+		return errors.New("failed to find Tekton task")
 	}
 
 	// Test tekton log output contain parameters and secrets
@@ -148,11 +150,11 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	if !strings.Contains(tektonLogContent, Secret1Value) {
-		return errors.New("Tekton test does not contain SecretValue")
+		return errors.New("tekton test does not contain SecretValue")
 	}
 
 	if !strings.Contains(tektonLogContent, "github.com") {
-		return errors.New("Tekton test does no conaint github.com (should be printed from known_hosts)")
+		return errors.New("tekton test does not contain github.com (should be printed from known_hosts)")
 	}
 	log.Ctx(ctx).Info().Msg("Sub-pipeline completed")
 

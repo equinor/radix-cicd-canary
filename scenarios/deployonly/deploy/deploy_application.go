@@ -2,8 +2,9 @@ package deploy
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/pkg/errors"
+	"errors"
 
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
@@ -19,7 +20,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	// Trigger deploy via Radix API
 	_, err := application.Deploy(ctx, cfg, defaults.App3Name, defaults.App3EnvironmentName)
 	if err != nil {
-		return errors.Errorf("failed to deploy the application %s:  %v", defaults.App3Name, err)
+		return fmt.Errorf("failed to deploy the application %s: %w", defaults.App3Name, err)
 	}
 
 	// Get job
@@ -31,10 +32,10 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return jobSummary, err
 	})
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to wait for pipeline job to succeed: %w", err)
 	}
 	if jobSummary == nil {
-		return errors.Errorf("could not get listed job for application %s status '%s'", defaults.App3Name, "Succeeded")
+		return fmt.Errorf("could not get listed job for application %s status '%s'", defaults.App3Name, "Succeeded")
 	}
 
 	jobName := *jobSummary.Name
@@ -50,7 +51,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	for _, step := range steps {
 		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
-			return errors.Errorf("missing expected step %s", step.Name)
+			return fmt.Errorf("missing expected step %s", step.Name)
 		}
 	}
 

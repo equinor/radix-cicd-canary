@@ -65,7 +65,7 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	err := http.ListenAndServe(":5000", nil)
 	if err != nil {
-		log.Fatal().Stack().Err(err).Msg("Failed to listen")
+		log.Fatal().Err(err).Msg("Failed to listen")
 		return
 	}
 	log.Info().Msg("Complete.")

@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
@@ -11,7 +12,6 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	kubeUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/kubernetes"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	errors "github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -92,7 +92,7 @@ func HasDeployKey(ctx context.Context, cfg config.Config, appName, expectedDeplo
 	}
 
 	if strings.TrimSpace(expectedDeployKey) != strings.TrimSpace(actualDeployKey) {
-		return errors.Errorf("application %s does not have the expected deploy key", appName)
+		return fmt.Errorf("application %s does not have the expected deploy key", appName)
 	}
 
 	return nil
@@ -105,7 +105,7 @@ func IsDeployKeyDefined(ctx context.Context, cfg config.Config, appName string) 
 	}
 
 	if strings.TrimSpace(actualDeployKey) == "" {
-		return errors.Errorf("deploy key for application %s is not defined", appName)
+		return fmt.Errorf("deploy key for application %s is not defined", appName)
 	}
 
 	return nil
@@ -125,7 +125,7 @@ func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (strin
 	client := httpUtils.GetApplicationClient(cfg)
 	response, err := client.GetDeployKeyAndSecret(params, nil)
 	if err != nil {
-		return "", errors.Wrapf(err, "failed getting deploy key for the application %s", appName)
+		return "", fmt.Errorf("failed getting deploy key for the application %s: %w", appName, err)
 	}
 	return *response.Payload.PublicDeployKey, nil
 }
@@ -138,7 +138,7 @@ func GetSharedSecret(ctx context.Context, cfg config.Config, appName string) (st
 			return "", err
 		}
 		if strings.TrimSpace(sharedSecret) == "" {
-			return "", errors.Errorf("shared secret for application %s is not yet defined", appName)
+			return "", fmt.Errorf("shared secret for application %s is not yet defined", appName)
 		}
 		return sharedSecret, nil
 	})
@@ -151,7 +151,7 @@ func IsSharedSecretDefined(ctx context.Context, cfg config.Config, appName strin
 		return err
 	}
 	if strings.TrimSpace(sharedSecret) == "" {
-		return errors.Errorf("shared secret for application %s is not defined", appName)
+		return fmt.Errorf("shared secret for application %s is not defined", appName)
 	}
 	return nil
 }
@@ -166,10 +166,10 @@ func getSharedSecret(ctx context.Context, cfg config.Config, appName string) (st
 	client := httpUtils.GetApplicationClient(cfg)
 	response, err := client.GetDeployKeyAndSecret(params, nil)
 	if err != nil {
-		return "", errors.Wrapf(err, "failed getting shared secret for the application %s", appName)
+		return "", fmt.Errorf("failed getting shared secret for the application %s: %w", appName, err)
 	}
 	if response == nil || response.Payload == nil || response.Payload.SharedSecret == nil {
-		return "", errors.Errorf("shared secret for application %s was not returned by API", appName)
+		return "", fmt.Errorf("shared secret for application %s was not returned by API", appName)
 	}
 	return *response.Payload.SharedSecret, nil
 }
@@ -182,7 +182,7 @@ func deleteApplication(cfg config.Config, appName string, params *applicationcli
 		if _, ok := err.(*applicationclient.DeleteApplicationNotFound); ok {
 			return nil
 		}
-		return errors.Wrapf(err, "failed deleting the application %s", appName)
+		return fmt.Errorf("failed deleting the application %s: %w", appName, err)
 	}
 	return nil
 }
@@ -213,7 +213,7 @@ func IsDefined(ctx context.Context, cfg config.Config, appName string) error {
 	if err == nil {
 		return nil
 	}
-	return errors.Errorf("application %s is not defined", appName)
+	return fmt.Errorf("application %s is not defined", appName)
 }
 
 func appNamespacesDoNotExist(ctx context.Context, appName string) error {
@@ -221,10 +221,10 @@ func appNamespacesDoNotExist(ctx context.Context, appName string) error {
 		LabelSelector: labels.Set{"radix-app": appName}.String(),
 	})
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to list namespaces: %w", err)
 	}
 	if len(nsList.Items) > 0 {
-		return errors.Errorf("there are %d namespaces for the application %s", len(nsList.Items), appName)
+		return fmt.Errorf("there are %d namespaces for the application %s", len(nsList.Items), appName)
 	}
 	return nil
 }
@@ -250,7 +250,7 @@ func Get(ctx context.Context, cfg config.Config, appName string) (*models.Applic
 	client := httpUtils.GetApplicationClient(cfg)
 	result, err := client.GetApplication(params, nil)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("failed to get application: %w", err)
 	}
 	return result.Payload, nil
 }

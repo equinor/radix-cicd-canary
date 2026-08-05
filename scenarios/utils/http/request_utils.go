@@ -22,7 +22,6 @@ import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
@@ -79,12 +78,11 @@ func TriggerWebhookPush(ctx context.Context, cfg config.Config, branch, commit, 
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return errors.Wrapf(err,
-			"error trigger webhook push for '%s' branch of repository %s, for commit %s", branch, repository, commit)
+		return fmt.Errorf("error trigger webhook push for '%s' branch of repository %s, for commit %s: %w", branch, repository, commit, err)
 	}
 
 	if err := CheckResponse(ctx, resp); err != nil {
-		return errors.Wrapf(err, "error checking webhook response for '%s' branch of repository %s, for commit %s", branch, repository, commit)
+		return fmt.Errorf("error checking webhook response for '%s' branch of repository %s, for commit %s: %w", branch, repository, commit, err)
 	}
 
 	return nil
@@ -97,7 +95,7 @@ func CheckResponse(ctx context.Context, resp *http.Response) error {
 	}()
 	_, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return errors.Wrap(err, "error reading response body")
+		return fmt.Errorf("error reading response body: %w", err)
 	}
 
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
@@ -105,7 +103,7 @@ func CheckResponse(ctx context.Context, resp *http.Response) error {
 		return nil
 	}
 
-	return errors.Errorf("response status code is %d", resp.StatusCode)
+	return fmt.Errorf("response status code is %d", resp.StatusCode)
 }
 
 // CheckUrl Checks that a GET request to specified URL returns 200 without errors
@@ -117,7 +115,7 @@ func CheckUrl(url string, ctx context.Context) error {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to execute request: %w", err)
 	}
 	return CheckResponse(ctx, response)
 }
