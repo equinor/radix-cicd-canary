@@ -59,7 +59,7 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 
 	req, err := http.NewRequest("GET", callbackUrl.String(), nil)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to create callback request: %w", err)
 	}
 	// Send the CSRF cookie from the initial redirect so oauth2-proxy accepts callback validation.
 	req.AddCookie(csrfCookie)
