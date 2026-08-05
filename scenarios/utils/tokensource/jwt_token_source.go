@@ -27,7 +27,7 @@ func (s *jwtCallbackTokenSource) Token() (*oauth2.Token, error) {
 	c := jwt.RegisteredClaims{}
 	_, _, err = jwt.NewParser(jwt.WithoutClaimsValidation()).ParseUnverified(tokenString, &c)
 	if err != nil {
-		return nil, fmt.Errorf("faied to parse token: %w")
+		return nil, fmt.Errorf("faied to parse token: %w", err)
 	}
 	token := oauth2.Token{
 		AccessToken: tokenString,
