@@ -34,7 +34,8 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	if err != nil {
 		return fmt.Errorf("failed initial request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
+
 	loc, err := resp.Location()
 	if err != nil {
 		return fmt.Errorf("failed to get location from response: %w", err)
@@ -64,10 +65,11 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	// Send the CSRF cookie from the initial redirect so oauth2-proxy accepts callback validation.
 	req.AddCookie(csrfCookie)
 
-	_, err = client.Do(req)
+	callbackResp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to get response from %s within %v, which likely means oauth pod could not connect to IDP which should be allowed by nsp: %w", callbackUrl.Path, client.Timeout, err)
 	}
+	defer func() { _ = callbackResp.Body.Close() }()
 
 	return nil
 }
