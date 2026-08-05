@@ -42,7 +42,7 @@ func Set(ctx context.Context, cfg config.Config) error {
 	}
 	log.Ctx(ctx).Info().Msg("Verified private image hub password is set")
 
-	log.Ctx(ctx).Info().Msg("Verify that all replicas are in running running state")
+	log.Ctx(ctx).Info().Msg("Verify that all replicas are in running state")
 	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
 		return allReplicasRunning(ctx, cfg)
 	})

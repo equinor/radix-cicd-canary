@@ -44,7 +44,7 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 
 	state := loc.Query().Get("state")
 	if len(state) == 0 {
-		return errors.New("location does not contain state in location")
+		return errors.New("location URL does not contain state")
 	}
 
 	csrfCookie, hasCsrfCookie := slice.FindFirst(resp.Cookies(), func(c *http.Cookie) bool { return c.Name == "_oauth2_proxy_csrf" })
