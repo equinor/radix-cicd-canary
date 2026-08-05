@@ -126,7 +126,7 @@ func Get(ctx context.Context, cfg config.Config, appName, jobName string) (*mode
 	client := httpUtils.GetJobClient(cfg)
 	applicationJob, err := client.GetApplicationJob(params, nil)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("failed to get job: %w", err)
 	}
 	if applicationJob.Payload != nil {
 		return applicationJob.Payload, nil

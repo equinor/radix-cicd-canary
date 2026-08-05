@@ -1,8 +1,9 @@
 package tokensource
 
 import (
+	"fmt"
+
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 )
@@ -21,12 +22,12 @@ func (s *jwtCallbackTokenSource) Token() (*oauth2.Token, error) {
 	log.Debug().Msg("Getting new token from callback")
 	tokenString, err := s.callback()
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("failed to get token from callback: %w", err)
 	}
 	c := jwt.RegisteredClaims{}
 	_, _, err = jwt.NewParser(jwt.WithoutClaimsValidation()).ParseUnverified(tokenString, &c)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("faied to parse token: %w")
 	}
 	token := oauth2.Token{
 		AccessToken: tokenString,

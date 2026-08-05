@@ -2,6 +2,7 @@ package adgroup
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 
@@ -46,10 +47,10 @@ func Update(ctx context.Context, cfg config.Config) error {
 	}
 	logger.Debug().Msg("application cannot be accessed with current impersonation")
 
-	logger.Debug().Msg("patch the RR and set oroginal admin AD group, which the impersonated user is member of")
+	logger.Debug().Msg("patch the RR and set original admin AD group, which the impersonated user is member of")
 	err = patchAdGroup(ctx, cfg, defaults.App2Name, cfg.GetAppAdminGroup())
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to set original admin group: %w", err)
 	}
 	logger.Debug().Msg("admin AD-Group is patched")
 

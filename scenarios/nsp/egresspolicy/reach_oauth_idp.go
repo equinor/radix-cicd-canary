@@ -71,6 +71,10 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	}
 	defer func() { _ = callbackResp.Body.Close() }()
 
+	if callbackResp.StatusCode != 500 {
+		return fmt.Errorf("expected status code 500 in response, but got %v", callbackResp.StatusCode)
+	}
+
 	return nil
 }
 

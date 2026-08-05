@@ -2,6 +2,7 @@ package deploy
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 
@@ -31,7 +32,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return jobSummary, err
 	})
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to wait for pipeline job to succeed: %w", err)
 	}
 	if jobSummary == nil {
 		return errors.Errorf("could not get listed job for application %s status '%s'", defaults.App3Name, "Succeeded")

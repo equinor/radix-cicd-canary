@@ -117,7 +117,7 @@ func CheckUrl(url string, ctx context.Context) error {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to execute request: %w", err)
 	}
 	return CheckResponse(ctx, response)
 }

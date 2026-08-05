@@ -1,6 +1,8 @@
 package privateimagehub
 
 import (
+	"fmt"
+
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
@@ -65,5 +67,5 @@ func List(cfg config.Config, appName string) ([]*models.ImageHubSecret, error) {
 
 	client := httpUtils.GetApplicationClient(cfg)
 	privateImageHub, err := client.GetPrivateImageHubs(params, nil)
-	return privateImageHub.Payload, errors.WithStack(err)
+	return privateImageHub.Payload, fmt.Errorf("failed to get private image hubs: %w", err)
 }

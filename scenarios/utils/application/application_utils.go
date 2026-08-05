@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	applicationclient "github.com/equinor/radix-cicd-canary/generated-client/radixapi/client/application"
@@ -221,7 +222,7 @@ func appNamespacesDoNotExist(ctx context.Context, appName string) error {
 		LabelSelector: labels.Set{"radix-app": appName}.String(),
 	})
 	if err != nil {
-		return errors.WithStack(err)
+		return fmt.Errorf("failed to list namespaces: %w", err)
 	}
 	if len(nsList.Items) > 0 {
 		return errors.Errorf("there are %d namespaces for the application %s", len(nsList.Items), appName)
@@ -250,7 +251,7 @@ func Get(ctx context.Context, cfg config.Config, appName string) (*models.Applic
 	client := httpUtils.GetApplicationClient(cfg)
 	result, err := client.GetApplication(params, nil)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, fmt.Errorf("failed to get application: %w", err)
 	}
 	return result.Payload, nil
 }
