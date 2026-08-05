@@ -24,7 +24,7 @@ func getKubernetesClientConfig() *rest.Config {
 		config, err = rest.InClusterConfig()
 		if err != nil {
 			err := errors.WithStack(err)
-			log.Fatal().Stack().Err(err).Msg("getClusterConfig InClusterConfig")
+			log.Fatal().Err(err).Msg("getClusterConfig InClusterConfig")
 		}
 	}
 
@@ -35,7 +35,7 @@ func getKubernetesClientFromConfig(config *rest.Config) kubernetes.Interface {
 	client, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		err := errors.WithStack(err)
-		log.Fatal().Stack().Err(err).Msg("getClusterConfig k8s client")
+		log.Fatal().Err(err).Msg("getClusterConfig k8s client")
 	}
 
 	return client
