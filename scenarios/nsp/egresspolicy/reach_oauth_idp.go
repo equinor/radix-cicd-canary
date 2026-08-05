@@ -34,7 +34,7 @@ func ReachOauthIdp(ctx context.Context, cfg config.Config) error {
 	if err != nil {
 		return fmt.Errorf("failed initial request: %w", err)
 	}
-
+	defer resp.Body.Close()
 	loc, err := resp.Location()
 	if err != nil {
 		return fmt.Errorf("failed to get location from response: %w", err)
