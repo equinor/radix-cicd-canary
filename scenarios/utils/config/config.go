@@ -266,7 +266,10 @@ func getTokenSource() oauth2.TokenSource {
 	if _, err := os.Stat(serviceAccountTokenFile); err == nil {
 		ts = tokensource.FromJwtCallback(func() (string, error) {
 			token, err := os.ReadFile(serviceAccountTokenFile)
-			return string(token), fmt.Errorf("failed to read file %s: %w", serviceAccountTokenFile, err)
+			if err != nil {
+				return "", fmt.Errorf("failed to read file %s: %w", serviceAccountTokenFile, err)
+			}
+			return string(token), nil
 		})
 	} else if envToken := os.Getenv("BEARER_TOKEN"); len(envToken) > 0 {
 		ts = tokensource.FromJwtCallback(func() (string, error) {
