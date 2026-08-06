@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.7](https://github.com/equinor/radix-cicd-canary/compare/v1.5.6..v1.5.7) - 2026-08-06
+
+### 🐛 Bug Fixes
+
+- Update oauth2 IDP network policy test (#290) - ([c5eef74](https://github.com/equinor/radix-cicd-canary/commit/c5eef74a0041f20f67476ac4295d4a4fb9c155aa)) by @nilsgstrabo in [#290](https://github.com/equinor/radix-cicd-canary/pull/290)
+
+- Handle error when reading service account token file in getTokenSource (#294) - ([ab9d1c1](https://github.com/equinor/radix-cicd-canary/commit/ab9d1c1304a510608c05f2f1c1d01e6cc50e71e6)) by @nilsgstrabo in [#294](https://github.com/equinor/radix-cicd-canary/pull/294)
+
+- Regenerate radix api client (#296) - ([f3f6936](https://github.com/equinor/radix-cicd-canary/commit/f3f69365012e79879307945f6e7e0d5f876503df)) by @nilsgstrabo in [#296](https://github.com/equinor/radix-cicd-canary/pull/296)
+
+
 ## [1.5.6](https://github.com/equinor/radix-cicd-canary/compare/v1.5.5..v1.5.6) - 2026-08-05
 
 ### 🐛 Bug Fixes
