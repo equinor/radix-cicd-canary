@@ -2,7 +2,6 @@ package job
 
 import (
 	"github.com/equinor/radix-cicd-canary/generated-client/radixapi/models"
-	"github.com/equinor/radix-common/utils"
 	"github.com/equinor/radix-common/utils/slice"
 )
 
@@ -46,7 +45,7 @@ func (es *expectedSteps) Count() int {
 
 func (es *expectedSteps) HasStepWithComponent(stepName string, components []string) bool {
 	return slice.Any(es.steps, func(step expectedStep) bool {
-		return step.name == stepName && utils.ArrayEqualElements(step.components, components)
+		return step.name == stepName && slice.ElementsMatch(step.components, components)
 	})
 }
 

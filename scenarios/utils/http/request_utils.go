@@ -45,7 +45,7 @@ func GetHTTPDefaultClient(timeout time.Duration) *http.Client {
 }
 
 // CreateRequest setup correct header for running tests
-func CreateRequest(url, method string, parameters interface{}) *http.Request {
+func CreateRequest(url, method string, parameters any) *http.Request {
 	var reader io.Reader
 	if parameters != nil {
 		payload, _ := json.Marshal(parameters)
@@ -178,10 +178,10 @@ func getClientAuthInfoWriter(cfg config.Config) runtime.ClientAuthInfoWriter {
 }
 
 func getSchemeAndHostname(url string) (string, string) {
-	if strings.HasPrefix(url, "https://") {
-		return "https", strings.TrimPrefix(url, "https://")
-	} else if strings.HasPrefix(url, "http://") {
-		return "http", strings.TrimPrefix(url, "http://")
+	if after, ok := strings.CutPrefix(url, "https://"); ok {
+		return "https", after
+	} else if after, ok := strings.CutPrefix(url, "http://"); ok {
+		return "http", after
 	}
 
 	// URL is missing scheme, default to https

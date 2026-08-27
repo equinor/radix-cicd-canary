@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"slices"
 	"syscall"
 	"time"
 
@@ -99,7 +100,7 @@ func filterSuites(suites []test.Suite, environmentVariables config.Config) []tes
 	isBlacklist := environmentVariables.GetSuiteListIsBlacklist()
 	for _, suite := range suites {
 		// pass the filter if mentioned and !isBlacklist OR if !mentioned and isBlacklist
-		if contains(filter, suite.Name) != isBlacklist {
+		if slices.Contains(filter, suite.Name) != isBlacklist {
 			log.Debug().Str("name", suite.Name).Msg("run suite")
 			suitesToRun = append(suitesToRun, suite)
 		} else {
@@ -107,13 +108,4 @@ func filterSuites(suites []test.Suite, environmentVariables config.Config) []tes
 		}
 	}
 	return suitesToRun
-}
-
-func contains(list []string, target string) bool {
-	for _, item := range list {
-		if target == item {
-			return true
-		}
-	}
-	return false
 }
