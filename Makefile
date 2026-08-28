@@ -32,7 +32,7 @@ generate-client: bootstrap
 	mkdir -p ./generated-client/radixapi
 	mkdir -p ./generated-client/jobserver
 	swagger generate client -t ./generated-client/radixapi -f https://api.dev.radix.equinor.com/swaggerui/swagger.json -A radixapi
-	swagger generate client -t ./generated-client/jobserver -f https://raw.githubusercontent.com/equinor/radix-job-scheduler/main/swaggerui/html/swagger.json -A jobserver
+	swagger generate client -t ./generated-client/jobserver -f https://raw.githubusercontent.com/equinor/radix-operator/refs/heads/master/job-scheduler/swaggerui/html/swagger.json -A jobserver
 
 build:
 	docker build -t radix-cicd-canary:$(BRANCH)-$(VERSION) .

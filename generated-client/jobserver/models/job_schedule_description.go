@@ -62,6 +62,15 @@ type JobScheduleDescription struct {
 	// Example: {'data':'value'}
 	Payload string `json:"payload,omitempty"`
 
+	// User ID to run the container as
+	// More info: https://www.radix.equinor.com/radix-config#runasuser
+	// +optional
+	RunAsUser int64 `json:"runAsUser,omitempty"`
+
+	// SafeToRestart defines whether the job can be safely restarted by the cluster autoscaler during node scale-down.
+	// If not set, the value is determined by timeLimitSeconds. Read documentation for details.
+	SafeToRestart bool `json:"safeToRestart,omitempty"`
+
 	// TimeLimitSeconds defines maximum job run time. Corresponds to ActiveDeadlineSeconds in K8s.
 	TimeLimitSeconds int64 `json:"timeLimitSeconds,omitempty"`
 
