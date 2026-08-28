@@ -15,7 +15,6 @@ import (
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	"github.com/equinor/radix-common/utils/pointers"
 	"github.com/equinor/radix-common/utils/slice"
 	"github.com/rs/zerolog/log"
 )
@@ -94,11 +93,11 @@ func Application(ctx context.Context, cfg config.Config) error {
 		Add("clone", "redis-prod").
 		Add("clone", "redis-qa").
 		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
-			Environment:  pointers.Ptr("qa"),
-			PipelineName: pointers.Ptr("radix-cicdcanary-test2")}).
+			Environment:  new("qa"),
+			PipelineName: new("radix-cicdcanary-test2")}).
 		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
-			Environment:  pointers.Ptr("prod"),
-			PipelineName: pointers.Ptr("radix-cicdcanary-test2")}).
+			Environment:  new("prod"),
+			PipelineName: new("radix-cicdcanary-test2")}).
 		Add("build-app-qa", "app").
 		Add("build-app-prod", "app").
 		Add("build-redis-prod", "redis").

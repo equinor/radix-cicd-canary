@@ -15,7 +15,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/privateimagehub"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	commonUtils "github.com/equinor/radix-common/utils"
 	"github.com/rs/zerolog/log"
 )
 
@@ -90,7 +89,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 					WithContext(ctx).
 					WithPipelineParametersBuild(
 						&models.PipelineParametersBuild{
-							Branch:   defaults.App2BranchToBuildFrom,
+							GitRef:   defaults.App2BranchToBuildFrom,
 							CommitID: "this-commit-is-invalid-and-this-job-will-never-be-created",
 						},
 					)
@@ -118,7 +117,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 				param := application.NewUpdateBuildSecretsSecretValueParams().
 					WithContext(ctx).
 					WithSecretName(defaults.App2BuildSecretName).
-					WithSecretValue(&models.SecretParameters{SecretValue: commonUtils.StringPtr(defaults.App2SecretValue)})
+					WithSecretValue(&models.SecretParameters{SecretValue: new(defaults.App2SecretValue)})
 				impersonationSetter(param)
 				_, err := httpUtils.GetApplicationClient(cfg).UpdateBuildSecretsSecretValue(param, nil)
 				return err
@@ -137,7 +136,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 				param := application.NewUpdatePrivateImageHubsSecretValueParams().
 					WithContext(ctx).
 					WithServerName(*imageHub.Server).
-					WithImageHubSecret(&models.SecretParameters{SecretValue: commonUtils.StringPtr("some-value")})
+					WithImageHubSecret(&models.SecretParameters{SecretValue: new("some-value")})
 				impersonationSetter(param)
 				_, err = httpUtils.GetApplicationClient(cfg).UpdatePrivateImageHubsSecretValue(param, nil)
 				return err
@@ -155,7 +154,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 					WithSecretName(defaults.App2SecretName).
 					WithComponentSecret(
 						&models.SecretParameters{
-							SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
+							SecretValue: new(defaults.App2SecretValue),
 						})
 				impersonationSetter(param)
 				_, err := httpUtils.GetEnvironmentClient(cfg).ChangeComponentSecret(param, nil)

@@ -35,7 +35,7 @@ func Set(ctx context.Context, cfg config.Config) error {
 		WithSecretName(defaults.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: stringPtr(defaults.App2SecretValue),
+				SecretValue: new(defaults.App2SecretValue),
 			})
 
 	client := httpUtils.GetEnvironmentClient(cfg)
@@ -74,8 +74,4 @@ func getEnvironmentDetails(cfg config.Config) *models.Environment {
 	}
 
 	return nil
-}
-
-func stringPtr(str string) *string {
-	return &str
 }

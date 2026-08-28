@@ -13,7 +13,6 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
 	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
-	commonUtils "github.com/equinor/radix-common/utils"
 	"github.com/go-openapi/runtime"
 	"github.com/rs/zerolog/log"
 )
@@ -132,7 +131,7 @@ func buildApp(cfg config.Config) error {
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	bodyParameters := models.PipelineParametersBuild{
-		Branch: defaults.App2BranchToBuildFrom,
+		GitRef: defaults.App2BranchToBuildFrom,
 	}
 
 	params := apiclient.NewTriggerPipelineBuildParams().
@@ -163,7 +162,7 @@ func setSecret(cfg config.Config) error {
 		WithSecretName(defaults.App2SecretName).
 		WithComponentSecret(
 			&models.SecretParameters{
-				SecretValue: commonUtils.StringPtr(defaults.App2SecretValue),
+				SecretValue: new(defaults.App2SecretValue),
 			})
 
 	client := httpUtils.GetEnvironmentClient(cfg)
