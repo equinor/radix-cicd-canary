@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.8](https://github.com/equinor/radix-cicd-canary/compare/v1.5.7..v1.5.8) - 2026-09-01
+
+### 🐛 Bug Fixes
+
+- Update codebase to use modern go constructs (#300) - ([46355ac](https://github.com/equinor/radix-cicd-canary/commit/46355acf52ac3587ef8da390ea7818717ddef4ce)) by @nilsgstrabo in [#300](https://github.com/equinor/radix-cicd-canary/pull/300)
+
+- Regenerate api client (#303) - ([66bb89a](https://github.com/equinor/radix-cicd-canary/commit/66bb89afa35ce110bb1109c36bc930cbd37df4af)) by @nilsgstrabo in [#303](https://github.com/equinor/radix-cicd-canary/pull/303)
+
+
 ## [1.5.7](https://github.com/equinor/radix-cicd-canary/compare/v1.5.6..v1.5.7) - 2026-08-06
 
 ### 🐛 Bug Fixes
