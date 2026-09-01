@@ -76,7 +76,7 @@ type ClientService interface {
 
 	GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetTektonPipelineRunsOK, error)
 
-	RerunApplicationJob(params *RerunApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RerunApplicationJobNoContent, error)
+	RerunApplicationJob(params *RerunApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RerunApplicationJobOK, error)
 
 	StopApplicationJob(params *StopApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StopApplicationJobNoContent, error)
 
@@ -526,7 +526,7 @@ func (a *Client) GetTektonPipelineRuns(params *GetTektonPipelineRunsParams, auth
 /*
 RerunApplicationJob reruns the pipeline job
 */
-func (a *Client) RerunApplicationJob(params *RerunApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RerunApplicationJobNoContent, error) {
+func (a *Client) RerunApplicationJob(params *RerunApplicationJobParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RerunApplicationJobOK, error) {
 	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRerunApplicationJobParams()
@@ -553,7 +553,7 @@ func (a *Client) RerunApplicationJob(params *RerunApplicationJobParams, authInfo
 	}
 
 	// only one success response has to be checked
-	success, ok := result.(*RerunApplicationJobNoContent)
+	success, ok := result.(*RerunApplicationJobOK)
 	if ok {
 		return success, nil
 	}

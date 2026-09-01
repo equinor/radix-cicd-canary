@@ -17,7 +17,7 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// DeploymentSummary DeploymentSummary describe an deployment
+// DeploymentSummary DeploymentSummary describes a deployment
 //
 // swagger:model DeploymentSummary
 type DeploymentSummary struct {
@@ -30,14 +30,6 @@ type DeploymentSummary struct {
 	// ActiveTo Timestamp when the deployment ends
 	// Format: date-time
 	ActiveTo strfmt.DateTime `json:"activeTo,omitempty"`
-
-	// Name of the branch used to build the deployment
-	// Example: main
-	BuiltFromBranch string `json:"builtFromBranch,omitempty"`
-
-	// CommitID the commit ID of the branch to build
-	// Example: 4faca8595c5283a9d0f17a623b9255a0d9866a2e
-	CommitID string `json:"commitID,omitempty"`
 
 	// Array of component summaries
 	Components []*ComponentSummary `json:"components"`

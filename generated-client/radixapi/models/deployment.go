@@ -31,10 +31,6 @@ type Deployment struct {
 	// Format: date-time
 	ActiveTo strfmt.DateTime `json:"activeTo,omitempty"`
 
-	// Name of the branch used to build the deployment
-	// Example: main
-	BuiltFromBranch string `json:"builtFromBranch,omitempty"`
-
 	// Array of components
 	Components []*Component `json:"components"`
 
