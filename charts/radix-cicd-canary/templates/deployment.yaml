@@ -12,6 +12,8 @@ spec:
       {{- include "cicd-canary.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/radix-cicd-canary-config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
       labels:
         {{- include "cicd-canary.selectorLabels" . | nindent 8 }}
     spec:
