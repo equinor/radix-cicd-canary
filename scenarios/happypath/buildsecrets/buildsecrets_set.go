@@ -87,11 +87,10 @@ func buildSecretsAreListedWithStatus(ctx context.Context, cfg config.Config, app
 
 	params := applicationClient.NewGetBuildSecretsParams().
 		WithAppName(appName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetApplicationClient(cfg)
-	buildSecrets, err := client.GetBuildSecrets(params, nil)
+	buildSecrets, err := client.GetBuildSecretsContext(ctx, params, nil)
 	if err == nil && buildSecrets.Payload != nil && len(buildSecrets.Payload) == 2 {
 		if strings.EqualFold(*buildSecrets.Payload[0].Name, build.Secret1) &&
 			strings.EqualFold(buildSecrets.Payload[0].Status, expectedStatus) &&
@@ -116,14 +115,13 @@ func setSecret(ctx context.Context, cfg config.Config, appName, secretName, secr
 
 	params := applicationClient.NewUpdateBuildSecretsSecretValueParams().
 		WithAppName(appName).
-		WithContext(ctx).
 		WithSecretName(secretName).
 		WithSecretValue(&secretParameters).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	_, err := client.UpdateBuildSecretsSecretValue(params, nil)
+	_, err := client.UpdateBuildSecretsSecretValueContext(ctx, params, nil)
 	if err != nil {
 		return fmt.Errorf("failed to set secret %s: %w", secretName, err)
 	}

@@ -36,11 +36,10 @@ func Register(ctx context.Context, cfg config.Config, appName, appRepo, appCreat
 	params := apiclient.NewRegisterApplicationParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
-		WithContext(ctx).
 		WithApplicationRegistration(&bodyParameters)
 
 	client := httpUtils.GetPlatformClient(cfg)
-	return client.RegisterApplication(params, nil)
+	return client.RegisterApplicationContext(ctx, params, nil)
 }
 
 // DeleteByImpersonatedUser Deletes an application by the impersonated user
@@ -52,10 +51,9 @@ func DeleteByImpersonatedUser(ctx context.Context, cfg config.Config, appName st
 	params := applicationclient.NewDeleteApplicationParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
-		WithContext(ctx).
 		WithAppName(appName)
 
-	return deleteApplication(cfg, appName, params)
+	return deleteApplication(ctx, cfg, appName, params)
 }
 
 // DeleteByServiceAccount an application by the service account
@@ -63,10 +61,9 @@ func DeleteByServiceAccount(ctx context.Context, cfg config.Config, appName stri
 	log.Ctx(ctx).Debug().Msgf("delete an application by the service account: %s", appName)
 
 	params := applicationclient.NewDeleteApplicationParams().
-		WithContext(ctx).
 		WithAppName(appName)
 
-	return deleteApplication(cfg, appName, params)
+	return deleteApplication(ctx, cfg, appName, params)
 }
 
 func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privateKey string) error {
@@ -81,7 +78,7 @@ func RegenerateDeployKey(ctx context.Context, cfg config.Config, appName, privat
 		WithRegenerateDeployKeyAndSecretData(&models.RegenerateDeployKeyData{PrivateKey: privateKey})
 
 	client := httpUtils.GetApplicationClient(cfg)
-	_, err := client.RegenerateDeployKey(params, nil)
+	_, err := client.RegenerateDeployKeyContext(ctx, params, nil)
 	return err
 }
 
@@ -119,11 +116,10 @@ func GetDeployKey(ctx context.Context, cfg config.Config, appName string) (strin
 	params := applicationclient.NewGetDeployKeyAndSecretParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
-		WithContext(ctx).
 		WithAppName(appName)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	response, err := client.GetDeployKeyAndSecret(params, nil)
+	response, err := client.GetDeployKeyAndSecretContext(ctx, params, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed getting deploy key for the application %s: %w", appName, err)
 	}
@@ -160,11 +156,10 @@ func getSharedSecret(ctx context.Context, cfg config.Config, appName string) (st
 	params := applicationclient.NewGetDeployKeyAndSecretParams().
 		WithImpersonateUser(cfg.GetImpersonateUser()).
 		WithImpersonateGroup(cfg.GetImpersonateGroups()).
-		WithContext(ctx).
 		WithAppName(appName)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	response, err := client.GetDeployKeyAndSecret(params, nil)
+	response, err := client.GetDeployKeyAndSecretContext(ctx, params, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed getting shared secret for the application %s: %w", appName, err)
 	}
@@ -174,9 +169,9 @@ func getSharedSecret(ctx context.Context, cfg config.Config, appName string) (st
 	return *response.Payload.SharedSecret, nil
 }
 
-func deleteApplication(cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
+func deleteApplication(ctx context.Context, cfg config.Config, appName string, params *applicationclient.DeleteApplicationParams) error {
 	client := httpUtils.GetApplicationClient(cfg)
-	_, err := client.DeleteApplication(params, nil)
+	_, err := client.DeleteApplicationContext(ctx, params, nil)
 
 	if err != nil {
 		if _, ok := err.(*applicationclient.DeleteApplicationNotFound); ok {
@@ -199,12 +194,11 @@ func Deploy(ctx context.Context, cfg config.Config, appName, toEnvironment strin
 	params := applicationclient.NewTriggerPipelineDeployParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
-		WithContext(ctx).
 		WithAppName(appName).
 		WithPipelineParametersDeploy(&bodyParameters)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	return client.TriggerPipelineDeploy(params, nil)
+	return client.TriggerPipelineDeployContext(ctx, params, nil)
 }
 
 // IsDefined Checks if application is defined
@@ -244,11 +238,10 @@ func DeleteIfExist(ctx context.Context, cfg config.Config, appName string) error
 func Get(ctx context.Context, cfg config.Config, appName string) (*models.Application, error) {
 	params := applicationclient.NewGetApplicationParams().
 		WithAppName(appName).
-		WithContext(ctx).
 		WithImpersonateUser(cfg.GetImpersonateUser()).
 		WithImpersonateGroup(cfg.GetImpersonateGroups())
 	client := httpUtils.GetApplicationClient(cfg)
-	result, err := client.GetApplication(params, nil)
+	result, err := client.GetApplicationContext(ctx, params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get application: %w", err)
 	}

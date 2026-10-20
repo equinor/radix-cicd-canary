@@ -27,12 +27,11 @@ func Access(ctx context.Context, cfg config.Config) error {
 	params := application.NewGetApplicationParams().
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup).
-		WithContext(ctx).
 		WithAppName(defaults.RestrictedApplicationName)
 
 	client := httpUtils.GetApplicationClient(cfg)
 	log.Ctx(ctx).Debug().Str("app", defaults.RestrictedApplicationName).Msg("check that impersonated user has no access to the application")
-	_, err := client.GetApplication(params, nil)
+	_, err := client.GetApplicationContext(ctx, params, nil)
 	return givesAccessError(err)
 }
 
@@ -61,9 +60,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			logMsg:        fmt.Sprintf("checking that user with reader role can read RR for application %s", appName),
 			expectedError: nil,
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
-				param := application.NewGetApplicationParams().WithContext(ctx)
+				param := application.NewGetApplicationParams()
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).GetApplication(param, nil)
+				_, err := httpUtils.GetApplicationClient(cfg).GetApplicationContext(ctx, param, nil)
 				return err
 			},
 		},
@@ -73,10 +72,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			expectedError: environment.NewRestartEnvironmentForbidden(),
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := environment.NewRestartEnvironmentParams().
-					WithEnvName(defaults.App2EnvironmentName).
-					WithContext(ctx)
+					WithEnvName(defaults.App2EnvironmentName)
 				impersonationSetter(param)
-				_, err := httpUtils.GetEnvironmentClient(cfg).RestartEnvironment(param, nil)
+				_, err := httpUtils.GetEnvironmentClient(cfg).RestartEnvironmentContext(ctx, param, nil)
 				return err
 			},
 		},
@@ -86,7 +84,6 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			expectedError: application.NewTriggerPipelineBuildDeployForbidden(),
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := application.NewTriggerPipelineBuildDeployParams().
-					WithContext(ctx).
 					WithPipelineParametersBuild(
 						&models.PipelineParametersBuild{
 							GitRef:   defaults.App2BranchToBuildFrom,
@@ -94,7 +91,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 						},
 					)
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).TriggerPipelineBuildDeploy(param, nil)
+				_, err := httpUtils.GetApplicationClient(cfg).TriggerPipelineBuildDeployContext(ctx, param, nil)
 				return err
 			},
 		},
@@ -103,9 +100,9 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			logMsg:        fmt.Sprintf("checking that user with read role cannot delete app %s", appName),
 			expectedError: application.NewDeleteApplicationForbidden(),
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
-				param := application.NewDeleteApplicationParams().WithContext(ctx)
+				param := application.NewDeleteApplicationParams()
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).DeleteApplication(param, nil)
+				_, err := httpUtils.GetApplicationClient(cfg).DeleteApplicationContext(ctx, param, nil)
 				return err
 			},
 		},
@@ -115,11 +112,10 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			expectedError: application.NewUpdateBuildSecretsSecretValueForbidden(),
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := application.NewUpdateBuildSecretsSecretValueParams().
-					WithContext(ctx).
 					WithSecretName(defaults.App2BuildSecretName).
 					WithSecretValue(&models.SecretParameters{SecretValue: new(defaults.App2SecretValue)})
 				impersonationSetter(param)
-				_, err := httpUtils.GetApplicationClient(cfg).UpdateBuildSecretsSecretValue(param, nil)
+				_, err := httpUtils.GetApplicationClient(cfg).UpdateBuildSecretsSecretValueContext(ctx, param, nil)
 				return err
 			},
 		},
@@ -134,11 +130,10 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 				}
 				imageHub := imageHubs[0]
 				param := application.NewUpdatePrivateImageHubsSecretValueParams().
-					WithContext(ctx).
 					WithServerName(*imageHub.Server).
 					WithImageHubSecret(&models.SecretParameters{SecretValue: new("some-value")})
 				impersonationSetter(param)
-				_, err = httpUtils.GetApplicationClient(cfg).UpdatePrivateImageHubsSecretValue(param, nil)
+				_, err = httpUtils.GetApplicationClient(cfg).UpdatePrivateImageHubsSecretValueContext(ctx, param, nil)
 				return err
 			},
 		},
@@ -149,7 +144,6 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 			testFunc: func(ctx context.Context, impersonationSetter func(impersonateParam)) error {
 				param := environment.NewChangeComponentSecretParams().
 					WithEnvName(defaults.App2EnvironmentName).
-					WithContext(ctx).
 					WithComponentName(defaults.App2Component2Name).
 					WithSecretName(defaults.App2SecretName).
 					WithComponentSecret(
@@ -157,7 +151,7 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 							SecretValue: new(defaults.App2SecretValue),
 						})
 				impersonationSetter(param)
-				_, err := httpUtils.GetEnvironmentClient(cfg).ChangeComponentSecret(param, nil)
+				_, err := httpUtils.GetEnvironmentClient(cfg).ChangeComponentSecretContext(ctx, param, nil)
 				return err
 			},
 		},
@@ -175,11 +169,10 @@ func ReaderAccess(ctx context.Context, cfg config.Config) error {
 				}
 				jobName := jobSummary.Name
 				param := pipeline_job.NewGetPipelineJobStepLogsParams().
-					WithContext(ctx).
 					WithJobName(*jobName).
 					WithStepName("radix-pipeline")
 				impersonationSetter(param)
-				_, err = httpUtils.GetJobClient(cfg).GetPipelineJobStepLogs(param, nil)
+				_, err = httpUtils.GetJobClient(cfg).GetPipelineJobStepLogsContext(ctx, param, nil)
 				return err
 			},
 		},
