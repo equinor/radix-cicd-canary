@@ -39,6 +39,12 @@ func (o *RegisterApplicationReader) ReadResponse(response runtime.ClientResponse
 			return nil, err
 		}
 		return nil, result
+	case 403:
+		result := NewRegisterApplicationForbidden()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 409:
 		result := NewRegisterApplicationConflict()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -127,6 +133,7 @@ func NewRegisterApplicationBadRequest() *RegisterApplicationBadRequest {
 //
 // Invalid application registration
 type RegisterApplicationBadRequest struct {
+	Payload *models.ErrorResponseBody
 }
 
 // IsSuccess returns true when this register application bad request response has a 2xx status code
@@ -160,14 +167,27 @@ func (o *RegisterApplicationBadRequest) Code() int {
 }
 
 func (o *RegisterApplicationBadRequest) Error() string {
-	return fmt.Sprintf("[POST /applications][%d] registerApplicationBadRequest", 400)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationBadRequest %s", 400, payload)
 }
 
 func (o *RegisterApplicationBadRequest) String() string {
-	return fmt.Sprintf("[POST /applications][%d] registerApplicationBadRequest", 400)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationBadRequest %s", 400, payload)
+}
+
+func (o *RegisterApplicationBadRequest) GetPayload() *models.ErrorResponseBody {
+	return o.Payload
 }
 
 func (o *RegisterApplicationBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ErrorResponseBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
 
 	return nil
 }
@@ -181,6 +201,7 @@ func NewRegisterApplicationUnauthorized() *RegisterApplicationUnauthorized {
 //
 // Unauthorized
 type RegisterApplicationUnauthorized struct {
+	Payload *models.ErrorResponseBody
 }
 
 // IsSuccess returns true when this register application unauthorized response has a 2xx status code
@@ -214,14 +235,95 @@ func (o *RegisterApplicationUnauthorized) Code() int {
 }
 
 func (o *RegisterApplicationUnauthorized) Error() string {
-	return fmt.Sprintf("[POST /applications][%d] registerApplicationUnauthorized", 401)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationUnauthorized %s", 401, payload)
 }
 
 func (o *RegisterApplicationUnauthorized) String() string {
-	return fmt.Sprintf("[POST /applications][%d] registerApplicationUnauthorized", 401)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationUnauthorized %s", 401, payload)
+}
+
+func (o *RegisterApplicationUnauthorized) GetPayload() *models.ErrorResponseBody {
+	return o.Payload
 }
 
 func (o *RegisterApplicationUnauthorized) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ErrorResponseBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
+
+	return nil
+}
+
+// NewRegisterApplicationForbidden creates a RegisterApplicationForbidden with default headers values
+func NewRegisterApplicationForbidden() *RegisterApplicationForbidden {
+	return &RegisterApplicationForbidden{}
+}
+
+// RegisterApplicationForbidden describes a response with status code 403, with default header values.
+//
+// Forbidden
+type RegisterApplicationForbidden struct {
+	Payload *models.ErrorResponseBody
+}
+
+// IsSuccess returns true when this register application forbidden response has a 2xx status code
+func (o *RegisterApplicationForbidden) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this register application forbidden response has a 3xx status code
+func (o *RegisterApplicationForbidden) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this register application forbidden response has a 4xx status code
+func (o *RegisterApplicationForbidden) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this register application forbidden response has a 5xx status code
+func (o *RegisterApplicationForbidden) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this register application forbidden response a status code equal to that given
+func (o *RegisterApplicationForbidden) IsCode(code int) bool {
+	return code == 403
+}
+
+// Code gets the status code for the register application forbidden response
+func (o *RegisterApplicationForbidden) Code() int {
+	return 403
+}
+
+func (o *RegisterApplicationForbidden) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationForbidden %s", 403, payload)
+}
+
+func (o *RegisterApplicationForbidden) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationForbidden %s", 403, payload)
+}
+
+func (o *RegisterApplicationForbidden) GetPayload() *models.ErrorResponseBody {
+	return o.Payload
+}
+
+func (o *RegisterApplicationForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ErrorResponseBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
 
 	return nil
 }
@@ -235,6 +337,7 @@ func NewRegisterApplicationConflict() *RegisterApplicationConflict {
 //
 // Conflict
 type RegisterApplicationConflict struct {
+	Payload *models.ErrorResponseBody
 }
 
 // IsSuccess returns true when this register application conflict response has a 2xx status code
@@ -268,14 +371,27 @@ func (o *RegisterApplicationConflict) Code() int {
 }
 
 func (o *RegisterApplicationConflict) Error() string {
-	return fmt.Sprintf("[POST /applications][%d] registerApplicationConflict", 409)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationConflict %s", 409, payload)
 }
 
 func (o *RegisterApplicationConflict) String() string {
-	return fmt.Sprintf("[POST /applications][%d] registerApplicationConflict", 409)
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /applications][%d] registerApplicationConflict %s", 409, payload)
+}
+
+func (o *RegisterApplicationConflict) GetPayload() *models.ErrorResponseBody {
+	return o.Payload
 }
 
 func (o *RegisterApplicationConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ErrorResponseBody)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
+		return err
+	}
 
 	return nil
 }
