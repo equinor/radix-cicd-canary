@@ -83,13 +83,12 @@ func getDeployments(ctx context.Context, cfg config.Config, appName string, envi
 	impersonateGroup := cfg.GetImpersonateGroups()
 
 	params := environmentclient.NewGetApplicationEnvironmentDeploymentsParams().
-		WithContext(ctx).
 		WithAppName(appName).
 		WithEnvName(environment).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetEnvironmentClient(cfg)
-	deployments, err := client.GetApplicationEnvironmentDeployments(params, nil)
+	deployments, err := client.GetApplicationEnvironmentDeploymentsContext(ctx, params, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -109,12 +108,11 @@ func promote(ctx context.Context, cfg config.Config, deployment *models.Deployme
 
 	params := applicationclient.NewTriggerPipelinePromoteParams().
 		WithAppName(appName).
-		WithContext(ctx).
 		WithPipelineParametersPromote(&bodyParameters).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetApplicationClient(cfg)
-	returnValue, err := client.TriggerPipelinePromote(params, nil)
+	returnValue, err := client.TriggerPipelinePromoteContext(ctx, params, nil)
 	if err != nil {
 		return "", err
 	}

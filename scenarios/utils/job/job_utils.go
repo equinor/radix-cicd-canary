@@ -48,11 +48,10 @@ func getPipelineJobs(ctx context.Context, cfg config.Config, appName string) ([]
 
 	params := pipelineJobClient.NewGetApplicationJobsParams().
 		WithAppName(appName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 	client := httpUtils.GetJobClient(cfg)
-	applicationJobs, err := client.GetApplicationJobs(params, nil)
+	applicationJobs, err := client.GetApplicationJobsContext(ctx, params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error calling GetApplicationJobs for application %s: %w", appName, err)
 	}
@@ -71,11 +70,10 @@ func Stop(ctx context.Context, cfg config.Config, appName, jobName string) error
 	params := pipelineJobClient.NewStopApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
-	jobStopped, err := client.StopApplicationJob(params, nil)
+	jobStopped, err := client.StopApplicationJobContext(ctx, params, nil)
 	if err == nil && jobStopped != nil {
 		return nil
 	}
@@ -118,12 +116,11 @@ func Get(ctx context.Context, cfg config.Config, appName, jobName string) (*mode
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
-	applicationJob, err := client.GetApplicationJob(params, nil)
+	applicationJob, err := client.GetApplicationJobContext(ctx, params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get job: %w", err)
 	}
@@ -141,12 +138,11 @@ func GetSteps(ctx context.Context, cfg config.Config, appName, jobName string) [
 	params := pipelineJobClient.NewGetApplicationJobParams().
 		WithAppName(appName).
 		WithJobName(jobName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
-	applicationJob, err := client.GetApplicationJob(params, nil)
+	applicationJob, err := client.GetApplicationJobContext(ctx, params, nil)
 	if err == nil &&
 		applicationJob.Payload != nil &&
 		applicationJob.Payload.Steps != nil {
@@ -166,12 +162,11 @@ func GetLogForStep(ctx context.Context, cfg config.Config, appName, jobName, ste
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithStepName(stepName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
-	applicationJobLogs, err := client.GetPipelineJobStepLogs(params, nil)
+	applicationJobLogs, err := client.GetPipelineJobStepLogsContext(ctx, params, nil)
 	if err != nil {
 		log.Ctx(ctx).Error().Str("jobName", jobName).Str("stepName", stepName).Msg("failed to get pipeline log for the app")
 		return ""
@@ -187,12 +182,11 @@ func GetPipelineRuns(ctx context.Context, cfg config.Config, appName, jobName st
 	params := pipelineJobClient.NewGetTektonPipelineRunsParams().
 		WithAppName(appName).
 		WithJobName(jobName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
-	response, err := client.GetTektonPipelineRuns(params, nil)
+	response, err := client.GetTektonPipelineRunsContext(ctx, params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch pipelinerun details: %w", err)
 	}
@@ -209,12 +203,11 @@ func GetPipelineRunTasks(ctx context.Context, cfg config.Config, appName, jobNam
 		WithAppName(appName).
 		WithJobName(jobName).
 		WithPipelineRunName(pipelineRunName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
-	applicationJob, err := client.GetTektonPipelineRunTasks(params, nil)
+	applicationJob, err := client.GetTektonPipelineRunTasksContext(ctx, params, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch tasks for pipelinerun: %w", err)
 	}
@@ -232,12 +225,11 @@ func GetLogForPipelineStep(ctx context.Context, cfg config.Config, appName, jobN
 		WithPipelineRunName(pipelineRunName).
 		WithTaskName(taskName).
 		WithStepName(stepName).
-		WithContext(ctx).
 		WithImpersonateUser(impersonateUser).
 		WithImpersonateGroup(impersonateGroup)
 
 	client := httpUtils.GetJobClient(cfg)
-	logs, err := client.GetTektonPipelineRunTaskStepLogs(params, nil)
+	logs, err := client.GetTektonPipelineRunTaskStepLogsContext(ctx, params, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to fetch logs for pipeline task-step log: %w", err)
 	}

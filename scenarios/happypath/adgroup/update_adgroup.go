@@ -95,11 +95,10 @@ func patchAdGroup(ctx context.Context, cfg config.Config, appName string, adGrou
 
 	params := apiclient.NewModifyRegistrationDetailsParams().
 		WithAppName(appName).
-		WithContext(ctx).
 		WithPatchRequest(&patchRequest)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	_, err := client.ModifyRegistrationDetails(params, nil)
+	_, err := client.ModifyRegistrationDetailsContext(ctx, params, nil)
 	if err != nil {
 		return err
 	}
@@ -113,12 +112,11 @@ func getApplication(ctx context.Context, cfg config.Config) (*models.Application
 
 	params := apiclient.NewGetApplicationParams().
 		WithImpersonateUser(impersonateUser).
-		WithContext(ctx).
 		WithImpersonateGroup(impersonateGroup).
 		WithAppName(defaults.App2Name)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	application, err := client.GetApplication(params, nil)
+	application, err := client.GetApplicationContext(ctx, params, nil)
 	if err != nil {
 		return nil, err
 	}

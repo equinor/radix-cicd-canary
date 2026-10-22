@@ -128,11 +128,10 @@ func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfi
 
 	params := apiclient.NewModifyRegistrationDetailsParams().
 		WithAppName(appName).
-		WithContext(ctx).
 		WithPatchRequest(&patchRequest)
 
 	client := httpUtils.GetApplicationClient(cfg)
-	_, err := client.ModifyRegistrationDetails(params, nil)
+	_, err := client.ModifyRegistrationDetailsContext(ctx, params, nil)
 	if err != nil {
 		return err
 	}

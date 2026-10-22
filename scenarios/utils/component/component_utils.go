@@ -42,13 +42,12 @@ func AllReplicasHaveExpectedStatus(ctx context.Context, cfg config.Config, appNa
 
 func getEnvironment(ctx context.Context, cfg config.Config, appName, envName string) (*models.Environment, error) {
 	params := environmentclient.NewGetEnvironmentParams().
-		WithContext(ctx).
 		WithAppName(appName).
 		WithEnvName(envName).
 		WithImpersonateUser(cfg.GetImpersonateUser()).
 		WithImpersonateGroup(cfg.GetImpersonateGroups())
 	client := httpUtils.GetEnvironmentClient(cfg)
-	result, err := client.GetEnvironment(params, nil)
+	result, err := client.GetEnvironmentContext(ctx, params, nil)
 	if err != nil {
 		return nil, err
 	}
