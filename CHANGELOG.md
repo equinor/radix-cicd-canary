@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.9](https://github.com/equinor/radix-cicd-canary/compare/v1.5.8..v1.5.9) - 2026-10-22
+
+### 🐛 Bug Fixes
+
+- Add checksum annotation for config.yaml in deployment (#306) - ([00d9b2e](https://github.com/equinor/radix-cicd-canary/commit/00d9b2e668f9975d8fc275bd5ce9d52fe382432e)) by @nilsgstrabo in [#306](https://github.com/equinor/radix-cicd-canary/pull/306)
+
+- Regenerate radix-api client (#309) - ([17e959d](https://github.com/equinor/radix-cicd-canary/commit/17e959d68918eeb476e8ecdcf231a05c7b8412a0)) by @nilsgstrabo in [#309](https://github.com/equinor/radix-cicd-canary/pull/309)
+
+
 ## [1.5.8](https://github.com/equinor/radix-cicd-canary/compare/v1.5.7..v1.5.8) - 2026-09-01
 
 ### 🐛 Bug Fixes
