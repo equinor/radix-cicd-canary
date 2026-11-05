@@ -42,16 +42,16 @@ func Application(ctx context.Context, cfg config.Config) error {
 	steps := jobUtils.GetSteps(ctx, cfg, defaults.App3Name, jobName)
 
 	expectedSteps := jobUtils.NewExpectedSteps().
-		Add("clone-config").
-		Add("radix-pipeline")
+		Add(jobUtils.StepTypeCloneConfig).
+		Add(jobUtils.StepTypePipelineRunner)
 
 	if len(steps) != expectedSteps.Count() {
 		return errors.New("number of pipeline steps was not as expected")
 	}
 
 	for _, step := range steps {
-		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
-			return fmt.Errorf("missing expected step %s", step.Name)
+		if !expectedSteps.HasStep(*step) {
+			return fmt.Errorf("step %s not found in list of expected steps", *step.Name)
 		}
 	}
 

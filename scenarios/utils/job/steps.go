@@ -5,61 +5,134 @@ import (
 	"github.com/equinor/radix-common/utils/slice"
 )
 
-type ExpectedSteps interface {
-	Add(stepName string, components ...string) ExpectedSteps
-	AddForSubPipeline(stepName string, subPipelineTaskStep *models.SubPipelineTaskStep) ExpectedSteps
-	Count() int
-	HasStepWithComponent(stepName string, components []string) bool
-	HasStepWithSubPipelineTaskStep(stepName string, subPipelineTaskStep *models.SubPipelineTaskStep) bool
-}
+type StepType string
+
+const (
+	StepTypeCloneConfig     StepType = "clone-config"
+	StepTypePipelineRunner  StepType = "pipeline-runner"
+	StepTypeClone           StepType = "clone"
+	StepTypeBuild           StepType = "build"
+	StepTypeSubPipelineStep StepType = "sub-pipeline-step"
+	StepTypeUnknown         StepType = "unknown"
+)
+
+type StepStatus string
+
+const (
+	StepStatusQueued           StepStatus = "Queued"
+	StepStatusWaiting          StepStatus = "Waiting"
+	StepStatusRunning          StepStatus = "Running"
+	StepStatusSucceeded        StepStatus = "Succeeded"
+	StepStatusCompleted        StepStatus = "Completed" // Hack: the status for sub-pipelines are taken raw from taskrun.status.steps.terminated
+	StepStatusFailed           StepStatus = "Failed"
+	StepStatusStopped          StepStatus = "Stopped"
+	StepStatusStoppedNoChanges StepStatus = "StoppedNoChanges"
+)
 
 type expectedStep struct {
-	components          []string
-	name                string
-	subPipelineTaskStep *models.SubPipelineTaskStep
+	StepType            StepType
+	Status              StepStatus
+	Components          []string
+	Environments        []string
+	SubPipelineTaskStep *models.SubPipelineTaskStep
 }
 
-type expectedSteps struct {
+type ExpectedSteps struct {
 	steps []expectedStep
 }
 
-func NewExpectedSteps() ExpectedSteps {
-	return &expectedSteps{
+func NewExpectedSteps() *ExpectedSteps {
+	return &ExpectedSteps{
 		steps: make([]expectedStep, 0),
 	}
 }
 
-func (es *expectedSteps) Add(stepName string, components ...string) ExpectedSteps {
-	es.steps = append(es.steps, expectedStep{name: stepName, components: components})
+type Option func(*expectedStep)
+
+func WithStatus(status StepStatus) Option {
+	return func(step *expectedStep) {
+		step.Status = status
+	}
+}
+
+func WithComponents(components ...string) Option {
+	return func(step *expectedStep) {
+		step.Components = components
+	}
+}
+
+func WithEnvironments(environments ...string) Option {
+	return func(step *expectedStep) {
+		step.Environments = environments
+	}
+}
+
+func WithSubPipelineTaskStep(subPipelineTaskStep *models.SubPipelineTaskStep) Option {
+	return func(step *expectedStep) {
+		step.SubPipelineTaskStep = subPipelineTaskStep
+	}
+}
+
+func (es *ExpectedSteps) Add(stepType StepType, options ...Option) *ExpectedSteps {
+	step := expectedStep{StepType: stepType}
+
+	for _, option := range options {
+		option(&step)
+	}
+
+	if step.Status == "" {
+		step.Status = StepStatusSucceeded
+	}
+
+	es.steps = append(es.steps, step)
 	return es
 }
 
-func (es *expectedSteps) AddForSubPipeline(stepName string, subPipelineTaskStep *models.SubPipelineTaskStep) ExpectedSteps {
-	es.steps = append(es.steps, expectedStep{name: stepName, subPipelineTaskStep: subPipelineTaskStep})
-	return es
-}
-
-func (es *expectedSteps) Count() int {
+func (es *ExpectedSteps) Count() int {
 	return len(es.steps)
 }
 
-func (es *expectedSteps) HasStepWithComponent(stepName string, components []string) bool {
-	return slice.Any(es.steps, func(step expectedStep) bool {
-		return step.name == stepName && slice.ElementsMatch(step.components, components)
+func (es *ExpectedSteps) HasStep(step models.Step) bool {
+
+	return slice.Any(es.steps, func(expectedStep expectedStep) bool {
+		if step.Type != string(expectedStep.StepType) {
+			return false
+		}
+
+		if step.Status != string(expectedStep.Status) {
+			return false
+		}
+
+		if !slice.ElementsMatch(step.Components, expectedStep.Components) {
+			return false
+		}
+
+		if !slice.ElementsMatch(step.Environments, expectedStep.Environments) {
+			return false
+		}
+
+		if !compareSubPipelineTaskStep(&step, expectedStep) {
+			return false
+		}
+
+		return true
 	})
 }
 
-func (es *expectedSteps) HasStepWithSubPipelineTaskStep(stepName string, subPipelineTaskStep *models.SubPipelineTaskStep) bool {
-	if subPipelineTaskStep == nil {
+func compareSubPipelineTaskStep(step *models.Step, expectedStep expectedStep) bool {
+	if expectedStep.SubPipelineTaskStep == nil && step.SubPipelineTaskStep == nil {
+		return true
+	}
+	if step.SubPipelineTaskStep == nil || expectedStep.SubPipelineTaskStep == nil {
 		return false
 	}
-	return slice.Any(es.steps, func(step expectedStep) bool {
-		if step.name != stepName || step.subPipelineTaskStep == nil ||
-			step.subPipelineTaskStep.Environment == nil ||
-			step.subPipelineTaskStep.PipelineName == nil {
-			return false
-		}
-		return *(step.subPipelineTaskStep.Environment) == *(subPipelineTaskStep.Environment) &&
-			*(step.subPipelineTaskStep.PipelineName) == *(subPipelineTaskStep.PipelineName)
-	})
+	return equalStringPointers(step.SubPipelineTaskStep.Environment, expectedStep.SubPipelineTaskStep.Environment) &&
+		equalStringPointers(step.SubPipelineTaskStep.PipelineName, expectedStep.SubPipelineTaskStep.PipelineName)
+}
+
+func equalStringPointers(first, second *string) bool {
+	if first == nil || second == nil {
+		return first == second
+	}
+	return *first == *second
 }

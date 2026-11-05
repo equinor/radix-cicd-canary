@@ -86,36 +86,31 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	steps := jobUtils.GetSteps(ctx, cfg, defaults.App2Name, jobName)
 	expectedSteps := jobUtils.NewExpectedSteps().
-		Add("clone-config").
-		Add("radix-pipeline").
-		Add("clone", "app-qa").
-		Add("clone", "app-prod").
-		Add("clone", "redis-prod").
-		Add("clone", "redis-qa").
-		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
+		Add(jobUtils.StepTypeCloneConfig).
+		Add(jobUtils.StepTypePipelineRunner).
+		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("qa")).
+		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("prod")).
+		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("prod")).
+		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("qa")).
+		Add(jobUtils.StepTypeSubPipelineStep, jobUtils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
 			Environment:  new("qa"),
-			PipelineName: new("radix-cicdcanary-test2")}).
-		AddForSubPipeline("sub-pipeline-step", &models.SubPipelineTaskStep{
+			PipelineName: new("radix-cicdcanary-test2")})).
+		Add(jobUtils.StepTypeSubPipelineStep, jobUtils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
 			Environment:  new("prod"),
-			PipelineName: new("radix-cicdcanary-test2")}).
-		Add("build-app-qa", "app").
-		Add("build-app-prod", "app").
-		Add("build-redis-prod", "redis").
-		Add("build-redis-qa", "redis")
+			PipelineName: new("radix-cicdcanary-test2")})).
+		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("qa")).
+		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("prod")).
+		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("prod")).
+		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("qa"))
 
 	if len(steps) != expectedSteps.Count() {
 		return errors.New("number of pipeline steps was not as expected")
 	}
 
 	for _, step := range steps {
-		if step.Name == "sub-pipeline-step" {
-			if !expectedSteps.HasStepWithSubPipelineTaskStep(step.Name, step.SubPipelineTaskStep) {
-				return fmt.Errorf("missing expected step %s with SubPipelineTaskStep env %s, pipeline %s", step.Name, *step.SubPipelineTaskStep.Environment, *step.SubPipelineTaskStep.PipelineName)
-			}
-			continue
-		}
-		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
-			return fmt.Errorf("missing expected step %s with components %s", step.Name, step.Components)
+
+		if !expectedSteps.HasStep(*step) {
+			return fmt.Errorf("step %s not found in list of expected steps", *step.Name)
 		}
 	}
 

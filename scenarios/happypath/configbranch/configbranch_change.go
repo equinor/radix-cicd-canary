@@ -49,10 +49,10 @@ func Change(ctx context.Context, cfg config.Config) error {
 	log.Ctx(ctx).Info().Msg("First job was completed")
 
 	expectedSteps := jobUtils.NewExpectedSteps().
-		Add("clone-config").
-		Add("radix-pipeline").
-		Add("clone", "www-prod").
-		Add("build-www-prod", "www")
+		Add(jobUtils.StepTypeCloneConfig).
+		Add(jobUtils.StepTypePipelineRunner).
+		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("www"), jobUtils.WithEnvironments("prod")).
+		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("www"), jobUtils.WithEnvironments("prod"))
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
@@ -85,10 +85,10 @@ func Change(ctx context.Context, cfg config.Config) error {
 	log.Ctx(ctx).Info().Msg("Second job was completed")
 
 	expectedSteps = jobUtils.NewExpectedSteps().
-		Add("clone-config").
-		Add("radix-pipeline").
-		Add("clone", "www2-prod").
-		Add("build-www2-prod", "www2")
+		Add(jobUtils.StepTypeCloneConfig).
+		Add(jobUtils.StepTypePipelineRunner).
+		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("www2"), jobUtils.WithEnvironments("prod")).
+		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("www2"), jobUtils.WithEnvironments("prod"))
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
@@ -139,7 +139,7 @@ func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfi
 	return nil
 }
 
-func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps jobUtils.ExpectedSteps) (bool, error) {
+func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps *jobUtils.ExpectedSteps) (bool, error) {
 	steps := jobUtils.GetSteps(ctx, cfg, appName, jobName)
 
 	if len(steps) != expectedSteps.Count() {
@@ -147,8 +147,8 @@ func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName s
 	}
 
 	for _, step := range steps {
-		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
-			return false, fmt.Errorf("missing expected step %s with components %s", step.Name, step.Components)
+		if !expectedSteps.HasStep(*step) {
+			return false, fmt.Errorf("step %s not found in list of expected steps", *step.Name)
 		}
 	}
 	return true, nil

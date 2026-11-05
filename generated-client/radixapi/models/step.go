@@ -19,16 +19,26 @@ import (
 // swagger:model Step
 type Step struct {
 
-	// Components associated components
+	// Components lists components associated with this step
 	Components []string `json:"components"`
+
+	// ContainerName for the step's container
+	ContainerName string `json:"containerName,omitempty"`
 
 	// Ended timestamp
 	// Format: date-time
 	Ended strfmt.DateTime `json:"ended,omitempty"`
 
+	// Environments lists environments associated with this step
+	Environments []string `json:"environments"`
+
 	// Name of the step
 	// Example: build
-	Name string `json:"name,omitempty"`
+	// Required: true
+	Name *string `json:"name"`
+
+	// Pod name for the step
+	PodName string `json:"podName,omitempty"`
 
 	// Started timestamp
 	// Format: date-time
@@ -38,6 +48,17 @@ type Step struct {
 	// Example: Waiting
 	// Enum: ["Queued","Waiting","Running","Succeeded","Failed","Stopped","StoppedNoChanges"]
 	Status string `json:"status,omitempty"`
+
+	// Type of the step
+	// CloneConfig StepTypeCloneConfig
+	// PipelineRunner StepTypePipelineRunner
+	// Clone StepTypeClone
+	// Build StepTypeBuild
+	// SubPipelineStep StepTypeSubPipelineStep
+	// Unknown StepTypeUnknown
+	// Example: Build
+	// Enum: ["CloneConfig","PipelineRunner","Clone","Build","SubPipelineStep","Unknown"]
+	Type string `json:"type,omitempty"`
 
 	// sub pipeline task step
 	SubPipelineTaskStep *SubPipelineTaskStep `json:"subPipelineTaskStep,omitempty"`
@@ -51,11 +72,19 @@ func (m *Step) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateStarted(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -75,6 +104,15 @@ func (m *Step) validateEnded(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("ended", "body", "date-time", m.Ended.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Step) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
 	}
 
@@ -144,6 +182,60 @@ func (m *Step) validateStatus(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var stepTypeTypePropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["CloneConfig","PipelineRunner","Clone","Build","SubPipelineStep","Unknown"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		stepTypeTypePropEnum = append(stepTypeTypePropEnum, v)
+	}
+}
+
+const (
+
+	// StepTypeCloneConfig captures enum value "CloneConfig"
+	StepTypeCloneConfig string = "CloneConfig"
+
+	// StepTypePipelineRunner captures enum value "PipelineRunner"
+	StepTypePipelineRunner string = "PipelineRunner"
+
+	// StepTypeClone captures enum value "Clone"
+	StepTypeClone string = "Clone"
+
+	// StepTypeBuild captures enum value "Build"
+	StepTypeBuild string = "Build"
+
+	// StepTypeSubPipelineStep captures enum value "SubPipelineStep"
+	StepTypeSubPipelineStep string = "SubPipelineStep"
+
+	// StepTypeUnknown captures enum value "Unknown"
+	StepTypeUnknown string = "Unknown"
+)
+
+// prop value enum
+func (m *Step) validateTypeEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, stepTypeTypePropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Step) validateType(formats strfmt.Registry) error {
+	if typeutils.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
 		return err
 	}
 
