@@ -12,8 +12,8 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
-	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
+	httputils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	jobutils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/equinor/radix-common/utils/slice"
 	"github.com/rs/zerolog/log"
@@ -36,7 +36,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	// Trigger build via web hook
-	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, sharedSecret)
+	err = httputils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Running")
+		return jobutils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Running")
 	})
 
 	if err != nil {
@@ -57,14 +57,14 @@ func Application(ctx context.Context, cfg config.Config) error {
 	// Another build should cause second job to queue up
 	// Trigger another build via web hook
 	time.Sleep(1 * time.Second)
-	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, sharedSecret)
+	err = httputils.TriggerWebhookPush(ctx, cfg, defaults.App2BranchToBuildFrom, defaults.App2CommitID, defaults.App2SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}
 	log.Ctx(ctx).Info().Msg("Second job was triggered")
 
 	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
-		_, err := jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Queued")
+		_, err := jobutils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Queued")
 		return err
 	})
 
@@ -74,7 +74,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	log.Ctx(ctx).Info().Msg("Second job was queued")
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
-		return jobUtils.IsDone(ctx, cfg, defaults.App2Name, jobName)
+		return jobutils.IsDone(ctx, cfg, defaults.App2Name, jobName)
 	})
 	if err != nil {
 		return err
@@ -84,24 +84,24 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 	log.Ctx(ctx).Info().Msg("First job was completed")
 
-	steps := jobUtils.GetSteps(ctx, cfg, defaults.App2Name, jobName)
-	expectedSteps := jobUtils.NewExpectedSteps().
-		Add(jobUtils.StepTypeCloneConfig).
-		Add(jobUtils.StepTypePipelineRunner).
-		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("qa")).
-		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("prod")).
-		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("prod")).
-		Add(jobUtils.StepTypeClone, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("qa")).
-		Add(jobUtils.StepTypeSubPipelineStep, jobUtils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
+	steps := jobutils.GetSteps(ctx, cfg, defaults.App2Name, jobName)
+	expectedSteps := jobutils.NewExpectedSteps().
+		Add(jobutils.StepTypeCloneConfig).
+		Add(jobutils.StepTypePipelineRunner).
+		Add(jobutils.StepTypeClone, jobutils.WithComponents("app"), jobutils.WithEnvironments("qa")).
+		Add(jobutils.StepTypeClone, jobutils.WithComponents("app"), jobutils.WithEnvironments("prod")).
+		Add(jobutils.StepTypeClone, jobutils.WithComponents("redis"), jobutils.WithEnvironments("prod")).
+		Add(jobutils.StepTypeClone, jobutils.WithComponents("redis"), jobutils.WithEnvironments("qa")).
+		Add(jobutils.StepTypeSubPipelineStep, jobutils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
 			Environment:  new("qa"),
 			PipelineName: new("radix-cicdcanary-test2")})).
-		Add(jobUtils.StepTypeSubPipelineStep, jobUtils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
+		Add(jobutils.StepTypeSubPipelineStep, jobutils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
 			Environment:  new("prod"),
 			PipelineName: new("radix-cicdcanary-test2")})).
-		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("qa")).
-		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("app"), jobUtils.WithEnvironments("prod")).
-		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("prod")).
-		Add(jobUtils.StepTypeBuild, jobUtils.WithComponents("redis"), jobUtils.WithEnvironments("qa"))
+		Add(jobutils.StepTypeBuild, jobutils.WithComponents("app"), jobutils.WithEnvironments("qa")).
+		Add(jobutils.StepTypeBuild, jobutils.WithComponents("app"), jobutils.WithEnvironments("prod")).
+		Add(jobutils.StepTypeBuild, jobutils.WithComponents("redis"), jobutils.WithEnvironments("prod")).
+		Add(jobutils.StepTypeBuild, jobutils.WithComponents("redis"), jobutils.WithEnvironments("qa"))
 
 	if len(steps) != expectedSteps.Count() {
 		return errors.New("number of pipeline steps was not as expected")
@@ -115,7 +115,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	log.Ctx(ctx).Debug().Str("jobName", jobName).Msg("Checking Sub-pipeline run...")
-	pipelineRuns, err := jobUtils.GetPipelineRuns(ctx, cfg, defaults.App2Name, jobName)
+	pipelineRuns, err := jobutils.GetPipelineRuns(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return errors.New("failed to find pipeline runs")
 	}
 
-	tasks, err := jobUtils.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.KubeName)
+	tasks, err := jobutils.GetPipelineRunTasks(ctx, cfg, defaults.App2Name, jobName, *run.KubeName)
 	if err != nil {
 		return err
 	}
@@ -138,7 +138,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	// Test tekton log output contain parameters and secrets
-	tektonLogContent, err := jobUtils.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.KubeName, *targetTask.KubeName, "test-tekton")
+	tektonLogContent, err := jobutils.GetLogForPipelineStep(ctx, cfg, defaults.App2Name, jobName, *run.KubeName, *targetTask.KubeName, "test-tekton")
 	if err != nil {
 		return err
 	}
@@ -152,7 +152,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 	log.Ctx(ctx).Info().Msg("Sub-pipeline completed")
 
-	stepLog := jobUtils.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "build-app-qa")
+	stepLog := jobutils.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "build-app-qa")
 
 	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
 	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
@@ -161,7 +161,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Running")
+		return jobutils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Running")
 	})
 
 	if err != nil {
@@ -171,13 +171,13 @@ func Application(ctx context.Context, cfg config.Config) error {
 	// Stop job and verify that it has been stopped
 	jobName = *jobSummary.Name
 	log.Ctx(ctx).Info().Msgf("Second job name: %s", jobName)
-	err = jobUtils.Stop(ctx, cfg, defaults.App2Name, jobName)
+	err = jobutils.Stop(ctx, cfg, defaults.App2Name, jobName)
 	if err != nil {
 		return err
 	}
 
 	err = test.WaitForCheckFuncOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) error {
-		_, err := jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Stopped")
+		_, err := jobutils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Stopped")
 		return err
 	})
 	if err != nil {

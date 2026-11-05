@@ -10,7 +10,7 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
-	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
+	jobutils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 )
 
@@ -25,7 +25,7 @@ func Application(ctx context.Context, cfg config.Config) error {
 
 	// Get job
 	jobSummary, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		jobSummary, err := jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App3Name, "Succeeded")
+		jobSummary, err := jobutils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App3Name, "Succeeded")
 		if err != nil {
 			return nil, err
 		}
@@ -39,11 +39,11 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	jobName := *jobSummary.Name
-	steps := jobUtils.GetSteps(ctx, cfg, defaults.App3Name, jobName)
+	steps := jobutils.GetSteps(ctx, cfg, defaults.App3Name, jobName)
 
-	expectedSteps := jobUtils.NewExpectedSteps().
-		Add(jobUtils.StepTypeCloneConfig).
-		Add(jobUtils.StepTypePipelineRunner)
+	expectedSteps := jobutils.NewExpectedSteps().
+		Add(jobutils.StepTypeCloneConfig).
+		Add(jobutils.StepTypePipelineRunner)
 
 	if len(steps) != expectedSteps.Count() {
 		return errors.New("number of pipeline steps was not as expected")
