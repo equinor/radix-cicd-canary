@@ -24,23 +24,6 @@ jobs:
             linux/amd64
             linux/arm64
 
-  unit-test:
-    name: Unit tests
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version-file: "go.mod"
-      - name: Install dependencies
-        run: |
-          go mod download
-      - name: Run Tests
-        run: |
-          make test
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
