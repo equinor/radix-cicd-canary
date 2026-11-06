@@ -7,13 +7,14 @@ import (
 
 type StepType string
 
+// Enum: ["CloneConfig","PipelineRunner","Clone","Build","SubPipelineStep","Unknown"]
 const (
-	StepTypeCloneConfig     StepType = "clone-config"
-	StepTypePipelineRunner  StepType = "pipeline-runner"
-	StepTypeClone           StepType = "clone"
-	StepTypeBuild           StepType = "build"
-	StepTypeSubPipelineStep StepType = "sub-pipeline-step"
-	StepTypeUnknown         StepType = "unknown"
+	StepTypeCloneConfig     StepType = "CloneConfig"
+	StepTypePipelineRunner  StepType = "PipelineRunner"
+	StepTypeClone           StepType = "Clone"
+	StepTypeBuild           StepType = "Build"
+	StepTypeSubPipelineStep StepType = "SubPipelineStep"
+	StepTypeUnknown         StepType = "Unknown"
 )
 
 type StepStatus string

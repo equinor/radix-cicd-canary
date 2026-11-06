@@ -16,6 +16,10 @@ Also running the test may fail, because it may time out.
 Its best use is when debugging a single test
 */
 func TestStartJobBatch(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode")
+	}
+
 	envUtils.SetRequiredEnvironmentVariablesForTest()
 	cfg := envUtils.NewConfig()
 

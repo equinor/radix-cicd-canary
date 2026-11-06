@@ -92,12 +92,16 @@ func Application(ctx context.Context, cfg config.Config) error {
 		Add(jobutils.StepTypeClone, jobutils.WithComponents("app"), jobutils.WithEnvironments("prod")).
 		Add(jobutils.StepTypeClone, jobutils.WithComponents("redis"), jobutils.WithEnvironments("prod")).
 		Add(jobutils.StepTypeClone, jobutils.WithComponents("redis"), jobutils.WithEnvironments("qa")).
-		Add(jobutils.StepTypeSubPipelineStep, jobutils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
-			Environment:  new("qa"),
-			PipelineName: new("radix-cicdcanary-test2")})).
-		Add(jobutils.StepTypeSubPipelineStep, jobutils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
-			Environment:  new("prod"),
-			PipelineName: new("radix-cicdcanary-test2")})).
+		Add(jobutils.StepTypeSubPipelineStep,
+			jobutils.WithStatus(jobutils.StepStatusCompleted),
+			jobutils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
+				Environment:  new("qa"),
+				PipelineName: new("radix-cicdcanary-test2")})).
+		Add(jobutils.StepTypeSubPipelineStep,
+			jobutils.WithStatus(jobutils.StepStatusCompleted),
+			jobutils.WithSubPipelineTaskStep(&models.SubPipelineTaskStep{
+				Environment:  new("prod"),
+				PipelineName: new("radix-cicdcanary-test2")})).
 		Add(jobutils.StepTypeBuild, jobutils.WithComponents("app"), jobutils.WithEnvironments("qa")).
 		Add(jobutils.StepTypeBuild, jobutils.WithComponents("app"), jobutils.WithEnvironments("prod")).
 		Add(jobutils.StepTypeBuild, jobutils.WithComponents("redis"), jobutils.WithEnvironments("prod")).
@@ -108,10 +112,28 @@ func Application(ctx context.Context, cfg config.Config) error {
 	}
 
 	for _, step := range steps {
-
 		if !expectedSteps.HasStep(*step) {
 			return fmt.Errorf("step %s not found in list of expected steps", *step.Name)
 		}
+	}
+
+	logStep, ok := slice.FindFirst(steps, func(step *models.Step) bool {
+		if step == nil {
+			return false
+		}
+		return step.Type == string(jobutils.StepTypeBuild) && slice.ElementsMatch(step.Components, []string{"app"}) && slice.ElementsMatch(step.Environments, []string{"qa"})
+	})
+
+	if !ok {
+		return errors.New("failed to find build step for app in qa environment")
+	}
+
+	stepLog := jobutils.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, *logStep.Name)
+
+	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
+	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
+	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
+		return errors.New("build secrets are not contained in build log")
 	}
 
 	log.Ctx(ctx).Debug().Str("jobName", jobName).Msg("Checking Sub-pipeline run...")
@@ -151,14 +173,6 @@ func Application(ctx context.Context, cfg config.Config) error {
 		return errors.New("tekton test does not contain github.com (should be printed from known_hosts)")
 	}
 	log.Ctx(ctx).Info().Msg("Sub-pipeline completed")
-
-	stepLog := jobutils.GetLogForStep(ctx, cfg, defaults.App2Name, jobName, "build-app-qa")
-
-	// Validate if Dockerfile build output contains SHA256 hash of build secrets:
-	// https://github.com/equinor/radix-canarycicd-test-2/blob/master/Dockerfile#L9
-	if !strings.Contains(stepLog, Secret1ValueSha256) || !strings.Contains(stepLog, Secret2ValueSha256) {
-		return errors.New("build secrets are not contained in build log")
-	}
 
 	jobSummary, err = test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
 		return jobutils.GetLastPipelineJobWithStatus(ctx, cfg, defaults.App2Name, "Running")

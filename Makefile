@@ -48,7 +48,7 @@ deploy:
 
 .PHONY: test
 test:
-	go test -cover `go list ./...`
+	go test -short -cover `go list ./...`
 
 .PHONY: generate
 generate: tidy generate-client
