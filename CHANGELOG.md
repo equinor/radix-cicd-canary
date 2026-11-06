@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0](https://github.com/equinor/radix-cicd-canary/compare/v1.5.9..v1.6.0) - 2026-11-06
+
+### 🚀 Features
+
+- Refactor pipeline step check to match new spec (#314) - ([cd344e7](https://github.com/equinor/radix-cicd-canary/commit/cd344e7fe603869d48d6a70e0678dfd6c6dd4f84)) by @nilsgstrabo in [#314](https://github.com/equinor/radix-cicd-canary/pull/314)
+
+
 ## [1.5.9](https://github.com/equinor/radix-cicd-canary/compare/v1.5.8..v1.5.9) - 2026-10-22
 
 ### 🐛 Bug Fixes
