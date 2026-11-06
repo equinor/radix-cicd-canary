@@ -80,48 +80,45 @@ type Config struct {
 	networkPolicyCanaryJobComponentName string
 	appAdminGroup                       string
 	appReaderGroup                      string
+	privateImageHubPassword             string
 	tokenSource                         oauth2.TokenSource
 }
 
-var configmap *v1.ConfigMap
-
-func init() {
+// NewConfig Constructor
+func NewConfig() Config {
 	kubeClient := kubeUtils.GetKubernetesClient()
 	cm, err := kubeClient.CoreV1().ConfigMaps(namespace).Get(context.Background(), configMapName, metav1.GetOptions{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("error reading config map")
 	}
-	configmap = cm
-}
 
-// NewConfig Constructor
-func NewConfig() Config {
 	return Config{
-		getImpersonateUser(),
-		getImpersonateGroup(),
-		getClusterFQDN(),
-		getPublicKey(),
-		getPrivateKey(),
-		getPublicKeyCanary3(),
-		getPrivateKeyCanary3(),
-		getPublicKeyCanary4(),
-		getPrivateKeyCanary4(),
-		getNetworkPolicyCanaryPassword(),
-		timeoutOfTest(),
-		getSleepIntervalBetweenCheckFunc(),
-		getSleepIntervalBetweenTestRuns(),
-		getNSPSleepInterval(),
-		getNSPSleepInterval(),
-		getNSPDNSLookupTimeout(),
-		getNSPReachIngressTimeout(),
-		getNSPReachServiceTimeout(),
-		getSuiteList(),
-		getIsBlacklist(),
-		getNetworkPolicyCanaryAppName(),
-		getNetworkPolicyCanaryJobComponentName(),
-		getAppAdminGroup(),
-		getAppReaderGroup(),
-		getTokenSource(),
+		impersonateUser:                     getImpersonateUser(cm),
+		impersonateGroup:                    getImpersonateGroup(cm),
+		clusterFQDN:                         getClusterFQDN(cm),
+		publicKey:                           getPublicKey(cm),
+		privateKey:                          getPrivateKey(cm),
+		publicKeyCanary3:                    getPublicKeyCanary3(cm),
+		privateKeyCanary3:                   getPrivateKeyCanary3(cm),
+		publicKeyCanary4:                    getPublicKeyCanary4(cm),
+		privateKeyCanary4:                   getPrivateKeyCanary4(cm),
+		networkPolicyCanaryPassword:         getNetworkPolicyCanaryPassword(cm),
+		timeoutOfTest:                       timeoutOfTest(cm),
+		sleepIntervalBetweenCheckFunc:       getSleepIntervalBetweenCheckFunc(cm),
+		sleepIntervalBetweenTestRuns:        getSleepIntervalBetweenTestRuns(cm),
+		nspSleepInterval:                    getNSPSleepInterval(cm),
+		nspLongSleepInterval:                GetNSPLongSleepInterval(cm),
+		nspDNSLookupTimeout:                 getNSPDNSLookupTimeout(cm),
+		nspNSPReachIngressTimeout:           getNSPReachIngressTimeout(cm),
+		nspNSPReachServiceTimeout:           getNSPReachServiceTimeout(cm),
+		suiteList:                           getSuiteList(),
+		suiteListIsBlacklist:                getIsBlacklist(),
+		networkPolicyCanaryAppName:          getNetworkPolicyCanaryAppName(cm),
+		networkPolicyCanaryJobComponentName: getNetworkPolicyCanaryJobComponentName(cm),
+		appAdminGroup:                       getAppAdminGroup(cm),
+		appReaderGroup:                      getAppReaderGroup(cm),
+		privateImageHubPassword:             getPrivateImageHubPassword(cm),
+		tokenSource:                         getTokenSource(),
 	}
 }
 
@@ -180,7 +177,7 @@ func (cfg *Config) GetPrivateKeyCanary4() string {
 
 // GetPrivateImageHubPassword get private image hub password
 func (cfg *Config) GetPrivateImageHubPassword() string {
-	return getConfigFromMap(privateImageHubPasswordConfig)
+	return cfg.privateImageHubPassword
 }
 
 // GetNetworkPolicyCanaryPassword get networkpolicy-canary HTTP password from environment
@@ -284,59 +281,59 @@ func getTokenSource() oauth2.TokenSource {
 	return oauth2.ReuseTokenSource(nil, ts)
 }
 
-func getImpersonateUser() string {
-	return getConfigFromMap(impersonateUserConfig)
+func getImpersonateUser(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, impersonateUserConfig)
 }
 
-func getImpersonateGroup() string {
-	return getConfigFromMap(impersonateGroupConfig)
+func getImpersonateGroup(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, impersonateGroupConfig)
 }
 
-func getAppAdminGroup() string {
-	return getConfigFromMap(appAdminGroupConfig)
+func getAppAdminGroup(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, appAdminGroupConfig)
 }
 
-func getAppReaderGroup() string {
-	return getConfigFromMap(appReaderGroupsConfig)
+func getAppReaderGroup(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, appReaderGroupsConfig)
 }
 
-func getClusterFQDN() string {
-	return getConfigFromMap(clusterFQDNConfig)
+func getClusterFQDN(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, clusterFQDNConfig)
 }
 
-func getPublicKey() string {
-	return getConfigFromMap(publicKeyConfig)
+func getPublicKey(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, publicKeyConfig)
 }
 
-func getPrivateKey() string {
-	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyBase64Config))
+func getPrivateKey(configMap *v1.ConfigMap) string {
+	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(configMap, privateKeyBase64Config))
 	return string(data)
 }
 
-func getPublicKeyCanary3() string {
-	return getConfigFromMap(publicKeyCanary3Config)
+func getPublicKeyCanary3(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, publicKeyCanary3Config)
 }
 
-func getPrivateKeyCanary3() string {
-	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyCanary3Base64Config))
+func getPrivateKeyCanary3(configMap *v1.ConfigMap) string {
+	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(configMap, privateKeyCanary3Base64Config))
 	return string(data)
 }
 
-func getPublicKeyCanary4() string {
-	return getConfigFromMap(publicKeyCanary4Config)
+func getPublicKeyCanary4(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, publicKeyCanary4Config)
 }
 
-func getPrivateKeyCanary4() string {
-	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(privateKeyCanary4Base64Config))
+func getPrivateKeyCanary4(configMap *v1.ConfigMap) string {
+	data, _ := base64.StdEncoding.DecodeString(getConfigFromMap(configMap, privateKeyCanary4Base64Config))
 	return string(data)
 }
 
-func getNetworkPolicyCanaryPassword() string {
-	return getConfigFromMap(networkPolicyCanaryPasswordConfig)
+func getNetworkPolicyCanaryPassword(configMap *v1.ConfigMap) string {
+	return getConfigFromMap(configMap, networkPolicyCanaryPasswordConfig)
 }
 
-func timeoutOfTest() time.Duration {
-	timeout, err := strconv.Atoi(getConfigFromMap(timeoutOfTestConfig))
+func timeoutOfTest(configMap *v1.ConfigMap) time.Duration {
+	timeout, err := strconv.Atoi(getConfigFromMap(configMap, timeoutOfTestConfig))
 	if err != nil {
 		log.Fatal().Err(err).Str("key", timeoutOfTestConfig).Msg("Could not read config")
 	}
@@ -344,8 +341,8 @@ func timeoutOfTest() time.Duration {
 	return time.Duration(timeout) * time.Second
 }
 
-func getSleepIntervalBetweenCheckFunc() time.Duration {
-	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalBetweenChecksConfig))
+func getSleepIntervalBetweenCheckFunc(configMap *v1.ConfigMap) time.Duration {
+	sleepInterval, err := strconv.Atoi(getConfigFromMap(configMap, sleepIntervalBetweenChecksConfig))
 	if err != nil {
 		log.Fatal().Err(err).Str("key", sleepIntervalBetweenChecksConfig).Msg("Could not read config")
 	}
@@ -353,8 +350,8 @@ func getSleepIntervalBetweenCheckFunc() time.Duration {
 	return time.Duration(sleepInterval) * time.Second
 }
 
-func getSleepIntervalBetweenTestRuns() time.Duration {
-	sleepInterval, err := strconv.Atoi(getConfigFromMap(sleepIntervalTestRunsConfig))
+func getSleepIntervalBetweenTestRuns(configMap *v1.ConfigMap) time.Duration {
+	sleepInterval, err := strconv.Atoi(getConfigFromMap(configMap, sleepIntervalTestRunsConfig))
 	if err != nil {
 		log.Fatal().Err(err).Str("key", sleepIntervalTestRunsConfig).Msg("Could not read config")
 	}
@@ -362,44 +359,52 @@ func getSleepIntervalBetweenTestRuns() time.Duration {
 	return time.Duration(sleepInterval) * time.Second
 }
 
-func getNetworkPolicyCanaryAppName() string {
-	appName := getConfigFromMap(networkPolicyCanaryAppNameConfig)
+func getNetworkPolicyCanaryAppName(configMap *v1.ConfigMap) string {
+	appName := getConfigFromMap(configMap, networkPolicyCanaryAppNameConfig)
 	if appName == "" {
 		log.Fatal().Str("key", networkPolicyCanaryAppNameConfig).Msg("Could not read config")
 	}
 	return appName
 }
 
-func getNetworkPolicyCanaryJobComponentName() string {
-	jobComponentName := getConfigFromMap(networkPolicyCanaryJobComponentNameConfig)
+func getPrivateImageHubPassword(configMap *v1.ConfigMap) string {
+	password := getConfigFromMap(configMap, privateImageHubPasswordConfig)
+	if password == "" {
+		log.Fatal().Str("key", privateImageHubPasswordConfig).Msg("Could not read config")
+	}
+	return password
+}
+
+func getNetworkPolicyCanaryJobComponentName(configMap *v1.ConfigMap) string {
+	jobComponentName := getConfigFromMap(configMap, networkPolicyCanaryJobComponentNameConfig)
 	if jobComponentName == "" {
 		log.Fatal().Str("key", networkPolicyCanaryJobComponentNameConfig).Msg("Could not read from configmap")
 	}
 	return jobComponentName
 }
 
-func getNSPSleepInterval() time.Duration {
-	return time.Duration(getConfigMapInt(nspSleepIntervalConfig)) * time.Second
+func getNSPSleepInterval(configMap *v1.ConfigMap) time.Duration {
+	return time.Duration(getConfigMapInt(configMap, nspSleepIntervalConfig)) * time.Second
 }
 
-func getNSPDNSLookupTimeout() time.Duration {
-	return time.Duration(getConfigMapInt(nspDNSLookupTimeoutConfig)) * time.Second
+func getNSPDNSLookupTimeout(configMap *v1.ConfigMap) time.Duration {
+	return time.Duration(getConfigMapInt(configMap, nspDNSLookupTimeoutConfig)) * time.Second
 }
 
-func getNSPReachIngressTimeout() time.Duration {
-	return time.Duration(getConfigMapInt(nspNSPReachIngressTimeoutConfig)) * time.Second
+func getNSPReachIngressTimeout(configMap *v1.ConfigMap) time.Duration {
+	return time.Duration(getConfigMapInt(configMap, nspNSPReachIngressTimeoutConfig)) * time.Second
 }
 
-func getNSPReachServiceTimeout() time.Duration {
-	return time.Duration(getConfigMapInt(nspNSPReachServiceTimeoutConfig)) * time.Second
+func getNSPReachServiceTimeout(configMap *v1.ConfigMap) time.Duration {
+	return time.Duration(getConfigMapInt(configMap, nspNSPReachServiceTimeoutConfig)) * time.Second
 }
 
-func GetNSPLongSleepInterval() time.Duration {
-	return time.Duration(getConfigMapInt(nspLongSleepIntervalConfig)) * time.Second
+func GetNSPLongSleepInterval(configMap *v1.ConfigMap) time.Duration {
+	return time.Duration(getConfigMapInt(configMap, nspLongSleepIntervalConfig)) * time.Second
 }
 
-func getConfigMapInt(key string) int {
-	value, err := strconv.Atoi(getConfigFromMap(key))
+func getConfigMapInt(configMap *v1.ConfigMap, key string) int {
+	value, err := strconv.Atoi(getConfigFromMap(configMap, key))
 	if err != nil {
 		log.Fatal().Err(err).Str("key", key).Msg("Could not read config")
 	}
@@ -413,10 +418,10 @@ func SetRequiredEnvironmentVariablesForTest() {
 	_ = os.Setenv("BEARER_TOKEN", "")
 }
 
-func getConfigFromMap(config string) string {
-	configValue, found := configmap.Data[config]
+func getConfigFromMap(configMap *v1.ConfigMap, key string) string {
+	configValue, found := configMap.Data[key]
 	if !found {
-		log.Fatal().Str("key", config).Msg("key not found in configmap")
+		log.Fatal().Str("key", key).Msg("key not found in configmap")
 	}
 	return configValue
 }
