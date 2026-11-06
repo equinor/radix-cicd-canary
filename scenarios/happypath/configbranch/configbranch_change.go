@@ -11,8 +11,8 @@ import (
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/application"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/config"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/defaults"
-	httpUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
-	jobUtils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
+	httputils "github.com/equinor/radix-cicd-canary/scenarios/utils/http"
+	jobutils "github.com/equinor/radix-cicd-canary/scenarios/utils/job"
 	"github.com/equinor/radix-cicd-canary/scenarios/utils/test"
 	"github.com/rs/zerolog/log"
 )
@@ -27,7 +27,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 	}
 
 	// Trigger first build via web hook
-	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, sharedSecret)
+	err = httputils.TriggerWebhookPush(ctx, cfg, defaults.App4ConfigBranch, defaults.App4CommitID, defaults.App4SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}
@@ -48,11 +48,11 @@ func Change(ctx context.Context, cfg config.Config) error {
 
 	log.Ctx(ctx).Info().Msg("First job was completed")
 
-	expectedSteps := jobUtils.NewExpectedSteps().
-		Add("clone-config").
-		Add("radix-pipeline").
-		Add("clone", "www-prod").
-		Add("build-www-prod", "www")
+	expectedSteps := jobutils.NewExpectedSteps().
+		Add(jobutils.StepTypeCloneConfig).
+		Add(jobutils.StepTypePipelineRunner).
+		Add(jobutils.StepTypeClone, jobutils.WithComponents("www"), jobutils.WithEnvironments("prod")).
+		Add(jobutils.StepTypeBuild, jobutils.WithComponents("www"), jobutils.WithEnvironments("prod"))
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
@@ -63,7 +63,7 @@ func Change(ctx context.Context, cfg config.Config) error {
 		return err
 	}
 
-	err = httpUtils.TriggerWebhookPush(ctx, cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, sharedSecret)
+	err = httputils.TriggerWebhookPush(ctx, cfg, defaults.App4NewConfigBranch, defaults.App4NewCommitID, defaults.App4SSHRepository, sharedSecret)
 	if err != nil {
 		return err
 	}
@@ -84,11 +84,11 @@ func Change(ctx context.Context, cfg config.Config) error {
 
 	log.Ctx(ctx).Info().Msg("Second job was completed")
 
-	expectedSteps = jobUtils.NewExpectedSteps().
-		Add("clone-config").
-		Add("radix-pipeline").
-		Add("clone", "www2-prod").
-		Add("build-www2-prod", "www2")
+	expectedSteps = jobutils.NewExpectedSteps().
+		Add(jobutils.StepTypeCloneConfig).
+		Add(jobutils.StepTypePipelineRunner).
+		Add(jobutils.StepTypeClone, jobutils.WithComponents("www2"), jobutils.WithEnvironments("prod")).
+		Add(jobutils.StepTypeBuild, jobutils.WithComponents("www2"), jobutils.WithEnvironments("prod"))
 
 	if ok, err := validateJobSteps(ctx, cfg, appName, jobName, expectedSteps); !ok {
 		return err
@@ -101,13 +101,13 @@ func waitForJobRunning(ctx context.Context, cfg config.Config, appName string) (
 	status := "Running"
 
 	return test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (*models.JobSummary, error) {
-		return jobUtils.GetLastPipelineJobWithStatus(ctx, cfg, appName, status)
+		return jobutils.GetLastPipelineJobWithStatus(ctx, cfg, appName, status)
 	})
 }
 
 func waitForJobDone(ctx context.Context, cfg config.Config, appName, jobName string) error {
 	jobStatus, err := test.WaitForCheckFuncWithValueOrTimeout(ctx, cfg, func(cfg config.Config, ctx context.Context) (string, error) {
-		return jobUtils.IsDone(ctx, cfg, appName, jobName)
+		return jobutils.IsDone(ctx, cfg, appName, jobName)
 	})
 	if err != nil {
 		return err
@@ -130,7 +130,7 @@ func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfi
 		WithAppName(appName).
 		WithPatchRequest(&patchRequest)
 
-	client := httpUtils.GetApplicationClient(cfg)
+	client := httputils.GetApplicationClient(cfg)
 	_, err := client.ModifyRegistrationDetailsContext(ctx, params, nil)
 	if err != nil {
 		return err
@@ -139,16 +139,16 @@ func patchConfigBranch(ctx context.Context, cfg config.Config, appName, newConfi
 	return nil
 }
 
-func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps jobUtils.ExpectedSteps) (bool, error) {
-	steps := jobUtils.GetSteps(ctx, cfg, appName, jobName)
+func validateJobSteps(ctx context.Context, cfg config.Config, appName, jobName string, expectedSteps *jobutils.ExpectedSteps) (bool, error) {
+	steps := jobutils.GetSteps(ctx, cfg, appName, jobName)
 
 	if len(steps) != expectedSteps.Count() {
 		return false, errors.New("number of pipeline steps was not as expected")
 	}
 
 	for _, step := range steps {
-		if !expectedSteps.HasStepWithComponent(step.Name, step.Components) {
-			return false, fmt.Errorf("missing expected step %s with components %s", step.Name, step.Components)
+		if !expectedSteps.HasStep(*step) {
+			return false, fmt.Errorf("step %s not found in list of expected steps", *step.Name)
 		}
 	}
 	return true, nil

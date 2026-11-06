@@ -14,7 +14,7 @@ concurrency:
 jobs:
   prepare-release-pr:
     name: Prepare release pull request
-    uses: equinor/radix-reusable-workflows/.github/workflows/template-prepare-release-pr.yml@1c276b3288a8749e369cd05b503e73bd7a3370c1 # v1.1.1
+    uses: equinor/radix-reusable-workflows/.github/workflows/template-prepare-release-pr.yml@539088a00ba6255674866591eeb073eebfe42c11 # v1.2.1
     permissions:
       contents: write
       pull-requests: write

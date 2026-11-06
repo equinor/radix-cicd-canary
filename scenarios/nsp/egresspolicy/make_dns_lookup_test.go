@@ -15,6 +15,10 @@ Also running the test may fail, because it may time out.
 Its best use is when debugging a single test
 */
 func TestLookupInternalDNS(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode")
+	}
+
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
@@ -23,6 +27,10 @@ func TestLookupInternalDNS(t *testing.T) {
 }
 
 func TestLookupPublicDNS(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode")
+	}
+
 	config.SetRequiredEnvironmentVariablesForTest()
 	environmentVariables := config.NewConfig()
 
